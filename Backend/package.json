@@ -1,0 +1,15 @@
+{
+  "name": "cosa_project_backend",
+  "version": "1.0.0",
+  "description": "This is the backend for the cosa database GUI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.1"
+  }
+}
