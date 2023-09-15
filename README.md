@@ -11,7 +11,7 @@
     node index.js
     ```
     ```
-    cd Frontend
+    cd frontend
     npm i
     npm start
     ```
