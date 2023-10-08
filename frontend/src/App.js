@@ -1,21 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
 import Search from './Components/Search';
 import Navbar from './Components/Navbar';
 import Cards from './Components/Card';
-
+import React, { useState } from 'react';
 
 function App() {
-  return (
-    <div style={{padding:"10px"}}>
-      <Navbar />
+  const [fetchedData, setFetchedData] = useState(null);
 
-      <br />
-      <Search />
-      <br />
-      <br />
-      <br/>
-      <Cards />
+  // Define a function to set the fetched data
+
+  return (
+    <div style={{ padding: "10px" }}>
+      <Navbar />
+      <Search/>
       
     </div>
   );
