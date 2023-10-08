@@ -13,7 +13,7 @@ exports.restrictToPresident = async function (req, res, next) {
       const info = jwt.verify(token, process.env.JWT_SECRET);
       const user = await Admin.findById({ _id: info._id });
 
-      if (user.username != "President") {
+      if (user.email != "president@iitbhilai.ac.in") {
         return res
           .status(401)
           .json({ success: false, message: "Unauthorized Admin" });

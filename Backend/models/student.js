@@ -1,42 +1,57 @@
 const mongoose = require('mongoose');
 
-const scitech_por = new mongoose.Schema({
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true}
-});
+// const scitech_por = new mongoose.Schema({
+//     club: { type:String, required:true},
+//     designation: { type:String, required:true},
+//     session: { type:String, required:true}
+// });
 
-const cult_por = new mongoose.Schema({
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true}
-});
+// const cult_por = new mongoose.Schema({
+//     club: { type:String, required:true},
+//     designation: { type:String, required:true},
+//     session: { type:String, required:true}
+// });
 
-const sport_por = new mongoose.Schema({
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true}
-});
+// const sport_por = new mongoose.Schema({
+//     club: { type:String, required:true},
+//     designation: { type:String, required:true},
+//     session: { type:String, required:true}
+// });
 
-const acad_por = new mongoose.Schema({
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true}
-});
+// const acad_por = new mongoose.Schema({
+//     club: { type:String, required:true},
+//     designation: { type:String, required:true},
+//     session: { type:String, required:true}
+// });
 
-const achievementSchema = new mongoose.Schema({
+const achievement = new mongoose.Schema({
     under: { type:String, required:true},
     designation: { type:String, required:true},
     eventName: { type:String, required:true},
     conductedBy: { type:String, required:true},
 });
 
+const por = new mongoose.Schema({
+    club: { type: String, required: true },
+    designation: { type: String, required: true },
+    session: { type: String, required: true },
+    type: { type: String, required: true }, // Add a 'type' field to distinguish between types
+}, {
+    discriminatorKey: 'type', // This is the field that will be used to determine the submodel
+});
+
+// Define submodels for different 'pos_res' types
+const ScitechPor = mongoose.model('ScitechPor', por);
+const CultPor = mongoose.model('CultPor', por);
+const SportPor = mongoose.model('SportPor', por);
+const AcadPor = mongoose.model('AcadPor', por);
+
 const student = new mongoose.Schema({
     name:{
         type:String,
         required:true
     },
-    id:{
+    ID_No:{
         type:String,
         required:true,
         unique:true
@@ -66,6 +81,8 @@ const student = new mongoose.Schema({
     	type:[achievement],
     }
 });
+
+
 
 const Student = mongoose.model('Student', student);
 
