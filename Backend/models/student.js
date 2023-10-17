@@ -26,9 +26,9 @@ const mongoose = require('mongoose');
 
 const achievement = new mongoose.Schema({
     under: { type:String, required:true},
-    designation: { type:String, required:true},
-    eventName: { type:String, required:true},
-    conductedBy: { type:String, required:true},
+    designation: { type:String, required:false},
+    eventName: { type:String, required:false},
+    conductedBy: { type:String, required:false},
 });
 
 const por = new mongoose.Schema({
