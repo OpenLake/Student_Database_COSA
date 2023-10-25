@@ -11,14 +11,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.5.1",
     "body-parser": "^1.20.2",
+    "connect-mongodb-session": "^3.1.1",
     "dotenv": "^16.3.1",
     "eslint-plugin-react": "^7.33.2",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^3.1.2",
     "mongodb": "^6.1.0",
+    "morgan": "^1.10.0",
+ 
     "mongoose": "^7.6.3",
     "npm": "^10.2.0"
+
   },
   "devDependencies": {
     "cookie": "^0.5.0",
