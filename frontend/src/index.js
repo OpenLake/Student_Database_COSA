@@ -4,11 +4,21 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
+import { GoogleOAuthProvider, useGoogleOneTapLogin } from '@react-oauth/google';
+
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
-    <App />
+    <GoogleOAuthProvider clientId="697080858655-ad4ucjp2be0sa40hk5ndam3lo5o87jhe.apps.googleusercontent.com">
+      <App/>
+      
+
+
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
 

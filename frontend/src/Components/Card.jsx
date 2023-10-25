@@ -26,6 +26,7 @@ function Cards({ data }) {
               <li key={index}>{achievement}</li>
             ))}
           </ul> */}
+          <br />
           <strong>Positions of Responsibility:</strong>
           {/* <ul>
             {data.pos_res.map((por, index) => (
