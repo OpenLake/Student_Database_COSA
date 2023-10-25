@@ -20,7 +20,7 @@ const { restrictToPresident } = require("../middlewares");
     const jwtToken = req.headers.authorization;
     const user = JSON.parse(req.headers['user-details']);
     const decoded = jwt_decode(jwtToken);
-  
+ 
     const { username, password } = req.DB_credentials;
     const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
 
