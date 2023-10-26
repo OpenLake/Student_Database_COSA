@@ -5,8 +5,6 @@ import Cards from './Components/Card';
 import React, { useState, useEffect } from 'react';
 import { useGoogleOneTapLogin } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
-import { googleLogout, useGoogleLogin } from '@react-oauth/google';
-import { useStte } from 'react';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
