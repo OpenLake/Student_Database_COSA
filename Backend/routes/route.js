@@ -49,7 +49,7 @@ router.post('/add', async (req, res) => {
       }
   });
 
-  router.get('/remove', async (req, res) => {
+  router.post('/remove', async (req, res) => {
     try {
       const student = await Student.findOne({ID_No:req.body.ID_No});
       console.log(student._id);
@@ -61,7 +61,7 @@ router.post('/add', async (req, res) => {
       }
   });
 
-  router.get('/update', async (req, res) => {
+  router.post('/update', async (req, res) => {
     try {
       const student = await Student.findOne({ID_No:req.body.ID_No});
       console.log(student._id);
