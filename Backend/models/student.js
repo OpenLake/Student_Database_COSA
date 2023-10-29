@@ -25,7 +25,7 @@ const mongoose = require('mongoose');
 // });
 
 const achievement = new mongoose.Schema({
-    under: { type:String, required:true},
+    under: { type:String},
     designation: { type:String, required:false},
     eventName: { type:String, required:false},
     conductedBy: { type:String, required:false},

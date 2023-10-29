@@ -5,16 +5,15 @@ const mongoose = require("mongoose");
 const { restrictToPresident, restrictToAdmin } = require("../middlewares");
 const Student = require("../models/student");
 
-
 router.get('/', restrictToPresident, function(req, res) {
     
     try{
-    const jwtToken = req.headers.authorization;
+      const jwtToken = req.cookies.credentials;
     const user = JSON.parse(req.headers['user-details']);
     const decoded = jwt_decode(jwtToken);
  
     const { username, password } = req.DB_credentials;
-    const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+    `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;;
     mongoose.connect(dbUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -41,9 +40,11 @@ router.get('/', restrictToPresident, function(req, res) {
  router.post('/add', restrictToPresident, async (req, res) => {
 
   try {
-    const jwtToken = req.headers.authorization;
-    const user = JSON.parse(req.headers['user-details']);
+    const jwtToken = req.cookies.credentials;
+    // const user = JSON.parse(req.headers['user-details']);
     const decoded = jwt_decode(jwtToken);
+    console.log(decoded);
+    console.log(req.body)
     const { username, password } = req.DB_credentials;
       const student = new Student({
         name: req.body.name,
@@ -82,7 +83,7 @@ router.get('/', restrictToPresident, function(req, res) {
 router.post('/remove', restrictToPresident, async (req, res) => {
   try {
     
-    const jwtToken = req.headers.authorization;
+    const jwtToken = req.cookies.credentials;
     const user = JSON.parse(req.headers['user-details']);
     const decoded = jwt_decode(jwtToken);
  
@@ -113,7 +114,7 @@ router.post('/remove', restrictToPresident, async (req, res) => {
 router.post('/update', restrictToAdmin, async (req, res) => {
   try {
 
-    const jwtToken = req.headers.authorization;
+    const jwtToken = req.cookies.credentials;
     const user = JSON.parse(req.headers['user-details']);
     const decoded = jwt_decode(jwtToken);
     const student = await Student.findOne({ID_No:req.body.ID_No});

@@ -9,11 +9,15 @@ const bodyParser = require('body-parser');
 const connectDB = require("./db");
 const MongoDBStore = require('connect-mongodb-session')(session);
 
+require('dotenv').config();
 
 app.use(cookieParser());
-app.use(cors());
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
+app.use(cors({
+  origin: 'http://localhost:3000', // This is your frontend URL
+  credentials: true, // Enable credentials (cookies)
+}));
 // const store = new MongoDBStore({
 //   uri: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`,
 //   collection: 'sessions',
