@@ -1,60 +1,37 @@
-
 import { GoogleLogin } from '@react-oauth/google';
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {AdminContext} from '../App'
+import { AdminContext } from '../App';
 import jwtDecode from 'jwt-decode';
+import Cookies from 'js-cookie';
 
-function Navbar(){
-  const {setIsUserLoggedIn} = useContext(AdminContext)
-  
+function Navbar() {
+  const { setIsUserLoggedIn } = useContext(AdminContext);
   const [user, setUser] = useState();
   const navigate = useNavigate();
-  
+
   const responseGoogle = (response) => {
-
-
-    
     setUser(response.credential);
 
     const decoded = jwtDecode(response.credential);
-     try {
-
-      
+    try {
       if (decoded.email_verified) {
-        setIsUserLoggedIn(true)
+        setIsUserLoggedIn(true); // Set IsUserLoggedIn to true
         const credentials = response.credential;
-        navigate('/update', { state: { credentials } });
-    //     setUser(response.credential);
-    //     console.log(user);
-    //     fetch('http://localhost:8000/auth', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Authorization': `Bearer ${response.credential}`, 
-    //         'User-Details': JSON.stringify(decoded), 
-    //       },
-    //     })
-        
+        Cookies.set('credentials', credentials, { expires: 7 }); // Set the credentials in a cookie
+        navigate('/update');
       } else {
-     
         console.error('Invalid response from Google Sign-In');
-       }}
-      catch (error) {
-     
+      }
+    } catch (error) {
       console.error('Error during Google Sign-In:', error);
-     }
+    }
   };
-  // useEffect(() => {
-    
-  //   console.log(user); 
-  // }, [user]);
-
 
   return (
-    <div style={{ background: "#419197", padding: "5px", textAlign:"center"}}>
-        {/* # want to make a div for space logo  */}
-        <p style={{color: "white"}}>Navbar</p>
-      {setIsUserLoggedIn ? ( // Check if the user is authenticated
+    <div style={{ background: '#419197', padding: '5px', textAlign: 'center' }}>
+      <p style={{ color: 'white' }}>Navbar</p>
+      {user ? (
         <p>User is authenticated</p>
       ) : (
         <GoogleLogin
@@ -64,7 +41,6 @@ function Navbar(){
           useOneTap
         />
       )}
-    
     </div>
   );
 }

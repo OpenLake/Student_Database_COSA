@@ -1,6 +1,6 @@
 import './Add.css';
 import React, { Component } from 'react';
-import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Button, Row, Col } from 'reactstrap';
+import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Button, Row, Col, Placeholder } from 'reactstrap';
 
 class InputForm extends Component {
   constructor(props) {
@@ -8,8 +8,8 @@ class InputForm extends Component {
 
     this.state = {
       name: '',
-      id: '',
-      program: '',
+      ID_No: '',
+      Program: '',
       discipline: '',
       add_year: '',
       pos_res: [
@@ -99,19 +99,34 @@ class InputForm extends Component {
     });
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    
-    console.log(this.state);
-
-    
-    this.setState({
-      isFormVisible: false,
-    });
-  }
+  handleSubmit = async (event) => {
+    event.preventDefault();
+    const student = this.state;
+    // console.log(student)
+    try {
+      const url = 'http://localhost:8000/auth/add';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(student),
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        
+   
+      } else {
+        throw new Error('Request failed');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   render() {
-    const { name, id, program, discipline, add_year, pos_res, achievements, isFormVisible } = this.state;
+    const { name, ID_No, Program, discipline, add_year, pos_res, achievements, isFormVisible } = this.state;
 
     if (!isFormVisible) {
       return <div>Student added Successfully</div>;
@@ -137,9 +152,9 @@ class InputForm extends Component {
                 <Label for="id">ID</Label>
                 <Input
                   type="text"
-                  name="id"
-                  id="id"
-                  value={id}
+                  name="ID_No"
+                  id="ID_No"
+                  value={ID_No}
                   onChange={this.handleInputChange}
                 />
               </FormGroup>
@@ -147,9 +162,9 @@ class InputForm extends Component {
                 <Label for="program">Program</Label>
                 <Input
                   type="text"
-                  name="program"
-                  id="program"
-                  value={program}
+                  name="Program"
+                  id="Program"
+                  value={Program}
                   onChange={this.handleInputChange}
                 />
               </FormGroup>
@@ -213,13 +228,20 @@ class InputForm extends Component {
                     <Col>
                       <FormGroup>
                         <Label>Type</Label>
-                        <Input
-                          type="text"
+                        <select
                           value={por.type}
-                          onChange={(e) => this.handlePORChange(index, 'type', e)}
-                        />
+                          onChange={(e) => this.handlePORChange(index, 'type', e)
+                          }
+                          placeholder="select"
+                        >
+                        <option value="Academics por">Academics POR</option>
+                        <option value="Scitech">Scitech</option>
+                        <option value="Cultures">Cultures</option>
+                        <option value="Sports">Sports</option>
+                        </select>
                       </FormGroup>
                     </Col>
+
                   </Row>
                   <Button
                     color="danger"
