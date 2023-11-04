@@ -2,19 +2,23 @@ import './App.css';
 import Search from './Components/Search';
 import Navbar from './Components/Navbar';
 import Cards from './Components/Card';
-import React, { useEffect,useContext,useState,createContext} from 'react';
+import React, { useEffect, useContext, useState, createContext } from 'react';
 import { useGoogleOneTapLogin } from '@react-oauth/google';
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Home';
 import AddUser from './AddUser';
 import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 
 const AdminContext = createContext();
-function App() {
 
-  
-  const [IsUserLoggedIn,setIsUserLoggedIn] = useState(false);
+function App() {
+  const [IsUserLoggedIn, setIsUserLoggedIn] = useState(() => {
+    // Initialize the user's login status from localStorage
+    const storedStatus = localStorage.getItem('IsUserLoggedIn');
+    return storedStatus ? JSON.parse(storedStatus) : false;
+  });
+
   useEffect(() => {
     // Load credentials from cookies
     const credentials = Cookies.get('credentials');
@@ -28,29 +32,31 @@ function App() {
     }
   }, []);
 
-
+  useEffect(() => {
+    // Update localStorage when IsUserLoggedIn changes
+    localStorage.setItem('IsUserLoggedIn', JSON.stringify(IsUserLoggedIn));
+  }, [IsUserLoggedIn]);
 
   return (
-
-<AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route
-        path="/update"
-        element={
-          IsUserLoggedIn ? (
-            <AddUser />
-          ) : (
-            <Navigate to="/" replace />
-          )
-        }
-      />
-    </Routes>
-  </BrowserRouter>
-</AdminContext.Provider>
-  
+    <AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/update"
+            element={
+              IsUserLoggedIn ? (
+                <AddUser />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AdminContext.Provider>
   );
 }
-export {AdminContext}
+
+export { AdminContext };
 export default App;

@@ -114,8 +114,8 @@ class InputForm extends Component {
         credentials: 'include',
       });
   
-      if (response.ok) {
-        
+      if (response.status == 201) {
+        console.log(response)
    
       } else {
         throw new Error('Request failed');
@@ -234,10 +234,10 @@ class InputForm extends Component {
                           }
                           placeholder="select"
                         >
-                        <option value="Academics por">Academics POR</option>
-                        <option value="Scitech">Scitech</option>
-                        <option value="Cultures">Cultures</option>
-                        <option value="Sports">Sports</option>
+                        <option value="AcademicPOR">Academics POR</option>
+                        <option value="ScitechPOR">Scitech POR</option>
+                        <option value="CulturalsOR">Culturals POR</option>
+                        <option value="SportsPOR">Sports POR</option>
                         </select>
                       </FormGroup>
                     </Col>

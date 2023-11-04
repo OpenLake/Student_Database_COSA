@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Input } from 'reactstrap';
 import { Button, Form, Row, Col } from 'reactstrap';
 import Card from "../Components/Card"
-function Search() {
-
+import UpdateCards from "../Add_User/Components/Update";
+function Search({IsUserLoggedIn}) {
+  
   const [student_ID, setStudentID] = useState()
   
   const onChangestudentID = (e)=>{
@@ -16,7 +17,7 @@ function Search() {
     event.preventDefault();
     
     try {
-      const url = 'http://localhost:8000/';
+      const url = 'http://localhost:8000/fetch';
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -29,6 +30,7 @@ function Search() {
         const data = await response.json();
         
         setStudentDetails(data);
+        console.log(data);
    
       } else {
         throw new Error('Request failed');
@@ -36,6 +38,11 @@ function Search() {
     } catch (error) {
       console.log(error);
     }
+  };
+  
+  const handleEditUser = (updatedUser) => {
+    setStudentDetails(updatedUser);
+    console.log(studentDetails)
   };
   return (
     <div>
@@ -62,7 +69,9 @@ function Search() {
           </Col>
         </Row>
       </Form>
-      {studentDetails && <Card data={studentDetails} />}
+      { studentDetails && <Card data={studentDetails} />}
+     
+      {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} onEdit={handleEditUser}   />}
     </div>
   );
 }
