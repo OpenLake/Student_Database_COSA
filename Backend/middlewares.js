@@ -1,4 +1,5 @@
 
+const { decode } = require("jsonwebtoken");
 const Admin = require("./models/Admin");
 const jwt_decode = require('jwt-decode');
 
@@ -15,7 +16,7 @@ exports.restrictToPresident = async function (req, res, next) {
         .status(401)
         .json({ success: false, message: "Unauthorized Admin" });
     } else {
-     
+     console.log(decoded.exp > Date.now()/1000)
       if (decoded.email == "ayush05012003krishn@gmail.com" && decoded.iss == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud==process.env.GOOGLE_CLIENT_ID) {
       
       // ****** sub to be added as well ******** 697080858655-ad4ucjp2be0sa40hk5ndam3lo5o87jhe.apps.googleusercontent.com
@@ -23,9 +24,11 @@ exports.restrictToPresident = async function (req, res, next) {
       req.DB_credentials = {
           username:process.env.PRESIDENT_USERNAME ,
           password:process.env.PRESIDENT_PASSWORD ,
-          // Include other credentials or data as needed
+          
+     
         };
-        console.log("Pres")
+        req.decoded = decoded;
+        
         next();  
         
       }
@@ -56,46 +59,50 @@ exports.restrictToAdmin = async function (req, res, next) {
         .status(401)
         .json({ success: false, message: "Unauthorized Admin" });
     } else {
-      
-      if (decoded.email == "ayush05012003krishn@gmail.com" && decoded.payload.iss == 'https://accounts.google.com' && decoded.payload.exp > Date.now() / 1000 && decoded.payload.aud == process.env.GOOGLE_CLIENT_ID  ) {
+      console.log(decoded.exp)
+      if (decoded.email == "" && decoded.iss == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID) {
         req.DB_credentials = {
           username:process.env.PRESIDENT_USERNAME ,
           password:process.env.PRESIDENT_PASSWORD ,
-          // Include other credentials or data as needed
+          User:"President"
+        
         };
+        
         next();
       }
-      else if (decoded.email == "scitech_gymkhana@iitbhilai.ac.in" && decoded.payload.iss == 'https://accounts.google.com' && decoded.payload.exp > Date.now() / 1000 && decoded.payload.aud == process.env.GOOGLE_CLIENT_ID ){
+      else if (decoded.email == "ayush05012003krishn@gmail.com" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
         req.DB_credentials = {
           username:process.env.SCITECH_USERNAME ,
           password:process.env.SCITECH_PASSWORD  ,
-          // Include other credentials or data as needed
+          User:"Gensec_Scitech"
+          
         };
         next();
       }
-      else if (decoded.email == "gensec_academic_gymkhana@iitbhilai.ac.in" && decoded.payload.iss == 'https://accounts.google.com' && decoded.payload.exp > Date.now() / 1000 && decoded.payload.aud == process.env.GOOGLE_CLIENT_ID ){
+      else if (decoded.email == "gensec_academic_gymkhana@iitbhilai.ac.in" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
         req.DB_credentials = {
           username:process.env.ACAD_USERNAME ,
           password:process.env.ACAD_PASSWORD,
-          // Include other credentials or data as needed
+          User:"Gensec_Scitech"
+         
         };
         next();   
       }
-      else if (decoded.email == "Gensec_Cultural_Gymkhana@iitbhilai.ac.in" && decoded.payload.iss == 'https://accounts.google.com' && decoded.payload.exp > Date.now() / 1000 && decoded.payload.aud == process.env.GOOGLE_CLIENT_ID ){
+      else if (decoded.email == "Gensec_Cultural_Gymkhana@iitbhilai.ac.in" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
         
       
       req.DB_credentials = {
         username:process.env.CULT_USERNAME ,
         password:process.env.CULT_PASSWORD,
-          // Include other credentials or data as needed
+        User:"Gensec_Cult"
         };
         next();
       }
-      else if (decoded.email == "Gensec_Sports_Gymkhana@iitbhilai.ac.in" && decoded.payload.iss == 'https://accounts.google.com' && decoded.payload.exp > Date.now() / 1000 && decoded.payload.aud == process.env.GOOGLE_CLIENT_ID ){
+      else if (decoded.email == "Gensec_Sports_Gymkhana@iitbhilai.ac.in" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
         req.DB_credentials = {
           username:process.env.SPORT_USERNAME ,
           password:process.env.SPORT_PASSWORD ,
-          // Include other credentials or data as needed
+          User:"Gensec_Sports"
         };
         next();
       }
