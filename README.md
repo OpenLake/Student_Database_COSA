@@ -18,6 +18,5 @@
 ## 🧑‍💻 Maintainers
 
 - [Anjali Patil](https://github.com/AnjaliPatil4)
-- [Sooraj Reddy](https://github.com/sooraj-reddy)
 - [Rohit Ashwani](https://github.com/rohitashwani1)
 - [Aayush Krishnan](https://github.com/krishnan05)
