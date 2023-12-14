@@ -59,18 +59,17 @@ exports.restrictToAdmin = async function (req, res, next) {
         .status(401)
         .json({ success: false, message: "Unauthorized Admin" });
     } else {
-      console.log(decoded.exp)
-      if (decoded.email == "" && decoded.iss == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID) {
+      
+      if (decoded.email == "ayush05012003krishn@gmail.com" && decoded.iss == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID) {
         req.DB_credentials = {
           username:process.env.PRESIDENT_USERNAME ,
           password:process.env.PRESIDENT_PASSWORD ,
           User:"President"
-        
         };
-        
+       
         next();
       }
-      else if (decoded.email == "ayush05012003krishn@gmail.com" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
+      else if (decoded.email == "scitech_gymkhana@iitbhilai.ac.in" && decoded.iss  == 'https://accounts.google.com' && decoded.exp > Date.now()/1000 && decoded.aud == process.env.GOOGLE_CLIENT_ID ){
         req.DB_credentials = {
           username:process.env.SCITECH_USERNAME ,
           password:process.env.SCITECH_PASSWORD  ,
