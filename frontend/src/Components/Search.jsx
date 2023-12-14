@@ -40,10 +40,7 @@ function Search({IsUserLoggedIn}) {
     }
   };
   
-  const handleEditUser = (updatedUser) => {
-    setStudentDetails(updatedUser);
-    console.log(studentDetails)
-  };
+  
   return (
     <div>
      
@@ -69,9 +66,10 @@ function Search({IsUserLoggedIn}) {
           </Col>
         </Row>
       </Form>
+
       { studentDetails && <Card data={studentDetails} />}
      
-      {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} onEdit={handleEditUser}   />}
+      {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} />}
     </div>
   );
 }
