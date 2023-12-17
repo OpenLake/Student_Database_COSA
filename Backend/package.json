@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +22,7 @@
     "jwt-decode": "^3.1.2",
     "mongodb": "^6.1.0",
     "morgan": "^1.10.0",
- 
+
     "mongoose": "^7.6.3",
     "npm": "^10.2.0"
 
