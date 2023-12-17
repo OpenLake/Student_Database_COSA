@@ -4,8 +4,7 @@ dotenv.config()
 
 const connectDB = async () => {
   try {
-    // const ConnectDB = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
-    const ConnectDB = 'mongodb://localhost:27017/COSA'
+    const ConnectDB = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
     await mongoose.connect(ConnectDB, {
       useNewUrlParser: true,
       useUnifiedTopology: true
@@ -26,7 +25,7 @@ const closeDB = () => {
         console.error('Error while closing MongoDB connection:', err);
       });
   };
-
+  
 // Call the connectDB function to establish the MongoDB connection
 
 
