@@ -113,10 +113,10 @@ class InputForm extends Component {
         body: JSON.stringify(student),
         credentials: 'include',
       });
-  
+
       if (response.status == 201) {
         console.log(response)
-   
+        this.setState({isFormVisible: false})
       } else {
         throw new Error('Request failed');
       }
