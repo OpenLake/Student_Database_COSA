@@ -1,6 +1,6 @@
 import './Add.css';
 import React, { Component } from 'react';
-import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Button, Row, Col, FormFeedback } from 'reactstrap';
+import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Button, Row, Col, Placeholder } from 'reactstrap';
 
 class InputForm extends Component {
   constructor(props) {
@@ -8,10 +8,10 @@ class InputForm extends Component {
 
     this.state = {
       name: '',
-      ID_No: null,
+      ID_No: '',
       Program: '',
       discipline: '',
-      add_year: null,
+      add_year: '',
       pos_res: [
         {
           club: '',
@@ -114,7 +114,7 @@ class InputForm extends Component {
         credentials: 'include',
       });
 
-      if (response.status === 201) {
+      if (response.status == 201) {
         console.log(response)
         this.setState({isFormVisible: false})
       } else {
@@ -139,67 +139,54 @@ class InputForm extends Component {
             <CardTitle tag="h5">Student Details</CardTitle>
             <Form onSubmit={this.handleSubmit}>
               <FormGroup>
-                <Label for="name">Name*</Label>
+                <Label for="name">Name</Label>
                 <Input
                   type="text"
                   name="name"
                   id="name"
                   value={name}
                   onChange={this.handleInputChange}
-                  required
-                  invalid={!(/^[A-Za-z\s]*$/.test(name))}
                 />
-                <FormFeedback invalid>
-                  Name must only contain alphabetic characters
-                </FormFeedback>
               </FormGroup>
               <FormGroup>
-                <Label for="id">ID*</Label>
+                <Label for="id">ID</Label>
                 <Input
-                  type="number"
+                  type="text"
                   name="ID_No"
                   id="ID_No"
                   value={ID_No}
                   onChange={this.handleInputChange}
-                  required
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="program">Program*</Label>
+                <Label for="program">Program</Label>
                 <Input
                   type="text"
                   name="Program"
                   id="Program"
                   value={Program}
                   onChange={this.handleInputChange}
-                  required
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="discipline">Discipline*</Label>
+                <Label for="discipline">Discipline</Label>
                 <Input
                   type="text"
                   name="discipline"
                   id="discipline"
                   value={discipline}
                   onChange={this.handleInputChange}
-                  required
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="add_year">Year of Admission*</Label>
+                <Label for="add_year">Year of Admission</Label>
                 <Input
-                  type="number"
+                  type="text"
                   name="add_year"
                   id="add_year"
                   value={add_year}
                   onChange={this.handleInputChange}
-                  required
-                  invalid={add_year != null && add_year <= 2016}
                 />
-                <FormFeedback invalid>
-                  Admission year can only be after 2016
-                </FormFeedback>
               </FormGroup>
 
               <CardTitle tag="h5">PORs</CardTitle>
@@ -208,23 +195,21 @@ class InputForm extends Component {
                   <Row>
                     <Col>
                       <FormGroup>
-                        <Label>Club*</Label>
+                        <Label>Club</Label>
                         <Input
                           type="text"
                           value={por.club}
                           onChange={(e) => this.handlePORChange(index, 'club', e)}
-                          required
                         />
                       </FormGroup>
                     </Col>
                     <Col>
                       <FormGroup>
-                        <Label>Designation*</Label>
+                        <Label>Designation</Label>
                         <Input
                           type="text"
                           value={por.designation}
                           onChange={(e) => this.handlePORChange(index, 'designation', e)}
-                          required
                         />
                       </FormGroup>
                     </Col>
@@ -232,23 +217,21 @@ class InputForm extends Component {
                   <Row>
                     <Col>
                       <FormGroup>
-                        <Label>Session*</Label>
+                        <Label>Session</Label>
                         <Input
                           type="text"
                           value={por.session}
-                          required
                           onChange={(e) => this.handlePORChange(index, 'session', e)}
                         />
                       </FormGroup>
                     </Col>
                     <Col>
                       <FormGroup>
-                        <Label>Type*</Label>
+                        <Label>Type</Label>
                         <select
                           value={por.type}
                           onChange={(e) => this.handlePORChange(index, 'type', e)
                           }
-                          required
                           placeholder="select"
                         >
                         <option value="AcademicPOR">Academics POR</option>
@@ -277,11 +260,10 @@ class InputForm extends Component {
                   <Row>
                     <Col>
                       <FormGroup>
-                        <Label>Under*</Label>
+                        <Label>Under</Label>
                         <Input
                           type="text"
                           value={achievement.under}
-                          required
                           onChange={(e) => this.handleAchievementChange(index, 'under', e)}
                         />
                       </FormGroup>
@@ -300,11 +282,10 @@ class InputForm extends Component {
                   <Row>
                     <Col>
                       <FormGroup>
-                        <Label>Event Name*</Label>
+                        <Label>Event Name</Label>
                         <Input
                           type="text"
                           value={achievement.eventName}
-                          required
                           onChange={(e) => this.handleAchievementChange(index, 'eventName', e)}
                         />
                       </FormGroup>
@@ -335,7 +316,6 @@ class InputForm extends Component {
               <button className={'submit_button'} type="submit">
                 Submit
               </button>
-              <p style={{color: 'red'}}>*All fields must be present</p>
             </Form>
           </CardBody>
         </Card>
