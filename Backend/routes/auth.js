@@ -13,7 +13,7 @@
       const decoded = jwt_decode(jwtToken);
 
       const { username, password } = req.DB_credentials;
-      `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;;
+      `mongodb+srv://Snehil-Shah:Sneh9448999745@cluster.j4mlyq6.mongodb.net/?retryWrites=true&w=majority`;;
       mongoose.connect(dbUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -43,7 +43,8 @@
       const jwtToken = req.cookies.credentials;
       // const user = JSON.parse(req.headers['user-details']);
       const decoded = jwt_decode(jwtToken);
-    
+      console.log("called server to add")
+
       const { username, password } = req.DB_credentials;
         const student = new Student({
           name: req.body.name,
@@ -54,9 +55,9 @@
           add_year:req.body.add_year
         });
         pors = req.body.pos_res;
-      
-      
-        const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+
+
+        const dbUri = `mongodb+srv://Snehil-Shah:Sneh9448999745@cluster.j4mlyq6.mongodb.net/?retryWrites=true&w=majority`;
         mongoose.connect(dbUri, {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -99,7 +100,7 @@
                 designation: element.designation,
                 session: element.session
               });
-              
+
               scitech_por.save();
               console.log(scitech_por)
             }
@@ -130,7 +131,7 @@
 
       const { username, password } = req.DB_credentials;
 
-      const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+      const dbUri = `mongodb+srv://Snehil-Shah:Sneh9448999745@cluster.j4mlyq6.mongodb.net/?retryWrites=true&w=majority`;
       mongoose.connect(dbUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -153,17 +154,17 @@
 
 
   router.post('/update', restrictToAdmin, async (req, res) => {
-    
-    try {   
+
+    try {
       const decoded = req.decoded;
-     
+
       const { username, password, User } = req.DB_credentials;
       const data = req.body.data;
       const stud = data.student
       const PORs = req.body.editedData.PORS;
-   
+
       console.log(PORs);
-      const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+      const dbUri = `mongodb+srv://Snehil-Shah:Sneh9448999745@cluster.j4mlyq6.mongodb.net/?retryWrites=true&w=majority`;
       await mongoose.connect(dbUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -171,7 +172,7 @@
           const student = await Student.findById((stud._id)).exec();;
           console.log(student)
           if(User =="President"){
-           
+
             for (const element of PORs){
               if(element.type == 'Scitech-POR'){
                 await ScietechPOR.findByIdAndUpdate(element._id,{

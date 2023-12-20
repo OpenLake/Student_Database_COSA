@@ -4,9 +4,9 @@ import { Button, Form, Row, Col } from 'reactstrap';
 import Card from "../Components/Card"
 import UpdateCards from "../Add_User/Components/Update";
 function Search({IsUserLoggedIn}) {
-  
+
   const [student_ID, setStudentID] = useState()
-  
+
   const onChangestudentID = (e)=>{
     setStudentID(e.target.value)
   }
@@ -15,7 +15,9 @@ function Search({IsUserLoggedIn}) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+    if (!student_ID){
+      return
+    }
     try {
       const url = 'http://localhost:8000/fetch';
       const response = await fetch(url, {
@@ -25,13 +27,13 @@ function Search({IsUserLoggedIn}) {
         },
         body: JSON.stringify({ student_ID }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-        
+
         setStudentDetails(data);
         console.log(data);
-   
+
       } else {
         throw new Error('Request failed');
       }
@@ -39,11 +41,11 @@ function Search({IsUserLoggedIn}) {
       console.log(error);
     }
   };
-  
-  
+
+
   return (
     <div>
-     
+
       <br />
       <Form>
         <Row>
@@ -68,7 +70,7 @@ function Search({IsUserLoggedIn}) {
       </Form>
 
       { studentDetails && <Card data={studentDetails} />}
-     
+
       {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} />}
     </div>
   );
