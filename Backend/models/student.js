@@ -21,7 +21,7 @@ const student = new mongoose.Schema({
         type:String,
         required:true
     },
-    
+
     add_year:{
     	type: Number,
     	required: true,
@@ -29,10 +29,10 @@ const student = new mongoose.Schema({
             validator: function (value) {
                 return Number.isInteger(value) && value > 2016;
             },
-            message: 'Invalid year of Addmission'
+            message: 'Invalid year of Admission'
         }
     },
-    
+
 });
 
 const achievement = new mongoose.Schema({
