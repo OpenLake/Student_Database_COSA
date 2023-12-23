@@ -1,10 +1,9 @@
 import './App.css';
 import Add from './Add_User/Components/Add';
 import Navbar from '../src/Components/Navbar';
-
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Cookies from 'js-cookie';
 import Search from './Components/Search';
 function AddUser() {
@@ -23,13 +22,13 @@ function AddUser() {
   return (
     <div style={{ padding: "10px" }}>
 
-  
+
       <Navbar />
       <Search IsUserLoggedIn={true}/>
 
-      <Add/> 
+      <Add/>
 
-      
+
     </div>
   );
 }

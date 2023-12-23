@@ -1,18 +1,15 @@
 import { GoogleLogin } from '@react-oauth/google';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminContext } from '../App';
 import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 function Navbar() {
-  const { setIsUserLoggedIn } = useContext(AdminContext);
-  const [user, setUser] = useState();
+  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const navigate = useNavigate();
 
   const responseGoogle = (response) => {
-    setUser(response.credential);
-
     const decoded = jwtDecode(response.credential);
     try {
       if (decoded.email_verified) {
@@ -31,7 +28,7 @@ function Navbar() {
   return (
     <div style={{ background: '#419197', padding: '5px', textAlign: 'center' }}>
       <p style={{ color: 'white' }}>Navbar</p>
-      {user ? (
+      {IsUserLoggedIn ? (
         <p>User is authenticated</p>
       ) : (
         <GoogleLogin
