@@ -1,8 +1,7 @@
 import './App.css';
 import Search from './Components/Search';
 import Navbar from './Components/Navbar';
-import Cards from './Components/Card';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 function Home() {
 
@@ -15,5 +14,5 @@ function Home() {
 
 );
     }
-    
+
     export default Home;
