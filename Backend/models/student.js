@@ -47,6 +47,24 @@ const achievement = new mongoose.Schema({
     conductedBy: { type:String, required:false},
 });
 
+const createPORSchema = (type) => {
+  return new mongoose.Schema({
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Student', // Reference the 'Student' model
+      required: true,
+    },
+    club: { type: String, required: true },
+    designation: { type: String, required: true },
+    session: { type: String, required: true },
+    type: {
+      type: String,
+      default: type,
+      immutable: true,
+    },
+  });
+};
+
 // const por = new mongoose.Schema({
 //     student : student,
 //     club: { type: String, required: true },
@@ -57,70 +75,10 @@ const achievement = new mongoose.Schema({
 //     discriminatorKey: 'type', // This is the field that will be used to determine the submodel
 // });
 
-const scitech_por = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Reference the 'Student' model
-        required: true,
-      },
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true},
-    type: {
-        type: String,
-        default: 'Scitech-POR', // Set the default value to 'scitech por'
-        immutable: true, // Mark the field as immutable
-      },
-});
-
-const cult_por = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Reference the 'Student' model
-        required: true,
-      },
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true},
-    type: {
-        type: String,
-        default: 'Cult-POR', // Set the default value to 'scitech por'
-        immutable: true, // Mark the field as immutable
-      },
-});
-
-const sport_por = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Reference the 'Student' model
-        required: true,
-      },
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true},
-    type: {
-        type: String,
-        default: 'Sport-POR', // Set the default value to 'scitech por'
-        immutable: true, // Mark the field as immutable
-      },
-});
-
-const acad_por = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Reference the 'Student' model
-        required: true,
-      },
-    club: { type:String, required:true},
-    designation: { type:String, required:true},
-    session: { type:String, required:true},
-    type: {
-        type: String,
-        default: 'Acad-POR', // Set the default value to 'scitech por'
-        immutable: true, // Mark the field as immutable
-      },
-});
-
+const scitech_por = createPORSchema('Scitech-POR');
+const cult_por = createPORSchema('Cult-POR');
+const sport_por = createPORSchema('Sport-POR');
+const acad_por = createPORSchema('Acad-POR');
 
 const Student = mongoose.model('Student', student);
 const ScietechPOR = mongoose.model('ScietechPOR',scitech_por);
