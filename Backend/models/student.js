@@ -65,6 +65,16 @@ const createPORSchema = (type) => {
   });
 };
 
+// const por = new mongoose.Schema({
+//     student : student,
+//     club: { type: String, required: true },
+//     designation: { type: String, required: true },
+//     session: { type: String, required: true },
+//     type: { type: String, required: true }, // Add a 'type' field to distinguish between types
+// }, {
+//     discriminatorKey: 'type', // This is the field that will be used to determine the submodel
+// });
+
 const scitech_por = createPORSchema('Scitech-POR');
 const cult_por = createPORSchema('Cult-POR');
 const sport_por = createPORSchema('Sport-POR');
