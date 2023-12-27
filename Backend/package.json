@@ -21,11 +21,10 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^3.1.2",
     "mongodb": "^6.1.0",
-    "morgan": "^1.10.0",
-
     "mongoose": "^7.6.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.2",
     "npm": "^10.2.0"
-
   },
   "devDependencies": {
     "cookie": "^0.5.0",
