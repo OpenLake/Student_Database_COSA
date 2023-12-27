@@ -1,34 +1,128 @@
-
 .Add_user {
-    background-color:#419197;
-    border: solid transparent;
-    border-radius: 16px;
-    border-width: 0 0 4px;
-    box-sizing: border-box;
-    color: white;
-    display: inline-block;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    line-height: 20px;
-    outline: none;
-    overflow: visible;
-    padding: 13px 16px;
-    text-align: center; 
-   vertical-align: middle;
-    margin-top: 10px;
-  }
-  .InputForm-card {
-    margin: 0 auto; 
-    width: 60%; 
-    padding: 20px; 
-  }
-  .submit_button{
-    width:100%;
-    background-color: #419197;
-    margin-top: 15px;
-    color: white;
-    outline: none;
-    border-radius: 8px;
-    font-size: 20px;
-  }
+  background-color: #419197;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-align: center;
+  transition: 200ms;
+  box-sizing: border-box;
+  border: 0;
+  color: white;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 2rem;
+}
+
+.Add_user:not(:disabled):hover,
+.Add_user:not(:disabled):focus,
+.submit_button:not(:disabled):hover,
+.submit_button:not(:disabled):focus {
+  outline: 0;
+  background: #60b5b9;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.Add_user:disabled,
+.submit_button:disabled {
+  filter: saturate(0.2) opacity(0.5);
+  -webkit-filter: saturate(0.2) opacity(0.5);
+  cursor: not-allowed;
+}
+
+.Add {
+  background-color: #28a745;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-align: center;
+  transition: 200ms;
+  box-sizing: border-box;
+  border: 0;
+  color: white;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 1rem 0;
+}
+
+.Remove {
+  background-color: #dc3545;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-align: center;
+  transition: 200ms;
+  box-sizing: border-box;
+  border: 0;
+  color: white;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 1rem 0;
+}
+
+.Add:not(:disabled):hover,
+.Add:not(:disabled):focus {
+  outline: 0;
+  background: #32c454;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.Remove:not(:disabled):hover,
+.Remove:not(:disabled):focus {
+  outline: 0;
+  background: #ec4758;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.Add:disabled,
+.Remove:disabled {
+  filter: saturate(0.2) opacity(0.5);
+  -webkit-filter: saturate(0.2) opacity(0.5);
+  cursor: not-allowed;
+}
+
+.InputForm-card {
+  margin: 0 auto;
+  width: 60%;
+  padding: 20px;
+  margin-top: 1rem;
+}
+
+.selectPORGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.selectPOR {
+  margin: 0.5rem 0 0 0;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+}
+
+.submit_button {
+  width: 100%;
+  background-color: #419197;
+  margin: 1rem 0 1rem 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-align: center;
+  transition: 200ms;
+  box-sizing: border-box;
+  border: 0;
+  color: white;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}

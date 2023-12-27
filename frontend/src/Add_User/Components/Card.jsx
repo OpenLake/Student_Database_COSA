@@ -1,31 +1,43 @@
-import './Add.css';
-import React, { Component } from 'react';
-import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Button, Row, Col, FormFeedback } from 'reactstrap';
+import "./Add.css";
+import React, { Component } from "react";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Row,
+  Col,
+  FormFeedback,
+} from "reactstrap";
 
 class InputForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: '',
+      name: "",
       ID_No: null,
-      Program: '',
-      discipline: '',
+      Program: "",
+      discipline: "",
       add_year: null,
       pos_res: [
         {
-          club: '',
-          designation: '',
-          session: '',
-          type: '',
+          club: "",
+          designation: "",
+          session: "",
+          type: "",
         },
       ],
       achievements: [
         {
-          under: '',
-          designation: '',
-          eventName: '',
-          conductedBy: '',
+          under: "",
+          designation: "",
+          eventName: "",
+          conductedBy: "",
         },
       ],
       isFormVisible: true, // Initially set to visible
@@ -35,21 +47,21 @@ class InputForm extends Component {
   handleInputChange = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
-  }
+  };
 
   handleAddPOR = () => {
     this.setState((prevState) => ({
       pos_res: [
         ...prevState.pos_res,
         {
-          club: '',
-          designation: '',
-          session: '',
-          type: '',
+          club: "",
+          designation: "",
+          session: "",
+          type: "",
         },
       ],
     }));
-  }
+  };
 
   handleRemovePOR = (index) => {
     this.setState((prevState) => {
@@ -57,7 +69,7 @@ class InputForm extends Component {
       pos_res.splice(index, 1);
       return { pos_res };
     });
-  }
+  };
 
   handlePORChange = (index, field, e) => {
     const { value } = e.target;
@@ -66,21 +78,21 @@ class InputForm extends Component {
       pos_res[index][field] = value;
       return { pos_res };
     });
-  }
+  };
 
   handleAddAchievement = () => {
     this.setState((prevState) => ({
       achievements: [
         ...prevState.achievements,
         {
-          under: '',
-          designation: '',
-          eventName: '',
-          conductedBy: '',
+          under: "",
+          designation: "",
+          eventName: "",
+          conductedBy: "",
         },
       ],
     }));
-  }
+  };
 
   handleRemoveAchievement = (index) => {
     this.setState((prevState) => {
@@ -88,7 +100,7 @@ class InputForm extends Component {
       achievements.splice(index, 1);
       return { achievements };
     });
-  }
+  };
 
   handleAchievementChange = (index, field, e) => {
     const { value } = e.target;
@@ -97,28 +109,28 @@ class InputForm extends Component {
       achievements[index][field] = value;
       return { achievements };
     });
-  }
+  };
 
   handleSubmit = async (event) => {
     event.preventDefault();
     const student = this.state;
     // console.log(student)
     try {
-      const url = 'http://localhost:8000/auth/add';
+      const url = "http://localhost:8000/auth/add";
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(student),
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (response.status === 201) {
-        console.log(response)
-        this.setState({isFormVisible: false})
+        console.log(response);
+        this.setState({ isFormVisible: false });
       } else {
-        throw new Error('Request failed');
+        throw new Error("Request failed");
       }
     } catch (error) {
       console.log(error);
@@ -126,7 +138,16 @@ class InputForm extends Component {
   };
 
   render() {
-    const { name, ID_No, Program, discipline, add_year, pos_res, achievements, isFormVisible } = this.state;
+    const {
+      name,
+      ID_No,
+      Program,
+      discipline,
+      add_year,
+      pos_res,
+      achievements,
+      isFormVisible,
+    } = this.state;
 
     if (!isFormVisible) {
       return <div>Student added Successfully</div>;
@@ -147,7 +168,7 @@ class InputForm extends Component {
                   value={name}
                   onChange={this.handleInputChange}
                   required
-                  invalid={!(/^[A-Za-z\s]*$/.test(name))}
+                  invalid={!/^[A-Za-z\s]*$/.test(name)}
                 />
                 <FormFeedback invalid>
                   Name must only contain alphabetic characters
@@ -159,6 +180,7 @@ class InputForm extends Component {
                   type="number"
                   name="ID_No"
                   id="ID_No"
+                  min={1}
                   value={ID_No}
                   onChange={this.handleInputChange}
                   required
@@ -212,7 +234,9 @@ class InputForm extends Component {
                         <Input
                           type="text"
                           value={por.club}
-                          onChange={(e) => this.handlePORChange(index, 'club', e)}
+                          onChange={(e) =>
+                            this.handlePORChange(index, "club", e)
+                          }
                           required
                         />
                       </FormGroup>
@@ -223,7 +247,9 @@ class InputForm extends Component {
                         <Input
                           type="text"
                           value={por.designation}
-                          onChange={(e) => this.handlePORChange(index, 'designation', e)}
+                          onChange={(e) =>
+                            this.handlePORChange(index, "designation", e)
+                          }
                           required
                         />
                       </FormGroup>
@@ -237,39 +263,44 @@ class InputForm extends Component {
                           type="text"
                           value={por.session}
                           required
-                          onChange={(e) => this.handlePORChange(index, 'session', e)}
+                          onChange={(e) =>
+                            this.handlePORChange(index, "session", e)
+                          }
                         />
                       </FormGroup>
                     </Col>
                     <Col>
-                      <FormGroup>
+                      <FormGroup className="selectPORGroup">
                         <Label>Type*</Label>
                         <select
                           value={por.type}
-                          onChange={(e) => this.handlePORChange(index, 'type', e)
+                          onChange={(e) =>
+                            this.handlePORChange(index, "type", e)
                           }
                           required
                           placeholder="select"
+                          className="selectPOR"
                         >
-                        <option value="AcademicPOR">Academics POR</option>
-                        <option value="ScitechPOR">Scitech POR</option>
-                        <option value="CulturalsOR">Culturals POR</option>
-                        <option value="SportsPOR">Sports POR</option>
+                          <option value="AcademicPOR">Academics POR</option>
+                          <option value="ScitechPOR">Scitech POR</option>
+                          <option value="CulturalsOR">Culturals POR</option>
+                          <option value="SportsPOR">Sports POR</option>
                         </select>
                       </FormGroup>
                     </Col>
-
                   </Row>
-                  <Button
-                    color="danger"
+                  <div></div>
+                  <button
+                    className="Remove"
                     onClick={() => this.handleRemovePOR(index)}
-                    style={{ marginTop: '10px' }}
                   >
                     Remove POR
-                  </Button>
+                  </button>
                 </div>
               ))}
-              <Button color="success" onClick={this.handleAddPOR}>Add POR</Button>
+              <button className="Add" onClick={(e) => this.handleAddPOR(e)}>
+                Add POR
+              </button>
 
               <CardTitle tag="h5">Achievements</CardTitle>
               {achievements.map((achievement, index) => (
@@ -282,7 +313,9 @@ class InputForm extends Component {
                           type="text"
                           value={achievement.under}
                           required
-                          onChange={(e) => this.handleAchievementChange(index, 'under', e)}
+                          onChange={(e) =>
+                            this.handleAchievementChange(index, "under", e)
+                          }
                         />
                       </FormGroup>
                     </Col>
@@ -292,7 +325,13 @@ class InputForm extends Component {
                         <Input
                           type="text"
                           value={achievement.designation}
-                          onChange={(e) => this.handleAchievementChange(index, 'designation', e)}
+                          onChange={(e) =>
+                            this.handleAchievementChange(
+                              index,
+                              "designation",
+                              e
+                            )
+                          }
                         />
                       </FormGroup>
                     </Col>
@@ -305,7 +344,9 @@ class InputForm extends Component {
                           type="text"
                           value={achievement.eventName}
                           required
-                          onChange={(e) => this.handleAchievementChange(index, 'eventName', e)}
+                          onChange={(e) =>
+                            this.handleAchievementChange(index, "eventName", e)
+                          }
                         />
                       </FormGroup>
                     </Col>
@@ -315,27 +356,34 @@ class InputForm extends Component {
                         <Input
                           type="text"
                           value={achievement.conductedBy}
-                          onChange={(e) => this.handleAchievementChange(index, 'conductedBy', e)}
+                          onChange={(e) =>
+                            this.handleAchievementChange(
+                              index,
+                              "conductedBy",
+                              e
+                            )
+                          }
                         />
                       </FormGroup>
                     </Col>
                   </Row>
-                  <Button
-                    color="danger"
+                  <button
+                    className="Remove"
                     onClick={() => this.handleRemoveAchievement(index)}
-                    style={{ marginTop: '10px' }}
                   >
                     Remove Achievement
-                  </Button>
+                  </button>
                 </div>
               ))}
-              <Button color="success" onClick={this.handleAddAchievement}>Add Achievement</Button>
+              <button className="Add" onClick={this.handleAddAchievement}>
+                Add Achievement
+              </button>
 
               <br></br>
-              <button className={'submit_button'} type="submit">
+              <button className={"submit_button"} type="submit">
                 Submit
               </button>
-              <p style={{color: 'red'}}>*All fields must be present</p>
+              <p style={{ color: "red" }}>*All fields must be present</p>
             </Form>
           </CardBody>
         </Card>

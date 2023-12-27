@@ -1,23 +1,23 @@
-import './App.css';
-import React, { useEffect, useState, createContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './Home';
-import AddUser from './AddUser';
-import Cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
+import "./App.css";
+import React, { useEffect, useState, createContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./Home";
+import AddUser from "./AddUser";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 
 const AdminContext = createContext();
 
 function App() {
   const [IsUserLoggedIn, setIsUserLoggedIn] = useState(() => {
     // Initialize the user's login status from localStorage
-    const storedStatus = localStorage.getItem('IsUserLoggedIn');
+    const storedStatus = localStorage.getItem("IsUserLoggedIn");
     return storedStatus ? JSON.parse(storedStatus) : false;
   });
 
   useEffect(() => {
     // Load credentials from cookies
-    const credentials = Cookies.get('credentials');
+    const credentials = Cookies.get("credentials");
 
     if (credentials) {
       // Check if the credentials are valid (e.g., email_verified)
@@ -30,7 +30,7 @@ function App() {
 
   useEffect(() => {
     // Update localStorage when IsUserLoggedIn changes
-    localStorage.setItem('IsUserLoggedIn', JSON.stringify(IsUserLoggedIn));
+    localStorage.setItem("IsUserLoggedIn", JSON.stringify(IsUserLoggedIn));
   }, [IsUserLoggedIn]);
 
   return (
@@ -40,13 +40,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/update"
-            element={
-              IsUserLoggedIn ? (
-                <AddUser />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
+            element={IsUserLoggedIn ? <AddUser /> : <Navigate to="/" replace />}
           />
         </Routes>
       </BrowserRouter>

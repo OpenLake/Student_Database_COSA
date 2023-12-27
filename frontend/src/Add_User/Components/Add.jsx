@@ -1,6 +1,6 @@
-import './Add.css';
-import React, { Component } from 'react';
-import Card from './Card'; // Import the Card component
+import "./Add.css";
+import React, { Component } from "react";
+import Card from "./Card"; // Import the Card component
 
 class Add extends Component {
   constructor(props) {
@@ -16,15 +16,13 @@ class Add extends Component {
       isCardVisible: !prevState.isCardVisible,
     }));
   };
-  
-  
-
 
   render() {
     return (
-      <div style={{ textAlign: "center", margin: "10px"}}>
-        
-        <button onClick={this.toggleCardVisibility}  className={'Add_user'}>Add User</button>
+      <div style={{ textAlign: "center", margin: "10px" }}>
+        <button onClick={this.toggleCardVisibility} className={"Add_user"}>
+          Add User
+        </button>
         {this.state.isCardVisible && <Card />}
       </div>
     );
