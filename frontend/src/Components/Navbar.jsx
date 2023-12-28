@@ -1,6 +1,8 @@
 import { GoogleLogin } from '@react-oauth/google';
 import React, { useContext } from 'react';
+import { Button, Form, Row, Col } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import Search from './Search';
 import { AdminContext } from '../App';
 import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
@@ -26,10 +28,10 @@ function Navbar() {
   };
 
   return (
-    <div style={{ background: '#419197', padding: '5px', textAlign: 'center' }}>
-      <p style={{ color: 'white' }}>Navbar</p>
+    <Row xs="2" className='bg-success p-2'>
+      <Col>
       {IsUserLoggedIn ? (
-        <p>User is authenticated</p>
+        <p className='text-light'>User is authenticated</p>
       ) : (
         <GoogleLogin
           onSuccess={responseGoogle}
@@ -38,7 +40,12 @@ function Navbar() {
           useOneTap
         />
       )}
-    </div>
+      </Col>
+      <Col>
+        <Search IsUserLoggedIn={IsUserLoggedIn}/>
+      </Col>
+      
+    </Row>
   );
 }
 
