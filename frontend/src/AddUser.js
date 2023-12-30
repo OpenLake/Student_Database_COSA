@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import React from 'react';
 import Cookies from 'js-cookie';
-import Search from './Components/Search';
+
 function AddUser() {
   const navigate = useNavigate();
   // const location = useLocation();
@@ -20,11 +20,10 @@ function AddUser() {
   }
 
   return (
-    <div style={{ padding: "10px" }}>
+    <div>
 
 
       <Navbar />
-      <Search IsUserLoggedIn={true}/>
 
       <Add/>
 

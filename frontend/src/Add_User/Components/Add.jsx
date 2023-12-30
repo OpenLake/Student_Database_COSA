@@ -1,5 +1,6 @@
 import './Add.css';
 import React, { Component } from 'react';
+import { Modal } from 'reactstrap';
 import Card from './Card'; // Import the Card component
 
 class Add extends Component {
@@ -25,7 +26,10 @@ class Add extends Component {
       <div style={{ textAlign: "center", margin: "10px"}}>
         
         <button onClick={this.toggleCardVisibility}  className={'Add_user'}>Add User</button>
-        {this.state.isCardVisible && <Card />}
+        {/* {this.state.isCardVisible && } */}
+        <Modal isOpen={this.state.isCardVisible} toggle={this.toggleCardVisibility} size={'lg'}>
+          <Card />
+        </Modal>
       </div>
     );
   }
