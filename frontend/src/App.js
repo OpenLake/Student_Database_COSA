@@ -37,7 +37,15 @@ function App() {
     <AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              IsUserLoggedIn ? (
+                <Navigate to="/update" replace />
+              ) : (
+                <Home />
+              )
+            } />
           <Route
             path="/update"
             element={
