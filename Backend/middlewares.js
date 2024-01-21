@@ -10,8 +10,8 @@ exports.restrictToPresident = async function (req, res, next) {
   try {
     console.log(req.cookies)
     const jwtToken = req.cookies.credentials;
-    // const user = JSON.parse(req.headers['user-details']);
-    const decoded = jwt_decode(jwtToken);;
+    const user = JSON.parse(req.headers['user-details']);
+    const decoded = jwt_decode(jwtToken);
     console.log(decoded)
     if (!jwtToken) {
       return res
