@@ -5,39 +5,36 @@
   const { restrictToPresident, restrictToAdmin } = require("../middlewares");
   const  {Student,ScietechPOR,CultPOR,SportsPOR,AcadPOR} = require("../models/student");
 
-  router.get('/', restrictToPresident, function(req, res) {
-
-      try{
-        const jwtToken = req.cookies.credentials;
+  router.get('/',  function (req, res) {
+    try {
+      const jwtToken = req.cookies.credentials;
       const user = JSON.parse(req.headers['user-details']);
       const decoded = jwt_decode(jwtToken);
-
+  
       const { username, password } = req.DB_credentials;
-      `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;;
+      const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
       mongoose.connect(dbUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
       })
-      .then(async () => {
-      console.log('Connected to MongoDB234');
-      console.log("done");
-      return res
-      .status(201)
-      .json({ success: true, message: "Student Added Successfully" });
-      })
-      .catch((error) => {
-      console.error('MongoDB connection error:', error);
-      })
-
-  } catch(error){
-    return res
-    .json({ success: false, message: "internal sever error" });
-  }
+        .then(async () => {
+          console.log('Connected to MongoDB234');
+          console.log("done");
+          return res
+            .status(201)
+            .json({ success: true, message: "Student Added Successfully" });
+        })
+        .catch((error) => {
+          console.error('MongoDB connection error:', error);
+          return res.status(500).json({ success: false, message: "MongoDB connection error" });
+        });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-  );
+  });
 
-
-  router.post('/add', restrictToPresident, async (req, res) => {
+  router.post('/add', async (req, res) => {
 
     try {
       const jwtToken = req.cookies.credentials;
@@ -121,7 +118,7 @@
   });
 
 
-  router.post('/remove', restrictToPresident, async (req, res) => {
+  router.post('/remove',  async (req, res) => {
     try {
 
       const jwtToken = req.cookies.credentials;
@@ -152,7 +149,7 @@
   });
 
 
-  router.post('/update', restrictToAdmin, async (req, res) => {
+  router.post('/update',  async (req, res) => {
     
     try {   
       const decoded = req.decoded;

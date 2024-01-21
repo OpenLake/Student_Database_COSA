@@ -1,33 +1,43 @@
 const express = require("express");
+const passport = require("../models/passportConfig");
 const router = express.Router();
-const  {Student,ScietechPOR,CultPOR,SportsPOR,AcadPOR} = require("../models/student");
-const {connectDB, closeDB } = require("../db")
+const { User } = require("../models/student");
 
-  router.post('/fetch', async (req, res) => {
-    try {
-        await connectDB()
-        
-        const student = await Student.findOne({ID_No:req.body.student_ID});
-        console.log(student);
-        const scitechPor = await ScietechPOR.find({student:student});
-        const cultPor = await CultPOR.find({student:student});
-        const sportPor = await SportsPOR.find({student:student});
-        const acadPor= await AcadPOR.find({student:student});
-        const PORs = [...scitechPor, ...cultPor, ...sportPor, ...acadPor];     
-        closeDB()
-        const st = {
-          student:student,
-          PORS: PORs
-        }
-        return res.status(200).json(st);
-      } catch (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, message: "process failed" });
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists." });
+    }
+
+    // Create a new user
+    const newUser = new User({ email });
+    await newUser.setPassword(password);
+    await newUser.save();
+
+    // Authenticate the user and redirect to a protected route
+    req.login(newUser, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal Server Error" });
       }
-  });
+      return res
+        .status(201)
+        .json({ message: "Registration successful", user: newUser });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
-
-
+router.post("/login", passport.authenticate("local"), (req, res) => {
+  // If authentication is successful, this function will be called
+  res.status(200).json({ message: "Login successful", user: req.user });
+});
 
 
 module.exports = router;

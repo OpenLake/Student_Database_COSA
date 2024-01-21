@@ -1,4 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose");
+var findOrCreate = require("mongoose-findorcreate");
+
+const userSchema = new mongoose.Schema({
+  // Define your user schema fields here
+  email: String,
+  password: String,
+  // ... other fields
+});
+
+userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
+
+
+
+
 
 
 // Define submodels for different 'pos_res' types
@@ -65,25 +81,17 @@ const createPORSchema = (type) => {
   });
 };
 
-// const por = new mongoose.Schema({
-//     student : student,
-//     club: { type: String, required: true },
-//     designation: { type: String, required: true },
-//     session: { type: String, required: true },
-//     type: { type: String, required: true }, // Add a 'type' field to distinguish between types
-// }, {
-//     discriminatorKey: 'type', // This is the field that will be used to determine the submodel
-// });
+
 
 const scitech_por = createPORSchema('Scitech-POR');
 const cult_por = createPORSchema('Cult-POR');
 const sport_por = createPORSchema('Sport-POR');
 const acad_por = createPORSchema('Acad-POR');
-
+const User = mongoose.model("user", userSchema);
 const Student = mongoose.model('Student', student);
 const ScietechPOR = mongoose.model('ScietechPOR',scitech_por);
 const CultPOR = mongoose.model('CultPOR', cult_por);
 const SportsPOR = mongoose.model('SportSPOR',sport_por);
 const AcadPOR = mongoose.model('AcadPOR',acad_por);
 const Achievement = mongoose.model('Achievement',achievement);
-module.exports = {Student,ScietechPOR,CultPOR,SportsPOR,AcadPOR,Achievement};
+module.exports = {Student,ScietechPOR,CultPOR,SportsPOR,AcadPOR,Achievement,User};

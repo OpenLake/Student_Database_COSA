@@ -3,6 +3,8 @@ const { decode } = require("jsonwebtoken");
 const Admin = require("./models/Admin");
 const jwt_decode = require('jwt-decode');
 
+
+
 exports.restrictToPresident = async function (req, res, next) {
   
   try {
@@ -114,3 +116,14 @@ exports.restrictToAdmin = async function (req, res, next) {
     .json({ success: false, message: "internal sever error" });
 }
 };
+const isAuthenticated = (req, res, next) => {
+  // Your authentication logic goes here
+  // For example, check if the user is authenticated
+  if (req.isAuthenticated()) {
+    return next(); // User is authenticated, proceed to the next middleware
+  } else {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
+module.exports = isAuthenticated;
