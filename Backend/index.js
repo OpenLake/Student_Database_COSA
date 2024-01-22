@@ -1,5 +1,4 @@
-/* eslint-env es6 */
-/* eslint-disable */
+
 const express = require("express");
 const app = express();
 const routes_auth = require("./routes/auth");
