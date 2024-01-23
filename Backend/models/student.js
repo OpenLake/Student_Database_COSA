@@ -3,11 +3,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 var findOrCreate = require("mongoose-findorcreate");
 
 const userSchema = new mongoose.Schema({
-  // Define your user schema fields here
   name: String,
-  email: String,
-  password: String,
-  // ... other fields
 });
 
 userSchema.plugin(passportLocalMongoose);

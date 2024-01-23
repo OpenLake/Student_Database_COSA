@@ -13,6 +13,17 @@ const {
 } = require("../models/student");
 const passport = require("../models/passportConfig");
 
+// Session Status
+router.get("/fetchAuth", function (req, res) {
+  if (req.isAuthenticated()) {
+    console.log("user:", req.session);
+    res.json(req.isAuthenticated());
+  } else {
+    console.log("naaaa", req.isAuthenticated());
+    res.json(null);
+  }
+});
+
 // Local Authentication
 router.post("/login", passport.authenticate("local"), (req, res) => {
   // If authentication is successful, this function will be called
@@ -20,34 +31,26 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    // Check if the user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists." });
-    }
-
-    // Create a new user
-    const newUser = new User({ name, email });
-    await newUser.setPassword(password);
-    await newUser.save();
-
-    // Authenticate the user and redirect to a protected route
-    req.login(newUser, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Internal Server Error" });
-      }
-      return res
-        .status(201)
-        .json({ message: "Registration successful", user: newUser });
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+  const existingUser = await User.findOne({ username: email });
+  if (existingUser) {
+    return res.status(400).json({ message: "User already exists." });
   }
+
+  const newUser = await User.register(
+    new User({ name: name, username: email }),
+    password,
+  );
+  req.login(newUser, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+    return res
+      .status(201)
+      .json({ message: "Registration successful", user: newUser });
+  });
 });
 
 // Google OAuth Authentication
