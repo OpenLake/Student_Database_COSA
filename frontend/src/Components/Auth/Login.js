@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
+import { loginUser } from "../../services/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setIsUserLoggedIn } = useContext(AdminContext);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission here
-    console.log(`Email: ${email}, Password: ${password}`);
+    const status = await loginUser(email, password);
+    if (status) {
+      setIsUserLoggedIn(true);
+    }
   };
 
   return (

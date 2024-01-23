@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
+import { registerUser } from "../../services/auth";
 
 function Register() {
   const [name, setName] = useState("");
@@ -9,7 +10,7 @@ function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(`Email: ${email}, Password: ${password}`);
+    registerUser(name, email, password);
   };
 
   return (
