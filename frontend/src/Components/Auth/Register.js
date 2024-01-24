@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
 import { registerUser } from "../../services/auth";
@@ -7,10 +8,13 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setIsUserLoggedIn } = useContext(AdminContext);
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    registerUser(name, email, password);
+    const status = registerUser(name, email, password);
+    if (status) {
+      setIsUserLoggedIn(true);
+    }
   };
 
   return (
@@ -80,9 +84,11 @@ function Register() {
             <hr style={{ width: "40%" }} />
           </div>
           <FormGroup className="text-center">
-            <Button type="submit" style={{ width: "100%" }} color="primary">
-              Sign in with Google <GoogleIcon />
-            </Button>
+            <a href="http://localhost:8000/auth/google">
+              <Button type="button" style={{ width: "100%" }} color="primary">
+                Sign up with Google <GoogleIcon />
+              </Button>
+            </a>
           </FormGroup>
           <FormGroup className="text-center">
             <Label>

@@ -29,6 +29,10 @@ app.use(
 app.use(myPassport.initialize());
 app.use(myPassport.session());
 
+app.get("/", (_req, res) => {
+  res.redirect("http://localhost:3000");
+});
+
 // Mount your route handlers
 app.use("/", routes_general);
 app.use("/auth", routes_auth);

@@ -73,9 +73,11 @@ function Login() {
             <hr style={{ width: "40%" }} />
           </div>
           <FormGroup className="text-center">
-            <Button type="submit" style={{ width: "100%" }} color="primary">
-              Sign in with Google <GoogleIcon />
-            </Button>
+            <a href="http://localhost:8000/auth/google">
+              <Button type="button" style={{ width: "100%" }} color="primary">
+                Sign in with Google <GoogleIcon />
+              </Button>
+            </a>
           </FormGroup>
           <FormGroup className="text-center">
             <Label>
