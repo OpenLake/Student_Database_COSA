@@ -4,7 +4,6 @@ export async function fetchCredentials() {
   const response = await axios.get("http://localhost:8000/auth/fetchAuth", {
     withCredentials: true,
   });
-  console.log(response);
   return response.data;
 }
 
@@ -22,17 +21,21 @@ export async function registerUser(name, email, password) {
     headers: {
       "Content-Type": "application/json",
     },
+    withCredentials: true,
     data: data,
   };
 
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  try {
+    const response = await axios.request(config);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function loginUser(email, password) {
@@ -48,15 +51,14 @@ export async function loginUser(email, password) {
     headers: {
       "Content-Type": "application/json",
     },
+    withCredentials: true,
     data: data,
   };
 
   try {
     const response = await axios.request(config);
-    console.log(JSON.stringify(response.data));
 
     if (response.status === 200) {
-      console.log(response.data);
       return response.data;
     } else {
       return null;

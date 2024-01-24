@@ -10,12 +10,11 @@ import { fetchCredentials } from "./services/auth";
 const AdminContext = createContext();
 
 function App() {
-  const [IsUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [IsUserLoggedIn, setIsUserLoggedIn] = useState();
   useEffect(() => {
     fetchCredentials().then((User) => {
-      console.log(User);
       if (User) {
-        setIsUserLoggedIn(true);
+        setIsUserLoggedIn(User);
       }
     });
   }, []);

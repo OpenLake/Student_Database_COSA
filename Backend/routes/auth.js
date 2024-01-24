@@ -1,4 +1,3 @@
-// const jwt_decode = require('jwt-decode');
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -16,10 +15,8 @@ const passport = require("../models/passportConfig");
 // Session Status
 router.get("/fetchAuth", function (req, res) {
   if (req.isAuthenticated()) {
-    console.log("user:", req.session);
-    res.json(req.isAuthenticated());
+    res.json(req.user);
   } else {
-    console.log("naaaa", req.isAuthenticated());
     res.json(null);
   }
 });
@@ -60,11 +57,10 @@ router.get(
 );
 
 router.get(
-  "/google/callback",
+  "/google/verify",
   passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    // Successful authentication, redirect to a success page
-    res.redirect("/success");
+  (_req, res) => {
+    res.redirect("/");
   },
 );
 
