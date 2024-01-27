@@ -1,63 +1,47 @@
-import './App.css';
-import React, { useEffect, useState, createContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './Home';
-import AddUser from './AddUser';
-import Cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
+import "./App.css";
+import React, { useEffect, useState, createContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+// import Home from './Home';
+import AddUser from "./AddUser";
+import Login from "./Components/Auth/Login";
+import Register from "./Components/Auth/Register";
+import { fetchCredentials } from "./services/auth";
 
 const AdminContext = createContext();
 
 function App() {
-  const [IsUserLoggedIn, setIsUserLoggedIn] = useState(() => {
-    // Initialize the user's login status from localStorage
-    const storedStatus = localStorage.getItem('IsUserLoggedIn');
-    return storedStatus ? JSON.parse(storedStatus) : false;
-  });
-
+  const [IsUserLoggedIn, setIsUserLoggedIn] = useState();
   useEffect(() => {
-    // Load credentials from cookies
-    const credentials = Cookies.get('credentials');
-
-    if (credentials) {
-      // Check if the credentials are valid (e.g., email_verified)
-      const decoded = jwtDecode(credentials);
-      if (decoded.email_verified) {
-        setIsUserLoggedIn(true);
+    fetchCredentials().then((User) => {
+      if (User) {
+        setIsUserLoggedIn(User);
       }
-    }
+    });
   }, []);
 
-  useEffect(() => {
-    // Update localStorage when IsUserLoggedIn changes
-    localStorage.setItem('IsUserLoggedIn', JSON.stringify(IsUserLoggedIn));
-  }, [IsUserLoggedIn]);
+  // Routing
+  let routes;
+  if (IsUserLoggedIn) {
+    routes = (
+      <Routes>
+        <Route path="/" element={<AddUser />} />
+        {/* <Route path='/logout' element={<Logout/>} /> */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  } else {
+    routes = (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
 
   return (
     <AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              IsUserLoggedIn ? (
-                <Navigate to="/update" replace />
-              ) : (
-                <Home />
-              )
-            } />
-          <Route
-            path="/update"
-            element={
-              IsUserLoggedIn ? (
-                <AddUser />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <BrowserRouter>{routes}</BrowserRouter>
     </AdminContext.Provider>
   );
 }

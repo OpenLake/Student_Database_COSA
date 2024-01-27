@@ -10,10 +10,16 @@
     "dev": "nodemon index.js"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix", "prettier --write"]
+    "*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "eslintConfig": {
-    "extends": ["eslint:recommended", "plugin:node/recommended"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:node/recommended"
+    ],
     "env": {
       "node": true,
       "es6": true
@@ -25,27 +31,32 @@
     "axios": "^1.5.1",
     "body-parser": "^1.20.2",
     "connect-mongodb-session": "^3.1.1",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.3.2",
     "eslint-plugin-react": "^7.33.2",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^3.1.2",
     "mongodb": "^6.1.0",
-    "mongoose": "^7.6.3",
+    "mongoose": "^7.6.8",
+    "mongoose-findorcreate": "^4.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.2",
-    "npm": "^10.2.0"
+    "npm": "^10.2.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^8.0.0"
   },
   "devDependencies": {
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "parser": "^0.1.4",
     "eslint": "^8.56.0",
     "eslint-plugin-node": "^11.1.0",
+    "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.1.1",
-    "husky": "^8.0.3"
+    "parser": "^0.1.4",
+    "prettier": "^3.1.1"
   }
 }
