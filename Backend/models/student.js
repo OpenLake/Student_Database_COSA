@@ -3,7 +3,18 @@ const passportLocalMongoose = require("passport-local-mongoose");
 var findOrCreate = require("mongoose-findorcreate");
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
+  ID_No: {
+    type: Number,
+  },
+  strategy: {
+    type: String,
+    enum: ["local", "google"],
+    required: true,
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);

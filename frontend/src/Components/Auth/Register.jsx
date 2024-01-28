@@ -2,16 +2,17 @@ import React, { useState, useContext } from "react";
 import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
-import { loginUser } from "../../services/auth";
+import { registerUser } from "../../services/auth";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
+  const [ID, setId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsUserLoggedIn } = useContext(AdminContext);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const status = await loginUser(email, password);
+    const status = await registerUser(name, ID, email, password);
     if (status) {
       setIsUserLoggedIn(true);
     }
@@ -23,7 +24,7 @@ function Login() {
       style={{ height: "100vh" }}
     >
       <img
-        src="Logo_of_IIT_Bhilai.png"
+        src="/Logo_of_IIT_Bhilai.png"
         width={100}
         alt="IIT-Bhilai-Logo"
         style={{ position: "relative", bottom: 20 }}
@@ -31,7 +32,28 @@ function Login() {
       <Container className="d-flex justify-content-center align-items-center">
         <Form onSubmit={handleSubmit} style={{ width: "30%" }}>
           <FormGroup className="text-center">
-            <h2>Login</h2>
+            <h2>Register</h2>
+          </FormGroup>
+          <FormGroup>
+            <Label for="name">Details</Label>
+            <Input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Input
+              type="number"
+              name="ID"
+              id="ID_No"
+              placeholder="Student ID"
+              value={ID}
+              onChange={(e) => setId(e.target.value)}
+            />
           </FormGroup>
           <FormGroup>
             <Label for="email">Email</Label>
@@ -45,7 +67,7 @@ function Login() {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="password">Password</Label>
+            <Label for="password">Create Password</Label>
             <Input
               type="password"
               name="password"
@@ -57,7 +79,7 @@ function Login() {
           </FormGroup>
           <FormGroup className="text-center">
             <Button type="submit" style={{ width: "100%" }} color="success">
-              Login
+              Register
             </Button>
           </FormGroup>
           <div
@@ -75,13 +97,13 @@ function Login() {
           <FormGroup className="text-center">
             <a href="http://localhost:8000/auth/google">
               <Button type="button" style={{ width: "100%" }} color="primary">
-                Sign in with Google <GoogleIcon />
+                Sign up with Google <GoogleIcon />
               </Button>
             </a>
           </FormGroup>
           <FormGroup className="text-center">
             <Label>
-              Don't have an Account? <a href="/register">Register</a>
+              Already have an Account? <a href="/login">Login</a>
             </Label>
           </FormGroup>
         </Form>
@@ -90,4 +112,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

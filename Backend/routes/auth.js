@@ -28,7 +28,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, ID, email, password } = req.body;
 
   const existingUser = await User.findOne({ username: email });
   if (existingUser) {
@@ -36,7 +36,7 @@ router.post("/register", async (req, res) => {
   }
 
   const newUser = await User.register(
-    new User({ name: name, username: email }),
+    new User({ name: name, strategy: "local", ID_No: ID, username: email }),
     password,
   );
   req.login(newUser, (err) => {
@@ -59,10 +59,52 @@ router.get(
 router.get(
   "/google/verify",
   passport.authenticate("google", { failureRedirect: "/" }),
-  (_req, res) => {
-    res.redirect("/");
+  (req, res) => {
+    if (!req.user.ID_No) {
+      res.redirect("/auth/google/addId");
+    } else {
+      res.redirect("/");
+    }
   },
 );
+
+router.get("/google/addId", (req, res) => {
+  // TODO: Find a more secure url
+  res.redirect(`http://localhost:3000/register/google/${req.user._id}`);
+});
+
+router.post("/google/register", async (req, res) => {
+  const { id, ID_No } = req.body;
+  console.log(req.user);
+
+  if (id == req.user.id) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.user.id },
+        { ID_No: ID_No },
+        { new: true },
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Serialize the updated user into the session
+      req.login(user, function (err) {
+        if (err) {
+          console.error("Error serializing user:", err);
+          return res.status(500).json({ message: "Error serializing user" });
+        }
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Error updating user" });
+    }
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
 
 router.post("/logout", (req, res, next) => {
   req.logout(function (err) {

@@ -2,18 +2,18 @@ import React, { useState, useContext } from "react";
 import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
-import { registerUser } from "../../services/auth";
+import { loginUser } from "../../services/auth";
 
-function Register() {
-  const [name, setName] = useState("");
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsUserLoggedIn } = useContext(AdminContext);
 
-  const handleSubmit = (event) => {
-    const status = registerUser(name, email, password);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const status = await loginUser(email, password);
     if (status) {
-      setIsUserLoggedIn(true);
+      setIsUserLoggedIn(status);
     }
   };
 
@@ -23,7 +23,7 @@ function Register() {
       style={{ height: "100vh" }}
     >
       <img
-        src="Logo_of_IIT_Bhilai.png"
+        src="/Logo_of_IIT_Bhilai.png"
         width={100}
         alt="IIT-Bhilai-Logo"
         style={{ position: "relative", bottom: 20 }}
@@ -31,18 +31,7 @@ function Register() {
       <Container className="d-flex justify-content-center align-items-center">
         <Form onSubmit={handleSubmit} style={{ width: "30%" }}>
           <FormGroup className="text-center">
-            <h2>Register</h2>
-          </FormGroup>
-          <FormGroup>
-            <Label for="name">Name</Label>
-            <Input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <h2>Login</h2>
           </FormGroup>
           <FormGroup>
             <Label for="email">Email</Label>
@@ -68,7 +57,7 @@ function Register() {
           </FormGroup>
           <FormGroup className="text-center">
             <Button type="submit" style={{ width: "100%" }} color="success">
-              Register
+              Login
             </Button>
           </FormGroup>
           <div
@@ -86,13 +75,13 @@ function Register() {
           <FormGroup className="text-center">
             <a href="http://localhost:8000/auth/google">
               <Button type="button" style={{ width: "100%" }} color="primary">
-                Sign up with Google <GoogleIcon />
+                Sign in with Google <GoogleIcon />
               </Button>
             </a>
           </FormGroup>
           <FormGroup className="text-center">
             <Label>
-              Already have an Account? <a href="/login">Login</a>
+              Don't have an Account? <a href="/register">Register</a>
             </Label>
           </FormGroup>
         </Form>
@@ -101,4 +90,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
