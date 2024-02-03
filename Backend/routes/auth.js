@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
   req.login(newUser, (err) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(400).json({ message: "Bad request." });
     }
     return res
       .status(200)
