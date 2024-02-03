@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const secretKey = "your-secret-key"; // replace with your own secret key
+
 const { restrictToPresident, restrictToAdmin } = require("../middlewares");
 const {
   Student,
@@ -45,7 +48,7 @@ router.post("/register", async (req, res) => {
       return res.status(500).json({ message: "Internal Server Error" });
     }
     return res
-      .status(201)
+      .status(200)
       .json({ message: "Registration successful", user: newUser });
   });
 });
@@ -69,13 +72,23 @@ router.get(
 );
 
 router.get("/google/addId", (req, res) => {
-  // TODO: Find a more secure url
-  res.redirect(`http://localhost:3000/register/google/${req.user._id}`);
+  const token = jwt.sign({ id: req.user._id }, secretKey);
+
+  res.redirect(`http://localhost:3000/register/google/${token}`);
 });
 
 router.post("/google/register", async (req, res) => {
-  const { id, ID_No } = req.body;
-  console.log(req.user);
+  const { token, ID_No } = req.body;
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secretKey);
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    return res.status(400).json({ message: "Invalid token" });
+  }
+
+  const id = decoded.id;
 
   if (id == req.user.id) {
     try {
@@ -151,13 +164,15 @@ router.get("/", restrictToPresident, function (req, res) {
   }
 });
 
-router.post("/add", restrictToPresident, async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     // const jwtToken = req.cookies.credentials;
     // const user = JSON.parse(req.headers['user-details']);
     // const decoded = jwt_decode(jwtToken);
 
-    const { username, password } = req.DB_credentials;
+    // in production DB_credentials will be stored as environment variable instead of in the request
+    // const { username, password } = req.DB_credentials;
+
     const student = new Student({
       name: req.body.name,
       ID_No: req.body.ID_No,
@@ -168,7 +183,8 @@ router.post("/add", restrictToPresident, async (req, res) => {
     });
     const pors = req.body.pos_res;
 
-    const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+    // using local db for testing, in production
+    const dbUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
     mongoose
       .connect(dbUri, {
         useNewUrlParser: true,

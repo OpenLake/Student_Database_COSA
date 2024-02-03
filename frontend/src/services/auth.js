@@ -71,7 +71,7 @@ export async function loginUser(email, password) {
 
 export async function registerStudentId(id, ID_No) {
   const data = JSON.stringify({
-    id: id,
+    token: id,
     ID_No: ID_No,
   });
 

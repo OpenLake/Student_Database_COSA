@@ -12,6 +12,7 @@ function Register() {
   const { setIsUserLoggedIn } = useContext(AdminContext);
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     const status = await registerUser(name, ID, email, password);
     if (status) {
       setIsUserLoggedIn(true);
