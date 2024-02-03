@@ -112,7 +112,7 @@ router.post("/google/register", async (req, res) => {
       res.status(200).json(user);
     } catch (error) {
       console.error("Error updating user:", error);
-      res.status(500).json({ message: "Error updating user" });
+      res.status(400).json({ message: "Error updating user" });
     }
   } else {
     res.status(401).send("Unauthorized");
