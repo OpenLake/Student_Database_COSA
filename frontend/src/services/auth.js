@@ -30,7 +30,7 @@ export async function registerUser(name, ID, email, password) {
     const response = await axios.request(config);
 
     if (response.status === 200) {
-      return response.data;
+      return response.data.user;
     } else {
       return null;
     }
@@ -60,7 +60,7 @@ export async function loginUser(email, password) {
     const response = await axios.request(config);
 
     if (response.status === 200) {
-      return response.data;
+      return response.data.user;
     } else {
       return null;
     }

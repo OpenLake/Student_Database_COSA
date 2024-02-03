@@ -6,7 +6,7 @@ import { AdminContext } from "../App";
 import { logoutUser } from "../services/auth";
 
 function Navbar({ setStudentDetails }) {
-  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
+  const { setIsUserLoggedIn } = useContext(AdminContext);
   const navigate = useNavigate();
 
   return (
@@ -17,10 +17,7 @@ function Navbar({ setStudentDetails }) {
         </span>
       </Col>
       <Col xs="4" className="d-flex justify-content-center">
-        <Search
-          IsUserLoggedIn={IsUserLoggedIn}
-          setStudentDetails={setStudentDetails}
-        />
+        <Search setStudentDetails={setStudentDetails} />
       </Col>
       <Col xs="4" className="d-flex justify-content-end">
         <Button

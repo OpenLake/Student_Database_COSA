@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Input } from "reactstrap";
 import { Button, Form, Row, Col } from "reactstrap";
-function Search({ IsUserLoggedIn, setStudentDetails }) {
+import { fetchStudent } from "../services/utils";
+function Search({ setStudentDetails }) {
   const [student_ID, setStudentID] = useState();
 
   const onChangestudentID = (e) => {
@@ -13,28 +14,8 @@ function Search({ IsUserLoggedIn, setStudentDetails }) {
     if (!student_ID) {
       return;
     }
-    try {
-      const url = "http://localhost:8000/fetch";
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ student_ID }),
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        setStudentDetails(data);
-        console.log(data);
-      } else {
-        throw new Error("Request failed");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await fetchStudent(student_ID);
+    setStudentDetails(data);
   };
 
   return (

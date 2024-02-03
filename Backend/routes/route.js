@@ -11,6 +11,13 @@ const {
 router.post("/fetch", async (req, res) => {
   try {
     const student = await Student.findOne({ ID_No: req.body.student_ID });
+
+    if (!student) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Student not found" });
+    }
+
     const scitechPor = await ScietechPOR.find({ student: student });
     const cultPor = await CultPOR.find({ student: student });
     const sportPor = await SportsPOR.find({ student: student });
