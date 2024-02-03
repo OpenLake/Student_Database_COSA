@@ -106,7 +106,7 @@ router.post("/google/register", async (req, res) => {
       req.login(user, function (err) {
         if (err) {
           console.error("Error serializing user:", err);
-          return res.status(500).json({ message: "Error serializing user" });
+          return res.status(400).json({ message: "Error serializing user" });
         }
       });
       res.status(200).json(user);
