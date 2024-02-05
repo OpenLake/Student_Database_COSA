@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 // eslint-disable-next-line node/no-unpublished-require
 const cors = require("cors");
 const routes_auth = require("./routes/auth");
@@ -8,10 +9,8 @@ const bodyParser = require("body-parser");
 const { connectDB } = require("./db");
 const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
 
-require("dotenv").config();
-
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 // Connect to MongoDB
 connectDB();
@@ -30,7 +29,7 @@ app.use(myPassport.initialize());
 app.use(myPassport.session());
 
 app.get("/", (_req, res) => {
-  res.redirect("http://localhost:3000");
+  res.redirect(process.env.FRONTEND_URL);
 });
 
 // Mount your route handlers

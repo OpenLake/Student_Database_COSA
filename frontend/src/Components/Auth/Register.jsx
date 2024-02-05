@@ -96,7 +96,7 @@ function Register() {
             <hr style={{ width: "40%" }} />
           </div>
           <FormGroup className="text-center">
-            <a href="http://localhost:8000/auth/google">
+            <a href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}>
               <Button type="button" style={{ width: "100%" }} color="primary">
                 Sign up with Google <GoogleIcon />
               </Button>

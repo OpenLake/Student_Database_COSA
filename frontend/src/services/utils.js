@@ -1,6 +1,6 @@
 export async function fetchStudent(student_ID) {
   try {
-    const url = "http://localhost:8000/fetch";
+    const url = `${process.env.REACT_APP_BACKEND_URL}/fetch`;
     const response = await fetch(url, {
       method: "POST",
       headers: {

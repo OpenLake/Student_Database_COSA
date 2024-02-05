@@ -20,7 +20,7 @@ passport.use(
       clientID:
         "468147803346-55rcefrkn5d8ecv0oemb8ppff86mcfvk.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "http://localhost:8000/auth/google/verify", // Update with your callback URL
+      callbackURL: `${process.env.BACKEND_URL}/auth/google/verify`, // Update with your callback URL
     },
     async (accessToken, refreshToken, profile, done) => {
       // Check if the user already exists in your database

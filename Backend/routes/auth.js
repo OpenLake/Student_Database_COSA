@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const secretKey = "your-secret-key"; // replace with your own secret key
+const secretKey = process.env.JWT_SECRET_TOKEN;
 
 const { restrictToPresident, restrictToAdmin } = require("../middlewares");
 const {
@@ -74,7 +74,7 @@ router.get(
 router.get("/google/addId", (req, res) => {
   const token = jwt.sign({ id: req.user._id }, secretKey);
 
-  res.redirect(`http://localhost:3000/register/google/${token}`);
+  res.redirect(`${process.env.FRONTEND_URL}/register/google/${token}`);
 });
 
 router.post("/google/register", async (req, res) => {

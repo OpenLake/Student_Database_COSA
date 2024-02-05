@@ -1,9 +1,12 @@
 import axios from "axios";
 
 export async function fetchCredentials() {
-  const response = await axios.get("http://localhost:8000/auth/fetchAuth", {
-    withCredentials: true,
-  });
+  const response = await axios.get(
+    `${process.env.REACT_APP_BACKEND_URL}/auth/fetchAuth`,
+    {
+      withCredentials: true,
+    },
+  );
   return response.data;
 }
 
@@ -18,7 +21,7 @@ export async function registerUser(name, ID, email, password) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "http://localhost:8000/auth/register",
+    url: `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -48,7 +51,7 @@ export async function loginUser(email, password) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "http://localhost:8000/auth/login",
+    url: `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -78,7 +81,7 @@ export async function registerStudentId(id, ID_No) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "http://localhost:8000/auth/google/register",
+    url: `${process.env.REACT_APP_BACKEND_URL}/auth/google/register`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -102,7 +105,7 @@ export async function registerStudentId(id, ID_No) {
 
 export async function logoutUser() {
   await axios.post(
-    "http://localhost:8000/auth/logout",
+    `${process.env.REACT_APP_BACKEND_URL}/auth/logout`,
     {},
     { withCredentials: true },
   );
