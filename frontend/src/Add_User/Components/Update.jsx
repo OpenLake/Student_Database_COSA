@@ -2,7 +2,7 @@
 // import { Card, CardTitle, CardText } from 'reactstrap'; // Assuming you are using Reactstrap for styling
 
 // function UpdateCards({studentDetails}) {
-  
+
 //     const data = studentDetails
 //     const [isEditing, setIsEditing] = useState(false);
 //     // const [editedAchievements, setEditedAchievements] = useState(data.achievements.slice());
@@ -20,20 +20,20 @@
 //           designation: '',
 //           type: '', // You can set the default type here
 //         };
-      
+
 //         // Append the new POR object to the editedPORs array
 //         setEditedPORs([...editedPORs, newPOR]);
 //       };
 //     const handleSave = async (event)=> {
 //         // Save the edited name and exit edit mode
-     
+
 //         const editedData = {
 //             // achievements: editedAchievements,
 //             PORS: editedPORs,
 //           };
 //           console.log(editedData);
 //         setIsEditing(false);
-//         event.preventDefault(); 
+//         event.preventDefault();
 //         try {
 //             const url = 'http://localhost:8000/auth/update';
 //             const response = await fetch(url, {
@@ -44,10 +44,9 @@
 //               body: JSON.stringify(data),
 //               credentials: 'include',
 //             });
-        
+
 //             if (response.status === 201) {
-              
-         
+
 //             } else {
 //               throw new Error('Request failed');
 //             }
@@ -70,7 +69,7 @@
 //           <br />
 //           <strong>Year of Admission:</strong> {data.student.add_year}
 //         </CardText>
-        
+
 //         <div>
 //       <CardTitle tag="h5">Achievements and POR</CardTitle>
 //       <CardText>
@@ -167,19 +166,18 @@
 
 // export default UpdateCards;
 
-  
-import React, { useState } from 'react';
-import { Card, CardTitle, CardText } from 'reactstrap'; // Assuming you are using Reactstrap for styling
+import React, { useState } from "react";
+import { Card, CardTitle, CardText } from "reactstrap"; // Assuming you are using Reactstrap for styling
 
 function UpdateCards({ studentDetails }) {
   const data = studentDetails;
   const [isEditing, setIsEditing] = useState(false);
   const [editedPORs, setEditedPORs] = useState(data.PORS.slice());
   const [newPOR, setNewPOR] = useState({
-    club: '',
-    session: '',
-    designation: '',
-    type: '', // You can set the default type here
+    club: "",
+    session: "",
+    designation: "",
+    type: "", // You can set the default type here
   });
 
   const handleEdit = () => {
@@ -192,53 +190,50 @@ function UpdateCards({ studentDetails }) {
 
   const addNewPOR = () => {
     const newPOR = {
-      club: '',
-      session: '',
-      designation: '',
-      type: '', // You can set the default type here
+      club: "",
+      session: "",
+      designation: "",
+      type: "", // You can set the default type here
     };
     setEditedPORs([...editedPORs, newPOR]);
   };
 
+  const handleSave = async (event) => {
+    // Save the edited name and exit edit mode
 
-     const handleSave = async (event)=> {
-        // Save the edited name and exit edit mode
-     
-        const editedData = {
-            // achievements: editedAchievements,
-            PORS: editedPORs,
-          };
-          console.log(editedData);
-        setIsEditing(false);
-        event.preventDefault(); 
-        try {
-            const url = 'http://localhost:8000/auth/update';
-            const bodyData = {
-              editedData: editedData, // Add editedData
-              data: data, // Add the other variable data
-            };
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(bodyData),
-              credentials: 'include',
-            });
-        
-            if (response.status === 201) {
-              
-         
-            } else {
-              throw new Error('Request failed');
-            }
-          } catch (error) {
-            console.log(error);
-          }
+    const editedData = {
+      // achievements: editedAchievements,
+      PORS: editedPORs,
     };
+    console.log(editedData);
+    setIsEditing(false);
+    event.preventDefault();
+    try {
+      const url = `${process.env.REACT_APP_BACKEND_URL}/auth/update`;
+      const bodyData = {
+        editedData: editedData, // Add editedData
+        data: data, // Add the other variable data
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData),
+        credentials: "include",
+      });
+
+      if (response.status === 201) {
+      } else {
+        throw new Error("Request failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div style={{ textAlign: 'center', width: '75%', marginLeft: '13%' }}>
+    <div style={{ textAlign: "center", width: "75%", marginLeft: "13%" }}>
       <Card body>
         <CardTitle tag="h5">Student Details</CardTitle>
         <CardText>
@@ -292,33 +287,32 @@ function UpdateCards({ studentDetails }) {
                           setEditedPORs(updatedPORs);
                         }}
                       />
-                      
+
                       <li key={index}>
-  <label>Type:</label>
-  {por._id ? ( // Check if por.type exists
-    <span>{por.type}</span> // Display the current value as text
-  ) : (
-    <select
-      value={por.type}
-      onChange={(e) => {
-        const updatedPORs = [...editedPORs];
-        updatedPORs[index].type = e.target.value;
-        setEditedPORs(updatedPORs);
-      }}
-    >
-                        <option value="Acad-POR">Academics POR</option>
-                        <option value="Scitech-POR">Scitech POR</option>
-                        <option value="Cult-POR">Culturals POR</option>
-                        <option value="Sport-POR">Sports POR</option>
-    </select>
-  )}
-</li>
+                        <label>Type:</label>
+                        {por._id ? ( // Check if por.type exists
+                          <span>{por.type}</span> // Display the current value as text
+                        ) : (
+                          <select
+                            value={por.type}
+                            onChange={(e) => {
+                              const updatedPORs = [...editedPORs];
+                              updatedPORs[index].type = e.target.value;
+                              setEditedPORs(updatedPORs);
+                            }}
+                          >
+                            <option value="Acad-POR">Academics POR</option>
+                            <option value="Scitech-POR">Scitech POR</option>
+                            <option value="Cult-POR">Culturals POR</option>
+                            <option value="Sport-POR">Sports POR</option>
+                          </select>
+                        )}
+                      </li>
                     </li>
                   ))}
                 </ul>
                 <li>
                   <button onClick={addNewPOR}>Add New POR</button>
-                  
                 </li>
                 <button onClick={handleSave}>Save</button>
                 <button onClick={handledisarrange}>Disarrange</button>

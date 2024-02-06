@@ -1,37 +1,37 @@
 import React, { useContext } from "react";
-import axios from "axios";
 import { Button, Form, Row, Col } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import Search from "./Search";
 import { AdminContext } from "../App";
+import { logoutUser } from "../services/auth";
 
-function Navbar() {
-  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
+function Navbar({ setStudentDetails }) {
+  const { setIsUserLoggedIn } = useContext(AdminContext);
   const navigate = useNavigate();
 
   return (
-    <Row xs="2" className="bg-success p-2">
-      <Col>
-        <p className="text-light">User is authenticated</p>
+    <Row className="bg-success p-2">
+      <Col xs="4" className="d-flex justify-content-start">
+        <span style={{ color: "white", fontSize: "130%", marginLeft: "5px" }}>
+          Student Database
+        </span>
       </Col>
-      <Col>
-        <Search IsUserLoggedIn={IsUserLoggedIn} />
+      <Col xs="4" className="d-flex justify-content-center">
+        <Search setStudentDetails={setStudentDetails} />
       </Col>
-      <Col>
-        <a
+      <Col xs="4" className="d-flex justify-content-end">
+        <Button
           onClick={async (e) => {
             e.preventDefault();
-            await axios.post(
-              "http://localhost:8000/auth/logout",
-              {},
-              { withCredentials: true },
-            );
+            logoutUser();
             setIsUserLoggedIn(null);
+            navigate("/login");
           }}
           href="/logout"
+          color="danger"
         >
           Logout
-        </a>
+        </Button>
       </Col>
     </Row>
   );

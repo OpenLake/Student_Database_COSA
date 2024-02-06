@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AddUser from "./AddUser";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
+import GoogleRegister from "./Components/Auth/GoogleRegister";
 import { fetchCredentials } from "./services/auth";
 
 const AdminContext = createContext();
@@ -25,6 +26,7 @@ function App() {
     routes = (
       <Routes>
         <Route path="/" element={<AddUser />} />
+        <Route path="/register/google/:id" element={<GoogleRegister />} />
         {/* <Route path='/logout' element={<Logout/>} /> */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -34,6 +36,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );

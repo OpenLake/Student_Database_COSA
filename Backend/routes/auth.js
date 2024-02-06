@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const secretKey = process.env.JWT_SECRET_TOKEN;
+
 const { restrictToPresident, restrictToAdmin } = require("../middlewares");
 const {
   Student,
@@ -28,7 +31,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, ID, email, password } = req.body;
 
   const existingUser = await User.findOne({ username: email });
   if (existingUser) {
@@ -36,16 +39,16 @@ router.post("/register", async (req, res) => {
   }
 
   const newUser = await User.register(
-    new User({ name: name, username: email }),
+    new User({ name: name, strategy: "local", ID_No: ID, username: email }),
     password,
   );
   req.login(newUser, (err) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(400).json({ message: "Bad request." });
     }
     return res
-      .status(201)
+      .status(200)
       .json({ message: "Registration successful", user: newUser });
   });
 });
@@ -59,10 +62,62 @@ router.get(
 router.get(
   "/google/verify",
   passport.authenticate("google", { failureRedirect: "/" }),
-  (_req, res) => {
-    res.redirect("/");
+  (req, res) => {
+    if (!req.user.ID_No) {
+      res.redirect("/auth/google/addId");
+    } else {
+      res.redirect("/");
+    }
   },
 );
+
+router.get("/google/addId", (req, res) => {
+  const token = jwt.sign({ id: req.user._id }, secretKey);
+
+  res.redirect(`${process.env.FRONTEND_URL}/register/google/${token}`);
+});
+
+router.post("/google/register", async (req, res) => {
+  const { token, ID_No } = req.body;
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, secretKey);
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    return res.status(400).json({ message: "Invalid token" });
+  }
+
+  const id = decoded.id;
+
+  if (id == req.user.id) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.user.id },
+        { ID_No: ID_No },
+        { new: true },
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Serialize the updated user into the session
+      req.login(user, function (err) {
+        if (err) {
+          console.error("Error serializing user:", err);
+          return res.status(400).json({ message: "Error serializing user" });
+        }
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(400).json({ message: "Error updating user" });
+    }
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
 
 router.post("/logout", (req, res, next) => {
   req.logout(function (err) {
@@ -109,13 +164,15 @@ router.get("/", restrictToPresident, function (req, res) {
   }
 });
 
-router.post("/add", restrictToPresident, async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     // const jwtToken = req.cookies.credentials;
     // const user = JSON.parse(req.headers['user-details']);
     // const decoded = jwt_decode(jwtToken);
 
-    const { username, password } = req.DB_credentials;
+    // in production DB_credentials will be stored as environment variable instead of in the request
+    // const { username, password } = req.DB_credentials;
+
     const student = new Student({
       name: req.body.name,
       ID_No: req.body.ID_No,
@@ -126,7 +183,8 @@ router.post("/add", restrictToPresident, async (req, res) => {
     });
     const pors = req.body.pos_res;
 
-    const dbUri = `mongodb+srv://${username}:${password}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
+    // using local db for testing, in production
+    const dbUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
     mongoose
       .connect(dbUri, {
         useNewUrlParser: true,

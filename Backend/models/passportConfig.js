@@ -20,7 +20,7 @@ passport.use(
       clientID:
         "468147803346-55rcefrkn5d8ecv0oemb8ppff86mcfvk.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "http://localhost:8000/auth/google/verify", // Update with your callback URL
+      callbackURL: `${process.env.BACKEND_URL}/auth/google/verify`, // Update with your callback URL
     },
     async (accessToken, refreshToken, profile, done) => {
       // Check if the user already exists in your database
@@ -36,6 +36,7 @@ passport.use(
         const newUser = new User({
           username: profile.emails[0].value,
           name: profile.displayName,
+          strategy: "google",
         });
 
         await newUser.save();
@@ -48,31 +49,12 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  let key = {
-    id: user._id,
-    type: "User",
-  };
-
-  if (user.googleId) {
-    key = {
-      id: user.googleId,
-      type: "Google",
-    };
-  }
-
-  done(null, key);
+  done(null, user);
 });
 
-passport.deserializeUser(async (key, done) => {
+passport.deserializeUser(async (userKey, done) => {
   try {
-    let user = null;
-
-    if (key.type === "Google") {
-      user = await User.findOne({ googleId: key.id });
-    } else {
-      user = await User.findById(key.id);
-    }
-
+    let user = await User.findById(userKey._id);
     done(null, user);
   } catch (err) {
     done(err);
