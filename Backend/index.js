@@ -4,6 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const routes_auth = require("./routes/auth");
 const routes_general = require("./routes/route");
+const { handleBadRequests } = require("./middlewares");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const { connectDB } = require("./db");
@@ -35,6 +36,8 @@ app.get("/", (_req, res) => {
 // Mount your route handlers
 app.use("/", routes_general);
 app.use("/auth", routes_auth);
+
+app.use(handleBadRequests);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
