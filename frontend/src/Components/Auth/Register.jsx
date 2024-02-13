@@ -44,6 +44,7 @@ function Register() {
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </FormGroup>
           <FormGroup>
@@ -54,6 +55,7 @@ function Register() {
               placeholder="Student ID"
               value={ID}
               onChange={(e) => setId(e.target.value)}
+              required
             />
           </FormGroup>
           <FormGroup>
@@ -65,6 +67,7 @@ function Register() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </FormGroup>
           <FormGroup>
@@ -76,6 +79,7 @@ function Register() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </FormGroup>
           <FormGroup className="text-center">
