@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { AdminContext } from "../App";
 import Card from "../Components/Card";
+import UpdateCards from "../Add_User/Components/Update";
 import { fetchStudent } from "../services/utils";
 
 function Body({ studentDetails }) {
@@ -26,7 +27,11 @@ function Body({ studentDetails }) {
             >
               Search Results
             </p>
-            <Card data={studentDetails} />
+            {IsUserLoggedIn.role === "user" ? (
+              <Card data={studentDetails} />
+            ) : (
+              <UpdateCards studentDetails={studentDetails} />
+            )}
           </>
         ) : (
           <p

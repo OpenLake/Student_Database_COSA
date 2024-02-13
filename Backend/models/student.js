@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
     enum: ["local", "google"],
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["user", "admin", "president"],
+    required: true,
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);

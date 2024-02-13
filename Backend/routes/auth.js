@@ -56,6 +56,7 @@ router.post(
         strategy: req.user.strategy,
         ID_No: req.user.ID_No,
         username: req.user.username,
+        role: req.user.role,
       },
     });
   }),
@@ -82,7 +83,13 @@ router.post(
     }
 
     const newUser = await User.register(
-      new User({ name: name, strategy: "local", ID_No: ID, username: email }),
+      new User({
+        name: name,
+        strategy: "local",
+        ID_No: ID,
+        username: email,
+        role: "user",
+      }),
       password,
     );
     req.login(newUser, (err) => {
@@ -97,6 +104,7 @@ router.post(
           strategy: newUser.strategy,
           ID_No: newUser.ID_No,
           username: newUser.username,
+          role: newUser.role,
         },
       });
     });
@@ -175,6 +183,7 @@ router.post(
           strategy: user.strategy,
           ID_No: user.ID_No,
           username: user.username,
+          role: user.role,
         });
       } catch (error) {
         console.error("Error updating user:", error);
@@ -234,6 +243,7 @@ router.get("/", restrictToPresident, function (req, res) {
 router.post(
   "/add",
   isAuthenticated,
+  restrictToAdmin,
   [
     body("name")
       .isString()
@@ -405,8 +415,7 @@ router.post(
         })
         .then(async () => {
           const student = await Student.findById(stud._id).exec();
-          console.log(student);
-          if (User == "President") {
+          if (req.user.role == "president" || req.user.role == "admin") {
             for (const element of PORs) {
               if (element.type == "Scitech-POR") {
                 await ScietechPOR.findByIdAndUpdate(
