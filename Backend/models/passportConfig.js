@@ -37,6 +37,7 @@ passport.use(
           username: profile.emails[0].value,
           name: profile.displayName,
           strategy: "google",
+          role: "user",
         });
 
         await newUser.save();
