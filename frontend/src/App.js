@@ -3,6 +3,7 @@ import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import Home from './Home';
 import AddUser from "./AddUser";
+import Issues from "./Issues";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
@@ -26,6 +27,7 @@ function App() {
     routes = (
       <Routes>
         <Route path="/" element={<AddUser />} />
+        <Route path="/issues" element={<Issues />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         {/* <Route path='/logout' element={<Logout/>} /> */}
         <Route path="*" element={<Navigate to="/" replace />} />

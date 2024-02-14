@@ -1,38 +1,34 @@
-import './Add.css';
-import React, { Component } from 'react';
-import { Modal } from 'reactstrap';
-import Card from './Card'; // Import the Card component
+import { useNavigate } from "react-router-dom";
+import "./Add.css";
+import React, { useState } from "react";
+import { Modal } from "reactstrap";
+import Card from "./Card"; // Import the Card component
 
-class Add extends Component {
-  constructor(props) {
-    super(props);
+function Add() {
+  const [isCardVisible, setIsCardVisible] = useState(false);
+  const navigate = useNavigate();
 
-    this.state = {
-      isCardVisible: false,
-    };
-  }
-
-  toggleCardVisibility = () => {
-    this.setState((prevState) => ({
-      isCardVisible: !prevState.isCardVisible,
-    }));
+  const toggleCardVisibility = () => {
+    setIsCardVisible((prevState) => !prevState);
   };
-  
-  
 
+  const navigateToIssues = () => {
+    navigate("/issues");
+  };
 
-  render() {
-    return (
-      <div style={{ textAlign: "center", margin: "10px"}}>
-        
-        <button onClick={this.toggleCardVisibility}  className={'Add_user'}>Add User</button>
-        {/* {this.state.isCardVisible && } */}
-        <Modal isOpen={this.state.isCardVisible} toggle={this.toggleCardVisibility} size={'lg'}>
-          <Card />
-        </Modal>
-      </div>
-    );
-  }
+  return (
+    <div style={{ textAlign: "center", margin: "10px" }}>
+      <button onClick={toggleCardVisibility} className={"Add_user"}>
+        Add User
+      </button>
+      <button onClick={navigateToIssues} className={"Add_user"}>
+        Issues
+      </button>
+      <Modal isOpen={isCardVisible} toggle={toggleCardVisibility} size={"lg"}>
+        <Card />
+      </Modal>
+    </div>
+  );
 }
 
 export default Add;

@@ -18,6 +18,7 @@ const {
   SportsPOR,
   AcadPOR,
   User,
+  Issue,
 } = require("../models/student");
 const passport = require("../models/passportConfig");
 
@@ -171,13 +172,6 @@ router.post(
           return res.status(404).json({ message: "User not found" });
         }
 
-        // Serialize the updated user into the session
-        req.login(user, function (err) {
-          if (err) {
-            console.error("Error serializing user:", err);
-            return res.status(400).json({ message: "Error serializing user" });
-          }
-        });
         res.status(200).json({
           name: user.name,
           strategy: user.strategy,
@@ -396,7 +390,6 @@ router.post(
 router.post(
   "/update",
   isAuthenticated,
-  restrictToAdmin,
   exceptionHandler(async (req, res) => {
     try {
       // const decoded = req.decoded;
@@ -406,7 +399,6 @@ router.post(
       const stud = data.student;
       const PORs = req.body.editedData.PORS;
 
-      console.log(PORs);
       const dbUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
       await mongoose
         .connect(dbUri, {
@@ -462,6 +454,29 @@ router.post(
                   { new: true, upsert: true },
                 ).exec();
               }
+            }
+            if (req.body.issue) {
+              const issueId = req.body._id;
+              try {
+                await Issue.findByIdAndDelete(issueId);
+              } catch (err) {
+                console.log(err);
+                return res
+                  .status(400)
+                  .json({ message: "Internal server error" });
+              }
+            }
+            return res
+              .status(200)
+              .json({ success: true, message: "Data Updated Successfully" });
+          } else {
+            const issue = req.body;
+            try {
+              const createdIssue = await Issue.create(issue);
+              res.status(200).send(createdIssue);
+            } catch (err) {
+              console.error(err);
+              res.status(401).send("Bad Request");
             }
           }
           if (User == "Gensec_Scitech") {
@@ -526,10 +541,6 @@ router.post(
               }
             }
           }
-          // await mongoose.connection.close();
-          return res
-            .status(200)
-            .json({ success: true, message: "Data Updated Successfully" });
         })
         .catch((error) => {
           console.error("MongoDB connection error:", error);
@@ -540,6 +551,16 @@ router.post(
         .status(400)
         .json({ success: false, message: "process failed" });
     }
+  }),
+);
+
+router.get(
+  "/issues",
+  isAuthenticated,
+  restrictToAdmin,
+  exceptionHandler(async (_req, res) => {
+    const issues = await Issue.find({});
+    res.status(200).json(issues);
   }),
 );
 

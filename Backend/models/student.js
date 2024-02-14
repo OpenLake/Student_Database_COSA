@@ -35,7 +35,6 @@ const student = new mongoose.Schema({
   ID_No: {
     type: Number,
     required: true,
-    unique: true,
   },
   Program: {
     type: String,
@@ -57,6 +56,28 @@ const student = new mongoose.Schema({
     },
   },
 });
+
+const PORSSchema = new mongoose.Schema(
+  {
+    designation: String,
+    session: String,
+    club: String,
+    student: String,
+  },
+  { _id: false, strict: false },
+);
+
+const issueSchema = new mongoose.Schema(
+  {
+    editedData: {
+      PORS: [PORSSchema],
+    },
+    data: {
+      student: student,
+    },
+  },
+  { strict: false },
+);
 
 const achievement = new mongoose.Schema({
   student: {
@@ -99,6 +120,7 @@ const CultPOR = mongoose.model("CultPOR", cult_por);
 const SportsPOR = mongoose.model("SportSPOR", sport_por);
 const AcadPOR = mongoose.model("AcadPOR", acad_por);
 const Achievement = mongoose.model("Achievement", achievement);
+const Issue = mongoose.model("Issue", issueSchema);
 module.exports = {
   Student,
   ScietechPOR,
@@ -107,4 +129,5 @@ module.exports = {
   AcadPOR,
   Achievement,
   User,
+  Issue,
 };

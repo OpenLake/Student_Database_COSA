@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { AdminContext } from "../App";
 import Card from "../Components/Card";
 import UpdateCards from "../Add_User/Components/Update";
+import IssueCards from "../Add_User/Components/RaiseIssue";
 import { fetchStudent } from "../services/utils";
 
 function Body({ studentDetails }) {
@@ -56,7 +57,11 @@ function Body({ studentDetails }) {
           >
             Your Student Profile
           </p>
-          <Card data={userDetails} />
+          {IsUserLoggedIn.role === "user" ? (
+            <IssueCards studentDetails={userDetails} />
+          ) : (
+            <UpdateCards studentDetails={userDetails} />
+          )}
         </>
       ) : (
         <div

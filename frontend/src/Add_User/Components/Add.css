@@ -14,12 +14,14 @@
     outline: none;
     overflow: visible;
     padding: 13px 16px;
-    text-align: center; 
+    text-align: center;
    vertical-align: middle;
     margin-top: 10px;
+    margin-left: 3px;
+    margin-right: 3px;
   }
   .InputForm-card {
-    margin: 0 auto; 
+    margin: 0 auto;
     width: 60%;
   }
   .submit_button{

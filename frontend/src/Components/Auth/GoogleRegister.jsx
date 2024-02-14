@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Form, FormGroup, Input, Container } from "reactstrap";
 import { registerStudentId } from "../../services/auth";
+import { AdminContext } from "../../App";
 
 function GoogleRegister() {
   const { id } = useParams();
   const [ID_No, setId] = useState("");
+  const { setIsUserLoggedIn } = React.useContext(AdminContext);
 
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const status = await registerStudentId(id, ID_No);
     if (status) {
+      setIsUserLoggedIn(status);
       navigate("/");
     }
   };
