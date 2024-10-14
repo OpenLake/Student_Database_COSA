@@ -1,16 +1,20 @@
 import "./App.css";
 import Add from "./Add_User/Components/Add";
 import Navbar from "../src/Components/Navbar";
+import Footer from "./Components/Footer";
 import React from "react";
 import Body from "./Components/Body";
+import { AdminContext } from "./App";
 
 function AddUser() {
+  const { IsUserLoggedIn } = React.useContext(AdminContext);
   const [studentDetails, setStudentDetails] = React.useState();
   return (
     <div>
       <Navbar setStudentDetails={setStudentDetails} />
-      <Add />
+      {IsUserLoggedIn.role === "user" ? null : <Add />}
       <Body studentDetails={studentDetails} />
+      <Footer />
     </div>
   );
 }

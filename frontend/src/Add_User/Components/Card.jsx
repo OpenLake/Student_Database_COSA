@@ -21,10 +21,10 @@ class InputForm extends Component {
 
     this.state = {
       name: "",
-      ID_No: null,
+      ID_No: "",
       Program: "",
       discipline: "",
-      add_year: null,
+      add_year: "",
       pos_res: [
         {
           club: "",
