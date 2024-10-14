@@ -7,7 +7,7 @@ A comprehensive platform for managing student data within CoSA, including detail
 
 <p align="center">
   <img src="https://img.shields.io/badge/Maintained%20By-OpenLake-green.svg" alt="Maintained by OpenLake">
-  <img src="https://img.shields.io/badge/Contributors-2-yellow.svg" alt="Contributors">
+  <img src="https://img.shields.io/badge/Contributors-2-yellow.svg" alt="Project Leads">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
 </p>
 
