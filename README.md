@@ -1,7 +1,8 @@
 <h1 align="center">📚 Welcome to the CoSA Student Database👋</h1>
 
 <p align="center">
-  A comprehensive platform for managing student data and streamlining academic processes at IIT Bhilai. This project provides efficient storage, retrieval, and management of student information, making administrative tasks simpler and more effective.
+A comprehensive platform for managing student data within CoSA, including details about students' club memberships, positions of responsibility (PORs), and much more. This project offers efficient storage, retrieval, and management of student-related information, streamlining administrative tasks and enhancing overall efficiency.
+
 </p>
 
 <p align="center">
