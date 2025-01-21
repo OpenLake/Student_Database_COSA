@@ -1,21 +1,34 @@
 import React, { useState } from "react";
 import { Input } from "reactstrap";
-import { Button, Form, Row, Col } from "reactstrap";
+import { Button, Form } from "reactstrap";
 import { fetchStudent } from "../services/utils";
+
 function Search({ setStudentDetails }) {
-  const [student_ID, setStudentID] = useState();
+  const [student_ID, setStudentID] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onChangestudentID = (e) => {
     setStudentID(e.target.value);
+    setErrorMessage(""); 
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!student_ID) {
+
+    if (!student_ID.trim()) {
+      setErrorMessage("Please enter a valid student ID.");
       return;
     }
+
     const data = await fetchStudent(student_ID);
-    setStudentDetails(data);
+
+    if (!data || !data.student) {
+      setErrorMessage("Student not found. Please check the ID and try again.");
+      setStudentDetails(null); 
+    } else {
+      setErrorMessage(""); 
+      setStudentDetails(data);
+    }
   };
 
   return (
@@ -43,6 +56,17 @@ function Search({ setStudentDetails }) {
           </svg>
         </Button>
       </Form>
+      {errorMessage && (
+        <p
+          style={{
+            color: "red",
+            textAlign: "center",
+            marginTop: "10px",
+          }}
+        >
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

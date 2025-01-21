@@ -12,12 +12,13 @@ export async function fetchStudent(student_ID) {
 
     if (response.ok) {
       const data = await response.json();
-      return data;
+      return { success: true, data };
     } else {
-      return null;
+      const error = await response.json();
+      return { success: false, message: error.message };
     }
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("Error fetching student data:", error);
+    return { success: false, message: "Failed to connect to the server" };
   }
 }
