@@ -111,8 +111,8 @@ Student_Database_COSA/
 
 This project is maintained by:
 
-- [Amay Dixit](https://github.com/amaydixit11)
-- [Ashutosh Kumar Jha](https://github.com/ashutosh229)
+- [Nishant Verma](https://github.com/nishant9083)
+- [Arbaz Shaikh](https://github.com/arbazshaikh150)
 
 ---
 
