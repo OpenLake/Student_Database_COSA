@@ -7,6 +7,26 @@ const {
   SportsPOR,
   AcadPOR,
 } = require("../models/student");
+const Feedback = require("../models/Feedback");
+router.post("/feedback", async (req, res) => {
+  try {
+    const { userId, type, description } = req.body;
+    const feedback = new Feedback({ userId, type, description });
+    await feedback.save();
+    res.status(201).json({ message: "Feedback submitted", feedback });
+  } catch (error) {
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+router.get("/feedback/:userId", async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ userId: req.params.userId });
+    res.json(feedbacks);
+  } catch (error) {
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 
 router.post("/fetch", async (req, res) => {
   try {

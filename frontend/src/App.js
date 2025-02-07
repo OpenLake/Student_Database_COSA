@@ -7,7 +7,7 @@ import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
 import { fetchCredentials } from "./services/auth";
-
+import FeedbackForm from "./Components/FeedbackForm";
 const AdminContext = createContext();
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AddUser />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
         {/* <Route path='/logout' element={<Logout/>} /> */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -38,6 +39,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
     );
   }
