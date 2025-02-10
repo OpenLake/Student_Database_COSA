@@ -16,11 +16,17 @@ const FeedbackForm = () => {
     //   return;
     // }
 
-    const response = await fetch("http://localhost:8000/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...feedback, userId: "test123" }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/feedback`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...feedback,
+          userId: "67aa3c2e3f4feecbe809f9c6",
+        }),
+      },
+    );
 
     const data = await response.json();
     alert(data.message);

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const FeedbackSchema = new mongoose.Schema({
-  userId: { type: String, required: true }, // User ID (can be email or DB ID)
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User model
   type: {
     type: String,
     enum: ["Suggestion", "Complaint", "Query"],
