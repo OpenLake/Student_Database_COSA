@@ -4,7 +4,7 @@ dotenv.config();
 
 const connectDB = async () => {
   try {
-    const ConnectDB = `mongodb://localhost:27017/cosadatabase`;
+    const ConnectDB = process.env.MONGODB_URI;
     await mongoose.connect(ConnectDB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
