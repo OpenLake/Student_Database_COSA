@@ -19,11 +19,9 @@ router.post("/", async (req, res) => {
 
     // Check if studentId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(studentId)) {
-      return res
-        .status(400)
-        .json({
-          error: "Invalid studentId format. Must be a valid MongoDB ObjectId",
-        });
+      return res.status(400).json({
+        error: "Invalid studentId format. Must be a valid MongoDB ObjectId",
+      });
     }
 
     const newTenure = new Tenure({
@@ -61,7 +59,8 @@ router.get("/", verifyToken, async (req, res) => {
 // Get tenure records for a specific student
 router.get("/:studentId", verifyToken, async (req, res) => {
   try {
-    const records = await Tenure.find({ studentId: req.params.studentId })
+    const studentId = new mongoose.Types.ObjectId(req.params.studentId);
+    const records = await Tenure.find({ studentId })
       .populate("studentId", "name _id")
       .select("studentId role achievements");
     res.status(200).json(records);
