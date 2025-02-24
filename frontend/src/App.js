@@ -1,4 +1,6 @@
 import "./App.css";
+import "./index.css"; // If using index.css
+
 
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -34,8 +36,8 @@ function App() {
         <Route path="/feedback" element={<FeedbackForm />} />
         {/* <Route path="/tenure" element={<TenureRecords />} /> */}
         {/* <Route path='/logout' element={<Logout/>} /> */}
-        <Route path="/create" element={<CreateTenure />} />
-        <Route path="/show" element={<ShowTenure />} />
+        <Route path="/cosa/create" element={<CreateTenure />} />
+        <Route path="/cosa" element={<ShowTenure />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
@@ -45,8 +47,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* <Route path="/tenure" element={<TenureRecords />} /> */}
-        <Route path="/create" element={<CreateTenure />} />
-        <Route path="/show" element={<ShowTenure />} />
+       
+        <Route path="/cosa/create" element={<CreateTenure />} />
+        <Route path="/cosa/:id" element={<ShowTenure />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/feedback" element={<FeedbackForm />} />
