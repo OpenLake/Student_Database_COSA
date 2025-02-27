@@ -14,6 +14,10 @@ import FeedbackForm from "./Components/FeedbackForm";
 //import TenureRecords from "./Components/TenureRecords";
 import { CreateTenure } from "./Components/TenureRecords";
 import { ShowTenure } from "./Components/TenureRecords";
+
+import EventList from "./Components/EventList";
+import EventForm from "./Components/EventForm";
+
 const AdminContext = createContext();
 
 function App() {
@@ -34,7 +38,12 @@ function App() {
         <Route path="/" element={<AddUser />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
+
         {/* <Route path="/tenure" element={<TenureRecords />} /> */}
+
+        <Route path="/events" element={<EventList />} />
+        <Route path="/add-event" element={<EventForm />} />
+
         {/* <Route path='/logout' element={<Logout/>} /> */}
         <Route path="/cosa/create" element={<CreateTenure />} />
         <Route path="/cosa" element={<ShowTenure />} />
@@ -51,6 +60,8 @@ function App() {
         <Route path="/cosa/create" element={<CreateTenure />} />
         <Route path="/cosa/:id" element={<ShowTenure />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
+        <Route path="/events" element={<EventList />} />
+        <Route path="/add-event" element={<EventForm />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
