@@ -11,6 +11,8 @@ import { fetchCredentials } from "./services/auth";
 import FeedbackForm from "./Components/FeedbackForm";
 import EventList from "./Components/EventList";
 import EventForm from "./Components/EventForm";
+import { CreateTenure } from "./Components/TenureRecords";
+import { ShowTenure } from "./Components/TenureRecords";
 const AdminContext = createContext();
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
         <Route path="/events" element={<EventList />} />
         <Route path="/add-event" element={<EventForm />} />
         {/* <Route path='/logout' element={<Logout/>} /> */}
+        <Route path="/cosa/create" element={<CreateTenure />} />
+        <Route path="/cosa/:id" element={<ShowTenure />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
@@ -46,6 +50,8 @@ function App() {
         <Route path="/events" element={<EventList />} />
         <Route path="/add-event" element={<EventForm />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/cosa/create" element={<CreateTenure />} />
+        <Route path="/cosa/:id" element={<ShowTenure />} />
         <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
     );
