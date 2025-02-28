@@ -5,6 +5,8 @@ import axios from "axios";
 // dotenv.config();
 
 import { Loader2, Calendar, Award, UserCircle, BookOpen, Clock, Mail } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //import PropTypes from "prop-types";
 
 // MyComponent.propTypes = {
@@ -96,8 +98,9 @@ export const CreateTenure = () => {
         endDate: "",
         achievements: "",
       });
-      alert("Record added successfully");
+      toast.success("Record added successfully");
     } catch (error) {
+      toast.error("Error adding tenure record");
       console.error("Error adding tenure record:", error);
     }
   };
@@ -234,6 +237,7 @@ export const CreateTenure = () => {
           </div>
         </div>
       </form>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
@@ -252,6 +256,7 @@ export const ShowTenure = ({ tenureYear }) => {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/tenure`);
         setRecords(response.data);
       } catch (error) {
+        toast.error("Error fetching records:")
         console.error("Error fetching records:", error);
       } finally {
         setLoading(false);
@@ -326,6 +331,7 @@ export const ShowTenure = ({ tenureYear }) => {
           </div>
         ))}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
