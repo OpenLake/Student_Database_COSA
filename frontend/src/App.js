@@ -38,6 +38,7 @@ function App() {
         {/* <Route path='/logout' element={<Logout/>} /> */}
         <Route path="/cosa/create" element={<CreateTenure />} />
         <Route path="/cosa/:id" element={<ShowTenure />} />
+        <Route path="/cosa" element={<ShowTenure />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
@@ -52,6 +53,7 @@ function App() {
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/cosa/create" element={<CreateTenure />} />
         <Route path="/cosa/:id" element={<ShowTenure />} />
+        <Route path="/cosa" element={<ShowTenure />} />
         <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
     );
