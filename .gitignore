@@ -26,4 +26,6 @@ yarn-error.log*
 frontend/.env
 Backend/.env
 
-
+package.json
+package-lock.json
+node_modules
