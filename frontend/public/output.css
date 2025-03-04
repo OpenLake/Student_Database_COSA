@@ -575,6 +575,9 @@
   .top-100 {
     top: calc(var(--spacing) * 100);
   }
+  .right-0 {
+    right: calc(var(--spacing) * 0);
+  }
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
   }
@@ -604,6 +607,12 @@
   }
   .z-3 {
     z-index: 3;
+  }
+  .z-10 {
+    z-index: 10;
+  }
+  .z-20 {
+    z-index: 20;
   }
   .order-0 {
     order: 0;
@@ -851,6 +860,9 @@
   .mb-auto {
     margin-bottom: auto;
   }
+  .ml-1 {
+    margin-left: calc(var(--spacing) * 1);
+  }
   .line-clamp-3 {
     overflow: hidden;
     display: -webkit-box;
@@ -971,6 +983,9 @@
   .w-25 {
     width: calc(var(--spacing) * 25);
   }
+  .w-48 {
+    width: calc(var(--spacing) * 48);
+  }
   .w-50 {
     width: calc(var(--spacing) * 50);
   }
@@ -1042,6 +1057,9 @@
   }
   .border-collapse {
     border-collapse: collapse;
+  }
+  .rotate-180 {
+    rotate: 180deg;
   }
   .transform {
     transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
@@ -1330,6 +1348,9 @@
   }
   .bg-black {
     background-color: var(--color-black);
+  }
+  .bg-blue-100 {
+    background-color: var(--color-blue-100);
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
@@ -1744,6 +1765,9 @@
   .text-indigo-400 {
     color: var(--color-indigo-400);
   }
+  .text-indigo-500 {
+    color: var(--color-indigo-500);
+  }
   .text-indigo-600 {
     color: var(--color-indigo-600);
   }
@@ -1911,6 +1935,11 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
+  .transition-transform {
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
   .duration-200 {
     --tw-duration: 200ms;
     transition-duration: 200ms;
@@ -1935,11 +1964,25 @@
     -webkit-user-select: all;
     user-select: all;
   }
+  .group-hover\:block {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        display: block;
+      }
+    }
+  }
   .group-hover\:-translate-y-2 {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
         --tw-translate-y: calc(var(--spacing) * -2);
         translate: var(--tw-translate-x) var(--tw-translate-y);
+      }
+    }
+  }
+  .group-hover\:text-indigo-700 {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        color: var(--color-indigo-700);
       }
     }
   }

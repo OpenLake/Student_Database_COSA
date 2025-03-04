@@ -7,11 +7,17 @@ import {
   User, 
   Search,
   Home,
-  Clock
+  Clock,
+  PlusCircle,
+  ChevronDown,
+  ListChecks
 } from "lucide-react";
 
 export default function AdminHome() {
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const user = {
     name: "Amit Sharma",
     rollNumber: "87654321",
@@ -20,32 +26,43 @@ export default function AdminHome() {
     role: "Administrator"
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const createOptions = [
+    {
+      icon: CalendarCheck,
+      title: "Add Event",
+      path: "/add-event"
+    },
+    {
+      icon: ClipboardList,
+      title: "COSA Create",
+      path: "/cosa/create"
+    }
+  ];
 
   const quickActions = [
+    {
+      icon: ListChecks,
+      title: "See Events",
+      color: "bg-blue-100 text-blue-700",
+      onClick: () => navigate("/events")
+    },
     {
       icon: CalendarCheck,
       title: "Create Event",
       color: "bg-emerald-100 text-emerald-700",
-      onClick: () => navigate("/create-event")
+      onClick: () => navigate("/add-event")
     },
     {
       icon: Clock,
       title: "Create Tenure",
       color: "bg-violet-100 text-violet-700",
-      onClick: () => navigate("/create-tenure")
+      onClick: () => navigate("/cosa/tenure")
     },
     {
       icon: ClipboardList,
       title: "COSA",
       color: "bg-amber-100 text-amber-700",
       onClick: () => navigate("/cosa")
-    },
-    {
-      icon: MessageSquareText,
-      title: "Feedback",
-      color: "bg-sky-100 text-sky-700",
-      onClick: () => navigate("/feedback")
     }
   ];
 
@@ -61,10 +78,10 @@ export default function AdminHome() {
               className="text-gray-600 hover:text-indigo-700 flex items-center transition text-sm"
             >
               <Home className="mr-1" size={16} />
-              Home
+              Login
             </a>
             <a 
-              href="/create-event" 
+              href="/events" 
               className="text-gray-600 hover:text-indigo-700 flex items-center transition text-sm"
             >
               <CalendarCheck className="mr-1" size={16} />
@@ -84,6 +101,40 @@ export default function AdminHome() {
               <MessageSquareText className="mr-1" size={16} />
               Feedback
             </a>
+            <div className="relative">
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center text-gray-600 hover:text-indigo-700 transition text-sm"
+              >
+                <PlusCircle className="mr-2" size={16} />
+                Create
+                <ChevronDown 
+                  className={`ml-1 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                  size={16} 
+                />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute z-20 w-64 mt-3 right-0 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                  {createOptions.map((option) => (
+                    <a
+                      key={option.path}
+                      href={option.path}
+                      className="flex items-center px-4 py-3 hover:bg-gray-50 transition-colors group"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <option.icon 
+                        className="mr-3 text-indigo-500 group-hover:text-indigo-700 transition" 
+                        size={20} 
+                      />
+                      <span className="text-gray-800 group-hover:text-indigo-700 transition">
+                        {option.title}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="flex items-center">
