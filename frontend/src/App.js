@@ -13,6 +13,7 @@ import EventList from "./Components/EventList";
 import EventForm from "./Components/EventForm";
 import { CreateTenure } from "./Components/TenureRecords";
 import { ShowTenure } from "./Components/TenureRecords";
+import AdminHome from "./Components/AdminHome";
 const AdminContext = createContext();
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
     routes = (
       <Routes>
          <Route path="/student" element={<StudentHome />} />
+         <Route path="/admin" element={<AdminHome />} />
         <Route path="/" element={<AddUser />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
@@ -46,6 +48,7 @@ function App() {
   } else {
     routes = (
       <Routes>
+        <Route path="/admin" element={<AdminHome />} />
         <Route path="/student" element={<StudentHome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

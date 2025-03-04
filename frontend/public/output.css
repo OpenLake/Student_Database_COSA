@@ -857,9 +857,6 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
   }
-  .\!inline {
-    display: inline !important;
-  }
   .block {
     display: block;
   }
@@ -1046,9 +1043,6 @@
   .border-collapse {
     border-collapse: collapse;
   }
-  .scale-3d {
-    scale: var(--tw-scale-x) var(--tw-scale-y) var(--tw-scale-z);
-  }
   .transform {
     transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
   }
@@ -1064,15 +1058,6 @@
   .resize-none {
     resize: none;
   }
-  .columns-2 {
-    columns: 2;
-  }
-  .columns-3 {
-    columns: 3;
-  }
-  .columns-4 {
-    columns: 4;
-  }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
@@ -1081,6 +1066,9 @@
   }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -1337,6 +1325,9 @@
   .border-white {
     border-color: var(--color-white);
   }
+  .bg-amber-100 {
+    background-color: var(--color-amber-100);
+  }
   .bg-black {
     background-color: var(--color-black);
   }
@@ -1381,6 +1372,9 @@
   }
   .bg-red-50 {
     background-color: var(--color-red-50);
+  }
+  .bg-rose-100 {
+    background-color: var(--color-rose-100);
   }
   .bg-sky-100 {
     background-color: var(--color-sky-100);
@@ -1699,6 +1693,9 @@
   .break-all {
     word-break: break-all;
   }
+  .text-amber-700 {
+    color: var(--color-amber-700);
+  }
   .text-black {
     color: var(--color-black);
   }
@@ -1758,6 +1755,9 @@
   }
   .text-red-700 {
     color: var(--color-red-700);
+  }
+  .text-rose-700 {
+    color: var(--color-rose-700);
   }
   .text-sky-700 {
     color: var(--color-sky-700);
@@ -2162,21 +2162,6 @@ body {
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-@property --tw-scale-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-z {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
 }
 @property --tw-rotate-x {
   syntax: "*";
