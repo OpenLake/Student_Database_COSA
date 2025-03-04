@@ -1,5 +1,5 @@
 import "./App.css";
-
+import StudentHome from "./Components/StudentHome";
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import Home from './Home';
@@ -30,6 +30,7 @@ function App() {
   if (IsUserLoggedIn) {
     routes = (
       <Routes>
+         <Route path="/student" element={<StudentHome />} />
         <Route path="/" element={<AddUser />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
@@ -45,6 +46,7 @@ function App() {
   } else {
     routes = (
       <Routes>
+        <Route path="/student" element={<StudentHome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
