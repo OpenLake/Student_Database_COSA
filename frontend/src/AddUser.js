@@ -8,9 +8,10 @@ function AddUser() {
   const [studentDetails, setStudentDetails] = React.useState();
   return (
     <div>
-      <Navbar setStudentDetails={setStudentDetails} />
-      <Add />
+      {/* <Navbar setStudentDetails={setStudentDetails} /> */}
+     
       <Body studentDetails={studentDetails} />
+      <Add />
     </div>
   );
 }
