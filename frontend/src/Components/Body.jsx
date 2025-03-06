@@ -1,6 +1,5 @@
-
 import Add from "../Add_User/Components/Add";
-
+import UserProfileButtons from "../Add_User/Components/UserProfileButtons"; // Update this path to match your project structure
 import { useState, useContext, useEffect } from "react";
 import { AdminContext } from "../App";
 import Card from "../Components/Card";
@@ -20,6 +19,15 @@ function Body({ studentDetails }) {
       });
     }
   }, [IsUserLoggedIn]);
+
+  // Refresh user details function
+  const refreshUserDetails = () => {
+    if (IsUserLoggedIn?.ID_No) {
+      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+        setUserDetails(data);
+      });
+    }
+  };
 
   // Logout function
   const handleLogout = () => {
@@ -69,19 +77,25 @@ function Body({ studentDetails }) {
           <div style={wideContentCardStyle}>
             <h3 style={headingStyle}>Your Student Profile</h3>
             <Card data={userDetails} />
+            
+            {/* Add UserProfileButtons for Edit and Update functionality */}
+            <UserProfileButtons 
+              isLoggedIn={!!IsUserLoggedIn} 
+              userDetails={userDetails}
+              onUpdateSuccess={refreshUserDetails}
+            />
           </div>
         ) : (
           <div style={errorCardStyle}>
             <div style={errorMessageStyle}>
-              Your student profile doesn't exist yet, contact admins.
+              Your student profile doesn't exist yet.
+            </div>
+            {/* Add button for users without a profile */}
+            <div style={addButtonContainerStyle}>
+              <Add />
             </div>
           </div>
         )}
-      </div>
-
-      {/* ADD COMPONENT IN THE CENTER AT THE END */}
-      <div style={addComponentContainerStyle}>
-        <Add />
       </div>
 
       {/* FOOTER */}
@@ -205,6 +219,7 @@ const errorCardStyle = {
   width: "100%",
   maxWidth: "800px",
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
 };
@@ -237,11 +252,9 @@ const errorMessageStyle = {
   padding: "2em",
 };
 
-// Style for the Add component container
-const addComponentContainerStyle = {
-  display: "flex",
-  justifyContent: "center",
-  padding: "2em 0",
+// Style for the Add button container when no profile exists
+const addButtonContainerStyle = {
+  marginTop: "2em",
 };
 
 const footerStyle = {
