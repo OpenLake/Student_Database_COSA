@@ -14,6 +14,7 @@ import EventForm from "./Components/EventForm";
 import { CreateTenure } from "./Components/TenureRecords";
 import { ShowTenure } from "./Components/TenureRecords";
 import RoomBooking from "./Components/RoomBooking";
+import PresidentApproval from "./Components/PresidentApproval";
 const AdminContext = createContext();
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
   if (IsUserLoggedIn) {
     routes = (
       <Routes>
+        <Route path="/president-approval" element={<PresidentApproval />} />
+
         <Route path="/" element={<AddUser />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
@@ -47,6 +50,8 @@ function App() {
   } else {
     routes = (
       <Routes>
+        <Route path="/president-approval" element={<PresidentApproval />} />
+
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

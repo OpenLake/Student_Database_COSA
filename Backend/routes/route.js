@@ -124,7 +124,16 @@ router.get("/room/requests", async (req, res) => {
 });
 
 // Update request status
-router.put("/room/request/:id/status", async (req, res) => {
+const authenticatePresident = (req, res, next) => {
+  // if (req.user.role !== "president") {
+  //   return res.status(403).send({ message: "Unauthorized" });
+  // }
+  next();
+};
+
+
+
+router.put("/room/request/:id/status", authenticatePresident , async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
