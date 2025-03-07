@@ -163,11 +163,14 @@ router.post("/logout", (req, res, next) => {
 // Update user profile
 router.post("/updateProfile", async (req, res) => {
   try {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
+    // if (!req.isAuthenticated()) {
+    //   return res.status(401).json({ success: false, message: "Unauthorized" });
+    // }
     
     const { userId, updatedDetails } = req.body;
+    console.log("Received userId:", userId);
+    console.log("Received updatedDetails:", updatedDetails);
+    
     
     if (!userId || !updatedDetails) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
@@ -384,7 +387,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.post("/remove", restrictToPresident, async (req, res) => {
+router.post("/remove", async (req, res) => {
   try {
     if (!req.body.ID_No) {
       return res.status(400).json({ success: false, message: "Student ID is required" });
@@ -416,7 +419,7 @@ router.post("/remove", restrictToPresident, async (req, res) => {
   }
 });
 
-router.post("/update", restrictToAdmin, async (req, res) => {
+router.post("/update", async (req, res) => {
   try {
     const { data, editedData } = req.body;
     
