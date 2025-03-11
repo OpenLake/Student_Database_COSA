@@ -40,72 +40,120 @@ export default function RoomBooking() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Room Booking</h1>
+    <div className="p-6 max-w-4xl mx-auto bg-gray-50 rounded-lg shadow-lg">
+      <h1 className="text-3xl font-bold mb-6 text-blue-700 border-b pb-3">Room Booking</h1>
 
       {/* Display status messages */}
-      {message && <p className="mb-4 text-green-600">{message}</p>}
+      {message && (
+        <div className="mb-6 p-4 rounded-md bg-blue-50 border-l-4 border-blue-500 text-blue-700 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p>{message}</p>
+        </div>
+      )}
 
-      <form className="space-y-3 bg-white p-4 rounded-lg shadow-md" onSubmit={handleSubmit}>
-        <input
-          type="date"
-          value={form.date}
-          onChange={(e) => setForm({ ...form, date: e.target.value })}
-          className="border p-2 w-full rounded"
-          required
-        />
-        <input
-          type="time"
-          value={form.time}
-          onChange={(e) => setForm({ ...form, time: e.target.value })}
-          className="border p-2 w-full rounded"
-          required
-        />
-        <select
-          value={form.room}
-          onChange={(e) => setForm({ ...form, room: e.target.value })}
-          className="border p-2 w-full rounded"
-          required
-        >
-          <option value="">Select Room</option>
-          <option value="Room A">Room A</option>
-          <option value="Room B">Room B</option>
-        </select>
-        <textarea
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="border p-2 w-full rounded"
-          placeholder="Event description"
-          required
-        />
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded w-full">
-          Request Booking
-        </button>
-      </form>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div className="bg-blue-600 text-white py-3 px-4 text-lg font-semibold">
+          New Booking Request
+        </div>
+        <form className="p-6 space-y-4" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <input
+                type="date"
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+              <input
+                type="time"
+                value={form.time}
+                onChange={(e) => setForm({ ...form, time: e.target.value })}
+                className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
+            <select
+              value={form.room}
+              onChange={(e) => setForm({ ...form, room: e.target.value })}
+              className="border p-2 w-full rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            >
+              <option value="">Select Room</option>
+              <option value="Room A">Room A</option>
+              <option value="Room B">Room B</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="border p-2 w-full rounded h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Event description"
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded w-full transition-colors duration-200 font-medium"
+          >
+            Request Booking
+          </button>
+        </form>
+      </div>
 
-      <h2 className="text-xl font-bold mt-6">Booking Requests</h2>
-      <table className="w-full border-collapse border mt-3">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Date</th>
-            <th className="border p-2">Time</th>
-            <th className="border p-2">Room</th>
-            <th className="border p-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookings.map((b, i) => (
-            <tr key={i} className="text-center border">
-              <td className="border p-2">{b.date}</td>
-              <td className="border p-2">{b.time}</td>
-              <td className="border p-2">{b.room}</td>
-              <td className={`border p-2 ${b.status === "Pending" ? "text-yellow-500" : b.status === "Approved" ? "text-green-500" : "text-red-500"}`}>
-                {b.status}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-blue-600 text-white py-3 px-4 text-lg font-semibold">
+          Booking Requests
+        </div>
+        <div className="p-4 overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="border-b p-3 font-semibold text-gray-700">Date</th>
+                <th className="border-b p-3 font-semibold text-gray-700">Time</th>
+                <th className="border-b p-3 font-semibold text-gray-700">Room</th>
+                <th className="border-b p-3 font-semibold text-gray-700">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center p-4 text-gray-500">No bookings found</td>
+                </tr>
+              ) : (
+                bookings.map((b, i) => (
+                  <tr key={i} className="border-b hover:bg-gray-50">
+                    <td className="p-3">{b.date}</td>
+                    <td className="p-3">{b.time}</td>
+                    <td className="p-3">{b.room}</td>
+                    <td className="p-3">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium
+                          ${b.status === "Pending" ? "bg-yellow-100 text-yellow-800" : 
+                          b.status === "Approved" ? "bg-green-100 text-green-800" : 
+                          "bg-red-100 text-red-800"}`}
+                      >
+                        {b.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
