@@ -15,6 +15,7 @@ import { CreateTenure } from "./Components/TenureRecords";
 import { ShowTenure } from "./Components/TenureRecords";
 import RoomBooking from "./Components/RoomBooking";
 import PresidentApproval from "./Components/PresidentApproval";
+import PresidentDashboard from "./Components/PresidentDashboard";
 const AdminContext = createContext();
 
 function App() {
@@ -33,7 +34,7 @@ function App() {
     routes = (
       <Routes>
         <Route path="/president-approval" element={<PresidentApproval />} />
-
+        <Route path="/president-dashboard" element={<PresidentDashboard />} />
         <Route path="/" element={<AddUser />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
@@ -51,7 +52,7 @@ function App() {
     routes = (
       <Routes>
         <Route path="/president-approval" element={<PresidentApproval />} />
-
+        <Route path="/president-dashboard" element={<PresidentDashboard />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
