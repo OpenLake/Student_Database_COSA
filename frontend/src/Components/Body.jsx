@@ -2,15 +2,18 @@ import { useState, useContext, useEffect } from "react";
 import { AdminContext } from "../App";
 import Card from "../Components/Card";
 import { fetchStudent } from "../services/utils";
+import { ShowSkills, AddSkill } from "../Components/ShowAddSkill"; // Import skill components
 
 function Body({ studentDetails }) {
   const { IsUserLoggedIn } = useContext(AdminContext);
   const [userDetails, setUserDetails] = useState(null);
+
   useEffect(() => {
     fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
       setUserDetails(data);
     });
   }, [IsUserLoggedIn.ID_No]);
+
   return (
     <div>
       {studentDetails !== undefined ? (
@@ -27,6 +30,7 @@ function Body({ studentDetails }) {
               Search Results
             </p>
             <Card data={studentDetails} />
+            <ShowSkills /> {/* Display skills of searched student */}
           </>
         ) : (
           <p
@@ -52,6 +56,8 @@ function Body({ studentDetails }) {
             Your Student Profile
           </p>
           <Card data={userDetails} />
+          <ShowSkills /> {/* Show logged-in user's skills */}
+          <AddSkill /> {/* Allow logged-in user to add skills */}
         </>
       ) : (
         <div
@@ -68,8 +74,6 @@ function Body({ studentDetails }) {
           Your student profile doesn't exist yet, contact admins.
         </div>
       )}
-
-      {/* {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} />} */}
     </div>
   );
 }
