@@ -1,104 +1,132 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Calendar, PlusCircle, MessageSquare, DoorClosed, Award, Users, FileText, Bell, Search, Settings, ChevronRight, Layers, Grid, Home } from 'lucide-react';
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const GensecSciTechDashboard = () => {
+  const [activeCategory, setActiveCategory] = useState('all');
 
-export default function GensecSciTechDashboard() {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
+  const menuItems = [
+   // { title: 'Add User', path: '/', icon: <Users className="w-5 h-5" />, category: 'admin', color: 'from-pink-500 to-purple-600' },
+    { title: 'GenSec Tech Endorsement', path: '/gensectech-endorse', icon: <Award className="w-5 h-5" />, category: 'endorsement', color: 'from-blue-500 to-indigo-600' },
+    { title: 'Room Booking', path: '/roombooking', icon: <DoorClosed className="w-5 h-5" />, category: 'booking', color: 'from-green-500 to-teal-600' },
+    { title: 'Feedback Form', path: '/feedback', icon: <MessageSquare className="w-5 h-5" />, category: 'feedback', color: 'from-orange-500 to-red-600' },
+    { title: 'Events', path: '/events', icon: <Calendar className="w-5 h-5" />, category: 'events', color: 'from-purple-500 to-indigo-600' },
+    { title: 'Add Event', path: '/add-event', icon: <PlusCircle className="w-5 h-5" />, category: 'events', color: 'from-purple-500 to-indigo-600' },
+    { title: 'COSA Create', path: '/cosa/create', icon: <FileText className="w-5 h-5" />, category: 'cosa', color: 'from-yellow-500 to-amber-600' },
+    { title: 'COSA View', path: '/cosa', icon: <Layers className="w-5 h-5" />, category: 'cosa', color: 'from-yellow-500 to-amber-600' }
+  ];
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
+  const categories = [
+    { id: 'all', name: 'All Modules', icon: <Grid className="w-4 h-4" /> },
+    { id: 'admin', name: 'Administration', icon: <Users className="w-4 h-4" /> },
+    { id: 'endorsement', name: 'Endorsements', icon: <Award className="w-4 h-4" /> },
+    { id: 'booking', name: 'Bookings', icon: <DoorClosed className="w-4 h-4" /> },
+    { id: 'feedback', name: 'Feedback', icon: <MessageSquare className="w-4 h-4" /> },
+    { id: 'events', name: 'Events', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'cosa', name: 'COSA', icon: <FileText className="w-4 h-4" /> }
+  ];
 
-  const fetchBookings = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`${API_BASE_URL}/room/requests`);
-      setBookings(res.data);
-      setError(null);
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-      setError("Failed to load booking requests. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    const badgeClasses = {
-      Pending: "bg-yellow-100 text-yellow-800 border border-yellow-200",
-      Approved: "bg-green-100 text-green-800 border border-green-200",
-      Rejected: "bg-red-100 text-red-800 border border-red-200"
-    };
-    
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeClasses[status]}`}>
-        {status}
-      </span>
-    );
-  };
-
-  const filteredBookings = bookings.filter(booking => {
-    const matchesSearch = searchTerm === "" || 
-      booking.room.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesTab = activeTab === "all" || 
-      booking.status.toLowerCase() === activeTab.toLowerCase();
-    
-    return matchesSearch && matchesTab;
-  });
-
-  const stats = {
-    all: bookings.length,
-    pending: bookings.filter(b => b.status === "Pending").length,
-    approved: bookings.filter(b => b.status === "Approved").length,
-    rejected: bookings.filter(b => b.status === "Rejected").length
-  };
+  const filteredItems = activeCategory === 'all' 
+    ? menuItems 
+    : menuItems.filter(item => item.category === activeCategory);
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-white">GenSec Sci-Tech Dashboard</h1>
-              <button 
-                onClick={fetchBookings}
-                className="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center gap-2"
-              >
-                Refresh
+    <div className="min-h-screen bg-gray-100">
+      {/* Top Navigation */}
+      <header className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Award className="h-8 w-8" />
+              <span className="ml-2 text-xl font-bold">SciTech Portal</span>
+            </div>
+            <div className="hidden md:flex flex-1 max-w-md mx-4">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full py-1.5 pl-10 pr-4 rounded-lg bg-indigo-500 bg-opacity-50 text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white"
+                />
+                <Search className="absolute top-1.5 left-3 h-5 w-5 text-indigo-200" />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button className="p-1 rounded-full text-white hover:bg-indigo-500">
+                <Bell className="h-6 w-6" />
               </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-center">
-              <span className="text-red-500 mr-2">⚠️</span>
-              {error}
-            </div>
-          )}
-
-          <div className="grid grid-cols-3 gap-4 p-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              <p className="text-sm text-gray-500">Total Requests</p>
-              <p className="text-2xl font-bold">{stats.all}</p>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              <p className="text-sm text-gray-500">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              <p className="text-sm text-gray-500">Approved</p>
-              <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+              <button className="p-1 rounded-full text-white hover:bg-indigo-500">
+                <Settings className="h-6 w-6" />
+              </button>
+              <div className="relative">
+                <button className="w-10 h-10 rounded-full bg-white text-indigo-700 flex items-center justify-center font-bold">
+                  GS
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">GenSec SciTech Dashboard</h1>
+          <p className="text-gray-600">Access and manage all your SciTech services</p>
+        </div>
+
+        {/* Category Navigation */}
+        <div className="bg-white rounded-xl p-4 shadow-md mb-6">
+          <div className="flex flex-wrap gap-2">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeCategory === category.id 
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-md' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category.icon}
+                <span>{category.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredItems.map((item, index) => (
+            <Link
+              key={index}
+              to={item.path}
+              className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-100 h-full">
+                <div className={`h-2 bg-gradient-to-r ${item.color}`}></div>
+                <div className="p-6">
+                  <div className={`w-12 h-12 rounded-lg mb-4 flex items-center justify-center bg-gradient-to-r ${item.color} text-white`}>
+                    {item.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">{item.title}</h3>
+                  <p className="mt-2 text-gray-600 text-sm">Access and manage {item.title.toLowerCase()}</p>
+                  <div className="mt-4 flex items-center text-sm font-medium text-indigo-600">
+                    <span>Open</span>
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+        
+        {/* Footer */}
+        <footer className="mt-8 text-center text-sm text-gray-500 py-4">
+          <p>© 2025 GenSec SciTech Portal. All rights reserved.</p>
+        </footer>
+      </main>
     </div>
   );
-}
+};
+
+export default GensecSciTechDashboard;
