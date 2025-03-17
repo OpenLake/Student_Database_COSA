@@ -16,6 +16,8 @@ import { ShowTenure } from "./Components/TenureRecords";
 import RoomBooking from "./Components/RoomBooking";
 import PresidentApproval from "./Components/PresidentApproval";
 import PresidentDashboard from "./Components/PresidentDashboard";
+import GenSecTechPage from "./Components/GenSecTechPage";
+import GensecSciTechDashboard from "./Components/GensecSciTechDashboard";
 const AdminContext = createContext();
 
 function App() {
@@ -35,7 +37,9 @@ function App() {
       <Routes>
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
+        <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
         <Route path="/" element={<AddUser />} />
+        <Route path="/gensectech-dashboard" element={<GensecSciTechDashboard />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
@@ -53,6 +57,8 @@ function App() {
       <Routes>
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
+        <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
+        <Route path="/gensectech-dashboard" element={<GensecSciTechDashboard />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
