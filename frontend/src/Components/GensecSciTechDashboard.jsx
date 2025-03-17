@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, PlusCircle, MessageSquare, DoorClosed, Award, Users, FileText, Bell, Search, Settings, ChevronRight, Layers, Grid, Home } from 'lucide-react';
+import { Calendar, PlusCircle, MessageSquare, DoorClosed, Award, Users, FileText, Bell, Search, Settings, ChevronRight, Layers, Grid, Home, LogOut } from 'lucide-react';
 
 const GensecSciTechDashboard = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -57,6 +57,13 @@ const GensecSciTechDashboard = () => {
               <button className="p-1 rounded-full text-white hover:bg-indigo-500">
                 <Settings className="h-6 w-6" />
               </button>
+              <Link 
+                to="/login" 
+                className="flex items-center px-3 py-1.5 bg-indigo-800 hover:bg-indigo-900 rounded-lg transition-colors"
+              >
+                <LogOut className="h-5 w-5 mr-1" />
+                <span className="text-sm">Logout</span>
+              </Link>
               <div className="relative">
                 <button className="w-10 h-10 rounded-full bg-white text-indigo-700 flex items-center justify-center font-bold">
                   GS
