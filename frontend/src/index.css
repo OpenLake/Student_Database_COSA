@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -11,7 +9,168 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 2em;
+  background: linear-gradient(to right, #3f51b5, #5c6bc0);
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+}
+
+.logo {
+  margin: 0;
+  color: #ffcc00;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 0.6em 1em;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link span {
+  margin-right: 5px;
+}
+
+.logout-button {
+  background: linear-gradient(to right, #ff4d4d, #f44336);
+  color: white;
+  border: none;
+  padding: 0.6em 1.2em;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+}
+
+.logout-button span {
+  margin-right: 5px;
+}
+
+/* Content Styles */
+.container {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+  min-height: 100vh;
+  padding: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  padding: 2em;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.content-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2em;
+  width: 100%;
+  /* max-width: 800px; */
+  transition: transform 0.3s ease;
+}
+
+/* Wider content card for profiles */
+.wide-content-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2em;
+  width: 100%;
+  max-width: 1200px;
+  transition: transform 0.3s ease;
+  overflow: auto;
+}
+
+.error-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 3em;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.heading {
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #3f51b5;
+  margin-bottom: 1.5em;
+  padding-bottom: 0.8em;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.message {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #666;
+}
+
+.error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #e53935;
+  text-align: center;
+  padding: 2em;
+}
+
+.add-button-container {
+  margin-top: 2em;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1em;
+  background: #f8f9fa;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
+  margin-top: auto;
+}

@@ -105,7 +105,7 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
     console.log("Getting user ID from:", userDetails);
     
     // Directly use ID_No as that's the field in your User schema
-    return userDetails.ID_No;
+    return userDetails.student.ID_No;
   };
   
   // Submit handler for edit form
