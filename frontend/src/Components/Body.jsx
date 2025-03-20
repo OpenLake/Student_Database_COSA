@@ -1,11 +1,12 @@
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Add from "../Add_User/Components/Add";
 import UserProfileButtons from "../Add_User/Components/UserProfileButtons";
-import { useState, useContext, useEffect } from "react";
-import { AdminContext } from "../App";
 import Card from "../Components/Card";
 import { fetchStudent } from "../services/utils";
-import { Link, useNavigate } from "react-router-dom";
 import { ShowSkills, AddSkill } from "./ShowAddSkill";
+import { AdminContext } from "../App";
+// import "./Body.css";
 
 function Body({ studentDetails }) {
   const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
@@ -34,42 +35,40 @@ function Body({ studentDetails }) {
   };
 
   return (
-    <div className="container">
+    <div className="body-container">
       <nav className="navbar">
-        <div className="nav-left">
-          <h2 className="logo">Student Portal</h2>
-        </div>
-        <div className="nav-right">
+        <h2 className="navbar-title">Student Portal</h2>
+        <div className="navbar-links">
           <Link to="/cosa" className="nav-link">
-            <span>📚</span> Cosa
+            📚 Cosa
           </Link>
           <Link to="/feedback" className="nav-link">
-            <span>💬</span> Feedback
+            💬 Feedback
           </Link>
           <Link to="/events" className="nav-link">
-            <span>🗓️</span> Events
+            🗓️ Events
           </Link>
           <button onClick={handleLogout} className="logout-button">
-            <span>🚪</span> Logout
+            🚪 Logout
           </button>
         </div>
       </nav>
 
-      <div className="content-container">
+      <div className="main-content">
         {studentDetails !== undefined ? (
           studentDetails !== null ? (
             <div className="wide-content-card">
-              <h3 className="heading">Search Results</h3>
+              <h3>Search Results</h3>
               <Card data={studentDetails} />
             </div>
           ) : (
             <div className="content-card">
-              <p className="message">No results found</p>
+              <p>No results found</p>
             </div>
           )
         ) : userDetails ? (
           <div className="wide-content-card">
-            <h3 className="heading">Your Student Profile</h3>
+            <h3>Your Student Profile</h3>
             <Card data={userDetails} />
             <UserProfileButtons
               isLoggedIn={!!IsUserLoggedIn}
@@ -79,19 +78,28 @@ function Body({ studentDetails }) {
           </div>
         ) : (
           <div className="error-card">
-            <div className="error-message">Your student profile doesn't exist yet.</div>
-            <div className="add-button-container">
+            <p>Your student profile doesn't exist yet.</p>
+            <div>
               <Add />
             </div>
           </div>
         )}
       </div>
 
-      <ShowSkills />
-      <AddSkill />
+      {/* Responsive Skills Section */}
+      <div className="skills-section-container">
+        <div className="skills-row">
+          <div className="skill-card">
+            <ShowSkills />
+          </div>
+          <div className="skill-card">
+            <AddSkill />
+          </div>
+        </div>
+      </div>
 
       <footer className="footer">
-        <p>© 2025 Student Portal. All rights reserved.</p>
+        © 2025 Student Portal. All rights reserved.
       </footer>
     </div>
   );
