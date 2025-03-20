@@ -40,6 +40,7 @@ function App() {
         <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
         <Route path="/" element={<AddUser />} />
         <Route path="/gensectech-dashboard" element={<GensecSciTechDashboard />} />
+        <Route path="/gensectech-dashboard" element={<GensecSciTechDashboard />} />
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />

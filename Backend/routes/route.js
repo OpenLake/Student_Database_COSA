@@ -10,7 +10,9 @@ const {
   CultPOR,
   SportsPOR,
   AcadPOR,
+  Achievement,
 } = require("../models/student");
+
 const Feedback = require("../models/Feedback");
 router.post("/feedback", async (req, res) => {
   try {
@@ -46,30 +48,32 @@ router.get("/feedback/:userId", async (req, res) => {
 router.post("/fetch", async (req, res) => {
   try {
     const student = await Student.findOne({ ID_No: req.body.student_ID });
-
+    
     if (!student) {
       return res
         .status(404)
         .json({ success: false, message: "Student not found" });
     }
-
+    
     const scitechPor = await ScietechPOR.find({ student: student });
     const cultPor = await CultPOR.find({ student: student });
     const sportPor = await SportsPOR.find({ student: student });
     const acadPor = await AcadPOR.find({ student: student });
+    const achievements = await Achievement.find({ student: student });
     const PORs = [...scitechPor, ...cultPor, ...sportPor, ...acadPor];
-
+    
     const st = {
       student: student,
       PORS: PORs,
+      achievements: achievements
     };
+    
     return res.status(200).json(st);
   } catch (error) {
     console.log(error);
     return res.status(400).json({ success: false, message: "process failed" });
   }
 });
-
 const checkConflict = async (startTime, endTime, gap = 4 * 60 * 60 * 1000) => {
   const startWithGap = new Date(startTime.getTime() - gap);
   const endWithGap = new Date(endTime.getTime() + gap);
