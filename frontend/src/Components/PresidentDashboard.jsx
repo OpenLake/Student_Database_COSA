@@ -175,7 +175,7 @@ const PresidentDashboard = () => {
 
           {/* Give Feedback */}
           <Link
-            to="/feedback"
+            to="/viewfeedback"
             className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 rounded-xl shadow-md overflow-hidden"
           >
             <div className="p-5">
@@ -189,9 +189,9 @@ const PresidentDashboard = () => {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-                <h3 className="ml-2 text-xl font-semibold text-white">Give Feedback</h3>
+                <h3 className="ml-2 text-xl font-semibold text-white"> Feedback</h3>
               </div>
-              <p className="text-white text-opacity-90 text-sm">Submit feedback about college issues</p>
+              <p className="text-white text-opacity-90 text-sm">View feedback about college issues</p>
             </div>
             <div className="bg-yellow-700 bg-opacity-30 p-3 text-center">
               <span className="text-white text-sm font-medium">Access</span>

@@ -9,7 +9,7 @@ const GensecSciTechDashboard = () => {
    // { title: 'Add User', path: '/', icon: <Users className="w-5 h-5" />, category: 'admin', color: 'from-pink-500 to-purple-600' },
     { title: 'GenSec Tech Endorsement', path: '/gensectech-endorse', icon: <Award className="w-5 h-5" />, category: 'endorsement', color: 'from-blue-500 to-indigo-600' },
     { title: 'Room Booking', path: '/roombooking', icon: <DoorClosed className="w-5 h-5" />, category: 'booking', color: 'from-green-500 to-teal-600' },
-    { title: 'Feedback Form', path: '/feedback', icon: <MessageSquare className="w-5 h-5" />, category: 'feedback', color: 'from-orange-500 to-red-600' },
+    { title: 'View Feedback', path: '/viewfeedback', icon: <MessageSquare className="w-5 h-5" />, category: 'feedback', color: 'from-orange-500 to-red-600' },
     { title: 'Events', path: '/events', icon: <Calendar className="w-5 h-5" />, category: 'events', color: 'from-purple-500 to-indigo-600' },
     { title: 'Add Event', path: '/add-event', icon: <PlusCircle className="w-5 h-5" />, category: 'events', color: 'from-purple-500 to-indigo-600' },
     { title: 'COSA Create', path: '/cosa/create', icon: <FileText className="w-5 h-5" />, category: 'cosa', color: 'from-yellow-500 to-amber-600' },
