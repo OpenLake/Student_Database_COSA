@@ -18,6 +18,7 @@ import PresidentApproval from "./Components/PresidentApproval";
 import PresidentDashboard from "./Components/PresidentDashboard";
 import GenSecTechPage from "./Components/GenSecTechPage";
 import GensecSciTechDashboard from "./Components/GensecSciTechDashboard";
+import ViewFeedback from "./Components/ViewFeedback";
 const AdminContext = createContext();
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
+        <Route path="/viewfeedback" element={<ViewFeedback />} />
         <Route path="/events" element={<EventList />} />
         <Route path="/add-event" element={<EventForm />} />
         {/* <Route path='/logout' element={<Logout/>} /> */}
@@ -56,6 +58,7 @@ function App() {
   } else {
     routes = (
       <Routes>
+            <Route path="/viewfeedback" element={<ViewFeedback />} />
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
         <Route path="/gensectech-endorse" element={<GenSecTechPage />} />

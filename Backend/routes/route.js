@@ -45,6 +45,17 @@ router.get("/feedback/:userId", async (req, res) => {
   }
 });
 
+router.get("/feedback", async(req,res)=>{
+  try{
+    const feedbacks= await Feedback.find();
+    res.json(feedbacks);
+
+  }
+  catch(error){
+    res.status(500).json({error: "Server error"});
+  }
+})
+
 router.post("/fetch", async (req, res) => {
   try {
     const student = await Student.findOne({ ID_No: req.body.student_ID });
