@@ -303,5 +303,198 @@ router.put("/skills/endorse/:skillId", async (req, res) => {
   }
 });
 
+// Routes for GenSecAcad skills management
 
+/**
+ * Get all unendorsed academic skills
+ * This route fetches all academic skills that haven't been endorsed yet
+ */
+router.get("/skills/unendorsed/acad", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "acad", endorsed: false }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Endorse an academic skill
+ * This route allows GenSecAcad to endorse an academic skill
+ */
+router.put("/skills/endorse-acad/:skillId", async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.skillId);
+    if (!skill) {
+      return res.status(404).json({ error: "Skill not found" });
+    }
+    
+    if (skill.skillType !== "acad") {
+      return res.status(403).json({ error: "Unauthorized endorsement. This skill is not academic." });
+    }
+    
+    skill.endorsed = true;
+    await skill.save();
+    res.json({ message: "Academic skill endorsed successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get all academic skills (both endorsed and unendorsed)
+ * This allows GenSecAcad to view all academic skills in the system
+ */
+router.get("/skills/acad", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "acad" }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get endorsed academic skills
+ * This route fetches all academic skills that have been endorsed
+ */
+router.get("/skills/endorsed/acad", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "acad", endorsed: true }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get student academic skills
+ * This route fetches all academic skills for a specific student
+ */
+router.get("/skills/student/:studentId/acad", async (req, res) => {
+  try {
+    const student = await Student.findOne({ ID_No: req.params.studentId });
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    
+    const skills = await Skill.find({ student: student._id, skillType: "acad" });
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Revoke endorsement for an academic skill
+ * This route allows GenSecAcad to revoke an endorsement
+ */
+router.put("/skills/revoke-endorsement/acad/:skillId", async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.skillId);
+    if (!skill) {
+      return res.status(404).json({ error: "Skill not found" });
+    }
+    
+    if (skill.skillType !== "acad") {
+      return res.status(403).json({ error: "Unauthorized action. This skill is not academic." });
+    }
+    
+    skill.endorsed = false;
+    await skill.save();
+    res.json({ message: "Academic skill endorsement revoked successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/skills/unendorsed/sport", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "sport", endorsed: false }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endorse a sports skill
+router.put("/skills/endorse-sport/:skillId", async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.skillId);
+    if (!skill) {
+      return res.status(404).json({ error: "Skill not found" });
+    }
+    
+    if (skill.skillType !== "sport") {
+      return res.status(403).json({ error: "Unauthorized endorsement. This is not a sports skill." });
+    }
+    
+    skill.endorsed = true;
+    await skill.save();
+    res.json({ message: "Sports skill endorsed successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+// Include these routes in your skill routes file
+
+// Get all unendorsed cultural skills
+router.get("/skills/unendorsed/cultural", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "cultural", endorsed: false }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endorse a cultural skill
+router.put("/skills/endorse-cultural/:skillId", async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.skillId);
+    if (!skill) {
+      return res.status(404).json({ error: "Skill not found" });
+    }
+    
+    if (skill.skillType !== "cultural") {
+      return res.status(403).json({ error: "Unauthorized endorsement" });
+    }
+    
+    skill.endorsed = true;
+    await skill.save();
+    res.json({ message: "Cultural skill endorsed successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add more specific routes for cultural skills if needed
+// For example, to get all endorsed cultural skills:
+router.get("/skills/endorsed/cultural", async (req, res) => {
+  try {
+    const skills = await Skill.find({ skillType: "cultural", endorsed: true }).populate("student", "ID_No name");
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// To get a student's cultural skills:
+router.get("/skills/student/cultural/:studentId", async (req, res) => {
+  try {
+    const student = await Student.findOne({ ID_No: req.params.studentId });
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    
+    const skills = await Skill.find({ 
+      student: student._id,
+      skillType: "cultural" 
+    });
+    
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;
