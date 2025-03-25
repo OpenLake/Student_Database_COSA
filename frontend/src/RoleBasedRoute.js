@@ -6,7 +6,7 @@ const RoleBasedRoute = ({ children, allowedRoles }) => {
   const { IsUserLoggedIn } = useContext(AdminContext);
 
   if (!allowedRoles.includes(IsUserLoggedIn.role)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;

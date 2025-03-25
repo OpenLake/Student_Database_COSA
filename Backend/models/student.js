@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
       "gensec-acad",
     ],
     required: true,
+    default: "student",
   },
   strategy: {
     type: String,

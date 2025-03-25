@@ -1,76 +1,109 @@
-import { useState, useContext, useEffect } from "react";
-import { AdminContext } from "../App";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Add from "../Add_User/Components/Add";
+import UserProfileButtons from "../Add_User/Components/UserProfileButtons";
 import Card from "../Components/Card";
 import { fetchStudent } from "../services/utils";
+import { ShowSkills, AddSkill } from "./ShowAddSkill";
+import { AdminContext } from "../App";
+import { logoutUser } from "../services/auth";
+// import "./Body.css";
 
 function Body({ studentDetails }) {
-  const { IsUserLoggedIn } = useContext(AdminContext);
+  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const [userDetails, setUserDetails] = useState(null);
-  useEffect(() => {
-    fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
-      if (data) setUserDetails(data);
-      else window.location.href = "/add-profile";
-    });
-  }, [IsUserLoggedIn.ID_No]);
-  return (
-    <div>
-      {studentDetails !== undefined ? (
-        studentDetails !== null ? (
-          <>
-            <p
-              style={{
-                textAlign: "center",
-                fontSize: "1.5em",
-                fontWeight: "bold",
-                textDecoration: "underline",
-              }}
-            >
-              Search Results
-            </p>
-            <Card data={studentDetails} />
-          </>
-        ) : (
-          <p
-            style={{
-              textAlign: "center",
-              fontSize: "1.5em",
-              fontWeight: "bold",
-            }}
-          >
-            No results found
-          </p>
-        )
-      ) : userDetails ? (
-        <>
-          <p
-            style={{
-              textAlign: "center",
-              fontSize: "1.5em",
-              fontWeight: "bold",
-              textDecoration: "underline",
-            }}
-          >
-            Your Student Profile
-          </p>
-          <Card data={userDetails} />
-        </>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: "2em",
-            height: "100%",
-            fontWeight: "bold",
-            color: "#555",
-          }}
-        >
-          Your student profile doesn't exist yet, contact admins.
-        </div>
-      )}
+  const navigate = useNavigate();
 
-      {/* {IsUserLoggedIn && studentDetails && <UpdateCards studentDetails={studentDetails} />} */}
+  useEffect(() => {
+    if (IsUserLoggedIn?.ID_No) {
+      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+        setUserDetails(data);
+      });
+    }
+  }, [IsUserLoggedIn]);
+
+  const refreshUserDetails = () => {
+    if (IsUserLoggedIn?.ID_No) {
+      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+        setUserDetails(data);
+      });
+    }
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    await logoutUser();
+    setIsUserLoggedIn(null);
+    navigate("/login");
+  };
+
+  return (
+    <div className="body-container">
+      <nav className="navbar">
+        <h2 className="navbar-title">Student Portal</h2>
+        <div className="navbar-links">
+          <Link to="/cosa" className="nav-link">
+            📚 Cosa
+          </Link>
+          <Link to="/feedback" className="nav-link">
+            💬 Feedback
+          </Link>
+          <Link to="/events" className="nav-link">
+            🗓️ Events
+          </Link>
+          <button onClick={handleLogout} className="logout-button">
+            🚪 Logout
+          </button>
+        </div>
+      </nav>
+
+      <div className="main-content">
+        {studentDetails !== undefined ? (
+          studentDetails !== null ? (
+            <div className="wide-content-card">
+              <h3>Search Results</h3>
+              <Card data={studentDetails} />
+            </div>
+          ) : (
+            <div className="content-card">
+              <p>No results found</p>
+            </div>
+          )
+        ) : userDetails ? (
+          <div className="wide-content-card">
+            <h3>Your Student Profile</h3>
+            <Card data={userDetails} />
+            <UserProfileButtons
+              isLoggedIn={!!IsUserLoggedIn}
+              userDetails={userDetails}
+              onUpdateSuccess={refreshUserDetails}
+            />
+          </div>
+        ) : (
+          <div className="error-card">
+            <p>Your student profile doesn't exist yet.</p>
+            <div>
+              <Add />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Responsive Skills Section */}
+      <div className="skills-section-container">
+        <div className="skills-row">
+          <div className="skill-card">
+            <ShowSkills />
+          </div>
+          <div className="skill-card">
+            <AddSkill />
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer">
+        © 2025 Student Portal. All rights reserved.
+      </footer>
     </div>
   );
 }
