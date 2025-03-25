@@ -16,11 +16,23 @@ const {
 const passport = require("../models/passportConfig");
 
 // Session Status
-router.get("/fetchAuth", function (req, res) {
+router.get("/fetchAuth", async function (req, res) {
   if (req.isAuthenticated()) {
+    //find user in student if not then redirect to add-profile
+    // const user = req.user;
+    // try {
+    //   const student = await Student.findOne({ user_id: user._id });
+    //   if (!student) {
+    //     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+    //     return res.redirect(`${process.env.FRONTEND_URL}/add-profile`);
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    //   return res.status(400).json({ message: "Bad request." });
+    // }
     res.json(req.user);
   } else {
-    res.json(null);
+    res.status(401).json({ message: "Unauthorized" });
   }
 });
 
@@ -39,7 +51,13 @@ router.post("/register", async (req, res) => {
   }
 
   const newUser = await User.register(
-    new User({ name: name, strategy: "local", ID_No: ID, username: email }),
+    new User({
+      name: name,
+      strategy: "local",
+      ID_No: ID,
+      username: email,
+      role: "student",
+    }),
     password,
   );
   req.login(newUser, (err) => {
@@ -47,9 +65,7 @@ router.post("/register", async (req, res) => {
       console.error(err);
       return res.status(400).json({ message: "Bad request." });
     }
-    return res
-      .status(200)
-      .json({ message: "Registration successful", user: newUser });
+    return res.redirect("/add-profile");
   });
 });
 

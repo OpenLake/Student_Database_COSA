@@ -1,19 +1,34 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
 import { loginUser } from "../../services/auth";
+import { fetchCredentials } from "../../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsUserLoggedIn } = useContext(AdminContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCredentials().then((User) => {
+      if (User) {
+        setIsUserLoggedIn(User);
+        navigate("/", { replace: true });
+      } else {
+        console.log("User not logged in");
+      }
+    });
+  }, [setIsUserLoggedIn]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const status = await loginUser(email, password);
     if (status) {
       setIsUserLoggedIn(status);
+      navigate("/", { replace: true });
     }
   };
 

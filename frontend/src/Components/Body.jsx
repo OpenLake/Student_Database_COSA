@@ -8,7 +8,8 @@ function Body({ studentDetails }) {
   const [userDetails, setUserDetails] = useState(null);
   useEffect(() => {
     fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
-      setUserDetails(data);
+      if (data) setUserDetails(data);
+      else window.location.href = "/add-profile";
     });
   }, [IsUserLoggedIn.ID_No]);
   return (

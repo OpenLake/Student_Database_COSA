@@ -10,6 +10,7 @@ const {
   AcadPOR,
 } = require("../models/student");
 const Feedback = require("../models/Feedback");
+// const passport = require("passport");
 router.post("/feedback", async (req, res) => {
   try {
     let { userId, type, description } = req.body;
@@ -40,6 +41,32 @@ router.get("/feedback/:userId", async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 });
+
+router.post(
+  "/update-profile",
+  (req, res, next) => {
+    req.isAuthenticated() ? next() : res.status(401).send("Not Authenticated");
+  },
+  async (req, res) => {
+    try {
+      const { ID_No, name } = req.user;
+      const { program, discipline, yearOfAdmission } = req.body;
+      const student = new Student({
+        name,
+        ID_No,
+        user_id: req.user._id,
+        Program: program,
+        discipline,
+        add_year: yearOfAdmission,
+      });
+      await student.save();
+      res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ error: "Server Error" });
+    }
+  },
+);
 
 router.post("/fetch", async (req, res) => {
   try {

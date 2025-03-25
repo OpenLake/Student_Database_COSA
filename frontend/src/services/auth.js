@@ -1,13 +1,18 @@
 import axios from "axios";
 
 export async function fetchCredentials() {
-  const response = await axios.get(
-    `${process.env.REACT_APP_BACKEND_URL}/auth/fetchAuth`,
-    {
-      withCredentials: true,
-    },
-  );
-  return response.data;
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/auth/fetchAuth`,
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching credentials:", error);
+    return null;
+  }
 }
 
 export async function registerUser(name, ID, email, password) {

@@ -10,7 +10,17 @@ const { connectDB } = require("./db");
 const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
 const routes_tenure = require("./routes/tenureRoutes.js");
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(
+  cors({
+    origin: [
+      process.env.FRONTEND_URL,
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+    ],
+    credentials: true,
+    exposedHeaders: ["set-cookie", "Access-Control-Allow-Origin"],
+  }),
+);
 
 // Connect to MongoDB
 connectDB();
@@ -24,6 +34,14 @@ app.use(
     saveUninitialized: false,
   }),
 );
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept",
+  );
+  next();
+});
 
 app.use(myPassport.initialize());
 app.use(myPassport.session());

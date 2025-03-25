@@ -9,6 +9,20 @@ const userSchema = new mongoose.Schema({
   },
   ID_No: {
     type: Number,
+    unique: true,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: [
+      "student",
+      "president",
+      "gensec-scitech",
+      "gensec-cult",
+      "gensec-sports",
+      "gensec-acad",
+    ],
+    required: true,
   },
   strategy: {
     type: String,
@@ -23,6 +37,11 @@ userSchema.plugin(findOrCreate);
 // Define submodels for different 'pos_res' types
 
 const student = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
   name: {
     type: String,
     required: true,
