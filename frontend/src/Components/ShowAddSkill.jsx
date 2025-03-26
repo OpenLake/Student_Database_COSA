@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -8,6 +9,7 @@ export function ShowSkills() {
   const [skills, setSkills] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchSkills = async () => {
     if (!id.trim()) {
@@ -17,12 +19,17 @@ export function ShowSkills() {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${BASE_URL}/skills/${id}`);
-      setSkills(response.data);
+      const res = await axios.get(`${BASE_URL}/api/skills/${id}`, {
+        withCredentials: true,
+      });
+      setSkills(res.data);
       setError("");
     } catch (err) {
       setError("Skills not found or invalid ID");
       setSkills([]);
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -40,7 +47,7 @@ export function ShowSkills() {
           placeholder="Enter Student ID"
           value={id}
           onChange={(e) => setId(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && fetchSkills()}
+          onKeyDown={(e) => e.key === "Enter" && fetchSkills()}
         />
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center justify-center"

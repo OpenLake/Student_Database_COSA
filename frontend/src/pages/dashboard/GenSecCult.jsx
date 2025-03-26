@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar,
@@ -17,17 +17,20 @@ import {
   Home,
   LogOut,
 } from "lucide-react";
+import { logoutUser } from "../../services/auth";
+import { AdminContext } from "../../App";
 
-const GensecSportsDashboard = () => {
+const GensecCultDashboard = () => {
   const [activeCategory, setActiveCategory] = useState("all");
+  const { setIsUserLoggedIn } = useContext(AdminContext);
 
   const menuItems = [
     {
-      title: "GenSec Sports Endorsement",
-      path: "/gensecsport-endorse",
+      title: "GenSec Cultural Endorsement",
+      path: "/genseccult-endorse",
       icon: <Award className="w-5 h-5" />,
       category: "endorsement",
-      color: "from-amber-500 to-orange-600",
+      color: "from-purple-500 to-pink-600",
     },
     {
       title: "Room Booking",
@@ -104,43 +107,53 @@ const GensecSportsDashboard = () => {
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setIsUserLoggedIn(null);
+      window.location.replace("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Top Navigation */}
-      <header className="bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-lg">
+      <header className="bg-gradient-to-r from-purple-600 to-pink-700 text-white shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Award className="h-8 w-8" />
-              <span className="ml-2 text-xl font-bold">Sports Portal</span>
+              <span className="ml-2 text-xl font-bold">Cultural Portal</span>
             </div>
             <div className="hidden md:flex flex-1 max-w-md mx-4">
               <div className="relative w-full">
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-full py-1.5 pl-10 pr-4 rounded-lg bg-amber-500 bg-opacity-50 text-white placeholder-amber-200 focus:outline-none focus:ring-2 focus:ring-white"
+                  className="w-full py-1.5 pl-10 pr-4 rounded-lg bg-purple-500 bg-opacity-50 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white"
                 />
-                <Search className="absolute top-1.5 left-3 h-5 w-5 text-amber-200" />
+                <Search className="absolute top-1.5 left-3 h-5 w-5 text-purple-200" />
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-1 rounded-full text-white hover:bg-amber-500">
+              <button className="p-1 rounded-full text-white hover:bg-purple-500">
                 <Bell className="h-6 w-6" />
               </button>
-              <button className="p-1 rounded-full text-white hover:bg-amber-500">
+              <button className="p-1 rounded-full text-white hover:bg-purple-500">
                 <Settings className="h-6 w-6" />
               </button>
-              <Link
-                to="/login"
-                className="flex items-center px-3 py-1.5 bg-amber-800 hover:bg-amber-900 rounded-lg transition-colors"
+              <button
+                onClick={handleLogout}
+                className="p-1 rounded-full text-white bg-red-700 hover:bg-red-800 flex items-center justify-center "
               >
                 <LogOut className="h-5 w-5 mr-1" />
                 <span className="text-sm">Logout</span>
-              </Link>
-              <div className="relative">
-                <button className="w-10 h-10 rounded-full bg-white text-amber-700 flex items-center justify-center font-bold">
-                  GS
+              </button>
+              <div className="relative p-1">
+                <button className="w-10 h-10 rounded-full bg-white text-purple-700 flex items-center justify-center font-bold">
+                  GC
                 </button>
               </div>
             </div>
@@ -152,10 +165,10 @@ const GensecSportsDashboard = () => {
       <main className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
-            GenSec Sports Dashboard
+            GenSec Cultural Dashboard
           </h1>
           <p className="text-gray-600">
-            Access and manage all your Sports services
+            Access and manage all your Cultural services
           </p>
         </div>
 
@@ -168,7 +181,7 @@ const GensecSportsDashboard = () => {
                 onClick={() => setActiveCategory(category.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeCategory === category.id
-                    ? "bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-md"
+                    ? "bg-gradient-to-r from-purple-600 to-pink-700 text-white shadow-md"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -201,7 +214,7 @@ const GensecSportsDashboard = () => {
                   <p className="mt-2 text-gray-600 text-sm">
                     Access and manage {item.title.toLowerCase()}
                   </p>
-                  <div className="mt-4 flex items-center text-sm font-medium text-amber-600">
+                  <div className="mt-4 flex items-center text-sm font-medium text-purple-600">
                     <span>Open</span>
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </div>
@@ -213,11 +226,11 @@ const GensecSportsDashboard = () => {
 
         {/* Footer */}
         <footer className="mt-8 text-center text-sm text-gray-500 py-4">
-          <p>© 2025 GenSec Sports Portal. All rights reserved.</p>
+          <p>© 2025 GenSec Cultural Portal. All rights reserved.</p>
         </footer>
       </main>
     </div>
   );
 };
 
-export default GensecSportsDashboard;
+export default GensecCultDashboard;

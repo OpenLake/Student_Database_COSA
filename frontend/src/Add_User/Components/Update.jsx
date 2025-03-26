@@ -209,7 +209,7 @@ function UpdateCards({ studentDetails }) {
     setIsEditing(false);
     event.preventDefault();
     try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/auth/update`;
+      const url = `${process.env.REACT_APP_BACKEND_URL}/api/auth/update`;
       const bodyData = {
         editedData: editedData, // Add editedData
         data: data, // Add the other variable data

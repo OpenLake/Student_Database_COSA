@@ -19,7 +19,7 @@ import "./Add.css";
 const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
   useEffect(() => {
     if (userDetails) {
-      console.log("User details received:", userDetails);
+      console.log("User details received:", userDetails.student);
     }
   }, [userDetails]);
 
@@ -28,12 +28,7 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   // State for edited user details
-  const [editedDetails, setEditedDetails] = useState({
-    name: "",
-    Program: "",
-    discipline: "",
-    add_year: "",
-  });
+  const [editedDetails, setEditedDetails] = useState({});
 
   // State for new POR and achievement
   const [newPOR, setNewPOR] = useState({
@@ -55,10 +50,10 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
     if (userDetails) {
       console.log("User details received:", userDetails);
       setEditedDetails({
-        name: userDetails.name || "",
-        Program: userDetails.Program || "",
-        discipline: userDetails.discipline || "",
-        add_year: userDetails.add_year || "",
+        name: userDetails.student.name || "nishant",
+        Program: userDetails.student.Program || "",
+        discipline: userDetails.student.discipline || "",
+        add_year: userDetails.student.add_year || "",
       });
     }
   }, [userDetails]);
@@ -125,7 +120,7 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
       console.log("Backend URL being used:", backendUrl);
       console.log("Update details:", editedDetails);
 
-      const url = `${backendUrl}/auth/updateProfile`;
+      const url = `${backendUrl}/api/auth/updateProfile`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -175,7 +170,7 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
         process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
       console.log("Sending POR update with data:", updateData);
 
-      const url = `${backendUrl}/auth/addRecord`;
+      const url = `${backendUrl}/api/auth/addRecord`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -228,7 +223,7 @@ const UserProfileButtons = ({ isLoggedIn, userDetails, onUpdateSuccess }) => {
         process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
       console.log("Sending achievement update with data:", updateData);
 
-      const url = `${backendUrl}/auth/addRecord`;
+      const url = `${backendUrl}/api/auth/addRecord`;
       const response = await fetch(url, {
         method: "POST",
         headers: {

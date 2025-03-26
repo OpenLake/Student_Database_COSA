@@ -2,14 +2,45 @@ const express = require("express");
 require("dotenv").config();
 // eslint-disable-next-line node/no-unpublished-require
 const cors = require("cors");
-const routes_auth = require("./routes/auth");
-const routes_general = require("./routes/route");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const { connectDB } = require("./db");
-const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
-const routes_tenure = require("./routes/tenureRoutes.js");
+const { connectDB } = require("./config/database");
+const passport = require("./config/passport");
+const seedDefaultRoles = require("./config/default_role");
+
+// Import routes
+const authRoutes = require("./routes/auth.routes");
+const generalRoutes = require("./routes/general.routes");
+const tenureRoutes = require("./routes/tenure.routes");
+const skillRoutes = require("./routes/skill.routes");
+const eventRoutes = require("./routes/events.routes");
+const roomRoutes = require("./routes/room.routes");
+const feedbackRoutes = require("./routes/feedback.routes");
+const { default: mongoose } = require("mongoose");
+
+// Parse command-line arguments
+const args = process.argv.slice(2);
+const shouldSeedRoles = args.includes("--seed-roles");
+
 const app = express();
+// Connect to MongoDB
+(async () => {
+  try {
+    await connectDB();
+    mongoose.connection.once("open", async () => {
+      console.log("✅ MongoDB Connected Successfully");
+      if (shouldSeedRoles) {
+        console.log("Seeding default roles...");
+        await seedDefaultRoles();
+      }
+    });
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    process.exitCode = 1;
+  }
+})();
+
+// Configure CORS
 app.use(
   cors({
     origin: [
@@ -22,18 +53,16 @@ app.use(
   }),
 );
 
-// Connect to MongoDB
-connectDB();
-
+// Middleware
 app.use(bodyParser.json());
-
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET || "keyboard cat",
     resave: false,
     saveUninitialized: false,
   }),
 );
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   res.header(
@@ -43,19 +72,32 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(myPassport.initialize());
-app.use(myPassport.session());
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
+// Home route
 app.get("/", (_req, res) => {
   res.redirect(process.env.FRONTEND_URL);
 });
 
-// Mount your route handlers
-app.use("/", routes_general);
-app.use("/auth", routes_auth);
-app.use("/tenure", routes_tenure);
+// Mount route handlers
+app.use("/api/auth", authRoutes);
+app.use("/api/student", generalRoutes);
+app.use("/api/tenure", tenureRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/rooms", roomRoutes);
+app.use("/api/feedback", feedbackRoutes);
+
+// Error handling middleware
+app.use((req, res, _, err) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Internal Server Error" });
+});
 
 // Start the server
-app.listen(process.env.PORT || 8000, () => {
-  console.log(`connected to port ${process.env.PORT || 8000}`);
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

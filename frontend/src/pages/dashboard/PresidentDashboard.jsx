@@ -1,14 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AdminContext } from "../App";
+import { AdminContext } from "../../App";
+import { logoutUser } from "../../services/auth";
+import { useNavigate } from "react-router-dom";
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 const PresidentDashboard = () => {
-  //   const { IsUserLoggedIn } = useContext(AdminContext);
-  //   if (!IsUserLoggedIn || IsUserLoggedIn.role !== "president") {
-  //     return <p className="text-center text-red-500">Unauthorized Access</p>;
-  //   }
+  const { setIsUserLoggedIn } = useContext(AdminContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    await logoutUser();
+    setIsUserLoggedIn(null);
+    navigate("/login");
+  };
 
   // States for various dashboard metrics
   const [pendingRequests, setPendingRequests] = useState(0);
@@ -24,39 +31,75 @@ const PresidentDashboard = () => {
       try {
         setIsLoading(true);
 
-        // Implement actual API calls for each metric
-        // Example:
-        const requestsResponse = await fetch(
-          `${API_BASE_URL}/room/requests?status=pending`,
-        );
+        // Use Promise.all for concurrent API requests
+        const [
+          requestsResponse,
+          bookingsResponse,
+          eventsResponse,
+          cosaResponse,
+          activitiesResponse,
+        ] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/rooms/requests?status=pending`, {
+            credentials: "include",
+          }),
+          fetch(`${API_BASE_URL}/api/rooms/requests`, {
+            credentials: "include",
+          }),
+          fetch(`${API_BASE_URL}/api/events`, {
+            credentials: "include",
+          }),
+          fetch(`${API_BASE_URL}/api/tenure`, {
+            credentials: "include",
+          }),
+          fetch(`${API_BASE_URL}/api/activities/recent`, {
+            credentials: "include",
+          }),
+        ]);
+
+        // Check for unauthorized response
+        if (
+          [
+            requestsResponse,
+            bookingsResponse,
+            eventsResponse,
+            cosaResponse,
+            activitiesResponse,
+          ].some((response) => response.status === 401)
+        ) {
+          setIsUserLoggedIn(null);
+          navigate("/login");
+          return;
+        }
+
+        // Process all responses
         const requestsData = await requestsResponse.json();
         setPendingRequests(requestsData.length);
 
-        const bookingsResponse = await fetch(`${API_BASE_URL}/room/requests`);
         const bookingsData = await bookingsResponse.json();
         setRoomBookings(bookingsData.length);
 
-        const eventsResponse = await fetch(`${API_BASE_URL}/events`);
         const eventsData = await eventsResponse.json();
         setUpcomingEvents(eventsData.length);
 
-        const cosaResponse = await fetch(`${API_BASE_URL}/tenure`);
         const cosaData = await cosaResponse.json();
         setCosaRecords(cosaData.length);
 
-        const activitiesResponse = await fetch("/api/activities/recent");
         const activitiesData = await activitiesResponse.json();
         setRecentActivities(activitiesData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        // Implement error handling here
+        // Handle other errors
+        if (error.message.includes("Failed to fetch")) {
+          // Network error handling
+          console.log("Network error - server might be unavailable");
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, []);
+  }, [navigate, setIsUserLoggedIn]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-6">
@@ -69,7 +112,12 @@ const PresidentDashboard = () => {
                 President Dashboard
               </h1>
               <div className="bg-white text-blue-700 py-1 px-4 rounded-full text-sm font-semibold">
-                Presidential Access
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 text-sm text-red-700 hover:underline"
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </div>

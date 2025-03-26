@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -10,6 +11,7 @@ export default function PresidentApproval() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBookings();
@@ -18,12 +20,17 @@ export default function PresidentApproval() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE_URL}/room/requests`);
+      const res = await axios.get(`${API_BASE_URL}/api/room/requests`, {
+        withCredentials: true,
+      });
       setBookings(res.data);
       setError(null);
     } catch (error) {
       console.error("Error fetching bookings:", error);
       setError("Failed to load booking requests. Please try again.");
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -31,11 +38,20 @@ export default function PresidentApproval() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`${API_BASE_URL}/room/request/${id}/status`, { status });
+      const res = await axios.put(
+        `${API_BASE_URL}/api/room/request/${id}/status`,
+        { status },
+        {
+          withCredentials: true,
+        },
+      );
       fetchBookings();
     } catch (error) {
       console.error("Error updating status:", error);
       setError(`Failed to ${status.toLowerCase()} booking. Please try again.`);
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+      }
     }
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL; // Use environment variable
 
@@ -7,6 +8,7 @@ export default function GenSecCultPage() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSkills();
@@ -15,12 +17,20 @@ export default function GenSecCultPage() {
   const fetchSkills = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${backendUrl}/skills/unendorsed/cultural`);
+      const res = await axios.get(
+        `${backendUrl}/api/skills/unendorsed/cultural`,
+        {
+          withCredentials: true,
+        },
+      );
       setSkills(res.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching skills:", err);
       setError("Failed to load skills. Please try again later.");
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -28,11 +38,20 @@ export default function GenSecCultPage() {
 
   const endorseSkill = async (skillId) => {
     try {
-      await axios.put(`${backendUrl}/skills/endorse-cultural/${skillId}`);
+      const res = await axios.put(
+        `${backendUrl}/api/skills/endorse-cultural/${skillId}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
       setSkills(skills.filter((skill) => skill._id !== skillId));
     } catch (err) {
       console.error("Error endorsing skill:", err);
       alert("Failed to endorse skill. Please try again.");
+      if (err.status === 401 || err.status === 403) {
+        navigate("/login", { replace: true });
+      }
     }
   };
 

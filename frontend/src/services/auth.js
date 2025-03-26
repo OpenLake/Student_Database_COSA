@@ -3,7 +3,7 @@ import axios from "axios";
 export async function fetchCredentials() {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/auth/fetchAuth`,
+      `${process.env.REACT_APP_BACKEND_URL}/api/auth/fetchAuth`,
       {
         withCredentials: true,
       },
@@ -26,7 +26,7 @@ export async function registerUser(name, ID, email, password) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
+    url: `${process.env.REACT_APP_BACKEND_URL}/api/auth/register`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -56,7 +56,7 @@ export async function loginUser(email, password) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
+    url: `${process.env.REACT_APP_BACKEND_URL}/api/auth/login`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -110,7 +110,7 @@ export async function registerStudentId(id, ID_No) {
 
 export async function logoutUser() {
   await axios.post(
-    `${process.env.REACT_APP_BACKEND_URL}/auth/logout`,
+    `${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`,
     {},
     { withCredentials: true },
   );

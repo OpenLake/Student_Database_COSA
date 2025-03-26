@@ -39,7 +39,7 @@ function Body({ studentDetails }) {
 
   return (
     <div className="body-container">
-      <nav className="navbar">
+      <nav className="navbar px-4">
         <h2 className="navbar-title">Student Portal</h2>
         <div className="navbar-links">
           <Link to="/cosa" className="nav-link">

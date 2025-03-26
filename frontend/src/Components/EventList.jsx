@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
@@ -14,13 +16,17 @@ const EventList = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/events`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/events`,
+        { withCredentials: true },
       );
       setEvents(res.data);
       setError("");
     } catch (err) {
       setError("Failed to load events. Please try again later.");
       console.error(err);
+      if (err.status === 401 || err.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }

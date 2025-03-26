@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
-const { User } = require("./student");
+const { User } = require("../models/user.model");
 
 // Local Strategy
 passport.use(
@@ -17,22 +17,18 @@ passport.use(
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "468147803346-55rcefrkn5d8ecv0oemb8ppff86mcfvk.apps.googleusercontent.com",
-      clientSecret: "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",
-      callbackURL: `${process.env.BACKEND_URL}/auth/google/verify`, // Update with your callback URL
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/google/verify`,
     },
     async (accessToken, refreshToken, profile, done) => {
-      // Check if the user already exists in your database
       try {
         const user = await User.findOne({ username: profile.emails[0].value });
 
         if (user) {
-          // If user exists, return the user
           return done(null, user);
         }
 
-        // If user doesn't exist, create a new user in your database
         const newUser = new User({
           username: profile.emails[0].value,
           name: profile.displayName,
@@ -49,13 +45,17 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, {
+    _id: user._id,
+    role: user.role,
+  });
 });
 
 passport.deserializeUser(async (userKey, done) => {
   try {
-    const user = await User.findById(userKey._id);
-    console.log("Deserialized user:", user);
+    const user = await User.findById(userKey._id).select(
+      "_id role name ID_No username",
+    );
     done(null, user);
   } catch (err) {
     done(err);

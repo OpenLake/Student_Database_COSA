@@ -1,6 +1,6 @@
 export async function fetchStudent(student_ID) {
   try {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/fetch`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/student/fetch`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -13,6 +13,8 @@ export async function fetchStudent(student_ID) {
     if (response.ok) {
       const data = await response.json();
       return data;
+    } else if (response.status === 404) {
+      window.location.href = "/update-profile";
     } else {
       return null;
     }

@@ -1,36 +1,37 @@
-import React, { useState, useContext } from "react";
-import { AdminContext } from "../App";
+import React, { useState } from "react";
 import "../App.css";
+import { useNavigate } from "react-router-dom";
 
 const FeedbackForm = () => {
-  const { IsUserLoggedIn } = useContext(AdminContext);
   const [feedback, setFeedback] = useState({
     type: "Suggestion",
     description: "",
   });
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // if (!IsUserLoggedIn) {
-    //   alert("You need to log in to submit feedback.");
-    //   return;
-    // }
-
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/feedback`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...feedback,
-          userId: "67aa3c2e3f4feecbe809f9c6",
-        }),
-      },
-    );
-
-    const data = await response.json();
-    alert(data.message);
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/feedback`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...feedback,
+            userId: "67aa3c2e3f4feecbe809f9c6",
+          }),
+          credentials: "include",
+        },
+      );
+      const data = await response.json();
+      alert(data.message);
+    } catch (err) {
+      console.error("Error submitting feedback:", err);
+      if (err.status === 401 || err.status === 403) {
+        navigate("/login", { replace: true });
+      }
+    }
   };
 
   return (

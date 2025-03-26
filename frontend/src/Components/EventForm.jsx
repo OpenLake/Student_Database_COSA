@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const EventForm = () => {
   const [title, setTitle] = useState("");
@@ -8,6 +9,7 @@ const EventForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,11 +18,17 @@ const EventForm = () => {
     setSuccess(false);
 
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/events`, {
-        title,
-        startTime,
-        endTime,
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/events`,
+        {
+          title,
+          startTime,
+          endTime,
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
       setTitle("");
       setStartTime("");
@@ -30,6 +38,9 @@ const EventForm = () => {
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
+      if (err.status === 401 || err.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }

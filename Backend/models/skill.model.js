@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
-// import { Student } from "./student";
+
+/**
+ * Skill Schema
+ * Represents skills possessed by students that can be endorsed
+ */
 const skillSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Student", // Reference the 'Student' model
+    ref: "Student",
     required: true,
   },
   skillName: {
@@ -17,7 +21,16 @@ const skillSchema = new mongoose.Schema({
   },
   endorsed: {
     type: Boolean,
-    default: false, // Only GenSec of respective type can set this to true
+    default: false,
+  },
+  endorsedDate: {
+    type: Date,
+    default: null,
+  },
+  endorsedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
   },
 });
 

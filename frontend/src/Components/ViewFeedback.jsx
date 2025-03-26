@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ViewFeedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("All");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchFeedback();
@@ -15,13 +17,20 @@ const ViewFeedback = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/feedback`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/feedback`,
+        {
+          withCredentials: true,
+        },
       );
       setFeedbacks(res.data);
       setError("");
     } catch (err) {
       setError("Failed to load feedbacks. Please try again later.");
       console.error(err);
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+        return;
+      }
     } finally {
       setLoading(false);
     }

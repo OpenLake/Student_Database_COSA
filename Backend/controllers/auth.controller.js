@@ -1,49 +1,41 @@
-const express = require("express");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
-const secretKey = process.env.JWT_SECRET_TOKEN;
-
-const { restrictToPresident } = require("../middlewares");
 const {
   Student,
   ScietechPOR,
   CultPOR,
   SportsPOR,
   AcadPOR,
-  User,
   Achievement,
-} = require("../models/student");
-const passport = require("../models/passportConfig");
+} = require("../models/student.model");
+const { User } = require("../models/user.model");
 
-// Session Status
-router.get("/fetchAuth", async function (req, res) {
+const secretKey = process.env.JWT_SECRET_TOKEN;
+
+/**
+ * Check authentication status
+ * @route GET /api/auth/fetchAuth
+ */
+exports.getAuthStatus = async (req, res) => {
   if (req.isAuthenticated()) {
-    console.log("User data:", JSON.stringify(req.user, null, 2));
-    //find user in student if not then redirect to add-profile
-    // const user = req.user;
-    // try {
-    //   const student = await Student.findOne({ user_id: user._id });
-    //   if (!student) {
-    //     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
-    //     return res.redirect(`${process.env.FRONTEND_URL}/add-profile`);
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   return res.status(400).json({ message: "Bad request." });
-    // }
     res.json(req.user);
   } else {
-    res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Login Again" });
   }
-});
+};
 
-// Local Authentication
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  // If authentication is successful, this function will be called
+/**
+ * Local authentication login
+ * @route POST /api/auth/login
+ */
+exports.login = (req, res) => {
   res.status(200).json({ message: "Login successful", user: req.user });
-});
+};
 
-router.post("/register", async (req, res) => {
+/**
+ * Register a new user
+ * @route POST /api/auth/register
+ */
+exports.register = async (req, res) => {
   try {
     const { name, ID, email, password } = req.body;
 
@@ -74,36 +66,38 @@ router.post("/register", async (req, res) => {
     console.error("Registration error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-});
+};
 
-// Google OAuth Authentication
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
-);
+/**
+ * Google OAuth callback
+ * @route GET /api/auth/google/verify
+ */
+exports.googleCallback = (req, res) => {
+  if (!req.user.ID_No) {
+    res.redirect("/auth/google/addId");
+  } else {
+    res.redirect("/");
+  }
+};
 
-router.get(
-  "/google/verify",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    if (!req.user.ID_No) {
-      res.redirect("/auth/google/addId");
-    } else {
-      res.redirect("/");
-    }
-  },
-);
-
-router.get("/google/addId", (req, res) => {
+/**
+ * Redirect to frontend for adding ID to Google account
+ * @route GET /api/auth/google/addId
+ */
+exports.googleAddId = (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const token = jwt.sign({ id: req.user._id }, secretKey, { expiresIn: "1h" });
   res.redirect(`${process.env.FRONTEND_URL}/register/google/${token}`);
-});
+};
 
-router.post("/google/register", async (req, res) => {
+/**
+ * Register a Google account with student ID
+ * @route POST /api/auth/google/register
+ */
+exports.googleRegister = async (req, res) => {
   try {
     const { token, ID_No } = req.body;
 
@@ -148,24 +142,27 @@ router.post("/google/register", async (req, res) => {
     console.error("Error updating user:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-});
+};
 
-router.post("/logout", (req, res, next) => {
+/**
+ * Logout the user
+ * @route POST /api/auth/logout
+ */
+exports.logout = (req, res, next) => {
   req.logout(function (err) {
     if (err) {
       return next(err);
     }
     res.send("Logout Successful");
   });
-});
+};
 
-// Update user profile
-router.post("/updateProfile", async (req, res) => {
+/**
+ * Update user profile
+ * @route POST /api/auth/updateProfile
+ */
+exports.updateProfile = async (req, res) => {
   try {
-    // if (!req.isAuthenticated()) {
-    //   return res.status(401).json({ success: false, message: "Unauthorized" });
-    // }
-
     const { userId, updatedDetails } = req.body;
     console.log("Received userId:", userId);
     console.log("Received updatedDetails:", updatedDetails);
@@ -202,10 +199,13 @@ router.post("/updateProfile", async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal server error" });
   }
-});
+};
 
-// Add new POR or Achievement
-router.post("/addRecord", async (req, res) => {
+/**
+ * Add new POR or Achievement
+ * @route POST /api/auth/addRecord
+ */
+exports.addRecord = async (req, res) => {
   try {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -312,9 +312,13 @@ router.post("/addRecord", async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal server error" });
   }
-});
+};
 
-router.get("/", restrictToPresident, async function (req, res) {
+/**
+ * Check president connection
+ * @route GET /api/auth
+ */
+exports.checkConnection = async (req, res) => {
   try {
     return res
       .status(200)
@@ -325,9 +329,13 @@ router.get("/", restrictToPresident, async function (req, res) {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-});
+};
 
-router.post("/add", async (req, res) => {
+/**
+ * Add a new student
+ * @route POST /api/auth/add
+ */
+exports.addStudent = async (req, res) => {
   try {
     // Validate required fields
     if (
@@ -412,9 +420,13 @@ router.post("/add", async (req, res) => {
       .status(400)
       .json({ success: false, message: "Failed to add student" });
   }
-});
+};
 
-router.post("/remove", async (req, res) => {
+/**
+ * Remove a student
+ * @route POST /api/auth/remove
+ */
+exports.removeStudent = async (req, res) => {
   try {
     if (!req.body.ID_No) {
       return res
@@ -450,9 +462,13 @@ router.post("/remove", async (req, res) => {
       .status(400)
       .json({ success: false, message: "Failed to remove student" });
   }
-});
+};
 
-router.post("/update", async (req, res) => {
+/**
+ * Update student data
+ * @route POST /api/auth/update
+ */
+exports.updateStudent = async (req, res) => {
   try {
     const { data, editedData } = req.body;
 
@@ -538,6 +554,4 @@ router.post("/update", async (req, res) => {
       .status(400)
       .json({ success: false, message: "Failed to update data" });
   }
-});
-
-module.exports = router;
+};

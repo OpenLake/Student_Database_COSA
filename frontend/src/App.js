@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AddUser from "./AddUser";
+import StudentDashboard from "./pages/dashboard/student-dashboard";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
@@ -11,24 +11,22 @@ import EventList from "./Components/EventList";
 import EventForm from "./Components/EventForm";
 import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
 import ProfilePage from "./pages/profile";
-import { EditProfile } from "./Components/profile";
-import ProtectedRoute from "./ProtectedRoute";
-import RoleBasedRoute from "./RoleBasedRoute";
-import President from "./pages/president";
+import ProtectedRoute from "./route/ProtectedRoute";
+import RoleBasedRoute from "./route/RoleBasedRoute";
 
 import RoomBooking from "./Components/RoomBooking";
 import PresidentApproval from "./Components/PresidentApproval";
-import PresidentDashboard from "./Components/PresidentDashboard";
+import PresidentDashboard from "./pages/dashboard/PresidentDashboard";
 import GenSecTechPage from "./Components/GenSecTechPage";
-import GensecSciTechDashboard from "./Components/GensecSciTechDashboard";
+import GensecSciTechDashboard from "./pages/dashboard/GensecSciTechDashboard";
 import ViewFeedback from "./Components/ViewFeedback";
 
-import GensecAcadDashboard from "./Components/GenSecAcad";
+import GensecAcadDashboard from "./pages/dashboard/GenSecAcad";
 import GenSecAcadPage from "./Components/GenSecAcadPage";
 import GenSecSportsPage from "./Components/GenSecSportsPage";
-import GensecSportsDashboard from "./Components/GenSecSports";
+import GensecSportsDashboard from "./pages/dashboard/GenSecSports";
 import GenSecCultPage from "./Components/GenSecCultPage";
-import GensecCultDashboard from "./Components/GenSecCult";
+import GensecCultDashboard from "./pages/dashboard/GenSecCult";
 
 const AdminContext = createContext();
 
@@ -96,12 +94,16 @@ function App() {
             element={
               <ProtectedRoute>
                 {({ userRole }) => {
-                  if (userRole === "student") return <AddUser />;
-                  if (userRole === "president") return <President />;
-                  if (userRole === "gensec-scitech") return <GenSecTechPage />;
-                  if (userRole === "gensec-acad") return <GenSecAcadPage />;
-                  if (userRole === "gensec-sports") return <GenSecSportsPage />;
-                  if (userRole === "gensec-cult") return <GenSecCultPage />;
+                  if (userRole === "student") return <StudentDashboard />;
+                  if (userRole === "president") return <PresidentDashboard />;
+                  if (userRole === "gensec-scitech")
+                    return <GensecSciTechDashboard />;
+                  if (userRole === "gensec-acad")
+                    return <GensecAcadDashboard />;
+                  if (userRole === "gensec-sports")
+                    return <GensecSportsDashboard />;
+                  if (userRole === "gensec-cult")
+                    return <GensecCultDashboard />;
                   return <Navigate to="/login" replace />;
                 }}
               </ProtectedRoute>
@@ -115,16 +117,6 @@ function App() {
               <ProtectedRoute>
                 <RoleBasedRoute allowedRoles={["president"]}>
                   <PresidentApproval />
-                </RoleBasedRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/president-dashboard"
-            element={
-              <ProtectedRoute>
-                <RoleBasedRoute allowedRoles={["president"]}>
-                  <PresidentDashboard />
                 </RoleBasedRoute>
               </ProtectedRoute>
             }
@@ -151,16 +143,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/gensectech-dashboard"
-            element={
-              <ProtectedRoute>
-                <RoleBasedRoute allowedRoles={["gensec-scitech"]}>
-                  <GensecSciTechDashboard />
-                </RoleBasedRoute>
-              </ProtectedRoute>
-            }
-          />
 
           {/* GenSec Acad routes */}
           <Route
@@ -173,17 +155,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/gensecacad-dashboard"
-            element={
-              <ProtectedRoute>
-                <RoleBasedRoute allowedRoles={["gensec-acad"]}>
-                  <GensecAcadDashboard />
-                </RoleBasedRoute>
-              </ProtectedRoute>
-            }
-          />
-
           {/* GenSec Sports routes */}
           <Route
             path="/gensecsport-endorse"
@@ -191,16 +162,6 @@ function App() {
               <ProtectedRoute>
                 <RoleBasedRoute allowedRoles={["gensec-sports"]}>
                   <GenSecSportsPage />
-                </RoleBasedRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/gensecsport-dashboard"
-            element={
-              <ProtectedRoute>
-                <RoleBasedRoute allowedRoles={["gensec-sports"]}>
-                  <GensecSportsDashboard />
                 </RoleBasedRoute>
               </ProtectedRoute>
             }
@@ -217,17 +178,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/genseccult-dashboard"
-            element={
-              <ProtectedRoute>
-                <RoleBasedRoute allowedRoles={["gensec-cult"]}>
-                  <GensecCultDashboard />
-                </RoleBasedRoute>
-              </ProtectedRoute>
-            }
-          />
-
           {/* User routes */}
           <Route
             path="/add-event"
@@ -239,6 +189,7 @@ function App() {
                     "gensec-cult",
                     "gensec-acad",
                     "gensec-scitech",
+                    "president",
                   ]}
                 >
                   <EventForm />
@@ -264,6 +215,7 @@ function App() {
                     "gensec-cult",
                     "gensec-acad",
                     "gensec-scitech",
+                    "president",
                   ]}
                 >
                   <RoomBooking />
@@ -281,6 +233,7 @@ function App() {
                     "gensec-cult",
                     "gensec-acad",
                     "gensec-scitech",
+                    "president",
                   ]}
                 >
                   <ViewFeedback />
@@ -289,18 +242,12 @@ function App() {
             }
           />
           <Route
-            path="/add-profile"
+            path="/update-profile"
             element={
               <ProtectedRoute>
-                <EditProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
+                <RoleBasedRoute allowedRoles={["student"]}>
+                  <ProfilePage />
+                </RoleBasedRoute>
               </ProtectedRoute>
             }
           />

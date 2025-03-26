@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL; // Use environment variable
 
@@ -7,6 +8,7 @@ export default function GenSecSportsPage() {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSkills();
@@ -15,12 +17,17 @@ export default function GenSecSportsPage() {
   const fetchSkills = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${backendUrl}/skills/unendorsed/sport`);
+      const res = await axios.get(`${backendUrl}/api/skills/unendorsed/sport`, {
+        withCredentials: true,
+      });
       setSkills(res.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching skills:", err);
       setError("Failed to load sports skills. Please try again later.");
+      if (err.status === 401 || err.status === 403) {
+        navigate("/login", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -28,7 +35,13 @@ export default function GenSecSportsPage() {
 
   const endorseSkill = async (skillId) => {
     try {
-      await axios.put(`${backendUrl}/skills/endorse-sport/${skillId}`);
+      await axios.put(
+        `${backendUrl}/api/skills/endorse-sport/${skillId}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
       setSkills(skills.filter((skill) => skill._id !== skillId));
     } catch (err) {
       console.error("Error endorsing skill:", err);

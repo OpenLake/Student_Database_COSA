@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const API_BASE_URL =
@@ -13,6 +14,7 @@ export default function RoomBooking() {
   });
   const [bookings, setBookings] = useState([]);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBookings();
@@ -20,17 +22,23 @@ export default function RoomBooking() {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/room/requests`);
+      const res = await axios.get(`${API_BASE_URL}/api/rooms/requests`, {
+        withCredentials: true,
+      });
       setBookings(res.data);
     } catch (error) {
       console.error("Error fetching bookings:", error);
+      if (error.status === 401 || error.status === 403) {
+        navigate("/login", { replace: true });
+        return;
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}/room/request`, form);
+      await axios.post(`${API_BASE_URL}/api/rooms/request`, form);
       setMessage("Booking request submitted!");
       setForm({ date: "", time: "", room: "", description: "" });
       fetchBookings();
