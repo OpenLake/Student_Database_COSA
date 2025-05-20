@@ -3,13 +3,19 @@
 # dependencies
 /Backend/node_modules
 /frontend/node_modules
-/.pnp
+
+/Backend/bun.lock
+/frontend/bun.lock
+/pnp
 .pnp.js
 # testing
 /coverage
 
 # production
 /build
+# new production logs
+production.log
+
 
 # misc
 .DS_Store
