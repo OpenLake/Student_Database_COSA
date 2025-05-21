@@ -1,0 +1,30 @@
+# Use official Node.js LTS Alpine image for small size
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files first for caching
+COPY package.json package-lock.json ./
+
+# Install all dependencies (including dev)
+RUN npm ci
+
+# Copy rest of the source code
+COPY . .
+
+
+RUN npm prune --production
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup && chown -R appuser:appgroup /app
+
+USER appuser
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]

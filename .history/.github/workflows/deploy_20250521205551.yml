@@ -61,7 +61,7 @@ jobs:
           docker run --rm --name backend_test --network test_net -p 8000:8000 \
             -e PORT=${{ secrets.PORT }} \
             -e MONGO_URL=${{ secrets.MONGO_URL }} \
-            # -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             ${{ secrets.DOCKER_USERNAME }}/backend:latest || (echo "Backend container failed!" && exit 1)
 
       - name: 🚀 Push Backend Docker image

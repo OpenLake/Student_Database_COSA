@@ -1,0 +1,48 @@
+# ---------------------
+# Build stage with Node.js (includes dev dependencies)
+# ---------------------
+    FROM node:20-alpine AS builder
+
+    WORKDIR /app
+    
+    # Install system deps if needed (e.g., for native modules)
+    RUN apk add --no-cache python3 make g++
+    
+    # Copy package files and install all dependencies (including dev)
+    COPY package.json package-lock.json ./
+    RUN npm ci
+    
+    # Copy source files
+    COPY . .
+    
+    # Build the Next.js app
+    ENV NEXT_TELEMETRY_DISABLED=1
+    RUN npm run build
+    
+    # ---------------------
+    # Production stage with smaller Node.js image
+    # ---------------------
+    FROM node:20-alpine AS runner
+    
+    WORKDIR /app
+    
+    # Create non-root user
+    RUN addgroup -g 1001 -S nodejs && \
+        adduser -S -u 1001 -G nodejs nodejs
+    
+    ENV NODE_ENV=production
+    ENV PORT=3000
+    ENV HOSTNAME=0.0.0.0
+    
+    # Copy built standalone app and necessary static/public files
+    COPY --from=builder --chown=nodejs:nodejs /app/.next/standalone ./
+    COPY --from=builder --chown=nodejs:nodejs /app/.next/static ./.next/static
+    COPY --from=builder --chown=nodejs:nodejs /app/public ./public
+    COPY --from=builder --chown=nodejs:nodejs /app/next.config.js ./
+    
+    EXPOSE 3000
+    USER nodejs
+    
+    # Run the standalone server
+    CMD ["node", "node.js"]
+#     
