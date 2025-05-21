@@ -11,6 +11,9 @@ RUN npm run build
 
 FROM nginx:stable-alpine
 
+# Upgrade packages (including libxml2) to the latest patched versions
+RUN apk update && apk upgrade --no-cache
+
 RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=build /app/build /usr/share/nginx/html
