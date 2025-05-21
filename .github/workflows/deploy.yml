@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - docker-automate-feature
+
 
 jobs:
   test-and-push:
