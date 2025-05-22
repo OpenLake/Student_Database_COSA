@@ -1,9 +1,0 @@
-node_modules
-npm-debug.log
-Dockerfile
-.dockerignore
-docker-compose.yml
-.git
-.env
-coverage
-docker rmi student-database-cosa my-react-app mongo
