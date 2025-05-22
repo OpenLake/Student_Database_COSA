@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - docker-automate-feature
+      - github-actions-automate
 
 jobs:
   test-and-push:
