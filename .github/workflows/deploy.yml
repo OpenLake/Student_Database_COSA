@@ -6,6 +6,7 @@ on:
       - main
       - docker-automate-feature
       - github-actions
+      - github-actions-automate
 
 jobs:
   test-and-push:
