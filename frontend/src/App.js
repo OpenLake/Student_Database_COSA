@@ -81,23 +81,25 @@ function App() {
           element={<GenSecEndorse role="Tech" />}
         />
 
-        <Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
+        {/*<Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
         <Route path="/genseccult-endorse" element={<GenSecCultPage />} />
         <Route
           path="/gensecsport-dashboard"
           element={<GensecSportsDashboard />}
         />
         <Route path="/gensecsport-endorse" element={<GenSecSportsPage />} />
+        */}
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
-        <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
+
         <Route path="/" element={<AddUser />} />
-        <Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
+        {/*<Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
         <Route path="/gensecacad-endorse" element={<GenSecAcadPage />} />
         <Route
           path="/gensectech-dashboard"
           element={<GensecSciTechDashboard />}
-        />
+          <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
+        />*/}
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/register/google/:id" element={<GoogleRegister />} />
         <Route path="/feedback" element={<FeedbackForm />} />
@@ -147,7 +149,7 @@ function App() {
           element={<GenSecEndorse role="Tech" />}
         />
 
-        <Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
+        {/*<Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
         <Route path="/genseccult-endorse" element={<GenSecCultPage />} />
         <Route
           path="/gensecsport-dashboard"
@@ -156,15 +158,16 @@ function App() {
         <Route path="/gensecsport-endorse" element={<GenSecSportsPage />} />
         <Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
         <Route path="/gensecacad-endorse" element={<GenSecAcadPage />} />
+        */}
         <Route path="/viewfeedback" element={<ViewFeedback />} />
 
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
-        <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
+        {/*<Route path="/gensectech-endorse" element={<GenSecTechPage />} />
         <Route
           path="/gensectech-dashboard"
           element={<GensecSciTechDashboard />}
-        />
+        />*/}
         <Route path="/roombooking" element={<RoomBooking />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
