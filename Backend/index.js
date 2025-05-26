@@ -28,9 +28,9 @@ app.use(
 app.use(myPassport.initialize());
 app.use(myPassport.session());
 
-app.get("/", (_req, res) => {
-  res.redirect(process.env.FRONTEND_URL);
-});
+// app.get("/", (_req, res) => {
+//   res.redirect(process.env.FRONTEND_URL);
+// });
 
 // Mount your route handlers
 app.use("/", routes_general);
