@@ -29,6 +29,7 @@ import GenSecSportsPage from "./Components/GenSecSportsPage";
 import GensecSportsDashboard from "./Components/GenSecSports";
 import GenSecCultPage from "./Components/GenSecCultPage";
 import GensecCultDashboard from "./Components/GenSecCult";
+import Home from "./Home";
 
 const AdminContext = createContext();
 
@@ -92,7 +93,8 @@ function App() {
         <Route path="/president-approval" element={<PresidentApproval />} />
         <Route path="/president-dashboard" element={<PresidentDashboard />} />
 
-        <Route path="/" element={<AddUser />} />
+        {/* <Route path="/" element={<AddUser />} /> */}
+        <Route path="/" element={<Home />} />
         {/*<Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
         <Route path="/gensecacad-endorse" element={<GenSecAcadPage />} />
         <Route

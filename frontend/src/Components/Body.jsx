@@ -11,7 +11,6 @@ import { AdminContext } from "../App";
 function Body({ studentDetails }) {
   const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const [userDetails, setUserDetails] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (IsUserLoggedIn?.ID_No) {
@@ -29,31 +28,8 @@ function Body({ studentDetails }) {
     }
   };
 
-  const handleLogout = () => {
-    setIsUserLoggedIn(null);
-    navigate("/login");
-  };
-
   return (
     <div className="body-container">
-      <nav className="navbar">
-        <h2 className="navbar-title">Student Portal</h2>
-        <div className="navbar-links">
-          <Link to="/cosa" className="nav-link">
-            📚 Cosa
-          </Link>
-          <Link to="/feedback" className="nav-link">
-            💬 Feedback
-          </Link>
-          <Link to="/events" className="nav-link">
-            🗓️ Events
-          </Link>
-          <button onClick={handleLogout} className="logout-button">
-            🚪 Logout
-          </button>
-        </div>
-      </nav>
-
       <div className="main-content">
         {studentDetails !== undefined ? (
           studentDetails !== null ? (
@@ -97,10 +73,6 @@ function Body({ studentDetails }) {
           </div>
         </div>
       </div>
-
-      <footer className="footer">
-        © 2025 Student Portal. All rights reserved.
-      </footer>
     </div>
   );
 }
