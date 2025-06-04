@@ -17,9 +17,8 @@ passport.use(
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "468147803346-55rcefrkn5d8ecv0oemb8ppff86mcfvk.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${process.env.BACKEND_URL}/auth/google/verify`, // Update with your callback URL
     },
     async (accessToken, refreshToken, profile, done) => {
