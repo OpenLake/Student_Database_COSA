@@ -19,10 +19,10 @@ import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
 import { fetchCredentials } from "./services/auth";
 import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
-
+import RoleRedirect from "./Components/Auth/RoleRedirect";
 const ADMIN_ROLES = {
   PRESIDENT: "harshitap@iitbhilai.ac.in",
-  GENSEC_SCITECH: "scitech_gymkhana@iitbhilai.ac.in",
+  GENSEC_SCITECH: "harshitapatidar257@gmail.com",
   GENSEC_ACADEMIC: "gensec_academic_gymkhana@iitbhilai.ac.in",
   GENSEC_CULTURAL: "Gensec_Cultural_Gymkhana@iitbhilai.ac.in",
   GENSEC_SPORTS: "Gensec_Sports_Gymkhana@iitbhilai.ac.in",
@@ -51,6 +51,7 @@ const getAdminRole = (email) => {
       return "STUDENT";
   }
 };
+export { getAdminRole };
 
 const genSecRoleMap = {
   Cultural: "GENSEC_CULTURAL",
@@ -253,7 +254,11 @@ function App() {
           <Route
             path="/"
             element={
-              isUserLoggedIn ? <Home /> : <Navigate to="/login" replace />
+              isUserLoggedIn ? (
+                <RoleRedirect />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
           <Route path="/unauthorised" element={<Unauthorised />} />
