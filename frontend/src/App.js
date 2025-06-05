@@ -17,7 +17,47 @@ import PresidentApproval from "./Components/PresidentApproval";
 import PresidentDashboard from "./Components/PresidentDashboard";
 import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
 import { fetchCredentials } from "./services/auth";
+import Unauthorised from "./Components/Unauthorised";
+import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 
+const ADMIN_ROLES = {
+  PRESIDENT: "harshitap@iitbhilai.ac.in",
+  GENSEC_SCITECH: "scitech_gymkhana@iitbhilai.ac.in",
+  GENSEC_ACADEMIC: "gensec_academic_gymkhana@iitbhilai.ac.in",
+  GENSEC_CULTURAL: "Gensec_Cultural_Gymkhana@iitbhilai.ac.in",
+  GENSEC_SPORTS: "Gensec_Sports_Gymkhana@iitbhilai.ac.in",
+};
+const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
+
+const getAdminRole = (email) => {
+  if (!email || typeof email !== "string") {
+    console.warn("getAdminRole: invalid email", email);
+    return "STUDENT"; // Default role if email is invalid
+  }
+  const normalizedEmail = email.toLowerCase();
+  console.log("Checking role for email:", normalizedEmail);
+  switch (normalizedEmail) {
+    case ADMIN_ROLES.GENSEC_SCITECH.toLowerCase():
+      return "GENSEC_SCITECH";
+    case ADMIN_ROLES.GENSEC_ACADEMIC.toLowerCase():
+      return "GENSEC_ACADEMIC";
+    case ADMIN_ROLES.GENSEC_CULTURAL.toLowerCase():
+      return "GENSEC_CULTURAL";
+    case ADMIN_ROLES.GENSEC_SPORTS.toLowerCase():
+      return "GENSEC_SPORTS";
+    case ADMIN_ROLES.PRESIDENT.toLowerCase():
+      return "PRESIDENT";
+    default:
+      return "STUDENT";
+  }
+};
+
+const genSecRoleMap = {
+  Cultural: "GENSEC_CULTURAL",
+  Sports: "GENSEC_SPORTS",
+  Academic: "GENSEC_ACADEMIC",
+  SciTech: "GENSEC_SCITECH",
+};
 export const AdminContext = createContext();
 
 const genSecRoles = [
@@ -42,12 +82,21 @@ const PublicRoute = ({ children, isAuthenticated, redirectTo = "/" }) => {
 function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState("STUDENT");
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const user = await fetchCredentials();
-        setIsUserLoggedIn(user || false);
+        console.log("Fetched user:", user);
+        if (user) {
+          setIsUserLoggedIn(user);
+          const role = getAdminRole(user.username);
+          setUserRole(role);
+          console.log("User role:", role);
+        } else {
+          setIsUserLoggedIn(false);
+        }
       } catch (error) {
         console.error("Auth initialization failed:", error);
         setIsUserLoggedIn(false);
@@ -71,6 +120,7 @@ function App() {
   const contextValue = {
     isUserLoggedIn,
     setIsUserLoggedIn,
+    userRole,
   };
 
   return (
@@ -81,37 +131,78 @@ function App() {
           <Route path="/events" element={<EventList />} />
           <Route path="/viewfeedback" element={<ViewFeedback />} />
 
-          {/* GenSec Dashboard routes - accessible to everyone for now */}
+          {/* GenSec Dashboard routes - accessible to only respective Gensec */}
           {genSecRoles.map(({ path, role }) => (
             <Route
               key={`gensec-${path}`}
               path={`/gensec-${path}`}
-              element={<GenSecDashboard role={role} />}
+              element={
+                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
+                  <GenSecDashboard role={role} />{" "}
+                </RoleProtectedRoute>
+              }
             />
           ))}
 
-          {/* GenSec Endorse routes - accessible to everyone for now */}
+          {/* GenSec Endorse routes - accessible to only respective Gensec */}
           {genSecRoles.map(({ path, role }) => (
             <Route
               key={`gensec-${path}-endorse`}
               path={`/gensec-${path}-endorse`}
               element={
-                <GenSecEndorse role={role === "SciTech" ? "Tech" : role} />
+                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
+                  <GenSecEndorse role={role === "SciTech" ? "Tech" : role} />
+                </RoleProtectedRoute>
               }
             />
           ))}
 
           {/* President routes - accessible to everyone for now */}
-          <Route path="/president-approval" element={<PresidentApproval />} />
-          <Route path="/president-dashboard" element={<PresidentDashboard />} />
+          <Route
+            path="/president-approval"
+            element={
+              <RoleProtectedRoute allowedRoles={["PRESIDENT"]}>
+                <PresidentApproval />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/president-dashboard"
+            element={
+              <RoleProtectedRoute allowedRoles={["PRESIDENT"]}>
+                <PresidentDashboard />
+              </RoleProtectedRoute>
+            }
+          />
 
           {/* Room booking */}
-          <Route path="/roombooking" element={<RoomBooking />} />
+          <Route
+            path="/roombooking"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <RoomBooking />
+              </RoleProtectedRoute>
+            }
+          />
 
           {/* COSA routes */}
           <Route path="/cosa" element={<ShowTenure />} />
-          <Route path="/cosa/create" element={<CreateTenure />} />
-          <Route path="/cosa/:id" element={<ShowTenure />} />
+          <Route
+            path="/cosa/create"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <CreateTenure />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/cosa/:id"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <ShowTenure />
+              </RoleProtectedRoute>
+            }
+          />
 
           {/* Authentication routes - only for non-authenticated users */}
           <Route
@@ -144,9 +235,9 @@ function App() {
           <Route
             path="/add-event"
             element={
-              <ProtectedRoute isAuthenticated={isUserLoggedIn}>
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
                 <EventForm />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
@@ -165,7 +256,7 @@ function App() {
               isUserLoggedIn ? <Home /> : <Navigate to="/login" replace />
             }
           />
-
+          <Route path="/unauthorised" element={<Unauthorised />} />
           {/* Catch-all route */}
           <Route
             path="*"
