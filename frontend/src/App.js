@@ -20,11 +20,11 @@ import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 const ADMIN_ROLES = {
-  PRESIDENT: "ayush05012003krishn@gmail.com",
-  GENSEC_SCITECH: "scitech_gymkhana@iitbhilai.ac.in",
-  GENSEC_ACADEMIC: "gensec_academic_gymkhana@iitbhilai.ac.in",
-  GENSEC_CULTURAL: "Gensec_Cultural_Gymkhana@iitbhilai.ac.in",
-  GENSEC_SPORTS: "Gensec_Sports_Gymkhana@iitbhilai.ac.in",
+  PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
+  GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
+  GENSEC_ACADEMIC: process.env.REACT_APP_ACAD_USERNAME,
+  GENSEC_CULTURAL: process.env.REACT_APP_CULT_USERNAME,
+  GENSEC_SPORTS: process.env.REACT_APP_SPORT_USERNAME,
 };
 const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
 
