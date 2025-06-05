@@ -1,12 +1,16 @@
 // src/components/GenSecDashboard.jsx
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, Settings, LogOut, ChevronRight } from "lucide-react";
 import { GENSEC_CONFIGS } from "../config/gensecConfig";
+import { logoutUser } from "../services/auth";
+import { AdminContext } from "../App";
 
 const GenSecDashboard = ({ role }) => {
   const config = GENSEC_CONFIGS[role];
   const [activeCategory, setActiveCategory] = useState("all");
+  const { setIsUserLoggedIn, setUserRole } = useContext(AdminContext); //context access
+  const navigate = useNavigate();
 
   if (!config)
     return (
@@ -19,6 +23,17 @@ const GenSecDashboard = ({ role }) => {
     activeCategory === "all"
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser(); // 🔓 server logout
+      setIsUserLoggedIn(null); // clear frontend user
+      setUserRole("STUDENT"); // reset role
+      navigate("/login"); // go to login
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -47,13 +62,21 @@ const GenSecDashboard = ({ role }) => {
               <button className="p-1 rounded-full hover:bg-white hover:bg-purple-500">
                 <Settings className="h-6 w-6" />
               </button>
-              <Link
+              {/* <Link
                 to="/login"
                 className="flex items-center px-3 py-1.5 bg-white text-black rounded-lg"
               >
                 <LogOut className="h-5 w-5 mr-1" />
                 <span className="text-sm">Logout</span>
-              </Link>
+              </Link> */}
+              <button
+                onClick={handleLogout}
+                className="flex items-center px-3 py-1.5 bg-white text-black rounded-lg"
+              >
+                <LogOut className="h-5 w-5 mr-1" />
+                <span className="text-sm">Logout</span>
+              </button>
+
               <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold">
                 {avatar}
               </div>

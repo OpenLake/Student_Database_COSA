@@ -13,6 +13,8 @@
 
 # production
 /build
+frontend/build/
+
 # new production logs
 production.log
 
