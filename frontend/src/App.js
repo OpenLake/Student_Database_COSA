@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./Home";
 import AddUser from "./AddUser";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
@@ -21,8 +20,8 @@ import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 const ADMIN_ROLES = {
-  PRESIDENT: "harshitap@iitbhilai.ac.in",
-  GENSEC_SCITECH: "harshitapatidar257@gmail.com",
+  PRESIDENT: "ayush05012003krishn@gmail.com",
+  GENSEC_SCITECH: "scitech_gymkhana@iitbhilai.ac.in",
   GENSEC_ACADEMIC: "gensec_academic_gymkhana@iitbhilai.ac.in",
   GENSEC_CULTURAL: "Gensec_Cultural_Gymkhana@iitbhilai.ac.in",
   GENSEC_SPORTS: "Gensec_Sports_Gymkhana@iitbhilai.ac.in",
