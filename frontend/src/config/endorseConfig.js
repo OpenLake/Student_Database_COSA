@@ -1,5 +1,3 @@
-// src/pages/gensec/gensecPageConfig.js
-
 const gensecPageConfig = {
   Tech: {
     title: "Tech Skills Pending Endorsement",

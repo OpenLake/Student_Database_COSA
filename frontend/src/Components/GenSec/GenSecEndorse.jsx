@@ -11,10 +11,6 @@ export default function GenSecEndorse({ role }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //   useEffect(() => {
-  //     if (config) fetchSkills();
-  //   }, [config,fetchSkills]);
-
   const fetchSkills = useCallback(async () => {
     try {
       setLoading(true);

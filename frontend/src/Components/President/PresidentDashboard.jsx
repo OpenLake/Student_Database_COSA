@@ -5,11 +5,6 @@ const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 const PresidentDashboard = () => {
-  //   const { IsUserLoggedIn } = useContext(AdminContext);
-  //   if (!IsUserLoggedIn || IsUserLoggedIn.role !== "president") {
-  //     return <p className="text-center text-red-500">Unauthorized Access</p>;
-  //   }
-
   // States for various dashboard metrics
   const [pendingRequests, setPendingRequests] = useState(0);
   const [roomBookings, setRoomBookings] = useState(0);

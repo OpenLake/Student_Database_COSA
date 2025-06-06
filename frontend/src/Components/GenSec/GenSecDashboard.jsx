@@ -62,13 +62,7 @@ const GenSecDashboard = ({ role }) => {
               <button className="p-1 rounded-full hover:bg-white hover:bg-purple-500">
                 <Settings className="h-6 w-6" />
               </button>
-              {/* <Link
-                to="/login"
-                className="flex items-center px-3 py-1.5 bg-white text-black rounded-lg"
-              >
-                <LogOut className="h-5 w-5 mr-1" />
-                <span className="text-sm">Logout</span>
-              </Link> */}
+
               <button
                 onClick={handleLogout}
                 className="flex items-center px-3 py-1.5 bg-white text-black rounded-lg"
