@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AdminContext } from "../../App";
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 

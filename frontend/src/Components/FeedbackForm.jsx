@@ -3,7 +3,7 @@ import { AdminContext } from "../App";
 import "../App.css";
 
 const FeedbackForm = () => {
-  const { IsUserLoggedIn } = useContext(AdminContext);
+  const { isUserLoggedIn } = useContext(AdminContext);
   const [feedback, setFeedback] = useState({
     type: "Suggestion",
     description: "",

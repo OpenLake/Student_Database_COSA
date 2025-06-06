@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AdminContext } from "../../App";
 
 function Navbar() {
-  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
