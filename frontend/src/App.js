@@ -30,11 +30,11 @@ const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
 
 const getAdminRole = (email) => {
   if (!email || typeof email !== "string") {
-    console.warn("getAdminRole: invalid email", email);
+    //console.warn("getAdminRole: invalid email", email);
     return "STUDENT"; // Default role if email is invalid
   }
   const normalizedEmail = email.toLowerCase();
-  console.log("Checking role for email:", normalizedEmail);
+  //console.log("Checking role for email:", normalizedEmail);
   switch (normalizedEmail) {
     case ADMIN_ROLES.GENSEC_SCITECH.toLowerCase():
       return "GENSEC_SCITECH";
@@ -88,7 +88,7 @@ function App() {
     const initializeAuth = async () => {
       try {
         const user = await fetchCredentials();
-        console.log("Fetched user:", user);
+        //console.log("Fetched user:", user);
         if (user) {
           setIsUserLoggedIn(user);
           const role = getAdminRole(user.username);
@@ -121,6 +121,7 @@ function App() {
     isUserLoggedIn,
     setIsUserLoggedIn,
     userRole,
+    setUserRole,
   };
 
   return (
@@ -157,7 +158,7 @@ function App() {
             />
           ))}
 
-          {/* President routes - accessible to everyone for now */}
+          {/* President routes - accessible to only president*/}
           <Route
             path="/president-approval"
             element={
