@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AdminContext } from "../App";
+import { AdminContext } from "../../App";
 
 function Navbar() {
   const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);

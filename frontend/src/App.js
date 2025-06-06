@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AddUser from "./AddUser";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
@@ -241,16 +240,6 @@ function App() {
               </RoleProtectedRoute>
             }
           />
-          <Route
-            path="/add-user"
-            element={
-              <ProtectedRoute isAuthenticated={isUserLoggedIn}>
-                <AddUser />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Home route */}
           <Route
             path="/"
             element={

@@ -1,7 +1,7 @@
-import "./App.css";
-import Body from "./Components/Body";
-import Footer from "./Components/Footer";
-import Navbar from "./Components/Navbar";
+import "../../App.css";
+import Body from "./Body";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 import React, { useState } from "react";
 
 function Home() {
