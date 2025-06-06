@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
 import axios from "axios";
-import gensecPageConfig from "../config/endorseConfig";
+import gensecPageConfig from "../../config/endorseConfig";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
