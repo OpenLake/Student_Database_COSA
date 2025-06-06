@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminContext } from "../../App.js";
-import Home from "../../Home.js";
+import Home from "../Student_Page/Home.js";
 const RoleRedirect = () => {
   const { userRole } = useContext(AdminContext);
 

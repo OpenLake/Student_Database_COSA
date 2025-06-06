@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AddUser from "./AddUser";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
@@ -10,10 +9,10 @@ import ViewFeedback from "./Components/ViewFeedback";
 import EventList from "./Components/EventList";
 import EventForm from "./Components/EventForm";
 import RoomBooking from "./Components/RoomBooking";
-import GenSecDashboard from "./Components/GenSecDashboard";
-import GenSecEndorse from "./Components/GenSecEndorse";
-import PresidentApproval from "./Components/PresidentApproval";
-import PresidentDashboard from "./Components/PresidentDashboard";
+import GenSecDashboard from "./Components/GenSec/GenSecDashboard";
+import GenSecEndorse from "./Components/GenSec/GenSecEndorse";
+import PresidentApproval from "./Components/President/PresidentApproval";
+import PresidentDashboard from "./Components/President/PresidentDashboard";
 import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
 import { fetchCredentials } from "./services/auth";
 import Unauthorised from "./Components/Unauthorised";
@@ -30,11 +29,11 @@ const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
 
 const getAdminRole = (email) => {
   if (!email || typeof email !== "string") {
-    console.warn("getAdminRole: invalid email", email);
+    //console.warn("getAdminRole: invalid email", email);
     return "STUDENT"; // Default role if email is invalid
   }
   const normalizedEmail = email.toLowerCase();
-  console.log("Checking role for email:", normalizedEmail);
+  //console.log("Checking role for email:", normalizedEmail);
   switch (normalizedEmail) {
     case ADMIN_ROLES.GENSEC_SCITECH.toLowerCase():
       return "GENSEC_SCITECH";
@@ -88,7 +87,7 @@ function App() {
     const initializeAuth = async () => {
       try {
         const user = await fetchCredentials();
-        console.log("Fetched user:", user);
+        //console.log("Fetched user:", user);
         if (user) {
           setIsUserLoggedIn(user);
           const role = getAdminRole(user.username);
@@ -121,6 +120,7 @@ function App() {
     isUserLoggedIn,
     setIsUserLoggedIn,
     userRole,
+    setUserRole,
   };
 
   return (
@@ -157,7 +157,7 @@ function App() {
             />
           ))}
 
-          {/* President routes - accessible to everyone for now */}
+          {/* President routes - accessible to only president*/}
           <Route
             path="/president-approval"
             element={
@@ -240,16 +240,6 @@ function App() {
               </RoleProtectedRoute>
             }
           />
-          <Route
-            path="/add-user"
-            element={
-              <ProtectedRoute isAuthenticated={isUserLoggedIn}>
-                <AddUser />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Home route */}
           <Route
             path="/"
             element={

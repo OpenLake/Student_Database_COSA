@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Event = require("../models/Event");
 const RoomRequest = require("../models/RoomRequest");
-const {Skill} = require("../models/skill");
+const { Skill } = require("../models/skill");
 const {
   Student,
   ScietechPOR,
@@ -45,40 +45,38 @@ router.get("/feedback/:userId", async (req, res) => {
   }
 });
 
-router.get("/feedback", async(req,res)=>{
-  try{
-    const feedbacks= await Feedback.find();
+router.get("/feedback", async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find();
     res.json(feedbacks);
-
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
-  catch(error){
-    res.status(500).json({error: "Server error"});
-  }
-})
+});
 
 router.post("/fetch", async (req, res) => {
   try {
     const student = await Student.findOne({ ID_No: req.body.student_ID });
-    
+
     if (!student) {
       return res
         .status(404)
         .json({ success: false, message: "Student not found" });
     }
-    
+
     const scitechPor = await ScietechPOR.find({ student: student });
     const cultPor = await CultPOR.find({ student: student });
     const sportPor = await SportsPOR.find({ student: student });
     const acadPor = await AcadPOR.find({ student: student });
     const achievements = await Achievement.find({ student: student });
     const PORs = [...scitechPor, ...cultPor, ...sportPor, ...acadPor];
-    
+
     const st = {
       student: student,
       PORS: PORs,
-      achievements: achievements
+      achievements: achievements,
     };
-    
+
     return res.status(200).json(st);
   } catch (error) {
     console.log(error);
@@ -146,27 +144,20 @@ const authenticatePresident = (req, res, next) => {
   next();
 };
 
-
-
-router.put("/room/request/:id/status", authenticatePresident , async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    await RoomRequest.findByIdAndUpdate(id, { status });
-    res.send({ message: "Status updated" });
-  } catch (error) {
-    res.status(500).send({ error: "Error updating status" });
-  }
-});
-
-// router.get("/skills/:id", async (req, res) => {
-//   try {
-//     const skills = await Skill.find({ student: req.params.id });
-//     res.json(skills);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+router.put(
+  "/room/request/:id/status",
+  authenticatePresident,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      await RoomRequest.findByIdAndUpdate(id, { status });
+      res.send({ message: "Status updated" });
+    } catch (error) {
+      res.status(500).send({ error: "Error updating status" });
+    }
+  },
+);
 
 // Get skills of a student
 router.get("/skills/:studentId", async (req, res) => {
@@ -185,10 +176,7 @@ router.get("/skills/:studentId", async (req, res) => {
   }
 });
 
-
 // Add a new skill
-// const { Skill } = require("../models/skill");
-// const { Student } = require("../models/student");
 
 router.post("/skills", async (req, res) => {
   try {
@@ -202,7 +190,7 @@ router.post("/skills", async (req, res) => {
 
     // 🔹 Use the student's ObjectId (_id) to link the skill
     const newSkill = new Skill({
-      student: student._id,  // ✅ Store the correct ObjectId
+      student: student._id, // ✅ Store the correct ObjectId
       skillName,
       skillType,
     });
@@ -215,32 +203,6 @@ router.post("/skills", async (req, res) => {
   }
 });
 
-// Endorse a skill
-// router.put("/skills/endorse/:id", async (req, res) => {
-//   const { role } = req.body; // role should be one of GenSecTech, GenSecAcad, GenSecSports, GenSecCultural
-//   try {
-//     const skill = await Skill.findById(req.params.id);
-//     if (!skill) return res.status(404).json({ error: "Skill not found" });
-    
-//     const endorsementRoles = {
-//       tech: "GenSecTech",
-//       acad: "GenSecAcad",
-//       sport: "GenSecSports",
-//       cultural: "GenSecCultural",
-//     };
-
-//     if (endorsementRoles[skill.skillType] !== role) {
-//       return res.status(403).json({ error: "Unauthorized endorsement" });
-//     }
-
-//     skill.endorsed = true;
-//     await skill.save();
-//     res.json(skill);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
 router.get("/skills", async (req, res) => {
   try {
     const skills = await Skill.find().populate("student", "ID_No name");
@@ -249,7 +211,6 @@ router.get("/skills", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Remove a skill
 router.delete("/skills/:studentId/:skillId", async (req, res) => {
@@ -266,7 +227,9 @@ router.delete("/skills/:studentId/:skillId", async (req, res) => {
     });
 
     if (!skill) {
-      return res.status(404).json({ error: "Skill not found or doesn't belong to this student" });
+      return res
+        .status(404)
+        .json({ error: "Skill not found or doesn't belong to this student" });
     }
 
     res.json({ message: "Skill removed" });
@@ -277,7 +240,10 @@ router.delete("/skills/:studentId/:skillId", async (req, res) => {
 
 router.get("/skills/unendorsed/tech", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "tech", endorsed: false }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "tech",
+      endorsed: false,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -311,7 +277,10 @@ router.put("/skills/endorse/:skillId", async (req, res) => {
  */
 router.get("/skills/unendorsed/acad", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "acad", endorsed: false }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "acad",
+      endorsed: false,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -328,11 +297,15 @@ router.put("/skills/endorse-acad/:skillId", async (req, res) => {
     if (!skill) {
       return res.status(404).json({ error: "Skill not found" });
     }
-    
+
     if (skill.skillType !== "acad") {
-      return res.status(403).json({ error: "Unauthorized endorsement. This skill is not academic." });
+      return res
+        .status(403)
+        .json({
+          error: "Unauthorized endorsement. This skill is not academic.",
+        });
     }
-    
+
     skill.endorsed = true;
     await skill.save();
     res.json({ message: "Academic skill endorsed successfully!" });
@@ -347,7 +320,10 @@ router.put("/skills/endorse-acad/:skillId", async (req, res) => {
  */
 router.get("/skills/acad", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "acad" }).populate("student", "ID_No name");
+    const skills = await Skill.find({ skillType: "acad" }).populate(
+      "student",
+      "ID_No name",
+    );
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -360,7 +336,10 @@ router.get("/skills/acad", async (req, res) => {
  */
 router.get("/skills/endorsed/acad", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "acad", endorsed: true }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "acad",
+      endorsed: true,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -377,8 +356,11 @@ router.get("/skills/student/:studentId/acad", async (req, res) => {
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
-    
-    const skills = await Skill.find({ student: student._id, skillType: "acad" });
+
+    const skills = await Skill.find({
+      student: student._id,
+      skillType: "acad",
+    });
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -395,11 +377,13 @@ router.put("/skills/revoke-endorsement/acad/:skillId", async (req, res) => {
     if (!skill) {
       return res.status(404).json({ error: "Skill not found" });
     }
-    
+
     if (skill.skillType !== "acad") {
-      return res.status(403).json({ error: "Unauthorized action. This skill is not academic." });
+      return res
+        .status(403)
+        .json({ error: "Unauthorized action. This skill is not academic." });
     }
-    
+
     skill.endorsed = false;
     await skill.save();
     res.json({ message: "Academic skill endorsement revoked successfully!" });
@@ -410,7 +394,10 @@ router.put("/skills/revoke-endorsement/acad/:skillId", async (req, res) => {
 
 router.get("/skills/unendorsed/sport", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "sport", endorsed: false }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "sport",
+      endorsed: false,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -424,11 +411,15 @@ router.put("/skills/endorse-sport/:skillId", async (req, res) => {
     if (!skill) {
       return res.status(404).json({ error: "Skill not found" });
     }
-    
+
     if (skill.skillType !== "sport") {
-      return res.status(403).json({ error: "Unauthorized endorsement. This is not a sports skill." });
+      return res
+        .status(403)
+        .json({
+          error: "Unauthorized endorsement. This is not a sports skill.",
+        });
     }
-    
+
     skill.endorsed = true;
     await skill.save();
     res.json({ message: "Sports skill endorsed successfully!" });
@@ -441,7 +432,10 @@ router.put("/skills/endorse-sport/:skillId", async (req, res) => {
 // Get all unendorsed cultural skills
 router.get("/skills/unendorsed/cultural", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "cultural", endorsed: false }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "cultural",
+      endorsed: false,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -455,11 +449,11 @@ router.put("/skills/endorse-cultural/:skillId", async (req, res) => {
     if (!skill) {
       return res.status(404).json({ error: "Skill not found" });
     }
-    
+
     if (skill.skillType !== "cultural") {
       return res.status(403).json({ error: "Unauthorized endorsement" });
     }
-    
+
     skill.endorsed = true;
     await skill.save();
     res.json({ message: "Cultural skill endorsed successfully!" });
@@ -472,7 +466,10 @@ router.put("/skills/endorse-cultural/:skillId", async (req, res) => {
 // For example, to get all endorsed cultural skills:
 router.get("/skills/endorsed/cultural", async (req, res) => {
   try {
-    const skills = await Skill.find({ skillType: "cultural", endorsed: true }).populate("student", "ID_No name");
+    const skills = await Skill.find({
+      skillType: "cultural",
+      endorsed: true,
+    }).populate("student", "ID_No name");
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -486,12 +483,12 @@ router.get("/skills/student/cultural/:studentId", async (req, res) => {
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
-    
-    const skills = await Skill.find({ 
+
+    const skills = await Skill.find({
       student: student._id,
-      skillType: "cultural" 
+      skillType: "cultural",
     });
-    
+
     res.json(skills);
   } catch (err) {
     res.status(500).json({ error: err.message });

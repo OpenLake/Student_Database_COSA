@@ -1,28 +1,27 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Add from "../Add_User/Components/Add";
-import UserProfileButtons from "../Add_User/Components/UserProfileButtons";
-import Card from "../Components/Card";
-import { fetchStudent } from "../services/utils";
-import { ShowSkills, AddSkill } from "./ShowAddSkill";
-import { AdminContext } from "../App";
+import Add from "../../Add_User/Components/Add";
+import UserProfileButtons from "../../Add_User/Components/UserProfileButtons";
+import Card from "../Card";
+import { fetchStudent } from "../../services/utils";
+import { ShowSkills, AddSkill } from "../ShowAddSkill";
+import { AdminContext } from "../../App";
 // import "./Body.css";
 
 function Body({ studentDetails }) {
-  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
-    if (IsUserLoggedIn?.ID_No) {
-      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+    if (isUserLoggedIn?.ID_No) {
+      fetchStudent(isUserLoggedIn.ID_No).then((data) => {
         setUserDetails(data);
       });
     }
-  }, [IsUserLoggedIn]);
+  }, [isUserLoggedIn]);
 
   const refreshUserDetails = () => {
-    if (IsUserLoggedIn?.ID_No) {
-      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+    if (isUserLoggedIn?.ID_No) {
+      fetchStudent(isUserLoggedIn.ID_No).then((data) => {
         setUserDetails(data);
       });
     }
@@ -47,7 +46,7 @@ function Body({ studentDetails }) {
             <h3>Your Student Profile</h3>
             <Card data={userDetails} />
             <UserProfileButtons
-              isLoggedIn={!!IsUserLoggedIn}
+              isLoggedIn={!!isUserLoggedIn}
               userDetails={userDetails}
               onUpdateSuccess={refreshUserDetails}
             />
