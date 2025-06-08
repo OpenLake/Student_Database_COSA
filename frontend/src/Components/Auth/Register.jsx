@@ -3,6 +3,7 @@ import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
 import { registerUser } from "../../services/auth";
+import isIITBhilaiEmail from "../../utils/emailValidator";
 
 function Register() {
   const [name, setName] = useState("");
@@ -10,9 +11,15 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsUserLoggedIn } = useContext(AdminContext);
-
+  const [error, setError] = useState("");
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError("");
+    if (!isIITBhilaiEmail(email)) {
+      setError("Please use an @iitbhilai.ac.in email address.");
+      return;
+    }
+
     const status = await registerUser(name, ID, email, password);
     if (status) {
       setIsUserLoggedIn(true);
@@ -78,6 +85,16 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormGroup>
+
+          {error && (
+            <p
+              className="text-danger text-center"
+              style={{ fontSize: "0.9rem" }}
+            >
+              {error}
+            </p>
+          )}
+
           <FormGroup className="text-center">
             <Button type="submit" style={{ width: "100%" }} color="success">
               Register
