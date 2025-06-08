@@ -2,7 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
 const { User } = require("./student");
-
+const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
 // Local Strategy
 passport.use(
   new LocalStrategy(
@@ -23,6 +23,12 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       // Check if the user already exists in your database
+      if (!isIITBhilaiEmail(profile.emails[0].value)) {
+        console.log("Google OAuth blocked for: ", profile.emails[0].value);
+        return done(null, false, {
+          message: "Only @iitbhilai.ac.in emails are allowed.",
+        });
+      }
       try {
         const user = await User.findOne({ username: profile.emails[0].value });
 
@@ -30,7 +36,6 @@ passport.use(
           // If user exists, return the user
           return done(null, user);
         }
-
         // If user doesn't exist, create a new user in your database
         const newUser = new User({
           username: profile.emails[0].value,
