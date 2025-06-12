@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     enum: ["local", "google"],
     required: true,
   },
+  profilePic: {
+    type: String,
+    default: "",
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);
