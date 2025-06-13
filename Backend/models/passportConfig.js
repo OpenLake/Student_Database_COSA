@@ -39,8 +39,12 @@ passport.use(
         // If user doesn't exist, create a new user in your database
         const newUser = new User({
           username: profile.emails[0].value,
-          name: profile.displayName,
+          name: profile.displayName || "No Name",
           strategy: "google",
+          profilePic:
+            profile.photos && profile.photos.length > 0
+              ? profile.photos[0].value
+              : "https://www.gravatar.com/avatar/?d=mp",
         });
 
         await newUser.save();
