@@ -10,6 +10,14 @@ export async function fetchCredentials() {
   return response.data;
 }
 
+export async function completeOnboarding(userData) {
+  const response = await axios.post(
+    `${process.env.REACT_APP_BACKEND_URL}/onboarding`,
+    userData,
+    { withCredentials: true },
+  );
+  return response.data;
+}
 export async function registerUser(name, ID, email, password) {
   const data = JSON.stringify({
     name: name,

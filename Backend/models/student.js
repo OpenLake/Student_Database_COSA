@@ -40,6 +40,11 @@ const student = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   Program: {
     type: String,
     required: true,
@@ -58,6 +63,9 @@ const student = new mongoose.Schema({
       },
       message: "Invalid year of Admission",
     },
+  },
+  mobile_no: {
+    type: String,
   },
 });
 

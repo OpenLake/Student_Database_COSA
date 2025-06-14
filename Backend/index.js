@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const { connectDB } = require("./db");
 const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
 const routes_tenure = require("./routes/tenureRoutes.js");
+const onboardingRoutes = require("./routes/onboarding.js");
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
@@ -36,6 +37,7 @@ app.get("/", (_req, res) => {
 app.use("/", routes_general);
 app.use("/auth", routes_auth);
 app.use("/tenure", routes_tenure);
+app.use("/onboarding", onboardingRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {

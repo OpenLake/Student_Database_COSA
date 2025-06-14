@@ -62,11 +62,9 @@ router.post("/register", async (req, res) => {
   try {
     const { name, ID, email, password } = req.body;
     if (!isIITBhilaiEmail(email)) {
-      return res
-        .status(400)
-        .json({
-          message: "Invalid email address. Please use an IIT Bhilai email.",
-        });
+      return res.status(400).json({
+        message: "Invalid email address. Please use an IIT Bhilai email.",
+      });
     }
     const existingUser = await User.findOne({ username: email });
     if (existingUser) {
@@ -103,11 +101,7 @@ router.get(
   "/google/verify",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    if (!req.user.ID_No) {
-      res.redirect("/auth/google/addId");
-    } else {
-      res.redirect("/");
-    }
+    res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
   },
 );
 
