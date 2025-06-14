@@ -4,7 +4,10 @@ import { AdminContext } from "../../App.js";
 import Home from "../Student_Page/Home.js";
 const RoleRedirect = () => {
   const { userRole } = useContext(AdminContext);
-
+  const { isOnboardingComplete } = useContext(AdminContext);
+  if (!isOnboardingComplete) {
+    return <Navigate to="/onboarding" replace />;
+  }
   switch (userRole) {
     case "PRESIDENT":
       return <Navigate to="/president-dashboard" replace />;

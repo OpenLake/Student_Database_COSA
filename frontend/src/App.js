@@ -18,6 +18,7 @@ import { fetchCredentials } from "./services/auth";
 import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
+import OnboardingForm from "./Components/UserOnboarding";
 const ADMIN_ROLES = {
   PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
   GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
@@ -69,9 +70,15 @@ const genSecRoles = [
 const ProtectedRoute = ({
   children,
   isAuthenticated,
-  redirectTo = "/login",
+  isOnboardingComplete,
 }) => {
-  return isAuthenticated ? children : <Navigate to={redirectTo} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  if (isOnboardingComplete === false) {
+    return <Navigate to="/onboarding" replace />;
+  }
+  return children;
 };
 
 const PublicRoute = ({ children, isAuthenticated, redirectTo = "/" }) => {
@@ -82,6 +89,7 @@ function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState("STUDENT");
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(null);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -93,6 +101,11 @@ function App() {
           const role = getAdminRole(user.username);
           setUserRole(role);
           console.log("User role:", role);
+          if (role !== "STUDENT") {
+            setIsOnboardingComplete(true);
+          } else {
+            setIsOnboardingComplete(user.onboardingComplete);
+          }
         } else {
           setIsUserLoggedIn(false);
         }
@@ -121,6 +134,8 @@ function App() {
     setIsUserLoggedIn,
     userRole,
     setUserRole,
+    isOnboardingComplete,
+    setIsOnboardingComplete,
   };
 
   return (
@@ -227,7 +242,10 @@ function App() {
           <Route
             path="/feedback"
             element={
-              <ProtectedRoute isAuthenticated={isUserLoggedIn}>
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
                 <FeedbackForm />
               </ProtectedRoute>
             }
@@ -238,6 +256,18 @@ function App() {
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
                 <EventForm />
               </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={
+              isUserLoggedIn && !isOnboardingComplete ? (
+                <OnboardingForm />
+              ) : isUserLoggedIn ? (
+                <RoleRedirect />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
           <Route
