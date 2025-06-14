@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  onboardingComplete: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);
