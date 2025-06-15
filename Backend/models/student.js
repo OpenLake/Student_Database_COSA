@@ -67,6 +67,27 @@ const student = new mongoose.Schema({
   mobile_no: {
     type: String,
   },
+  gender: {
+    type: String,
+    enum: ["Male", "Female", "Other"],
+  },
+  yearOfStudy: {
+    type: String,
+    enum: ["1st", "2nd", "3rd", "4th", "5th", "Alumni"],
+  },
+  hostelName: {
+    type: String,
+    enum: ["None", "MSH", "Indravati", "Gopad", "Kanhar"],
+  },
+  hostelRoom: {
+    type: String,
+  },
+  socialLinks: {
+    github: { type: String, default: "" },
+    linkedin: { type: String, default: "" },
+    instagram: { type: String, default: "" },
+    other: { type: String, default: "" },
+  },
 });
 
 const achievement = new mongoose.Schema({
