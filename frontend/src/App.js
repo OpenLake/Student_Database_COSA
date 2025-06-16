@@ -19,6 +19,7 @@ import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 import OnboardingForm from "./Components/UserOnboarding";
+import StudentProfile from "./Components/Student_Page/ProfilePage";
 const ADMIN_ROLES = {
   PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
   GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
@@ -278,6 +279,17 @@ function App() {
               ) : (
                 <Navigate to="/login" replace />
               )
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <StudentProfile />
+              </ProtectedRoute>
             }
           />
           <Route path="/unauthorised" element={<Unauthorised />} />

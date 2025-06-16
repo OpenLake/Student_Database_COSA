@@ -59,13 +59,14 @@ const student = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (value) {
-        return Number.isInteger(value) && value > 2016;
+        return Number.isInteger(value) && value >= 2016;
       },
       message: "Invalid year of Admission",
     },
   },
   mobile_no: {
     type: String,
+    default: "",
   },
   gender: {
     type: String,
@@ -78,9 +79,11 @@ const student = new mongoose.Schema({
   hostelName: {
     type: String,
     enum: ["None", "MSH", "Indravati", "Gopad", "Kanhar"],
+    default: "None",
   },
   hostelRoom: {
     type: String,
+    default: "",
   },
   socialLinks: {
     github: { type: String, default: "" },
