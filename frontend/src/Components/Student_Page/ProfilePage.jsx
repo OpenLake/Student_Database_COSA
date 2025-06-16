@@ -276,28 +276,18 @@ const StudentProfile = () => {
       {/* Profile Content */}
       <div className="max-w-4xl mx-auto px-3 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Personal Information */}
+          {/* Basic Information */}
           <div className="space-y-3">
             <h2 className="text-lg font-bold text-gray-900 border-b border-blue-600 pb-1">
-              Personal Information
+              Basic Information
             </h2>
             <ReadOnlyField icon={User} label="Full Name" value={profile.name} />
-            <ReadOnlyField icon={Mail} label="Email" value={profile.email} />
-
-            <EditableField
-              icon={Phone}
-              label="Mobile Number"
-              value={editedProfile.mobile_no}
-              error={errors.mobile_no}
-              isEditing={isEditing}
-              inputProps={{
-                ref: mobileRef,
-                onChange: mobileOnChange,
-                maxLength: 10,
-                inputMode: "numeric",
-              }}
+            <ReadOnlyField
+              icon={GraduationCap}
+              label="Student ID"
+              value={profile.ID_No}
             />
-
+            <ReadOnlyField icon={Mail} label="Email" value={profile.email} />
             <SelectField
               icon={Users}
               label="Gender"
@@ -315,12 +305,6 @@ const StudentProfile = () => {
             <h2 className="text-lg font-bold text-gray-900 border-b border-blue-600 pb-1">
               Academic Information
             </h2>
-            <ReadOnlyField
-              icon={GraduationCap}
-              label="Student ID"
-              value={profile.ID_No}
-            />
-
             <EditableField
               icon={Calendar}
               label="Admission Year"
@@ -335,7 +319,6 @@ const StudentProfile = () => {
                 max: currentYear,
               }}
             />
-
             <SelectField
               icon={GraduationCap}
               label="Program"
@@ -346,7 +329,6 @@ const StudentProfile = () => {
                 setEditedProfile((prev) => ({ ...prev, Program: val }))
               }
             />
-
             <SelectField
               icon={GraduationCap}
               label="Discipline"
@@ -367,7 +349,6 @@ const StudentProfile = () => {
                 setEditedProfile((prev) => ({ ...prev, discipline: val }))
               }
             />
-
             <SelectField
               icon={GraduationCap}
               label="Year of Study"
@@ -380,11 +361,24 @@ const StudentProfile = () => {
             />
           </div>
 
-          {/* Hostel Information */}
+          {/* Contact Information */}
           <div className="space-y-3">
             <h2 className="text-lg font-bold text-gray-900 border-b border-blue-600 pb-1">
-              Hostel Information
+              Contact Information
             </h2>
+            <EditableField
+              icon={Phone}
+              label="Mobile Number"
+              value={editedProfile.mobile_no}
+              error={errors.mobile_no}
+              isEditing={isEditing}
+              inputProps={{
+                ref: mobileRef,
+                onChange: mobileOnChange,
+                maxLength: 10,
+                inputMode: "numeric",
+              }}
+            />
             <SelectField
               icon={Home}
               label="Hostel Name"
@@ -395,7 +389,6 @@ const StudentProfile = () => {
                 setEditedProfile((prev) => ({ ...prev, hostelName: val }))
               }
             />
-
             <EditableField
               icon={MapPin}
               label="Room Number"
@@ -426,7 +419,6 @@ const StudentProfile = () => {
                   placeholder: "https://github.com/username",
                 }}
               />
-
               <EditableField
                 label="LinkedIn"
                 value={editedProfile.socialLinks?.linkedin}
