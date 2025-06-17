@@ -95,7 +95,7 @@ const student = new mongoose.Schema({
     type: String,
     default: "https://www.gravatar.com/avatar/?d=mp",
   },
-  cloudineryUrl: {
+  cloudinaryUrl: {
     type: String,
     default: "",
   },

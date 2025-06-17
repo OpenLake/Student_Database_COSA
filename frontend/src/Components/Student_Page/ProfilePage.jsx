@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { fetchStudent } from "../../services/utils";
 import { AdminContext } from "../../App";
+import ProfilePhoto from "./ProfilePhoto";
 
 // --- Validation helpers ---
 const validateMobile = (number) => /^[0-9]{10}$/.test(number);
@@ -82,7 +83,7 @@ const StudentProfile = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
-
+  const [profilePic, setProfilePic] = useState(null);
   // Cursor-preserving handlers for all editable fields
   const [mobileRef, mobileOnChange] = useCursorInput(
     editedProfile?.mobile_no || "",
@@ -121,6 +122,7 @@ const StudentProfile = () => {
           if (data?.student) {
             setProfile(data.student);
             setEditedProfile(data.student);
+            setProfilePic(data.student.profilePic);
           }
         })
         .catch(() =>
@@ -228,27 +230,35 @@ const StudentProfile = () => {
       {toast && <Toast {...toast} onClose={() => setToast(null)} />}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-8 shadow-sm py-2 px-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-            <User className="w-16 h-16 text-blue-700" />
-          </div>
+      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-4 shadow-sm flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          {/* Profile Photo with improved border and shadow */}
+
+          <ProfilePhoto
+            isEditing={isEditing}
+            ID_No={profile.ID_No}
+            profilePic={profile.profilePic}
+            onPhotoChange={(newPhoto) =>
+              setProfile((prev) => ({ ...prev, profilePic: newPhoto }))
+            }
+          />
+
+          {/* User Info */}
           <div>
-            <h2 className="text-base font-bold text-gray-900">
-              {profile.name}
-            </h2>
-            <p className="text-s text-white font-medium mt-600">
+            <h2 className="text-xl font-semibold text-white">{profile.name}</h2>
+            <p className="text-sm text-blue-100 mt-1">
               Student ID: {profile.ID_No}
             </p>
           </div>
         </div>
-        <div className="flex space-x-2">
+        {/* Action Buttons */}
+        <div className="flex gap-2">
           {!isEditing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center space-x-1 bg-blue-600 text-white px-3 py-1.5 rounded font-medium text-xs hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors shadow"
             >
-              <Edit3 className="w-3.5 h-3.5" />
+              <Edit3 className="w-4 h-4" />
               <span>Edit</span>
             </button>
           ) : (
@@ -256,16 +266,16 @@ const StudentProfile = () => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="flex items-center space-x-1 bg-emerald-600 text-white px-3 py-1.5 rounded font-medium text-xs hover:bg-emerald-700 transition-colors disabled:opacity-70"
+                className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-emerald-700 transition-colors shadow disabled:opacity-70"
               >
-                <Save className="w-3.5 h-3.5" />
+                <Save className="w-4 h-4" />
                 <span>{loading ? "Saving..." : "Save"}</span>
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center space-x-1 bg-rose-600 text-white px-3 py-1.5 rounded font-medium text-xs hover:bg-rose-700 transition-colors"
+                className="flex items-center gap-1 bg-rose-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-rose-700 transition-colors shadow"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
                 <span>Cancel</span>
               </button>
             </>
