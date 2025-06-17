@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminContext } from "../../App";
-
+import { User } from "lucide-react";
 function Navbar() {
   const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const navigate = useNavigate();
@@ -13,8 +13,14 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2 className="navbar-title">Student Portal</h2>
+      <h2 className="navbar-title">
+        <user />
+        Student Portal
+      </h2>
       <div className="navbar-links">
+        <Link to="/profile" className="nav-link">
+          <User size={20} color="white" strokeWidth={2} />
+        </Link>
         <Link to="/cosa" className="nav-link">
           📚 Cosa
         </Link>
