@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  onboardingComplete: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -33,6 +37,11 @@ const student = new mongoose.Schema({
   },
   ID_No: {
     type: Number,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
     required: true,
     unique: true,
   },
@@ -54,6 +63,9 @@ const student = new mongoose.Schema({
       },
       message: "Invalid year of Admission",
     },
+  },
+  mobile_no: {
+    type: String,
   },
 });
 
