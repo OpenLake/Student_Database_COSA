@@ -91,6 +91,14 @@ const student = new mongoose.Schema({
     instagram: { type: String, default: "" },
     other: { type: String, default: "" },
   },
+  profilePic: {
+    type: String,
+    default: "https://www.gravatar.com/avatar/?d=mp",
+  },
+  cloudineryUrl: {
+    type: String,
+    default: "",
+  },
 });
 
 const achievement = new mongoose.Schema({
