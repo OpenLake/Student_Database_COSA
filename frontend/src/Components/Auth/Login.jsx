@@ -55,6 +55,19 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormGroup>
+          <div className="d-flex justify-content-end mt-2">
+            <a
+              href="/forgot-password"
+              style={{
+                fontSize: "0.9rem",
+                textDecoration: "none",
+                color: "#007bff",
+              }}
+            >
+              {" "}
+              Forgot Password?{" "}
+            </a>
+          </div>
           <FormGroup className="text-center">
             <Button type="submit" style={{ width: "100%" }} color="success">
               Login
