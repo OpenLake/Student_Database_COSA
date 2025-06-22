@@ -21,8 +21,11 @@ const ForgotPassword = () => {
       );
 
       const data = await res.json();
-
-      if (res.ok) {
+      if (res.status === 400 && data.message.includes("Google Login")) {
+        toast.error(
+          "This email is linked with Google. Please sign in with Google.",
+        );
+      } else if (res.ok) {
         toast.success(data.message || "Reset link sent successfully!");
       } else {
         toast.error(data.message || "Something went wrong.");

@@ -185,6 +185,14 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    if (user.strategy === "google") {
+      return res
+        .status(400)
+        .json({
+          message:
+            "This email is linked with Google Login. Please use 'Sign in with Google' instead.",
+        });
+    }
     const secret = user._id + process.env.JWT_SECRET_TOKEN;
     const token = jwt.sign({ email: email, id: user._id }, secret, {
       expiresIn: "10m",
