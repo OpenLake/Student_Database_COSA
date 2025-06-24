@@ -20,6 +20,8 @@ import RoleProtectedRoute from "./utils/RoleProtectedRoute";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 import OnboardingForm from "./Components/UserOnboarding";
 import StudentProfile from "./Components/Student_Page/ProfilePage";
+import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
+import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
 const ADMIN_ROLES = {
   PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
   GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
@@ -238,6 +240,22 @@ function App() {
             }
           />
           <Route path="/register/google/:id" element={<GoogleRegister />} />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password/:id/:token"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <ResetPassword />
+              </PublicRoute>
+            }
+          />
 
           {/* Protected routes - only for authenticated users */}
           <Route
