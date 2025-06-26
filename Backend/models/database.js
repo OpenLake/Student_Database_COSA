@@ -66,11 +66,7 @@ const userSchema = new mongoose.Schema({
       other: { type: String, default: "" },
     },
   },
-  social_media: {
-    linkedin: String,
-    github: String,
-    instagram: String,
-  },
+
   status: {
     type: String,
     enum: ["active", "inactive", "graduated"],
@@ -144,10 +140,6 @@ const organizationalUnitSchema = new mongoose.Schema({
       default: 0,
     },
   },
-  metadata: {
-    type: Object,
-    default: {},
-  },
   created_at: {
     type: Date,
     default: Date.now,
@@ -216,9 +208,7 @@ const positionSchema = new mongoose.Schema({
   //     default: {}
   //   }
   // },
-  max_tenure_months: {
-    type: Number,
-  },
+
   // tenure:{
   //   type: String,
   //   required: true
@@ -265,19 +255,10 @@ const positionHolderSchema = new mongoose.Schema({
   //   ref: 'Organizational_Unit',
   //   required: true
   // },
-  tenure_info: {
-    start_date: {
-      type: Date,
-      required: true,
-    },
-    end_date: {
-      type: Date,
-      required: true,
-    },
-    tenure_year: {
-      type: String,
-      required: true,
-    },
+
+  tenure_year: {
+    type: String,
+    required: true,
   },
   appointment_details: {
     appointed_by: {
