@@ -1,194 +1,326 @@
 import "./App.css";
-
 import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// import Home from './Home';
-import GenSecDashboard from "./Components/GenSecDashboard"; //added
-import GenSecEndorse from "./Components/GenSecEndorse"; //added
-
-import AddUser from "./AddUser";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
-import { fetchCredentials } from "./services/auth";
 import FeedbackForm from "./Components/FeedbackForm";
+import ViewFeedback from "./Components/ViewFeedback";
 import EventList from "./Components/EventList";
 import EventForm from "./Components/EventForm";
-import { CreateTenure } from "./Components/TenureRecords";
-import { ShowTenure } from "./Components/TenureRecords";
 import RoomBooking from "./Components/RoomBooking";
-import PresidentApproval from "./Components/PresidentApproval";
-import PresidentDashboard from "./Components/PresidentDashboard";
-import GenSecTechPage from "./Components/GenSecTechPage";
-import GensecSciTechDashboard from "./Components/GensecSciTechDashboard";
-import ViewFeedback from "./Components/ViewFeedback";
+import GenSecDashboard from "./Components/GenSec/GenSecDashboard";
+import GenSecEndorse from "./Components/GenSec/GenSecEndorse";
+import PresidentApproval from "./Components/President/PresidentApproval";
+import PresidentDashboard from "./Components/President/PresidentDashboard";
+import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
+import { fetchCredentials } from "./services/auth";
+import Unauthorised from "./Components/Unauthorised";
+import RoleProtectedRoute from "./utils/RoleProtectedRoute";
+import RoleRedirect from "./Components/Auth/RoleRedirect";
+import OnboardingForm from "./Components/UserOnboarding";
+import StudentProfile from "./Components/Student_Page/ProfilePage";
+import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
+import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
+const ADMIN_ROLES = {
+  PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
+  GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
+  GENSEC_ACADEMIC: process.env.REACT_APP_ACAD_USERNAME,
+  GENSEC_CULTURAL: process.env.REACT_APP_CULT_USERNAME,
+  GENSEC_SPORTS: process.env.REACT_APP_SPORT_USERNAME,
+};
+const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
 
-import GensecAcadDashboard from "./Components/GenSecAcad";
-import GenSecAcadPage from "./Components/GenSecAcadPage";
-import GenSecSportsPage from "./Components/GenSecSportsPage";
-import GensecSportsDashboard from "./Components/GenSecSports";
-import GenSecCultPage from "./Components/GenSecCultPage";
-import GensecCultDashboard from "./Components/GenSecCult";
+const getAdminRole = (email) => {
+  if (!email || typeof email !== "string") {
+    //console.warn("getAdminRole: invalid email", email);
+    return "STUDENT"; // Default role if email is invalid
+  }
+  const normalizedEmail = email.toLowerCase();
+  //console.log("Checking role for email:", normalizedEmail);
+  switch (normalizedEmail) {
+    case ADMIN_ROLES.GENSEC_SCITECH.toLowerCase():
+      return "GENSEC_SCITECH";
+    case ADMIN_ROLES.GENSEC_ACADEMIC.toLowerCase():
+      return "GENSEC_ACADEMIC";
+    case ADMIN_ROLES.GENSEC_CULTURAL.toLowerCase():
+      return "GENSEC_CULTURAL";
+    case ADMIN_ROLES.GENSEC_SPORTS.toLowerCase():
+      return "GENSEC_SPORTS";
+    case ADMIN_ROLES.PRESIDENT.toLowerCase():
+      return "PRESIDENT";
+    default:
+      return "STUDENT";
+  }
+};
+export { getAdminRole };
 
-const AdminContext = createContext();
+const genSecRoleMap = {
+  Cultural: "GENSEC_CULTURAL",
+  Sports: "GENSEC_SPORTS",
+  Academic: "GENSEC_ACADEMIC",
+  SciTech: "GENSEC_SCITECH",
+};
+export const AdminContext = createContext();
+
+const genSecRoles = [
+  { path: "cult", role: "Cultural" },
+  { path: "sport", role: "Sports" },
+  { path: "acad", role: "Academic" },
+  { path: "tech", role: "SciTech" },
+];
+
+const ProtectedRoute = ({
+  children,
+  isAuthenticated,
+  isOnboardingComplete,
+}) => {
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  if (isOnboardingComplete === false) {
+    return <Navigate to="/onboarding" replace />;
+  }
+  return children;
+};
+
+const PublicRoute = ({ children, isAuthenticated, redirectTo = "/" }) => {
+  return !isAuthenticated ? children : <Navigate to={redirectTo} replace />;
+};
 
 function App() {
-  const [IsUserLoggedIn, setIsUserLoggedIn] = useState();
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState("STUDENT");
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(null);
+
   useEffect(() => {
-    fetchCredentials().then((User) => {
-      if (User) {
-        setIsUserLoggedIn(User);
+    const initializeAuth = async () => {
+      try {
+        const user = await fetchCredentials();
+        //console.log("Fetched user:", user);
+        if (user) {
+          setIsUserLoggedIn(user);
+          const role = getAdminRole(user.username);
+          setUserRole(role);
+          console.log("User role:", role);
+          if (role !== "STUDENT") {
+            setIsOnboardingComplete(true);
+          } else {
+            setIsOnboardingComplete(user.onboardingComplete);
+          }
+        } else {
+          setIsUserLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Auth initialization failed:", error);
+        setIsUserLoggedIn(false);
+      } finally {
+        setIsLoading(false);
       }
-    });
+    };
+
+    initializeAuth();
   }, []);
 
-  // Routing
-  let routes;
-  if (IsUserLoggedIn) {
-    routes = (
-      <Routes>
-        {/*added paths*/}
-        <Route
-          path="/gensec-cult"
-          element={<GenSecDashboard role="Cultural" />}
-        />
-        <Route
-          path="/gensec-sport"
-          element={<GenSecDashboard role="Sports" />}
-        />
-        <Route
-          path="/gensec-acad"
-          element={<GenSecDashboard role="Academic" />}
-        />
-        <Route
-          path="/gensec-tech"
-          element={<GenSecDashboard role="SciTech" />}
-        />
-        <Route
-          path="/gensec-cult-endorse"
-          element={<GenSecEndorse role="Cultural" />}
-        />
-        <Route
-          path="/gensec-sport-endorse"
-          element={<GenSecEndorse role="Sports" />}
-        />
-        <Route
-          path="/gensec-acad-endorse"
-          element={<GenSecEndorse role="Academic" />}
-        />
-        <Route
-          path="/gensec-tech-endorse"
-          element={<GenSecEndorse role="Tech" />}
-        />
-
-        {/*<Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
-        <Route path="/genseccult-endorse" element={<GenSecCultPage />} />
-        <Route
-          path="/gensecsport-dashboard"
-          element={<GensecSportsDashboard />}
-        />
-        <Route path="/gensecsport-endorse" element={<GenSecSportsPage />} />
-        */}
-        <Route path="/president-approval" element={<PresidentApproval />} />
-        <Route path="/president-dashboard" element={<PresidentDashboard />} />
-
-        <Route path="/" element={<AddUser />} />
-        {/*<Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
-        <Route path="/gensecacad-endorse" element={<GenSecAcadPage />} />
-        <Route
-          path="/gensectech-dashboard"
-          element={<GensecSciTechDashboard />}
-          <Route path="/gensectech-endorse" element={<GenSecTechPage />} />
-        />*/}
-        <Route path="/roombooking" element={<RoomBooking />} />
-        <Route path="/register/google/:id" element={<GoogleRegister />} />
-        <Route path="/feedback" element={<FeedbackForm />} />
-        <Route path="/viewfeedback" element={<ViewFeedback />} />
-        <Route path="/events" element={<EventList />} />
-        <Route path="/add-event" element={<EventForm />} />
-        {/* <Route path='/logout' element={<Logout/>} /> */}
-        <Route path="/cosa/create" element={<CreateTenure />} />
-        <Route path="/cosa/:id" element={<ShowTenure />} />
-        <Route path="/cosa" element={<ShowTenure />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    );
-  } else {
-    routes = (
-      <Routes>
-        <Route
-          path="/gensec-cult"
-          element={<GenSecDashboard role="Cultural" />}
-        />
-        <Route
-          path="/gensec-sport"
-          element={<GenSecDashboard role="Sports" />}
-        />
-        <Route
-          path="/gensec-acad"
-          element={<GenSecDashboard role="Academic" />}
-        />
-        <Route
-          path="/gensec-tech"
-          element={<GenSecDashboard role="SciTech" />}
-        />
-        <Route
-          path="/gensec-cult-endorse"
-          element={<GenSecEndorse role="Cultural" />}
-        />
-        <Route
-          path="/gensec-sport-endorse"
-          element={<GenSecEndorse role="Sports" />}
-        />
-        <Route
-          path="/gensec-acad-endorse"
-          element={<GenSecEndorse role="Academic" />}
-        />
-        <Route
-          path="/gensec-tech-endorse"
-          element={<GenSecEndorse role="Tech" />}
-        />
-
-        {/*<Route path="/genseccult-dashboard" element={<GensecCultDashboard />} />
-        <Route path="/genseccult-endorse" element={<GenSecCultPage />} />
-        <Route
-          path="/gensecsport-dashboard"
-          element={<GensecSportsDashboard />}
-        />
-        <Route path="/gensecsport-endorse" element={<GenSecSportsPage />} />
-        <Route path="/gensecacad-dashboard" element={<GensecAcadDashboard />} />
-        <Route path="/gensecacad-endorse" element={<GenSecAcadPage />} />
-        */}
-        <Route path="/viewfeedback" element={<ViewFeedback />} />
-
-        <Route path="/president-approval" element={<PresidentApproval />} />
-        <Route path="/president-dashboard" element={<PresidentDashboard />} />
-        {/*<Route path="/gensectech-endorse" element={<GenSecTechPage />} />
-        <Route
-          path="/gensectech-dashboard"
-          element={<GensecSciTechDashboard />}
-        />*/}
-        <Route path="/roombooking" element={<RoomBooking />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/register/google/:id" element={<GoogleRegister />} />
-        <Route path="/events" element={<EventList />} />
-        <Route path="/add-event" element={<EventForm />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-        <Route path="/cosa/create" element={<CreateTenure />} />
-        <Route path="/cosa/:id" element={<ShowTenure />} />
-        <Route path="/cosa" element={<ShowTenure />} />
-        <Route path="/feedback" element={<FeedbackForm />} />
-      </Routes>
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div>Loading...</div>
+      </div>
     );
   }
 
+  const contextValue = {
+    isUserLoggedIn,
+    setIsUserLoggedIn,
+    userRole,
+    setUserRole,
+    isOnboardingComplete,
+    setIsOnboardingComplete,
+  };
+
   return (
-    <AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
-      <BrowserRouter>{routes}</BrowserRouter>
+    <AdminContext.Provider value={contextValue}>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes - accessible to everyone */}
+          <Route path="/events" element={<EventList />} />
+          <Route path="/viewfeedback" element={<ViewFeedback />} />
+
+          {/* GenSec Dashboard routes - accessible to only respective Gensec */}
+          {genSecRoles.map(({ path, role }) => (
+            <Route
+              key={`gensec-${path}`}
+              path={`/gensec-${path}`}
+              element={
+                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
+                  <GenSecDashboard role={role} />{" "}
+                </RoleProtectedRoute>
+              }
+            />
+          ))}
+
+          {/* GenSec Endorse routes - accessible to only respective Gensec */}
+          {genSecRoles.map(({ path, role }) => (
+            <Route
+              key={`gensec-${path}-endorse`}
+              path={`/gensec-${path}-endorse`}
+              element={
+                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
+                  <GenSecEndorse role={role === "SciTech" ? "Tech" : role} />
+                </RoleProtectedRoute>
+              }
+            />
+          ))}
+
+          {/* President routes - accessible to only president*/}
+          <Route
+            path="/president-approval"
+            element={
+              <RoleProtectedRoute allowedRoles={["PRESIDENT"]}>
+                <PresidentApproval />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/president-dashboard"
+            element={
+              <RoleProtectedRoute allowedRoles={["PRESIDENT"]}>
+                <PresidentDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+
+          {/* Room booking */}
+          <Route
+            path="/roombooking"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <RoomBooking />
+              </RoleProtectedRoute>
+            }
+          />
+
+          {/* COSA routes */}
+          <Route path="/cosa" element={<ShowTenure />} />
+          <Route
+            path="/cosa/create"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <CreateTenure />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/cosa/:id"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <ShowTenure />
+              </RoleProtectedRoute>
+            }
+          />
+
+          {/* Authentication routes - only for non-authenticated users */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route path="/register/google/:id" element={<GoogleRegister />} />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password/:id/:token"
+            element={
+              <PublicRoute isAuthenticated={isUserLoggedIn}>
+                <ResetPassword />
+              </PublicRoute>
+            }
+          />
+
+          {/* Protected routes - only for authenticated users */}
+          <Route
+            path="/feedback"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <FeedbackForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-event"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <EventForm />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={
+              isUserLoggedIn && !isOnboardingComplete ? (
+                <OnboardingForm />
+              ) : isUserLoggedIn ? (
+                <RoleRedirect />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/"
+            element={
+              isUserLoggedIn ? (
+                <RoleRedirect />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <StudentProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/unauthorised" element={<Unauthorised />} />
+          {/* Catch-all route */}
+          <Route
+            path="*"
+            element={<Navigate to={isUserLoggedIn ? "/" : "/login"} replace />}
+          />
+        </Routes>
+      </BrowserRouter>
     </AdminContext.Provider>
   );
 }
 
-export { AdminContext };
+// export { AdminContext };
 export default App;

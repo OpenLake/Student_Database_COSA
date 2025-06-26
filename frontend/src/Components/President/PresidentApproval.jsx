@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL|| "http://localhost:8000";
+const API_BASE_URL =
+  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 export default function PresidentApproval() {
   const [bookings, setBookings] = useState([]);
@@ -42,32 +43,36 @@ export default function PresidentApproval() {
     const badgeClasses = {
       Pending: "bg-yellow-100 text-yellow-800 border border-yellow-200",
       Approved: "bg-green-100 text-green-800 border border-green-200",
-      Rejected: "bg-red-100 text-red-800 border border-red-200"
+      Rejected: "bg-red-100 text-red-800 border border-red-200",
     };
-    
+
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeClasses[status]}`}>
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeClasses[status]}`}
+      >
         {status}
       </span>
     );
   };
 
-  const filteredBookings = bookings.filter(booking => {
-    const matchesSearch = searchTerm === "" || 
+  const filteredBookings = bookings.filter((booking) => {
+    const matchesSearch =
+      searchTerm === "" ||
       booking.room.toLowerCase().includes(searchTerm.toLowerCase()) ||
       booking.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesTab = activeTab === "all" || 
+
+    const matchesTab =
+      activeTab === "all" ||
       booking.status.toLowerCase() === activeTab.toLowerCase();
-    
+
     return matchesSearch && matchesTab;
   });
 
   const stats = {
     all: bookings.length,
-    pending: bookings.filter(b => b.status === "Pending").length,
-    approved: bookings.filter(b => b.status === "Approved").length,
-    rejected: bookings.filter(b => b.status === "Rejected").length
+    pending: bookings.filter((b) => b.status === "Pending").length,
+    approved: bookings.filter((b) => b.status === "Approved").length,
+    rejected: bookings.filter((b) => b.status === "Rejected").length,
   };
 
   const TabButton = ({ name, label, count }) => (
@@ -79,7 +84,12 @@ export default function PresidentApproval() {
           : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
       }`}
     >
-      {label} {count > 0 && <span className="ml-1 text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">{count}</span>}
+      {label}{" "}
+      {count > 0 && (
+        <span className="ml-1 text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+          {count}
+        </span>
+      )}
     </button>
   );
 
@@ -90,8 +100,10 @@ export default function PresidentApproval() {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
             <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-white">President Approval Panel</h1>
-              <button 
+              <h1 className="text-2xl font-bold text-white">
+                President Approval Panel
+              </h1>
+              <button
                 onClick={fetchBookings}
                 className="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-medium transition duration-200 flex items-center gap-2"
               >
@@ -116,15 +128,21 @@ export default function PresidentApproval() {
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
               <p className="text-sm text-gray-500">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-2xl font-bold text-yellow-600">
+                {stats.pending}
+              </p>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
               <p className="text-sm text-gray-500">Approved</p>
-              <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {stats.approved}
+              </p>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
               <p className="text-sm text-gray-500">Rejected</p>
-              <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
+              <p className="text-2xl font-bold text-red-600">
+                {stats.rejected}
+              </p>
             </div>
           </div>
 
@@ -133,9 +151,21 @@ export default function PresidentApproval() {
             <div className="flex justify-between items-center mb-4">
               <div className="flex space-x-1">
                 <TabButton name="all" label="All Requests" count={stats.all} />
-                <TabButton name="pending" label="Pending" count={stats.pending} />
-                <TabButton name="approved" label="Approved" count={stats.approved} />
-                <TabButton name="rejected" label="Rejected" count={stats.rejected} />
+                <TabButton
+                  name="pending"
+                  label="Pending"
+                  count={stats.pending}
+                />
+                <TabButton
+                  name="approved"
+                  label="Approved"
+                  count={stats.approved}
+                />
+                <TabButton
+                  name="rejected"
+                  label="Rejected"
+                  count={stats.rejected}
+                />
               </div>
               <div className="relative">
                 <input
@@ -163,29 +193,56 @@ export default function PresidentApproval() {
               <div className="mx-auto w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">📅</span>
               </div>
-              <p className="text-gray-500 font-medium">No booking requests found</p>
-              <p className="text-gray-400 mt-2 text-sm">Try adjusting your search or filters</p>
+              <p className="text-gray-500 font-medium">
+                No booking requests found
+              </p>
+              <p className="text-gray-400 mt-2 text-sm">
+                Try adjusting your search or filters
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto mx-6 mb-6 rounded-lg border border-gray-200 shadow-sm">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Time</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Room</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Time
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Room
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredBookings.map((booking, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{booking.date}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{booking.time}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.room}</td>
-                      <td className="px-6 py-4 text-sm text-gray-700">{booking.description}</td>
+                    <tr
+                      key={index}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {booking.date}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {booking.time}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {booking.room}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {booking.description}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(booking.status)}
                       </td>
@@ -193,20 +250,26 @@ export default function PresidentApproval() {
                         {booking.status === "Pending" ? (
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => updateStatus(booking._id, "Approved")}
+                              onClick={() =>
+                                updateStatus(booking._id, "Approved")
+                              }
                               className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-200 shadow-sm"
                             >
                               Approve
                             </button>
                             <button
-                              onClick={() => updateStatus(booking._id, "Rejected")}
+                              onClick={() =>
+                                updateStatus(booking._id, "Rejected")
+                              }
                               className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-200 shadow-sm"
                             >
                               Reject
                             </button>
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-500 italic">No actions available</span>
+                          <span className="text-sm text-gray-500 italic">
+                            No actions available
+                          </span>
                         )}
                       </td>
                     </tr>

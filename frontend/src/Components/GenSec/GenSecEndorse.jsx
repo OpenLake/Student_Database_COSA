@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
 import axios from "axios";
-import gensecPageConfig from "../config/endorseConfig";
+import gensecPageConfig from "../../config/endorseConfig";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -10,10 +10,6 @@ export default function GenSecEndorse({ role }) {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  //   useEffect(() => {
-  //     if (config) fetchSkills();
-  //   }, [config,fetchSkills]);
 
   const fetchSkills = useCallback(async () => {
     try {

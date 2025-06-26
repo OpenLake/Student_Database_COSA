@@ -1,59 +1,34 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Add from "../Add_User/Components/Add";
-import UserProfileButtons from "../Add_User/Components/UserProfileButtons";
-import Card from "../Components/Card";
-import { fetchStudent } from "../services/utils";
-import { ShowSkills, AddSkill } from "./ShowAddSkill";
-import { AdminContext } from "../App";
+import Add from "../../Add_User/Components/Add";
+import UserProfileButtons from "../../Add_User/Components/UserProfileButtons";
+import Card from "../Card";
+import { fetchStudent } from "../../services/utils";
+import { ShowSkills, AddSkill } from "../ShowAddSkill";
+import { AdminContext } from "../../App";
 // import "./Body.css";
 
 function Body({ studentDetails }) {
-  const { IsUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AdminContext);
   const [userDetails, setUserDetails] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (IsUserLoggedIn?.ID_No) {
-      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+    if (isUserLoggedIn?.ID_No) {
+      fetchStudent(isUserLoggedIn.ID_No).then((data) => {
         setUserDetails(data);
       });
     }
-  }, [IsUserLoggedIn]);
+  }, [isUserLoggedIn]);
 
   const refreshUserDetails = () => {
-    if (IsUserLoggedIn?.ID_No) {
-      fetchStudent(IsUserLoggedIn.ID_No).then((data) => {
+    if (isUserLoggedIn?.ID_No) {
+      fetchStudent(isUserLoggedIn.ID_No).then((data) => {
         setUserDetails(data);
       });
     }
-  };
-
-  const handleLogout = () => {
-    setIsUserLoggedIn(null);
-    navigate("/login");
   };
 
   return (
     <div className="body-container">
-      <nav className="navbar">
-        <h2 className="navbar-title">Student Portal</h2>
-        <div className="navbar-links">
-          <Link to="/cosa" className="nav-link">
-            📚 Cosa
-          </Link>
-          <Link to="/feedback" className="nav-link">
-            💬 Feedback
-          </Link>
-          <Link to="/events" className="nav-link">
-            🗓️ Events
-          </Link>
-          <button onClick={handleLogout} className="logout-button">
-            🚪 Logout
-          </button>
-        </div>
-      </nav>
-
       <div className="main-content">
         {studentDetails !== undefined ? (
           studentDetails !== null ? (
@@ -71,7 +46,7 @@ function Body({ studentDetails }) {
             <h3>Your Student Profile</h3>
             <Card data={userDetails} />
             <UserProfileButtons
-              isLoggedIn={!!IsUserLoggedIn}
+              isLoggedIn={!!isUserLoggedIn}
               userDetails={userDetails}
               onUpdateSuccess={refreshUserDetails}
             />
@@ -97,10 +72,6 @@ function Body({ studentDetails }) {
           </div>
         </div>
       </div>
-
-      <footer className="footer">
-        © 2025 Student Portal. All rights reserved.
-      </footer>
     </div>
   );
 }
