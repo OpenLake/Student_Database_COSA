@@ -52,7 +52,6 @@ const userSchema = new mongoose.Schema({
     },
     branch: String,
     batch_year: Number,
-    current_year: Number,
     cgpa: Number,
   },
 
@@ -274,10 +273,6 @@ const positionHolderSchema = new mongoose.Schema({
   },
   performance_metrics: {
     events_organized: {
-      type: Number,
-      default: 0,
-    },
-    budget_utilized: {
       type: Number,
       default: 0,
     },
