@@ -14,6 +14,23 @@ const {
 } = require("../models/student");
 
 const Feedback = require("../models/Feedback");
+
+router.get("/", (req, res) => {
+  res.json({
+    message: "API is running successfully",
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      feedback: "POST /feedback, GET /feedback, GET /feedback/:userId",
+      events: "POST /events, GET /events, DELETE /events/:id",
+      rooms: "POST /room/request, GET /room/requests, PUT /room/request/:id/status",
+      skills: "GET /skills, POST /skills, DELETE /skills/:studentId/:skillId",
+      student: "POST /fetch"
+    }
+  });
+});
+
+
 router.post("/feedback", async (req, res) => {
   try {
     let { userId, type, description } = req.body;
