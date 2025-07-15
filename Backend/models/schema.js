@@ -57,8 +57,8 @@ const userSchema = new mongoose.Schema({
       //enum: ["B.Tech", "M.Tech", "PhD", "Msc","other"],
     },
     branch: String,
-    batch_year: Number,
-    current_year: Number,
+    batch_year: String,
+    current_year: String,
     cgpa: Number,
   },
 
