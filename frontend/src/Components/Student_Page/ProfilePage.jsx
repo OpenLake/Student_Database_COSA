@@ -19,7 +19,7 @@ import {
   Calendar,
   Users,
 } from "lucide-react";
-import { fetchStudent } from "../../services/utils";
+import { fetchCredentials } from "../../services/auth";
 import { AdminContext } from "../../App";
 import ProfilePhoto from "./ProfilePhoto";
 
@@ -86,43 +86,80 @@ const StudentProfile = () => {
   const [profilePic, setProfilePic] = useState(null);
   // Cursor-preserving handlers for all editable fields
   const [mobileRef, mobileOnChange] = useCursorInput(
-    editedProfile?.mobile_no || "",
-    (val) => setEditedProfile((prev) => ({ ...prev, mobile_no: val })),
-  );
-  const [hostelRoomRef, hostelRoomOnChange] = useCursorInput(
-    editedProfile?.hostelRoom || "",
-    (val) => setEditedProfile((prev) => ({ ...prev, hostelRoom: val })),
-  );
-  const [addYearRef, addYearOnChange] = useCursorInput(
-    editedProfile?.add_year || "",
-    (val) => setEditedProfile((prev) => ({ ...prev, add_year: val })),
-  );
-  const [githubRef, githubOnChange] = useCursorInput(
-    editedProfile?.socialLinks?.github || "",
+    editedProfile?.personal_info?.phone || "",
     (val) =>
       setEditedProfile((prev) => ({
         ...prev,
-        socialLinks: { ...prev.socialLinks, github: val },
+        personal_info: {
+          ...prev.personal_info,
+          phone: val,
+        },
       })),
   );
-  const [linkedinRef, linkedinOnChange] = useCursorInput(
-    editedProfile?.socialLinks?.linkedin || "",
+
+  const [hostelRoomRef, hostelRoomOnChange] = useCursorInput(
+    editedProfile?.contact_info?.room_number || "",
     (val) =>
       setEditedProfile((prev) => ({
         ...prev,
-        socialLinks: { ...prev.socialLinks, linkedin: val },
+        contact_info: {
+          ...prev.contact_info,
+          room_number: val,
+        },
+      })),
+  );
+
+  const [addYearRef, addYearOnChange] = useCursorInput(
+    editedProfile?.academic_info?.batch_year || "",
+    (val) =>
+      setEditedProfile((prev) => ({
+        ...prev,
+        academic_info: {
+          ...prev.academic_info,
+          batch_year: val,
+        },
+      })),
+  );
+
+  const [githubRef, githubOnChange] = useCursorInput(
+    editedProfile?.contact_info?.socialLinks?.github || "",
+    (val) =>
+      setEditedProfile((prev) => ({
+        ...prev,
+        contact_info: {
+          ...prev.contact_info,
+          socialLinks: {
+            ...prev.contact_info?.socialLinks,
+            github: val,
+          },
+        },
+      })),
+  );
+
+  const [linkedinRef, linkedinOnChange] = useCursorInput(
+    editedProfile?.contact_info?.socialLinks?.linkedin || "",
+    (val) =>
+      setEditedProfile((prev) => ({
+        ...prev,
+        contact_info: {
+          ...prev.contact_info,
+          socialLinks: {
+            ...prev.contact_info?.socialLinks,
+            linkedin: val,
+          },
+        },
       })),
   );
 
   useEffect(() => {
-    if (isUserLoggedIn?.ID_No) {
+    if (isUserLoggedIn?.user_id) {
       setLoading(true);
-      fetchStudent(isUserLoggedIn.ID_No)
+      fetchCredentials()
         .then((data) => {
-          if (data?.student) {
-            setProfile(data.student);
-            setEditedProfile(data.student);
-            setProfilePic(data.student.profilePic);
+          if (data) {
+            setProfile(data);
+            setEditedProfile(data);
+            setProfilePic(data.personal_info?.profilePic);
           }
         })
         .catch(() =>
@@ -140,24 +177,27 @@ const StudentProfile = () => {
 
   const validateAll = () => {
     const errs = {};
-    if (editedProfile.mobile_no && !validateMobile(editedProfile.mobile_no)) {
+    if (
+      editedProfile.personal_info?.phone &&
+      !validateMobile(editedProfile.personal_info.phone)
+    ) {
       errs.mobile_no = "Mobile number must be 10 digits";
     }
     if (
-      editedProfile.socialLinks?.github &&
-      !validateUrl(editedProfile.socialLinks.github)
+      editedProfile.contact_info?.socialLinks?.github &&
+      !validateUrl(editedProfile.contact_info.socialLinks.github)
     ) {
       errs.github = "Invalid GitHub URL";
     }
     if (
-      editedProfile.socialLinks?.linkedin &&
-      !validateLinkedIn(editedProfile.socialLinks.linkedin)
+      editedProfile.contact_info?.socialLinks?.linkedin &&
+      !validateLinkedIn(editedProfile.contact_info.socialLinks.linkedin)
     ) {
       errs.linkedin = "Invalid LinkedIn URL";
     }
     if (
-      editedProfile.add_year &&
-      !validateAdmissionYear(editedProfile.add_year)
+      editedProfile.academic_info?.batch_year &&
+      !validateAdmissionYear(editedProfile.academic_info.batch_year)
     ) {
       errs.add_year = `Admission year must be between 2016 and ${currentYear}`;
     }
@@ -175,13 +215,17 @@ const StudentProfile = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/updateStudentProfile`,
+        `${process.env.REACT_APP_BACKEND_URL}/profile/updateStudentProfile`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: profile.ID_No,
-            updatedDetails: editedProfile,
+            userId: profile.user_id,
+            updatedDetails: {
+              personal_info: editedProfile.personal_info,
+              academic_info: editedProfile.academic_info,
+              contact_info: editedProfile.contact_info,
+            },
           }),
           credentials: "include",
         },
@@ -236,18 +280,33 @@ const StudentProfile = () => {
 
           <ProfilePhoto
             isEditing={isEditing}
-            ID_No={profile.ID_No}
-            profilePic={profile.profilePic}
-            onPhotoChange={(newPhoto) =>
-              setProfile((prev) => ({ ...prev, profilePic: newPhoto }))
-            }
+            ID_No={profile.user_id}
+            profilePic={profile.personal_info?.profilePic}
+            onPhotoUpdate={(newPhoto) => {
+              setProfile((prev) => ({
+                ...prev,
+                personal_info: {
+                  ...prev.personal_info,
+                  profilePic: newPhoto,
+                },
+              }));
+              setEditedProfile((prev) => ({
+                ...prev,
+                personal_info: {
+                  ...prev.personal_info,
+                  profilePic: newPhoto,
+                },
+              }));
+            }}
           />
 
           {/* User Info */}
           <div>
-            <h2 className="text-xl font-semibold text-white">{profile.name}</h2>
+            <h2 className="text-xl font-semibold text-white">
+              {profile.personal_info?.name}
+            </h2>
             <p className="text-sm text-blue-100 mt-1">
-              Student ID: {profile.ID_No}
+              Student ID: {profile.user_id}
             </p>
           </div>
         </div>
@@ -291,22 +350,59 @@ const StudentProfile = () => {
             <h2 className="text-lg font-bold text-gray-900 border-b border-blue-600 pb-1">
               Basic Information
             </h2>
-            <ReadOnlyField icon={User} label="Full Name" value={profile.name} />
+            <ReadOnlyField
+              icon={User}
+              label="Full Name"
+              value={profile.personal_info?.name}
+            />
             <ReadOnlyField
               icon={GraduationCap}
               label="Student ID"
-              value={profile.ID_No}
+              value={profile.user_id}
             />
-            <ReadOnlyField icon={Mail} label="Email" value={profile.email} />
+            <ReadOnlyField
+              icon={Mail}
+              label="Email"
+              value={profile.personal_info?.email}
+            />
             <SelectField
               icon={Users}
               label="Gender"
-              value={editedProfile.gender}
+              value={editedProfile.personal_info?.gender}
               options={["Male", "Female", "Other"]}
               isEditing={isEditing}
               onChange={(val) =>
-                setEditedProfile((prev) => ({ ...prev, gender: val }))
+                setEditedProfile((prev) => ({
+                  ...prev,
+                  personal_info: {
+                    ...prev.personal_info,
+                    gender: val,
+                  },
+                }))
               }
+            />
+            <EditableField
+              icon={Calendar}
+              label="Date of Birth"
+              value={
+                editedProfile.personal_info?.date_of_birth
+                  ? new Date(editedProfile.personal_info.date_of_birth)
+                      .toISOString()
+                      .split("T")[0]
+                  : ""
+              }
+              isEditing={isEditing}
+              inputProps={{
+                type: "date",
+                onChange: (e) =>
+                  setEditedProfile((prev) => ({
+                    ...prev,
+                    personal_info: {
+                      ...prev.personal_info,
+                      date_of_birth: e.target.value,
+                    },
+                  })),
+              }}
             />
           </div>
 
@@ -318,12 +414,19 @@ const StudentProfile = () => {
             <EditableField
               icon={Calendar}
               label="Admission Year"
-              value={editedProfile.add_year}
+              value={editedProfile.academic_info?.batch_year}
               error={errors.add_year}
               isEditing={isEditing}
               inputProps={{
                 ref: addYearRef,
-                onChange: addYearOnChange,
+                onChange: (e) =>
+                  setEditedProfile((prev) => ({
+                    ...prev,
+                    academic_info: {
+                      ...prev.academic_info,
+                      batch_year: e.target.value,
+                    },
+                  })),
                 type: "number",
                 min: 2016,
                 max: currentYear,
@@ -332,17 +435,20 @@ const StudentProfile = () => {
             <SelectField
               icon={GraduationCap}
               label="Program"
-              value={editedProfile.Program}
+              value={editedProfile.academic_info?.program}
               options={["B.Tech", "M.Tech", "MSc", "PhD", "Other"]}
               isEditing={isEditing}
               onChange={(val) =>
-                setEditedProfile((prev) => ({ ...prev, Program: val }))
+                setEditedProfile((prev) => ({
+                  ...prev,
+                  academic_info: { ...prev.academic_info, program: val },
+                }))
               }
             />
             <SelectField
               icon={GraduationCap}
               label="Discipline"
-              value={editedProfile.discipline}
+              value={editedProfile.academic_info?.branch}
               options={[
                 "Computer Science & Engineering",
                 "Electrical Engineering",
@@ -356,18 +462,45 @@ const StudentProfile = () => {
               ]}
               isEditing={isEditing}
               onChange={(val) =>
-                setEditedProfile((prev) => ({ ...prev, discipline: val }))
+                setEditedProfile((prev) => ({
+                  ...prev,
+                  academic_info: { ...prev.academic_info, branch: val },
+                }))
               }
             />
             <SelectField
               icon={GraduationCap}
               label="Year of Study"
-              value={editedProfile.yearOfStudy}
+              value={editedProfile.academic_info?.current_year}
               options={["1st", "2nd", "3rd", "4th", "5th", "Alumni"]}
               isEditing={isEditing}
               onChange={(val) =>
-                setEditedProfile((prev) => ({ ...prev, yearOfStudy: val }))
+                setEditedProfile((prev) => ({
+                  ...prev,
+                  academic_info: { ...prev.academic_info, current_year: val },
+                }))
               }
+            />
+            <EditableField
+              icon={GraduationCap} // Or use a different appropriate icon
+              label="CGPA"
+              value={editedProfile.academic_info?.cgpa || ""}
+              isEditing={isEditing}
+              inputProps={{
+                type: "number",
+                min: "0",
+                max: "10",
+                step: "0.01",
+                onChange: (e) =>
+                  setEditedProfile((prev) => ({
+                    ...prev,
+                    academic_info: {
+                      ...prev.academic_info,
+                      cgpa: e.target.value,
+                    },
+                  })),
+                placeholder: "e.g. 8.50",
+              }}
             />
           </div>
 
@@ -379,12 +512,19 @@ const StudentProfile = () => {
             <EditableField
               icon={Phone}
               label="Mobile Number"
-              value={editedProfile.mobile_no}
+              value={editedProfile.personal_info?.phone}
               error={errors.mobile_no}
               isEditing={isEditing}
               inputProps={{
                 ref: mobileRef,
-                onChange: mobileOnChange,
+                onChange: (e) =>
+                  setEditedProfile((prev) => ({
+                    ...prev,
+                    personal_info: {
+                      ...prev.personal_info,
+                      phone: e.target.value,
+                    },
+                  })),
                 maxLength: 10,
                 inputMode: "numeric",
               }}
@@ -392,21 +532,34 @@ const StudentProfile = () => {
             <SelectField
               icon={Home}
               label="Hostel Name"
-              value={editedProfile.hostelName}
+              value={editedProfile.contact_info?.hostel}
               options={["None", "MSH", "Indravati", "Gopad", "Kanhar"]}
               isEditing={isEditing}
               onChange={(val) =>
-                setEditedProfile((prev) => ({ ...prev, hostelName: val }))
+                setEditedProfile((prev) => ({
+                  ...prev,
+                  contact_info: {
+                    ...prev.contact_info,
+                    hostel: val,
+                  },
+                }))
               }
             />
             <EditableField
               icon={MapPin}
               label="Room Number"
-              value={editedProfile.hostelRoom}
+              value={editedProfile.contact_info?.room_number}
               isEditing={isEditing}
               inputProps={{
                 ref: hostelRoomRef,
-                onChange: hostelRoomOnChange,
+                onChange: (e) =>
+                  setEditedProfile((prev) => ({
+                    ...prev,
+                    contact_info: {
+                      ...prev.contact_info,
+                      room_number: e.target.value,
+                    },
+                  })),
               }}
             />
           </div>
@@ -419,24 +572,44 @@ const StudentProfile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <EditableField
                 label="GitHub"
-                value={editedProfile.socialLinks?.github}
+                value={editedProfile.contact_info?.socialLinks?.github}
                 error={errors.github}
                 isEditing={isEditing}
                 inputProps={{
                   ref: githubRef,
-                  onChange: githubOnChange,
+                  onChange: (e) =>
+                    setEditedProfile((prev) => ({
+                      ...prev,
+                      contact_info: {
+                        ...prev.contact_info,
+                        socialLinks: {
+                          ...prev.contact_info?.socialLinks,
+                          github: e.target.value,
+                        },
+                      },
+                    })),
                   type: "url",
                   placeholder: "https://github.com/username",
                 }}
               />
               <EditableField
                 label="LinkedIn"
-                value={editedProfile.socialLinks?.linkedin}
+                value={editedProfile.contact_info?.socialLinks?.linkedin}
                 error={errors.linkedin}
                 isEditing={isEditing}
                 inputProps={{
                   ref: linkedinRef,
-                  onChange: linkedinOnChange,
+                  onChange: (e) =>
+                    setEditedProfile((prev) => ({
+                      ...prev,
+                      contact_info: {
+                        ...prev.contact_info,
+                        socialLinks: {
+                          ...prev.contact_info?.socialLinks,
+                          linkedin: e.target.value,
+                        },
+                      },
+                    })),
                   type: "url",
                   placeholder: "https://linkedin.com/in/username",
                 }}
