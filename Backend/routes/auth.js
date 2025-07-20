@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const secretKey = process.env.JWT_SECRET_TOKEN;
+//const secretKey = process.env.JWT_SECRET_TOKEN;
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
 const { restrictToPresident } = require("../middlewares");
 const {
@@ -11,12 +11,14 @@ const {
   CultPOR,
   SportsPOR,
   AcadPOR,
-  User,
+  // User,
   Achievement,
 } = require("../models/student");
 const passport = require("../models/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
+const User = require("../models/schema");
+const getRole = require("../Middlewares/getRole");
 // Use a single database connection
 const connectDB = async () => {
   if (
@@ -79,7 +81,16 @@ router.post("/register", async (req, res) => {
     }
 
     const newUser = await User.register(
-      new User({ name: name, strategy: "local", ID_No: ID, username: email }),
+      new User({
+        user_id: ID,
+        role: getRole(email),
+        strategy: "local",
+        username: email,
+        personal_info: {
+          name: name,
+          email: email,
+        },
+      }),
       password,
     );
 
@@ -112,61 +123,61 @@ router.get(
   },
 );
 
-router.get("/google/addId", (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+// router.get("/google/addId", (req, res) => {
+//   if (!req.user) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
 
-  const token = jwt.sign({ id: req.user._id }, secretKey, { expiresIn: "1h" });
-  res.redirect(`${process.env.FRONTEND_URL}/register/google/${token}`);
-});
+//   const token = jwt.sign({ id: req.user._id }, secretKey, { expiresIn: "1h" });
+//   res.redirect(`${process.env.FRONTEND_URL}/register/google/${token}`);
+// });
 
-router.post("/google/register", async (req, res) => {
-  try {
-    const { token, ID_No } = req.body;
+// router.post("/google/register", async (req, res) => {
+//   try {
+//     const { token, ID_No } = req.body;
 
-    if (!token || !ID_No) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
+//     if (!token || !ID_No) {
+//       return res.status(400).json({ message: "Missing required fields" });
+//     }
 
-    let decoded;
-    try {
-      decoded = jwt.verify(token, secretKey);
-    } catch (error) {
-      console.error("Error verifying token:", error);
-      return res.status(400).json({ message: "Invalid or expired token" });
-    }
+//     let decoded;
+//     try {
+//       decoded = jwt.verify(token, secretKey);
+//     } catch (error) {
+//       console.error("Error verifying token:", error);
+//       return res.status(400).json({ message: "Invalid or expired token" });
+//     }
 
-    const id = decoded.id;
+//     const id = decoded.id;
 
-    // Check if user is authenticated and if token matches current user
-    if (!req.isAuthenticated() || id !== req.user.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+//     // Check if user is authenticated and if token matches current user
+//     if (!req.isAuthenticated() || id !== req.user.id) {
+//       return res.status(401).json({ message: "Unauthorized" });
+//     }
 
-    const user = await User.findOneAndUpdate(
-      { _id: req.user.id },
-      { ID_No: ID_No },
-      { new: true },
-    );
+//     const user = await User.findOneAndUpdate(
+//       { _id: req.user.id },
+//       { ID_No: ID_No },
+//       { new: true },
+//     );
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    // Re-login with updated user
-    req.login(user, function (err) {
-      if (err) {
-        console.error("Error serializing user:", err);
-        return res.status(400).json({ message: "Error serializing user" });
-      }
-      return res.status(200).json(user);
-    });
-  } catch (error) {
-    console.error("Error updating user:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
+//     // Re-login with updated user
+//     req.login(user, function (err) {
+//       if (err) {
+//         console.error("Error serializing user:", err);
+//         return res.status(400).json({ message: "Error serializing user" });
+//       }
+//       return res.status(200).json(user);
+//     });
+//   } catch (error) {
+//     console.error("Error updating user:", error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 
 router.post("/logout", (req, res, next) => {
   req.logout(function (err) {
@@ -186,12 +197,10 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     if (user.strategy === "google") {
-      return res
-        .status(400)
-        .json({
-          message:
-            "This email is linked with Google Login. Please use 'Sign in with Google' instead.",
-        });
+      return res.status(400).json({
+        message:
+          "This email is linked with Google Login. Please use 'Sign in with Google' instead.",
+      });
     }
     const secret = user._id + process.env.JWT_SECRET_TOKEN;
     const token = jwt.sign({ email: email, id: user._id }, secret, {

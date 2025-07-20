@@ -12,7 +12,6 @@ const {
   AcadPOR,
   Achievement,
 } = require("../models/student");
-
 const Feedback = require("../models/Feedback");
 
 router.get("/", (req, res) => {
@@ -23,13 +22,13 @@ router.get("/", (req, res) => {
     endpoints: {
       feedback: "POST /feedback, GET /feedback, GET /feedback/:userId",
       events: "POST /events, GET /events, DELETE /events/:id",
-      rooms: "POST /room/request, GET /room/requests, PUT /room/request/:id/status",
+      rooms:
+        "POST /room/request, GET /room/requests, PUT /room/request/:id/status",
       skills: "GET /skills, POST /skills, DELETE /skills/:studentId/:skillId",
-      student: "POST /fetch"
-    }
+      student: "POST /fetch",
+    },
   });
 });
-
 
 router.post("/feedback", async (req, res) => {
   try {
@@ -98,71 +97,6 @@ router.post("/fetch", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({ success: false, message: "process failed" });
-  }
-});
-
-// New API: Update Student Profile
-router.put("/updateStudentProfile", async (req, res) => {
-  try {
-    const { userId, updatedDetails } = req.body;
-    console.log("Received userId:", userId);
-    console.log("Received updatedDetails:", updatedDetails);
-
-    if (!userId || !updatedDetails) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
-    // Find the student by ID_No
-    const student = await Student.findOne({ ID_No: userId });
-
-    if (!student) {
-      console.log("Student not found for ID_No:", userId);
-      return res
-        .status(404)
-        .json({ success: false, message: "Student not found" });
-    }
-
-    // Update the student fields (update only if the field exists in updatedDetails)
-    if (updatedDetails.name) student.name = updatedDetails.name;
-    if (updatedDetails.Program) student.Program = updatedDetails.Program;
-    if (updatedDetails.discipline)
-      student.discipline = updatedDetails.discipline;
-    if (updatedDetails.add_year) student.add_year = updatedDetails.add_year;
-    if (updatedDetails.mobile_no) student.mobile_no = updatedDetails.mobile_no;
-    if (updatedDetails.gender) student.gender = updatedDetails.gender;
-    if (updatedDetails.yearOfStudy)
-      student.yearOfStudy = updatedDetails.yearOfStudy;
-    if (updatedDetails.email) student.email = updatedDetails.email;
-    if (updatedDetails.hostelName)
-      student.hostelName = updatedDetails.hostelName;
-    if (updatedDetails.hostelRoom)
-      student.hostelRoom = updatedDetails.hostelRoom;
-    if (updatedDetails.socialLinks) {
-      student.socialLinks.github =
-        updatedDetails.socialLinks.github || student.socialLinks.github;
-      student.socialLinks.linkedin =
-        updatedDetails.socialLinks.linkedin || student.socialLinks.linkedin;
-      student.socialLinks.instagram =
-        updatedDetails.socialLinks.instagram || student.socialLinks.instagram;
-      student.socialLinks.other =
-        updatedDetails.socialLinks.other || student.socialLinks.other;
-    }
-
-    // Save changes
-    await student.save();
-    console.log("Student profile updated successfully:", student);
-    // Send the updated student object in the response
-    return res.status(200).json({
-      success: true,
-      message: "Student profile updated successfully",
-      updatedStudent: student,
-    });
-  } catch (error) {
-    console.error("Error updating student profile:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
   }
 });
 

@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema({
     },
     email: {
       type: String,
-      required: true,
     },
     phone: String,
     date_of_birth: Date,
