@@ -104,6 +104,7 @@ function App() {
           const role = getAdminRole(user.username);
           setUserRole(role);
           console.log("User role:", role);
+          console.log(user);
           if (role !== "STUDENT") {
             setIsOnboardingComplete(true);
           } else {
