@@ -89,9 +89,6 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
-
 // //organizational unit
 // const organizationalUnitSchema = new mongoose.Schema({
 //   unit_id: {
@@ -538,67 +535,68 @@ module.exports = User;
 
 // module.exports = Achievement;
 
-// //feedback collection
-// const feedbackSchema = new mongoose.Schema({
-//   feedback_id: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//   },
-//   type: {
-//     type: String,
-//     required: true,
-//   },
-//   target_id: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     required: true,
-//     // We'll dynamically interpret this field based on target_type
-//   },
-//   target_type: {
-//     type: String,
-//     required: true,
-//   },
-//   feedback_by: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//     required: true,
-//   },
-//   // category: {
-//   //   type: String,
-//   //   enum: ['organization', 'communication', 'leadership'],
-//   //   required: true
-//   // },
-//   rating: {
-//     type: Number,
-//     min: 1,
-//     max: 5,
-//     // required: true
-//   },
-//   comments: {
-//     type: String,
-//   },
-//   is_anonymous: {
-//     type: Boolean,
-//     default: false,
-//   },
-//   is_resolved: {
-//     type: Boolean,
-//     default: false,
-//   },
-//   actions_taken: {
-//     type: String,
-//     default: "",
-//   },
-//   created_at: {
-//     type: Date,
-//     default: Date.now,
-//   },
-//   resolved_at: {
-//     type: Date,
-//     default: null,
-//   },
-// });
+//feedback collection
+const feedbackSchema = new mongoose.Schema({
+  feedback_id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+  target_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    //required: true,
+    // We'll dynamically interpret this field based on target_type
+  },
+  target_type: {
+    type: String,
+    required: true,
+  },
+  feedback_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  // category: {
+  //   type: String,
+  //   enum: ['organization', 'communication', 'leadership'],
+  //   required: true
+  // },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    // required: true
+  },
+  comments: {
+    type: String,
+  },
+  is_anonymous: {
+    type: Boolean,
+    default: false,
+  },
+  is_resolved: {
+    type: Boolean,
+    default: false,
+  },
+  actions_taken: {
+    type: String,
+    default: "",
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  resolved_at: {
+    type: Date,
+    default: null,
+  },
+});
 
-// const Feedback = mongoose.model("Feedback", feedbackSchema);
+const User = mongoose.model("User", userSchema);
+const Feedback = mongoose.model("Feedback", feedbackSchema);
 
-// module.exports = Feedback;
+module.exports = { User, Feedback };

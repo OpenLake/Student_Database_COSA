@@ -4,7 +4,7 @@ const router = express.Router();
 const upload = require("../Middlewares/upload");
 const cloudinary = require("cloudinary").v2;
 //const { Student } = require("../models/student");
-const User = require("../models/schema");
+const { User } = require("../models/schema");
 const streamifier = require("streamifier");
 
 // Cloudinary config

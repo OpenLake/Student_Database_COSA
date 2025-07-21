@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/schema");
+const { User } = require("../models/schema");
 const { verifyToken } = require("../middlewares.js");
 
 router.post("/", verifyToken, async (req, res) => {
