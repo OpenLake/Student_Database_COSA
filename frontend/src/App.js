@@ -31,13 +31,6 @@ const ALL_ADMIN_ROLES = [
   "PRESIDENT",
 ];
 
-// const genSecRoleMap = {
-//   Cultural: "GENSEC_CULTURAL",
-//   Sports: "GENSEC_SPORTS",
-//   Academic: "GENSEC_ACADEMIC",
-//   SciTech: "GENSEC_SCITECH",
-// };
-
 export const AdminContext = createContext();
 
 const genSecRoles = [
