@@ -22,52 +22,22 @@ import OnboardingForm from "./Components/UserOnboarding";
 import StudentProfile from "./Components/Student_Page/ProfilePage";
 import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
 import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
-const ADMIN_ROLES = {
-  PRESIDENT: process.env.REACT_APP_PRESIDENT_USERNAME,
-  GENSEC_SCITECH: process.env.REACT_APP_SCITECH_USERNAME,
-  GENSEC_ACADEMIC: process.env.REACT_APP_ACAD_USERNAME,
-  GENSEC_CULTURAL: process.env.REACT_APP_CULT_USERNAME,
-  GENSEC_SPORTS: process.env.REACT_APP_SPORT_USERNAME,
-};
-const ALL_ADMIN_ROLES = Object.keys(ADMIN_ROLES);
 
-const getAdminRole = (email) => {
-  if (!email || typeof email !== "string") {
-    //console.warn("getAdminRole: invalid email", email);
-    return "STUDENT"; // Default role if email is invalid
-  }
-  const normalizedEmail = email.toLowerCase();
-  //console.log("Checking role for email:", normalizedEmail);
-  switch (normalizedEmail) {
-    case ADMIN_ROLES.GENSEC_SCITECH.toLowerCase():
-      return "GENSEC_SCITECH";
-    case ADMIN_ROLES.GENSEC_ACADEMIC.toLowerCase():
-      return "GENSEC_ACADEMIC";
-    case ADMIN_ROLES.GENSEC_CULTURAL.toLowerCase():
-      return "GENSEC_CULTURAL";
-    case ADMIN_ROLES.GENSEC_SPORTS.toLowerCase():
-      return "GENSEC_SPORTS";
-    case ADMIN_ROLES.PRESIDENT.toLowerCase():
-      return "PRESIDENT";
-    default:
-      return "STUDENT";
-  }
-};
-export { getAdminRole };
+const ALL_ADMIN_ROLES = [
+  "GENSEC_SCITECH",
+  "GENSEC_ACADEMIC",
+  "GENSEC_CULTURAL",
+  "GENSEC_SPORTS",
+  "PRESIDENT",
+];
 
-const genSecRoleMap = {
-  Cultural: "GENSEC_CULTURAL",
-  Sports: "GENSEC_SPORTS",
-  Academic: "GENSEC_ACADEMIC",
-  SciTech: "GENSEC_SCITECH",
-};
 export const AdminContext = createContext();
 
 const genSecRoles = [
-  { path: "cult", role: "Cultural" },
-  { path: "sport", role: "Sports" },
-  { path: "acad", role: "Academic" },
-  { path: "tech", role: "SciTech" },
+  { path: "cult", role: "GENSEC_CULTURAL" },
+  { path: "sport", role: "GENSEC_SPORTS" },
+  { path: "acad", role: "GENSEC_ACADEMIC" },
+  { path: "tech", role: "GENSEC_SCITECH" },
 ];
 
 const ProtectedRoute = ({
@@ -101,7 +71,7 @@ function App() {
         //console.log("Fetched user:", user);
         if (user) {
           setIsUserLoggedIn(user);
-          const role = getAdminRole(user.username);
+          const role = user.role;
           setUserRole(role);
           console.log("User role:", role);
           console.log(user);
@@ -156,8 +126,8 @@ function App() {
               key={`gensec-${path}`}
               path={`/gensec-${path}`}
               element={
-                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
-                  <GenSecDashboard role={role} />{" "}
+                <RoleProtectedRoute allowedRoles={[role]}>
+                  <GenSecDashboard role={role} />
                 </RoleProtectedRoute>
               }
             />
@@ -169,8 +139,8 @@ function App() {
               key={`gensec-${path}-endorse`}
               path={`/gensec-${path}-endorse`}
               element={
-                <RoleProtectedRoute allowedRoles={[genSecRoleMap[role]]}>
-                  <GenSecEndorse role={role === "SciTech" ? "Tech" : role} />
+                <RoleProtectedRoute allowedRoles={[role]}>
+                  <GenSecEndorse role={role} />
                 </RoleProtectedRoute>
               }
             />

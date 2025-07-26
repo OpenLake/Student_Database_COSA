@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 
 export const GENSEC_CONFIGS = {
-  Academic: {
+  GENSEC_ACADEMIC: {
     title: "Academic Portal",
+    displayName: "Academic",
     theme: "from-green-600 to-teal-700",
     avatar: "GA",
     icon: <Book className="h-8 w-8" />,
@@ -95,8 +96,9 @@ export const GENSEC_CONFIGS = {
       },
     ],
   },
-  Cultural: {
+  GENSEC_CULTURAL: {
     title: "Cultural Portal",
+    displayName: "Cultural",
     theme: "from-purple-600 to-pink-700",
     avatar: "GC",
     icon: <Award className="h-8 w-8" />,
@@ -177,8 +179,9 @@ export const GENSEC_CONFIGS = {
       },
     ],
   },
-  Sports: {
+  GENSEC_SPORTS: {
     title: "Sports Portal",
+    displayName: "Sports",
     theme: "from-amber-600 to-orange-700",
     avatar: "GS",
     icon: <Award className="h-8 w-8" />,
@@ -259,8 +262,9 @@ export const GENSEC_CONFIGS = {
       },
     ],
   },
-  SciTech: {
+  GENSEC_SCITECH: {
     title: "SciTech Portal",
+    displayName: "SciTech",
     theme: "from-indigo-600 to-purple-700",
     avatar: "GT",
     icon: <Award className="h-8 w-8" />,
