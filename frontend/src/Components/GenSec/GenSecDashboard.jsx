@@ -17,7 +17,8 @@ const GenSecDashboard = ({ role }) => {
       <div className="text-center text-red-500 p-4">Invalid GenSec role.</div>
     );
 
-  const { title, theme, avatar, icon, categories, menuItems } = config;
+  const { title, displayName, theme, avatar, icon, categories, menuItems } =
+    config;
 
   const filteredItems =
     activeCategory === "all"
@@ -83,10 +84,10 @@ const GenSecDashboard = ({ role }) => {
       <main className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
-            GenSec {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard
+            GenSec {displayName} Dashboard
           </h1>
           <p className="text-gray-600">
-            Access and manage all your {role} services
+            Access and manage all your {displayName} services
           </p>
         </div>
 

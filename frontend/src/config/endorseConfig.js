@@ -1,26 +1,26 @@
 const gensecPageConfig = {
-  Tech: {
+  GENSEC_SCITECH: {
     title: "Tech Skills Pending Endorsement",
     subtitle: "Review and endorse technical skills submitted by students",
     fetchPath: "/skills/unendorsed/tech",
     endorsePathBase: "/skills/endorse/",
     themeColor: "blue",
   },
-  Sports: {
+  GENSEC_SPORTS: {
     title: "Sports Skills Pending Endorsement",
     subtitle: "Review and endorse sports skills submitted by students",
     fetchPath: "/skills/unendorsed/sport",
     endorsePathBase: "/skills/endorse-sport/",
     themeColor: "red",
   },
-  Academic: {
+  GENSEC_ACADEMIC: {
     title: "Academic Skills Pending Endorsement",
     subtitle: "Review and endorse academic skills submitted by students",
     fetchPath: "/skills/unendorsed/acad",
     endorsePathBase: "/skills/endorse-acad/",
     themeColor: "green",
   },
-  Cultural: {
+  GENSEC_CULTURAL: {
     title: "Cultural Skills Pending Endorsement",
     subtitle: "Review and endorse cultural skills submitted by students",
     fetchPath: "/skills/unendorsed/cultural",
