@@ -17,7 +17,7 @@ const {
 const passport = require("../models/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
-const User = require("../models/schema");
+const { User } = require("../models/schema");
 const getRole = require("../Middlewares/getRole");
 // Use a single database connection
 const connectDB = async () => {

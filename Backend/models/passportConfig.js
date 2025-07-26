@@ -4,7 +4,7 @@ const GoogleStrategy = require("passport-google-oauth20");
 //const { User } = require("./student");
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
 const getRole = require("../Middlewares/getRole");
-const User = require("./schema");
+const { User } = require("./schema");
 // Local Strategy
 passport.use(
   new LocalStrategy(

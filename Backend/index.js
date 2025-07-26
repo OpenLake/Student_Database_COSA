@@ -11,6 +11,8 @@ const myPassport = require("./models/passportConfig"); // Adjust the path accord
 const routes_tenure = require("./routes/tenureRoutes.js");
 const onboardingRoutes = require("./routes/onboarding.js");
 const profileRoutes = require("./routes/profile.js");
+const feedbackRoutes = require("./routes/feedbackRoutes.js");
+
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
@@ -40,7 +42,7 @@ app.use("/auth", routes_auth);
 app.use("/tenure", routes_tenure);
 app.use("/onboarding", onboardingRoutes);
 app.use("/profile", profileRoutes);
-
+app.use("/api/feedback", feedbackRoutes);
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
   console.log(`connected to port ${process.env.PORT || 8000}`);
