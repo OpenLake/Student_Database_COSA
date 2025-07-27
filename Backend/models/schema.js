@@ -563,6 +563,11 @@ const feedbackSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  resolved_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
