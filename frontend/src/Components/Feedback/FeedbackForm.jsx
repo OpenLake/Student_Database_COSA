@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
-import { AdminContext } from "../App";
+import { AdminContext } from "../../App";
 import toast, { Toaster } from "react-hot-toast";
 
 const feedbackTypes = [
