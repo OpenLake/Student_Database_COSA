@@ -6,8 +6,9 @@ import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
 import FeedbackForm from "./Components/Feedback/FeedbackForm";
 import ViewFeedback from "./Components/Feedback/ViewFeedback";
-import EventList from "./Components/EventList";
-import EventForm from "./Components/EventForm";
+import EventList from "./Components/Events/EventList";
+import EventForm from "./Components/Events/EventForm";
+import EventDetail from "./Components/Events/EventDetail";
 import RoomBooking from "./Components/RoomBooking";
 import GenSecDashboard from "./Components/GenSec/GenSecDashboard";
 import GenSecEndorse from "./Components/GenSec/GenSecEndorse";
@@ -118,6 +119,7 @@ function App() {
         <Routes>
           {/* Public routes - accessible to everyone */}
           <Route path="/events" element={<EventList />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/viewfeedback" element={<ViewFeedback />} />
 
           {/* GenSec Dashboard routes - accessible to only respective Gensec */}
