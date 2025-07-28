@@ -322,8 +322,8 @@ const eventSchema = new mongoose.Schema({
     },
   ],
   schedule: {
-    start_date: Date,
-    end_date: Date,
+    start: Date,
+    end: Date,
     venue: String,
     mode: {
       type: String,
@@ -332,8 +332,8 @@ const eventSchema = new mongoose.Schema({
   },
   registration: {
     required: Boolean,
-    start_date: Date,
-    end_date: Date,
+    start: Date,
+    end: Date,
     fees: Number,
     max_participants: Number,
   },
@@ -342,7 +342,7 @@ const eventSchema = new mongoose.Schema({
     spent: Number,
     sponsors: [
       {
-        type: Object,
+        type: String,
       },
     ],
   },

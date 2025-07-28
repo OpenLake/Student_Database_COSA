@@ -12,7 +12,7 @@ const routes_tenure = require("./routes/tenureRoutes.js");
 const onboardingRoutes = require("./routes/onboarding.js");
 const profileRoutes = require("./routes/profile.js");
 const feedbackRoutes = require("./routes/feedbackRoutes.js");
-
+const eventsRoutes = require("./routes/events.js");
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
@@ -43,6 +43,7 @@ app.use("/tenure", routes_tenure);
 app.use("/onboarding", onboardingRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/events", eventsRoutes);
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
   console.log(`connected to port ${process.env.PORT || 8000}`);
