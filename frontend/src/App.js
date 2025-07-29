@@ -135,19 +135,7 @@ function App() {
             />
           ))}
 
-          {/* GenSec Endorse routes - accessible to only respective Gensec */}
-          {/* {genSecRoles.map(({ path, role }) => (
-            <Route
-              key={`gensec-${path}-endorse`}
-              path={`/gensec-${path}-endorse`}
-              element={
-                <RoleProtectedRoute allowedRoles={[role]}>
-                  <GenSecEndorse role={role} />
-                </RoleProtectedRoute>
-              }
-            />
-          ))} */}
-
+          {/* GenSec Endorse routes */}
           <Route
             path="/gensec-endorse"
             element={
