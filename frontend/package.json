@@ -15,6 +15,7 @@
     "axios": "^1.11.0",
     "bootstrap": "^5.3.2",
     "buffer": "^6.0.3",
+    "date-fns": "^2.29.3",
     "globals": "^16.0.0",
     "google-auth-library": "^9.1.0",
     "js-cookie": "^3.0.5",
