@@ -195,26 +195,6 @@ const positionSchema = new mongoose.Schema({
       },
     ],
   },
-  // selection_process: {
-  //   type: {
-  //     type: String,
-  //     enum: ['election', 'interview', 'appointment'],
-  //     required: true
-  //   },
-  //   criteria: {
-  //     type: Object,
-  //     default: {}
-  //   }
-  // },
-
-  // tenure:{
-  //   type: String,
-  //   required: true
-  // },
-  // is_active: {
-  //   type: Boolean,
-  //   default: true
-  // },
   description: {
     type: String,
   },
@@ -244,11 +224,6 @@ const positionHolderSchema = new mongoose.Schema({
     ref: "Position",
     required: true,
   },
-  // unit_id: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Organizational_Unit',
-  //   required: true
-  // },
 
   tenure_year: {
     type: String,
