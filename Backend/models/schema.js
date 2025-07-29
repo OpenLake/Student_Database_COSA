@@ -400,6 +400,11 @@ const skillSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    enum: ["technical", "cultural", "sports", "academic"],
+    required: true,
+  },
   description: {
     type: String,
   },
@@ -473,6 +478,9 @@ const achievementSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+  },
   level: {
     type: String,
   },
@@ -482,7 +490,6 @@ const achievementSchema = new mongoose.Schema({
   },
   position: {
     type: String,
-    enum: ["1st", "2nd", "participant"],
   },
   event_id: {
     type: mongoose.Schema.Types.ObjectId,
