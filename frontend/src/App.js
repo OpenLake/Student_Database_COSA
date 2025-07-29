@@ -136,7 +136,7 @@ function App() {
           ))}
 
           {/* GenSec Endorse routes - accessible to only respective Gensec */}
-          {genSecRoles.map(({ path, role }) => (
+          {/* {genSecRoles.map(({ path, role }) => (
             <Route
               key={`gensec-${path}-endorse`}
               path={`/gensec-${path}-endorse`}
@@ -146,8 +146,16 @@ function App() {
                 </RoleProtectedRoute>
               }
             />
-          ))}
+          ))} */}
 
+          <Route
+            path="/gensec-endorse"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <GenSecEndorse />
+              </RoleProtectedRoute>
+            }
+          />
           {/* President routes - accessible to only president*/}
           <Route
             path="/president-approval"
