@@ -14,7 +14,7 @@ import GenSecDashboard from "./Components/GenSec/GenSecDashboard";
 import GenSecEndorse from "./Components/GenSec/GenSecEndorse";
 import PresidentApproval from "./Components/President/PresidentApproval";
 import PresidentDashboard from "./Components/President/PresidentDashboard";
-import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
+import CreateTenure from "./Components/Positions/TenureRecords";
 import { fetchCredentials } from "./services/auth";
 import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
@@ -173,7 +173,7 @@ function App() {
           />
 
           {/* COSA routes */}
-          <Route path="/cosa" element={<ShowTenure />} />
+          {/* <Route path="/cosa" element={<ShowTenure />} /> */}
           <Route
             path="/cosa/create"
             element={
@@ -182,14 +182,14 @@ function App() {
               </RoleProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/cosa/:id"
             element={
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
                 <ShowTenure />
               </RoleProtectedRoute>
             }
-          />
+          /> */}
 
           {/* Authentication routes - only for non-authenticated users */}
           <Route
