@@ -66,6 +66,25 @@ router.post("/add-position-holder", async (req, res) => {
     if (!user_id || !position_id || !tenure_year) {
       return res.status(400).json({ message: "Missing required fields." });
     }
+
+    // Step 1: Fetch the position to get the position_count
+    const position = await Position.findById(position_id);
+    if (!position) {
+      return res.status(404).json({ message: "Position not found." });
+    }
+
+    // Step 2: Count how many holders already exist for this position and tenure
+    const existingCount = await PositionHolder.countDocuments({
+      position_id,
+      tenure_year,
+    });
+
+    if (existingCount >= position.position_count) {
+      return res.status(400).json({
+        message: `Maximum position holders (${position.position_count}) already appointed for the year ${tenure_year}.`,
+      });
+    }
+
     console.log(req.body);
     const newPH = new PositionHolder({
       por_id: uuidv4(),
