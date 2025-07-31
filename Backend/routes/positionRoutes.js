@@ -58,20 +58,20 @@ router.post("/add-position-holder", async (req, res) => {
     const {
       user_id,
       position_id,
-      tenure,
+      tenure_year,
       appointment_details,
       performance_metrics,
       status,
     } = req.body;
-    if (!user_id || !position_id || !tenure) {
+    if (!user_id || !position_id || !tenure_year) {
       return res.status(400).json({ message: "Missing required fields." });
     }
-
+    console.log(req.body);
     const newPH = new PositionHolder({
       por_id: uuidv4(),
       user_id,
       position_id,
-      tenure_year: tenure,
+      tenure_year,
       appointment_details:
         appointment_details &&
         (appointment_details.appointed_by ||
@@ -79,14 +79,20 @@ router.post("/add-position-holder", async (req, res) => {
           ? appointment_details
           : undefined,
       performance_metrics: {
+        events_organized:
+          performance_metrics &&
+          performance_metrics.events_organized !== undefined
+            ? performance_metrics.events_organized
+            : 0,
+        budget_utilized:
+          performance_metrics &&
+          performance_metrics.budget_utilized !== undefined
+            ? performance_metrics.budget_utilized
+            : 0,
         feedback:
           performance_metrics && performance_metrics.feedback
             ? performance_metrics.feedback.trim()
             : undefined,
-        achievements:
-          performance_metrics && performance_metrics.achievements
-            ? performance_metrics.achievements.map((item) => item.trim())
-            : [],
       },
       status,
     });
@@ -96,6 +102,31 @@ router.post("/add-position-holder", async (req, res) => {
   } catch (err) {
     console.error("Error adding position holder:", err);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Get all position holders
+router.get("/get-all-position-holder", async (req, res) => {
+  try {
+    const positionHolders = await PositionHolder.find()
+      .populate("user_id", "personal_info.name user_id username")
+      .populate({
+        path: "position_id",
+        select: "title unit_id position_type",
+        populate: {
+          path: "unit_id",
+          select: "name",
+        },
+      })
+      .populate(
+        "appointment_details.appointed_by",
+        "personal_info.name username user_id",
+      );
+
+    res.json(positionHolders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching position holders." });
   }
 });
 

@@ -13,8 +13,8 @@ const AddPositionHolderForm = () => {
       appointment_date: "",
     },
     performance_metrics: {
-      events_organized: 0,
-      budget_utilized: 0,
+      events_organized: "",
+      budget_utilized: "",
       feedback: "",
     },
     status: "active",
@@ -156,26 +156,41 @@ const AddPositionHolderForm = () => {
       }));
     }
   };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
+      console.log("Form data:", formData);
       const cleanedData = {
         ...formData,
-        // Remove empty appointment details if not provided
         appointment_details:
           formData.appointment_details.appointed_by ||
           formData.appointment_details.appointment_date
             ? formData.appointment_details
             : undefined,
-        // Remove empty feedback if not provided
         performance_metrics: {
           ...formData.performance_metrics,
+          events_organized:
+            formData.performance_metrics.events_organized === ""
+              ? 0
+              : parseInt(formData.performance_metrics.events_organized, 10),
+          budget_utilized:
+            formData.performance_metrics.budget_utilized === ""
+              ? 0
+              : parseFloat(formData.performance_metrics.budget_utilized),
           feedback: formData.performance_metrics.feedback.trim() || undefined,
         },
       };
-
-      console.log("Position Holder form submitted:", cleanedData);
-      alert("Position Holder created successfully!");
+      console.log("Cleaned data:", cleanedData);
+      try {
+        const response = await axios.post(
+          `${API_BASE}/api/positions/add-position-holder`,
+          cleanedData,
+        );
+        console.log("Position Holder form submitted:", response.data);
+        alert("Position Holder created successfully!");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Failed to create position holder.");
+      }
     }
   };
 
@@ -515,7 +530,7 @@ const AddPositionHolderForm = () => {
                       handleNestedChange(
                         "performance_metrics",
                         "events_organized",
-                        parseInt(e.target.value) || 0,
+                        e.target.value,
                       )
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none ${
@@ -544,7 +559,7 @@ const AddPositionHolderForm = () => {
                       handleNestedChange(
                         "performance_metrics",
                         "budget_utilized",
-                        parseFloat(e.target.value) || 0,
+                        e.target.value,
                       )
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none ${
