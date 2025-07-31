@@ -268,7 +268,7 @@ const AddPositionForm = () => {
                     type="text"
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
-                    placeholder="e.g., Senior Software Engineer"
+                    placeholder="e.g., Member"
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
                       errors.title ? "border-red-300" : "border-gray-300"
                     }`}
