@@ -195,26 +195,6 @@ const positionSchema = new mongoose.Schema({
       },
     ],
   },
-  // selection_process: {
-  //   type: {
-  //     type: String,
-  //     enum: ['election', 'interview', 'appointment'],
-  //     required: true
-  //   },
-  //   criteria: {
-  //     type: Object,
-  //     default: {}
-  //   }
-  // },
-
-  // tenure:{
-  //   type: String,
-  //   required: true
-  // },
-  // is_active: {
-  //   type: Boolean,
-  //   default: true
-  // },
   description: {
     type: String,
   },
@@ -244,11 +224,6 @@ const positionHolderSchema = new mongoose.Schema({
     ref: "Position",
     required: true,
   },
-  // unit_id: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Organizational_Unit',
-  //   required: true
-  // },
 
   tenure_year: {
     type: String,
@@ -322,8 +297,8 @@ const eventSchema = new mongoose.Schema({
     },
   ],
   schedule: {
-    start_date: Date,
-    end_date: Date,
+    start: Date,
+    end: Date,
     venue: String,
     mode: {
       type: String,
@@ -332,8 +307,8 @@ const eventSchema = new mongoose.Schema({
   },
   registration: {
     required: Boolean,
-    start_date: Date,
-    end_date: Date,
+    start: Date,
+    end: Date,
     fees: Number,
     max_participants: Number,
   },
@@ -342,7 +317,7 @@ const eventSchema = new mongoose.Schema({
     spent: Number,
     sponsors: [
       {
-        type: Object,
+        type: String,
       },
     ],
   },
@@ -398,6 +373,11 @@ const skillSchema = new mongoose.Schema({
   },
   category: {
     type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["technical", "cultural", "sports", "academic"],
     required: true,
   },
   description: {
@@ -473,6 +453,9 @@ const achievementSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+  },
   level: {
     type: String,
   },
@@ -482,7 +465,6 @@ const achievementSchema = new mongoose.Schema({
   },
   position: {
     type: String,
-    enum: ["1st", "2nd", "participant"],
   },
   event_id: {
     type: mongoose.Schema.Types.ObjectId,

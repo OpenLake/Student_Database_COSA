@@ -47,7 +47,7 @@ export const GENSEC_CONFIGS = {
     menuItems: [
       {
         title: "GenSec Acad Endorsement",
-        path: "/gensec-acad-endorse",
+        path: "/gensec-endorse",
         icon: <Award className="w-5 h-5" />,
         category: "endorsement",
         color: "from-green-500 to-teal-600",
@@ -130,7 +130,7 @@ export const GENSEC_CONFIGS = {
     menuItems: [
       {
         title: "GenSec Cult Endorsement",
-        path: "/gensec-cult-endorse",
+        path: "/gensec-endorse",
         icon: <Award className="w-5 h-5" />,
         category: "endorsement",
         color: "from-purple-500 to-pink-600",
@@ -213,7 +213,7 @@ export const GENSEC_CONFIGS = {
     menuItems: [
       {
         title: "GenSec Sports Endorsement",
-        path: "/gensec-sport-endorse",
+        path: "/gensec-endorse",
         icon: <Award className="w-5 h-5" />,
         category: "endorsement",
         color: "from-red-500 to-pink-600",
@@ -296,7 +296,7 @@ export const GENSEC_CONFIGS = {
     menuItems: [
       {
         title: "GenSec Tech Endorsement",
-        path: "/gensec-tech-endorse",
+        path: "/gensec-endorse",
         icon: <Award className="w-5 h-5" />,
         category: "endorsement",
         color: "from-teal-500 to-blue-600",

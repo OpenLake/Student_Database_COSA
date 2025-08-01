@@ -1,32 +1,71 @@
-const gensecPageConfig = {
-  GENSEC_SCITECH: {
-    title: "Tech Skills Pending Endorsement",
-    subtitle: "Review and endorse technical skills submitted by students",
-    fetchPath: "/skills/unendorsed/tech",
-    endorsePathBase: "/skills/endorse/",
-    themeColor: "blue",
+// Configuration for different GenSec roles
+export const GenSecConfig = {
+  GENSEC_CULTURAL: {
+    skillType: "cultural",
+    displayTitle: "Cultural Secretary",
+    pageTitle: "Cultural Endorsement Panel",
+    description:
+      "Review and endorse cultural skills, user skills, and achievements.",
+    primaryColor: "#1f2937",
+    accentColor: "#374151",
   },
   GENSEC_SPORTS: {
-    title: "Sports Skills Pending Endorsement",
-    subtitle: "Review and endorse sports skills submitted by students",
-    fetchPath: "/skills/unendorsed/sport",
-    endorsePathBase: "/skills/endorse-sport/",
-    themeColor: "red",
+    skillType: "sports",
+    displayTitle: "Sports Secretary",
+    pageTitle: "Sports Endorsement Panel",
+    description:
+      "Review and endorse sports skills, user skills, and achievements.",
+    primaryColor: "#1f2937",
+    accentColor: "#374151",
+  },
+  GENSEC_SCITECH: {
+    skillType: "technical",
+    displayTitle: "Technical Secretary",
+    pageTitle: "Technical Endorsement Panel",
+    description:
+      "Review and endorse technical skills, user skills, and achievements.",
+    primaryColor: "#1f2937",
+    accentColor: "#374151",
   },
   GENSEC_ACADEMIC: {
-    title: "Academic Skills Pending Endorsement",
-    subtitle: "Review and endorse academic skills submitted by students",
-    fetchPath: "/skills/unendorsed/acad",
-    endorsePathBase: "/skills/endorse-acad/",
-    themeColor: "green",
-  },
-  GENSEC_CULTURAL: {
-    title: "Cultural Skills Pending Endorsement",
-    subtitle: "Review and endorse cultural skills submitted by students",
-    fetchPath: "/skills/unendorsed/cultural",
-    endorsePathBase: "/skills/endorse-cultural/",
-    themeColor: "purple",
+    skillType: "academic",
+    displayTitle: "Academic Secretary",
+    pageTitle: "Academic Endorsement Panel",
+    description:
+      "Review and endorse academic skills, user skills, and achievements.",
+    primaryColor: "#1f2937",
+    accentColor: "#374151",
   },
 };
 
-export default gensecPageConfig;
+// Tab configuration
+export const endorsementTabs = [
+  {
+    id: "user-skills",
+    label: "User Skills",
+    description: "Endorse individual user skill claims",
+    icon: "user",
+  },
+  {
+    id: "skills",
+    label: "Skills",
+    description: "Endorse skill definitions and categories",
+    icon: "skill",
+  },
+  {
+    id: "achievements",
+    label: "Achievements",
+    description: "Verify and endorse user achievements",
+    icon: "achievement",
+  },
+];
+
+// Helper function to get config by role
+export const getConfigByRole = (role) => {
+  return GenSecConfig[role];
+};
+
+// Helper function to get all available roles
+export const getAllRoles = () => {
+  return Object.keys(GenSecConfig);
+};

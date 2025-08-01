@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Event = require("../models/Event");
+//const Event = require("../models/Event");
 const RoomRequest = require("../models/RoomRequest");
 const { Skill } = require("../models/skill");
 const {
@@ -100,38 +100,38 @@ router.post("/fetch", async (req, res) => {
   }
 });
 
-const checkConflict = async (startTime, endTime, gap = 4 * 60 * 60 * 1000) => {
-  const startWithGap = new Date(startTime.getTime() - gap);
-  const endWithGap = new Date(endTime.getTime() + gap);
-  const conflictingEvents = await Event.find({
-    $or: [
-      { startTime: { $lt: endWithGap }, endTime: { $gt: startWithGap } }, // Adjusted logic
-    ],
-  });
-  return conflictingEvents.length > 0;
-};
+// const checkConflict = async (startTime, endTime, gap = 4 * 60 * 60 * 1000) => {
+//   const startWithGap = new Date(startTime.getTime() - gap);
+//   const endWithGap = new Date(endTime.getTime() + gap);
+//   const conflictingEvents = await Event.find({
+//     $or: [
+//       { startTime: { $lt: endWithGap }, endTime: { $gt: startWithGap } }, // Adjusted logic
+//     ],
+//   });
+//   return conflictingEvents.length > 0;
+// };
 
-router.post("/events", async (req, res) => {
-  const { title, startTime, endTime } = req.body;
-  if (await checkConflict(new Date(startTime), new Date(endTime))) {
-    return res
-      .status(400)
-      .json({ message: "Event conflicts with an existing event." });
-  }
-  const event = new Event({ title, startTime, endTime });
-  await event.save();
-  res.status(201).json(event);
-});
+// router.post("/events", async (req, res) => {
+//   const { title, startTime, endTime } = req.body;
+//   if (await checkConflict(new Date(startTime), new Date(endTime))) {
+//     return res
+//       .status(400)
+//       .json({ message: "Event conflicts with an existing event." });
+//   }
+//   const event = new Event({ title, startTime, endTime });
+//   await event.save();
+//   res.status(201).json(event);
+// });
 
-router.get("/events", async (req, res) => {
-  const events = await Event.find();
-  res.json(events);
-});
+// router.get("/events", async (req, res) => {
+//   const events = await Event.find();
+//   res.json(events);
+// });
 
-router.delete("/events/:id", async (req, res) => {
-  await Event.findByIdAndDelete(req.params.id);
-  res.json({ message: "Event deleted" });
-});
+// router.delete("/events/:id", async (req, res) => {
+//   await Event.findByIdAndDelete(req.params.id);
+//   res.json({ message: "Event deleted" });
+// });
 
 router.post("/room/request", async (req, res) => {
   try {

@@ -6,14 +6,15 @@ import Register from "./Components/Auth/Register";
 import GoogleRegister from "./Components/Auth/GoogleRegister";
 import FeedbackForm from "./Components/Feedback/FeedbackForm";
 import ViewFeedback from "./Components/Feedback/ViewFeedback";
-import EventList from "./Components/EventList";
-import EventForm from "./Components/EventForm";
+import EventList from "./Components/Events/EventList";
+import EventForm from "./Components/Events/EventForm";
+import EventDetail from "./Components/Events/EventDetail";
 import RoomBooking from "./Components/RoomBooking";
 import GenSecDashboard from "./Components/GenSec/GenSecDashboard";
 import GenSecEndorse from "./Components/GenSec/GenSecEndorse";
 import PresidentApproval from "./Components/President/PresidentApproval";
 import PresidentDashboard from "./Components/President/PresidentDashboard";
-import { CreateTenure, ShowTenure } from "./Components/TenureRecords";
+import { CreateTenure, ViewTenure } from "./Components/Positions/TenureRecords";
 import { fetchCredentials } from "./services/auth";
 import Unauthorised from "./Components/Unauthorised";
 import RoleProtectedRoute from "./utils/RoleProtectedRoute";
@@ -118,6 +119,7 @@ function App() {
         <Routes>
           {/* Public routes - accessible to everyone */}
           <Route path="/events" element={<EventList />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/viewfeedback" element={<ViewFeedback />} />
 
           {/* GenSec Dashboard routes - accessible to only respective Gensec */}
@@ -133,19 +135,15 @@ function App() {
             />
           ))}
 
-          {/* GenSec Endorse routes - accessible to only respective Gensec */}
-          {genSecRoles.map(({ path, role }) => (
-            <Route
-              key={`gensec-${path}-endorse`}
-              path={`/gensec-${path}-endorse`}
-              element={
-                <RoleProtectedRoute allowedRoles={[role]}>
-                  <GenSecEndorse role={role} />
-                </RoleProtectedRoute>
-              }
-            />
-          ))}
-
+          {/* GenSec Endorse routes */}
+          <Route
+            path="/gensec-endorse"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <GenSecEndorse />
+              </RoleProtectedRoute>
+            }
+          />
           {/* President routes - accessible to only president*/}
           <Route
             path="/president-approval"
@@ -175,7 +173,7 @@ function App() {
           />
 
           {/* COSA routes */}
-          <Route path="/cosa" element={<ShowTenure />} />
+          {/* <Route path="/cosa" element={<ShowTenure />} /> */}
           <Route
             path="/cosa/create"
             element={
@@ -185,10 +183,10 @@ function App() {
             }
           />
           <Route
-            path="/cosa/:id"
+            path="/cosa"
             element={
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
-                <ShowTenure />
+                <ViewTenure />
               </RoleProtectedRoute>
             }
           />
