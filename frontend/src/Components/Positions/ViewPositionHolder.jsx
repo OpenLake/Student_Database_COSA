@@ -118,10 +118,6 @@ const ViewPositionHolder = () => {
   };
 
   const handleDelete = (holder) => {
-    // if (window.confirm(`Are you sure you want to delete the position holder record for "${holder.user_id.name}"?`)) {
-    //   console.log('Delete position holder:', holder);
-    //   // Call delete API
-    // }
     alert("comming soon");
   };
 
