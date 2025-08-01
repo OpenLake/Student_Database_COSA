@@ -24,6 +24,7 @@ import StudentProfile from "./Components/Student_Page/ProfilePage";
 import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
 import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
 import AchievementForm from "./Components/AddAchievements";
+import AddPositionHolder from "./Components/AddPositionHolder";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -246,6 +247,17 @@ function App() {
                 isOnboardingComplete={isOnboardingComplete}
               >
                 <AchievementForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-position"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <AddPositionHolder />
               </ProtectedRoute>
             }
           />

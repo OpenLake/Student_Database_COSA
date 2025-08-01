@@ -81,7 +81,7 @@ const StudentDashboard = () => {
   ];
 
   const quickActions = [
-    { label: "Add Achievement", icon: Award, to: "/adda-chievement" },
+    { label: "Add Achievement", icon: Award, to: "/add-achievement" },
     { label: "New Position", icon: Star, to: "/add-position" },
     { label: "Give Feedback", icon: MessageSquare, to: "/feedback" },
   ];
