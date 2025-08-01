@@ -23,7 +23,7 @@ import OnboardingForm from "./Components/UserOnboarding";
 import StudentProfile from "./Components/Student_Page/ProfilePage";
 import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
 import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
-
+import AchievementForm from "./Components/AddAchievements";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -235,6 +235,17 @@ function App() {
                 isOnboardingComplete={isOnboardingComplete}
               >
                 <FeedbackForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-achievement"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <AchievementForm />
               </ProtectedRoute>
             }
           />

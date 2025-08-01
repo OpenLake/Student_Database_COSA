@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Achievement } = require("../models/schema"); // Update path as needed
-
+const { v4: uuidv4 } = require("uuid");
 // GET unverified achievements by type
 router.get("/unendorsed/:type", async (req, res) => {
   const { type } = req.params;
@@ -42,6 +42,51 @@ router.patch("/verify/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to verify achievement." });
+  }
+});
+
+//add achievement
+router.post("/add", async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      category,
+      type,
+      level,
+      date_achieved,
+      position,
+      certificate_url,
+      event_id,
+      user_id,
+    } = req.body;
+
+    if (!title || !category || !date_achieved || !user_id) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const achievement = new Achievement({
+      achievement_id: uuidv4(),
+      user_id,
+      title,
+      description,
+      category,
+      type,
+      level,
+      date_achieved,
+      position,
+      certificate_url,
+      event_id: event_id || null,
+    });
+
+    await achievement.save();
+
+    return res
+      .status(201)
+      .json({ message: "Achievement saved successfully", achievement });
+  } catch (error) {
+    console.error("Error saving achievement:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 });
 
