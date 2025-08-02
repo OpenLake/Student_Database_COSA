@@ -36,7 +36,7 @@ const StudentDashboard = () => {
     },
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
     { id: "events", label: "Events", icon: Calendar, to: "/events" },
-    { id: "add-skill", label: "Add New Skill", icon: Plus, to: "/add-skill" },
+    { id: "add-skill", label: "Manage Skills", icon: Plus, to: "/skills" },
     {
       id: "add-position",
       label: "Add Position",
@@ -53,24 +53,29 @@ const StudentDashboard = () => {
 
   const statsCards = [
     {
-      title: "Completed Courses",
+      title: "Total Skills",
       value: "12",
       icon: BookOpen,
       color: "bg-gray-900",
     },
     {
-      title: "Active Projects",
+      title: "Achievements",
       value: "3",
       icon: Target,
       color: "bg-gray-800",
     },
     {
-      title: "Total Points",
+      title: "Position of Responsibility",
       value: "2,450",
-      icon: TrendingUp,
+      icon: Users,
       color: "bg-gray-700",
     },
-    { title: "Events Attended", value: "8", icon: Users, color: "bg-gray-600" },
+    {
+      title: "Feedback Given",
+      value: "8",
+      icon: TrendingUp,
+      color: "bg-gray-600",
+    },
   ];
 
   const recentActivities = [
@@ -201,9 +206,9 @@ const StudentDashboard = () => {
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-600 mb-1">
+                  <h5 className="text-xs font-medium text-gray-600 mb-1">
                     {card.title}
-                  </h3>
+                  </h5>
                   <p className="text-3xl font-bold text-gray-900">
                     {card.value}
                   </p>

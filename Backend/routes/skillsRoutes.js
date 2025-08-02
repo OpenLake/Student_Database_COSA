@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { UserSkill, Skill } = require("../models/schema");
-
+const { v4: uuidv4 } = require("uuid");
 // GET unendorsed user skills for a particular skill type
 router.get("/user-skills/unendorsed/:type", async (req, res) => {
   const skillType = req.params.type; // e.g. "cultural", "sports"
@@ -72,6 +72,69 @@ router.post("/endorse/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to endorse skill." });
+  }
+});
+
+//get all endorsed skills
+router.get("/get-skills", async (req, res) => {
+  try {
+    const skills = await Skill.find({ is_endorsed: true });
+    res.json(skills);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to get endorsed skills." });
+  }
+});
+
+//get all user skills (endorsed + unendorsed)
+router.get("/user-skills/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const userSkills = await UserSkill.find({ user_id: userId })
+      .populate("skill_id", "name")
+      .populate("position_id", "title");
+    res.json(userSkills);
+  } catch (err) {
+    console.error("Failed to get user skills:", err);
+    res.status(500).json({ message: "Failed to get user skills." });
+  }
+});
+
+//create a new skill
+router.post("/create-skill", async (req, res) => {
+  try {
+    const { name, category, type, description } = req.body;
+    const skill = new Skill({
+      skill_id: uuidv4(),
+      name,
+      category,
+      type,
+      description,
+    });
+    await skill.save();
+    res.status(201).json(skill);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add skill" });
+  }
+});
+
+//create new user skill
+router.post("/create-user-skill", async (req, res) => {
+  try {
+    const { user_id, skill_id, proficiency_level, position_id } = req.body;
+
+    const newUserSkill = new UserSkill({
+      user_id,
+      skill_id,
+      proficiency_level,
+      position_id: position_id || null,
+    });
+
+    await newUserSkill.save();
+    res.status(201).json(newUserSkill);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to add user skill" });
   }
 });
 
