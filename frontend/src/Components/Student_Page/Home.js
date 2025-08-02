@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  ScanSearch,
 } from "lucide-react";
 
 const StudentDashboard = () => {
@@ -27,6 +28,7 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn } = useContext(AdminContext);
   const navigationItems = [
+    { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
     { id: "cosa-view", label: "COSA View", icon: Eye, to: "/cosa" },
     {
       id: "feedback",
@@ -34,7 +36,6 @@ const StudentDashboard = () => {
       icon: MessageSquare,
       to: "/feedback",
     },
-    { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
     { id: "events", label: "Events", icon: Calendar, to: "/events" },
     { id: "add-skill", label: "Manage Skills", icon: Plus, to: "/skills" },
     {
@@ -48,6 +49,18 @@ const StudentDashboard = () => {
       label: "Add Achievements",
       icon: Award,
       to: "/add-achievement",
+    },
+    {
+      id: "view-feedback",
+      label: "View Feedback",
+      icon: ScanSearch,
+      to: "/viewfeedback",
+    },
+    {
+      id: "logout",
+      label: "Logout",
+      icon: LogOut,
+      to: "/logout",
     },
   ];
 
