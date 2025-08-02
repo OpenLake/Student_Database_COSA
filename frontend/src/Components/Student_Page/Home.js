@@ -27,6 +27,8 @@ const StudentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("dashboard");
   const [events, setEvents] = useState([]);
+  const [latestAchievement, setLatestAchievement] = useState(null);
+
   const { isUserLoggedIn } = useContext(AdminContext);
   const API_BASE_URL =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -54,6 +56,32 @@ const StudentDashboard = () => {
 
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    const fetchLatestAchievement = async () => {
+      try {
+        const res = await axios.get(
+          `${API_BASE_URL}/api/achievements/${isUserLoggedIn._id}`,
+        );
+
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          const sorted = res.data.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at),
+          );
+          setLatestAchievement(sorted[0]); // most recently created achievement
+        } else {
+          setLatestAchievement(null);
+        }
+      } catch (err) {
+        console.error("Error fetching latest achievement:", err);
+        setLatestAchievement(null);
+      }
+    };
+
+    if (isUserLoggedIn?._id) {
+      fetchLatestAchievement();
+    }
+  }, [isUserLoggedIn?._id]);
 
   const navigationItems = [
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
@@ -370,17 +398,33 @@ const StudentDashboard = () => {
               </div>
 
               {/* Latest Achievement */}
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white shadow-sm">
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white shadow-sm min-h-[150px]">
                 <div className="flex items-center space-x-2 mb-3">
                   <Award className="w-5 h-5 text-yellow-400" />
                   <h3 className="font-semibold">Latest Achievement</h3>
                 </div>
-                <h4 className="font-bold text-lg mb-2">
-                  Web Development Certification
-                </h4>
-                <p className="text-gray-300 text-sm">
-                  Completed with 95% score
-                </p>
+
+                {latestAchievement ? (
+                  <>
+                    <h4 className="font-bold text-lg mb-2">
+                      {latestAchievement.title}
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      {latestAchievement.description ||
+                        "No description provided."}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      Category: {latestAchievement.category} | Achieved on:{" "}
+                      {new Date(
+                        latestAchievement.date_achieved,
+                      ).toLocaleDateString()}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-gray-400 text-center text-sm mt-6">
+                    No achievements yet.
+                  </p>
+                )}
               </div>
             </div>
           </div>
