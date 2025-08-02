@@ -187,10 +187,10 @@ const AddPositionHolder = () => {
           cleanedData,
         );
         console.log("Position Holder form submitted:", response.data);
-        alert("Position Holder created successfully!");
+        alert("Position created successfully!");
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert("Failed to create position holder.");
+        alert("Failed to create position.");
       }
     }
   };

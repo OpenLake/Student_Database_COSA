@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminContext } from "../../App";
+import axios from "axios";
 import {
   User,
   Eye,
@@ -25,8 +26,10 @@ import {
 const StudentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("dashboard");
-  const navigate = useNavigate();
   const { isUserLoggedIn } = useContext(AdminContext);
+  const API_BASE_URL =
+    process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+
   const navigationItems = [
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
     { id: "cosa-view", label: "COSA View", icon: Eye, to: "/cosa" },
@@ -64,28 +67,62 @@ const StudentDashboard = () => {
     },
   ];
 
+  const [counts, setCounts] = useState({
+    skills: 0,
+    achievements: 0,
+    positions: 0,
+    feedbacks: 0,
+  });
+
+  useEffect(() => {
+    const fetchAllStats = async () => {
+      try {
+        const [skillsRes, achievementsRes, positionsRes, feedbacksRes] =
+          await Promise.all([
+            axios.get(
+              `${API_BASE_URL}/api/skills/user-skills/${isUserLoggedIn._id}`,
+            ),
+            axios.get(`${API_BASE_URL}/api/achievements/${isUserLoggedIn._id}`),
+            axios.get(`${API_BASE_URL}/api/positions/${isUserLoggedIn._id}`),
+            axios.get(`${API_BASE_URL}/api/feedback/${isUserLoggedIn._id}`),
+          ]);
+
+        setCounts({
+          skills: skillsRes.data.length,
+          achievements: achievementsRes.data.length,
+          positions: positionsRes.data.length,
+          feedbacks: feedbacksRes.data.length,
+        });
+      } catch (error) {
+        console.error("Failed to fetch stats:", error);
+      }
+    };
+
+    fetchAllStats();
+  }, []);
+
   const statsCards = [
     {
       title: "Total Skills",
-      value: "12",
+      value: counts.skills,
       icon: BookOpen,
       color: "bg-gray-900",
     },
     {
       title: "Achievements",
-      value: "3",
+      value: counts.achievements,
       icon: Target,
       color: "bg-gray-800",
     },
     {
       title: "Position of Responsibility",
-      value: "2,450",
+      value: counts.positions.toLocaleString(),
       icon: Users,
       color: "bg-gray-700",
     },
     {
       title: "Feedback Given",
-      value: "8",
+      value: counts.feedbacks,
       icon: TrendingUp,
       color: "bg-gray-600",
     },

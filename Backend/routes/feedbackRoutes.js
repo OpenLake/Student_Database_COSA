@@ -195,4 +195,18 @@ router.put("/mark-resolved/:id", async (req, res) => {
   }
 });
 
+//get all user given feedbacks
+router.get("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const userFeedbacks = await Feedback.find({ feedback_by: userId }).populate(
+      "resolved_by",
+      "personal_info.name username user_id",
+    );
+    res.json(userFeedbacks);
+  } catch (err) {
+    console.error("Failed to get user Feedbacks:", err);
+    res.status(500).json({ message: "Failed to get user Feedbacks." });
+  }
+});
 module.exports = router;

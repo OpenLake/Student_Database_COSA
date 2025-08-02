@@ -90,4 +90,18 @@ router.post("/add", async (req, res) => {
   }
 });
 
+//get all user achievements (endorsed + unendorsed)
+router.get("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const userAchievements = await Achievement.find({ user_id: userId })
+      .populate("event_id", "title description")
+      .populate("verified_by", "personal_info.name username user_id");
+    res.json(userAchievements);
+  } catch (err) {
+    console.error("Failed to get user Achievements:", err);
+    res.status(500).json({ message: "Failed to get user Achievements." });
+  }
+});
+
 module.exports = router;
