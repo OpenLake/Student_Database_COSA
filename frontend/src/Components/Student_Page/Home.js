@@ -21,6 +21,7 @@ import {
   X,
   ChevronRight,
   ScanSearch,
+  Trophy,
 } from "lucide-react";
 
 const StudentDashboard = () => {
@@ -105,6 +106,12 @@ const StudentDashboard = () => {
       label: "Add Achievements",
       icon: Award,
       to: "/add-achievement",
+    },
+    {
+      id: "view-achievements",
+      label: "View Achievements",
+      icon: Trophy,
+      to: "/view-achievements",
     },
     {
       id: "view-feedback",
@@ -217,7 +224,7 @@ const StudentDashboard = () => {
               <Link
                 key={item.id}
                 to={item.to}
-                className={`w-full flex items-center px-3 py-3 mb-2 text-left rounded-lg transition-all duration-200 group ${
+                className={`w-full flex items-center px-3 py-3 mb-1/2 text-left rounded-lg transition-all duration-200 group ${
                   activeSection === item.id
                     ? "bg-black text-white shadow-lg"
                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
