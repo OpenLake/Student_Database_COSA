@@ -1,7 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AdminContext } from "../App";
-import { Plus, X, ChevronDown, User, Award, Calendar, Tag } from "lucide-react";
+import {
+  Plus,
+  X,
+  ChevronDown,
+  User,
+  Award,
+  Calendar,
+  Tag,
+  Code,
+  BookOpen,
+  Trophy,
+  Users,
+} from "lucide-react";
 
 const SkillManagement = ({ userId }) => {
   const [skills, setSkills] = useState([]);
@@ -171,50 +183,33 @@ const SkillManagement = ({ userId }) => {
     }
   };
 
-  const handleRemoveSkill = async (userSkillId) => {
-    if (!window.confirm("Are you sure you want to remove this skill?")) return;
-
-    try {
-      // In real app: await fetch(`${API_BASE}/api/user-skills/${userSkillId}`, { method: 'DELETE' });
-
-      // Remove from state
-      setUserSkills((prev) =>
-        prev.filter((skill) => skill._id !== userSkillId),
-      );
-      alert("Skill removed successfully!");
-    } catch (error) {
-      console.error("Error removing skill:", error);
-      alert("Error removing skill.");
-    }
-  };
-
   const getProficiencyColor = (level) => {
     const colors = {
-      beginner: "bg-gray-100 text-gray-800 border-gray-200",
-      intermediate: "bg-blue-100 text-blue-800 border-blue-200",
-      advanced: "bg-green-100 text-green-800 border-green-200",
-      expert: "bg-purple-100 text-purple-800 border-purple-200",
+      beginner: "bg-gray-50 text-gray-700 border-gray-200",
+      intermediate: "bg-gray-100 text-gray-800 border-gray-300",
+      advanced: "bg-gray-900 text-white border-gray-900",
+      expert: "bg-black text-white border-black",
     };
     return colors[level] || colors.beginner;
   };
 
   const getTypeIcon = (type) => {
     const icons = {
-      technical: "💻",
-      cultural: "🎭",
-      sports: "⚽",
-      academic: "📚",
+      technical: Code,
+      cultural: Users,
+      sports: Trophy,
+      academic: BookOpen,
     };
-    return icons[type] || "📝";
+    return icons[type] || Code;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-black mb-2">
               Skills Management
             </h1>
             <p className="text-gray-600">
@@ -223,7 +218,7 @@ const SkillManagement = ({ userId }) => {
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-medium"
           >
             <Plus className="w-4 h-4" />
             Add Skill
@@ -232,35 +227,34 @@ const SkillManagement = ({ userId }) => {
 
         {/* Form Modal */}
         {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Add New Skill</h2>
+          <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h2 className="text-xl font-bold text-black">Add New Skill</h2>
                 <button
                   onClick={resetForm}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-400 hover:text-gray-600 p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Form Inputs */}
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block mb-1 text-sm font-medium">
+                  <label className="block mb-2 text-sm font-semibold text-gray-900">
                     Select Skill
                   </label>
                   <div className="relative">
                     <select
                       value={formData.skill_id}
                       onChange={(e) => handleSkillChange(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black appearance-none bg-white"
                     >
                       <option value="">Choose a skill...</option>
                       {skills.map((skill) => (
                         <option key={skill._id} value={skill._id}>
-                          {getTypeIcon(skill.type)} {skill.name} (
-                          {skill.category})
+                          {skill.name} ({skill.category})
                         </option>
                       ))}
                       <option value="other">+ Add new skill</option>
@@ -270,9 +264,12 @@ const SkillManagement = ({ userId }) => {
                 </div>
 
                 {showNewSkillForm && (
-                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3">
+                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+                    <h3 className="font-semibold text-gray-900 text-sm">
+                      Create New Skill
+                    </h3>
                     <div>
-                      <label className="block text-sm mb-1 font-medium">
+                      <label className="block text-sm mb-2 font-medium text-gray-900">
                         Skill Name *
                       </label>
                       <input
@@ -284,13 +281,13 @@ const SkillManagement = ({ userId }) => {
                             name: e.target.value,
                           }))
                         }
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                         placeholder="Enter skill name"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm mb-1 font-medium">
+                      <label className="block text-sm mb-2 font-medium text-gray-900">
                         Category *
                       </label>
                       <input
@@ -302,13 +299,13 @@ const SkillManagement = ({ userId }) => {
                             category: e.target.value,
                           }))
                         }
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                         placeholder="e.g., Programming, Design, Marketing"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm mb-1 font-medium">
+                      <label className="block text-sm mb-2 font-medium text-gray-900">
                         Type *
                       </label>
                       <select
@@ -319,17 +316,17 @@ const SkillManagement = ({ userId }) => {
                             type: e.target.value,
                           }))
                         }
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                         required
                       >
-                        <option value="technical">💻 Technical</option>
-                        <option value="cultural">🎭 Cultural</option>
-                        <option value="sports">⚽ Sports</option>
-                        <option value="academic">📚 Academic</option>
+                        <option value="technical">Technical</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="sports">Sports</option>
+                        <option value="academic">Academic</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm mb-1 font-medium">
+                      <label className="block text-sm mb-2 font-medium text-gray-900">
                         Description
                       </label>
                       <textarea
@@ -340,7 +337,7 @@ const SkillManagement = ({ userId }) => {
                             description: e.target.value,
                           }))
                         }
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                         rows={3}
                         placeholder="Optional description of the skill"
                       />
@@ -349,7 +346,7 @@ const SkillManagement = ({ userId }) => {
                 )}
 
                 <div>
-                  <label className="block text-sm mb-1 font-medium">
+                  <label className="block text-sm mb-2 font-semibold text-gray-900">
                     Proficiency Level *
                   </label>
                   <select
@@ -360,7 +357,7 @@ const SkillManagement = ({ userId }) => {
                         proficiency_level: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                   >
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
@@ -370,7 +367,7 @@ const SkillManagement = ({ userId }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-1 font-medium">
+                  <label className="block text-sm mb-2 font-semibold text-gray-900">
                     Associated Position (optional)
                   </label>
                   <select
@@ -381,7 +378,7 @@ const SkillManagement = ({ userId }) => {
                         position_id: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                   >
                     <option value="">No specific position</option>
                     {positions.map((pos) => (
@@ -392,17 +389,17 @@ const SkillManagement = ({ userId }) => {
                   </select>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-3 pt-6 border-t border-gray-200">
                   <button
                     onClick={resetForm}
-                    className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors"
+                    className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                   >
                     {loading ? "Adding..." : "Add Skill"}
                   </button>
@@ -413,94 +410,113 @@ const SkillManagement = ({ userId }) => {
         )}
 
         {/* Skills List */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Your Skills ({userSkills.length})
-          </h2>
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+            <h2 className="text-xl font-bold text-black">
+              Your Skills ({userSkills.length})
+            </h2>
+          </div>
+
           {userSkills.length === 0 ? (
-            <div className="text-center py-12">
-              <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4 text-lg">No skills added yet</p>
-              <p className="text-gray-400 mb-6">
-                Start building your skill profile
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No skills added yet
+              </h3>
+              <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                Start building your professional skill profile to showcase your
+                expertise
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-medium"
               >
                 Add Your First Skill
               </button>
             </div>
           ) : (
-            <div className="grid gap-4">
-              {userSkills.map((userSkill) => (
-                <div
-                  key={userSkill._id}
-                  className="border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-xl">
-                          {getTypeIcon(userSkill.skill_id.type)}
-                        </span>
-                        <h3 className="font-semibold text-gray-900 text-lg">
-                          {userSkill.skill_id.name}
-                        </h3>
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full font-medium border ${getProficiencyColor(
-                            userSkill.proficiency_level,
-                          )}`}
-                        >
-                          {userSkill.proficiency_level.charAt(0).toUpperCase() +
-                            userSkill.proficiency_level.slice(1)}
-                        </span>
-                      </div>
-
-                      <div className="text-sm text-gray-600 flex gap-4 flex-wrap mb-2">
-                        <span className="flex items-center gap-1">
-                          <Tag className="w-3 h-3" />
-                          {userSkill.skill_id.category}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {userSkill.created_at
-                            ? new Date(
-                                userSkill.created_at,
-                              ).toLocaleDateString()
-                            : "N/A"}
-                        </span>
-                        {userSkill.position_id && (
-                          <span className="flex items-center gap-1 text-blue-600">
-                            <User className="w-3 h-3" />
-                            {userSkill.position_id.title}
+            <div className="space-y-4">
+              {userSkills.map((userSkill) => {
+                const IconComponent = getTypeIcon(userSkill.skill_id.type);
+                return (
+                  <div
+                    key={userSkill._id}
+                    className="border border-gray-200 p-5 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <IconComponent className="w-4 h-4 text-gray-600" />
+                          </div>
+                          <h3 className="font-semibold text-gray-900 text-lg">
+                            {userSkill.skill_id.name}
+                          </h3>
+                          <span
+                            className={`px-3 py-1 text-xs rounded-full font-medium border ${getProficiencyColor(
+                              userSkill.proficiency_level,
+                            )}`}
+                          >
+                            {userSkill.proficiency_level
+                              .charAt(0)
+                              .toUpperCase() +
+                              userSkill.proficiency_level.slice(1)}
                           </span>
-                        )}
-                        {userSkill.is_endorsed && (
-                          <span className="flex items-center gap-1 text-green-600">
+                        </div>
+
+                        <div className="text-sm text-gray-600 flex gap-6 flex-wrap mb-3">
+                          <span className="flex items-center gap-2">
+                            <Tag className="w-3 h-3" />
+                            {userSkill.skill_id.category}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <Calendar className="w-3 h-3" />
+                            {userSkill.created_at
+                              ? new Date(
+                                  userSkill.created_at,
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </span>
+                          {userSkill.position_id && (
+                            <span className="flex items-center gap-2 text-black font-medium">
+                              <User className="w-3 h-3" />
+                              {userSkill.position_id.title}
+                            </span>
+                          )}
+                          {userSkill.is_endorsed && (
+                            <span className="flex items-center gap-2 text-gray-900 font-medium">
+                              <Award className="w-3 h-3" />
+                              Endorsed
+                            </span>
+                          )}
+                          <span className="flex items-center gap-2">
                             <Award className="w-3 h-3" />
-                            Endorsed
+                            <span
+                              className={
+                                userSkill.is_endorsed
+                                  ? "text-gray-900 font-medium"
+                                  : "text-gray-500"
+                              }
+                            >
+                              {userSkill.is_endorsed
+                                ? "Endorsed"
+                                : "Not Endorsed"}
+                            </span>
                           </span>
+                        </div>
+
+                        {userSkill.skill_id.description && (
+                          <p className="text-sm text-gray-600 leading-relaxed">
+                            {userSkill.skill_id.description}
+                          </p>
                         )}
                       </div>
-
-                      {userSkill.skill_id.description && (
-                        <p className="text-sm text-gray-600">
-                          {userSkill.skill_id.description}
-                        </p>
-                      )}
                     </div>
-
-                    <button
-                      onClick={() => handleRemoveSkill(userSkill._id)}
-                      className="text-gray-400 hover:text-red-500 p-1 transition-colors"
-                      title="Remove skill"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
