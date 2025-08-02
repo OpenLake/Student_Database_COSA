@@ -3,7 +3,7 @@ import { UserCheck, Calendar, BarChart3, Settings } from "lucide-react";
 import axios from "axios";
 import { AdminContext } from "../App";
 const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-const AddPositionHolder = () => {
+const AddPositionHolder = ({ onClose }) => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [formData, setFormData] = useState({
     user_id: isUserLoggedIn._id,
@@ -188,6 +188,7 @@ const AddPositionHolder = () => {
         );
         console.log("Position Holder form submitted:", response.data);
         alert("Position created successfully!");
+        onClose();
       } catch (error) {
         console.error("Error submitting form:", error);
         alert("Failed to create position.");
@@ -205,8 +206,8 @@ const AddPositionHolder = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="bg-white max-h-[90vh] overflow-y-auto px-4 py-4 rounded-lg">
+      <div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-200">

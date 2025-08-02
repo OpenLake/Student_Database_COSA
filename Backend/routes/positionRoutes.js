@@ -154,7 +154,13 @@ router.get("/:userId", async (req, res) => {
   const userId = req.params.userId;
   try {
     const positionHolder = await PositionHolder.find({ user_id: userId })
-      .populate("position_id")
+      .populate({
+        path: "position_id",
+        populate: {
+          path: "unit_id",
+          model: "Organizational_Unit",
+        },
+      })
       .populate("appointment_details.appointed_by");
     res.json(positionHolder);
   } catch (err) {

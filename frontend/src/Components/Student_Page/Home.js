@@ -95,10 +95,10 @@ const StudentDashboard = () => {
     { id: "events", label: "Events", icon: Calendar, to: "/events" },
     { id: "add-skill", label: "Manage Skills", icon: Plus, to: "/skills" },
     {
-      id: "add-position",
-      label: "Add Position",
+      id: "manage-position",
+      label: "Manage Positions (PORs)",
       icon: Star,
-      to: "/add-position",
+      to: "/manage-position",
     },
     {
       id: "add-achievement",

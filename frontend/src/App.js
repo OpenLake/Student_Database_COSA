@@ -27,6 +27,8 @@ import AchievementForm from "./Components/AddAchievements";
 import AddPositionHolder from "./Components/AddPositionHolder";
 import SkillManagement from "./Components/SkillManagement";
 import Logout from "./Components/Logout";
+import ManagePositions from "./Components/ManagePosition";
+
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -253,13 +255,13 @@ function App() {
             }
           />
           <Route
-            path="/add-position"
+            path="/manage-position"
             element={
               <ProtectedRoute
                 isAuthenticated={isUserLoggedIn}
                 isOnboardingComplete={isOnboardingComplete}
               >
-                <AddPositionHolder />
+                <ManagePositions />
               </ProtectedRoute>
             }
           />
