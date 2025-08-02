@@ -26,9 +26,34 @@ import {
 const StudentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [events, setEvents] = useState([]);
   const { isUserLoggedIn } = useContext(AdminContext);
   const API_BASE_URL =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/events/events`);
+        const now = new Date();
+
+        const upcomingEvents = res.data
+          .filter(
+            (event) =>
+              event.schedule?.start && new Date(event.schedule.start) > now,
+          )
+          .sort(
+            (a, b) => new Date(a.schedule.start) - new Date(b.schedule.start),
+          ); // Sort ascending by date
+
+        setEvents(upcomingEvents);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const navigationItems = [
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
@@ -126,13 +151,6 @@ const StudentDashboard = () => {
       icon: TrendingUp,
       color: "bg-gray-600",
     },
-  ];
-
-  const recentActivities = [
-    { activity: "Completed Web Development Course", time: "2 hours ago" },
-    { activity: "Added new skill: React.js", time: "1 day ago" },
-    { activity: "Attended Tech Conference 2024", time: "3 days ago" },
-    { activity: "Updated profile information", time: "1 week ago" },
   ];
 
   const quickActions = [
@@ -269,12 +287,12 @@ const StudentDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Recent Activities */}
+            {/* upcoming events */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 min-h-[500px]">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-gray-900">
-                    Recent Activities
+                    Upcoming Events
                   </h2>
                   <button className="text-gray-500 hover:text-gray-700">
                     <Menu className="w-5 h-5" />
@@ -282,21 +300,45 @@ const StudentDashboard = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {recentActivities.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="w-2 h-2 bg-black rounded-full"></div>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">
-                          {item.activity}
-                        </p>
-                        <p className="text-sm text-gray-500">{item.time}</p>
+                  {events.length > 0 ? (
+                    events.map((event, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="w-2 h-2 bg-black rounded-full mt-2"></div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">
+                            {event.title}
+                          </p>
+                          <p className="text-sm text-gray-700 mb-1">
+                            {event.description}
+                          </p>
+                          <div className="text-xs text-gray-500 space-y-0.5">
+                            <p>
+                              <strong>Category:</strong> {event.category}
+                            </p>
+                            <p>
+                              <strong>Organizing Unit:</strong>{" "}
+                              {event.organizing_unit_id?.name || "N/A"}
+                            </p>
+                            <p>
+                              <strong>Schedule:</strong>{" "}
+                              {new Date(event.schedule?.start).toLocaleString()}{" "}
+                              — {new Date(event.schedule?.end).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-400 mt-2" />
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400" />
+                    ))
+                  ) : (
+                    <div className="flex justify-center items-center h-full min-h-[200px]">
+                      <p className="text-gray-500 text-[25px] text-center">
+                        No upcoming events.
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
