@@ -26,7 +26,7 @@ import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
 import AchievementForm from "./Components/AddAchievements";
 import AddPositionHolder from "./Components/AddPositionHolder";
 import SkillManagement from "./Components/SkillManagement";
-
+import Logout from "./Components/Logout";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -302,6 +302,17 @@ function App() {
               ) : (
                 <Navigate to="/login" replace />
               )
+            }
+          />
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <Logout />
+              </ProtectedRoute>
             }
           />
           <Route
