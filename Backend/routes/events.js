@@ -61,7 +61,7 @@ router.post("/create", async (req, res) => {
 // GET all events (or filtered)
 router.get("/events", async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find().populate("organizing_unit_id", "name");
     res.json(events);
   } catch (err) {
     console.error(err);

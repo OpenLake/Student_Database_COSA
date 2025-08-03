@@ -274,7 +274,7 @@ const StudentProfile = () => {
       {toast && <Toast {...toast} onClose={() => setToast(null)} />}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 py-4 shadow-sm flex items-center justify-between">
+      <div className="bg-gradient-to-r from-gray-900 to-gray-700 text-white px-6 py-4 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Profile Photo with improved border and shadow */}
 

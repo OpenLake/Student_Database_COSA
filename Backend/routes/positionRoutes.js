@@ -149,4 +149,24 @@ router.get("/get-all-position-holder", async (req, res) => {
   }
 });
 
+// Get positions  by id
+router.get("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const positionHolder = await PositionHolder.find({ user_id: userId })
+      .populate({
+        path: "position_id",
+        populate: {
+          path: "unit_id",
+          model: "Organizational_Unit",
+        },
+      })
+      .populate("appointment_details.appointed_by");
+    res.json(positionHolder);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching position holder." });
+  }
+});
+
 module.exports = router;

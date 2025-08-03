@@ -377,7 +377,7 @@ const skillSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["technical", "cultural", "sports", "academic"],
+    enum: ["technical", "cultural", "sports", "academic", "other"],
     required: true,
   },
   description: {

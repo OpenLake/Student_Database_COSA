@@ -23,7 +23,11 @@ import OnboardingForm from "./Components/UserOnboarding";
 import StudentProfile from "./Components/Student_Page/ProfilePage";
 import ForgotPassword from "./Components/Auth/Forgot-Password/ForgotPassword";
 import ResetPassword from "./Components/Auth/Forgot-Password/ResetPassword";
-
+import AchievementForm from "./Components/AddAchievements";
+import SkillManagement from "./Components/SkillManagement";
+import Logout from "./Components/Logout";
+import ManagePositions from "./Components/ManagePosition";
+import ViewAchievements from "./Components/ViewAchievements";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -239,6 +243,50 @@ function App() {
             }
           />
           <Route
+            path="/add-achievement"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <AchievementForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-achievements"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <ViewAchievements />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manage-position"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <ManagePositions />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <SkillManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/add-event"
             element={
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
@@ -266,6 +314,17 @@ function App() {
               ) : (
                 <Navigate to="/login" replace />
               )
+            }
+          />
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <Logout />
+              </ProtectedRoute>
             }
           />
           <Route
