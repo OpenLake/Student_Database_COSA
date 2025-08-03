@@ -145,7 +145,6 @@ const ClubDashboard = () => {
     { name: "Add Event", icon: Plus },
     { name: "Feedback", icon: MessageSquare },
     { name: "Achievements", icon: Award },
-    { name: "Skills", icon: Star },
     { name: "Logout", icon: LogOut },
   ];
 
