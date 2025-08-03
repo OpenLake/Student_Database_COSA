@@ -39,9 +39,10 @@ passport.use(
           return done(null, user);
         }
         // If user doesn't exist, create a new user in your database
+        const userRole = await getRole(profile.emails[0].value);
         const newUser = new User({
           username: profile.emails[0].value,
-          role: getRole(profile.emails[0].value),
+          role: userRole,
           strategy: "google",
           personal_info: {
             name: profile.displayName || "No Name",

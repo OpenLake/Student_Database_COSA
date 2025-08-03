@@ -12,7 +12,9 @@ const getRole = async (userEmail) => {
     return "PRESIDENT";
   }
 
-  const club = await OrganizationalUnit.findOne({ email: userEmail });
+  const club = await OrganizationalUnit.findOne({
+    "contact_info.email": userEmail,
+  });
 
   if (club) {
     return "CLUB_COORDINATOR";
