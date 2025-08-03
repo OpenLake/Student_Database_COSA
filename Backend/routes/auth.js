@@ -80,10 +80,11 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists." });
     }
 
+    const userRole = await getRole(email);
     const newUser = await User.register(
       new User({
         user_id: ID,
-        role: getRole(email),
+        role: userRole,
         strategy: "local",
         username: email,
         personal_info: {

@@ -28,6 +28,8 @@ import SkillManagement from "./Components/SkillManagement";
 import Logout from "./Components/Logout";
 import ManagePositions from "./Components/ManagePosition";
 import ViewAchievements from "./Components/ViewAchievements";
+import Home from "./Components/Student_Page/Home";
+import ClubDashboard from "./Components/Club_Coordinator/ClubCoorinatorDashboard";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -145,6 +147,15 @@ function App() {
             element={
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
                 <GenSecEndorse />
+              </RoleProtectedRoute>
+            }
+          />
+          {/* Club Coordinator routes */}
+          <Route
+            path="/club-dashboard"
+            element={
+              <RoleProtectedRoute allowedRoles={["CLUB_COORDINATOR"]}>
+                <ClubDashboard />
               </RoleProtectedRoute>
             }
           />
@@ -324,6 +335,17 @@ function App() {
                 isOnboardingComplete={isOnboardingComplete}
               >
                 <Logout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isUserLoggedIn}
+                isOnboardingComplete={isOnboardingComplete}
+              >
+                <Home />
               </ProtectedRoute>
             }
           />

@@ -255,10 +255,11 @@ const ViewPositionHolder = () => {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg">
-                      {holder.user_id.personal_info.name}
+                      {holder.user_id?.personal_info?.name || "N/A"}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {holder.user_id.user_id} • {holder.user_id.username}
+                      {holder.user_id?.user_id || "N/A"} •{" "}
+                      {holder.user_id?.username}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       POR ID: {holder.por_id}

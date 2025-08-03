@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminContext } from "../../App.js";
-import Home from "../Student_Page/Home.js";
 const RoleRedirect = () => {
   const { userRole } = useContext(AdminContext);
   const { isOnboardingComplete } = useContext(AdminContext);
@@ -19,8 +18,10 @@ const RoleRedirect = () => {
       return <Navigate to="/gensec-cult" replace />;
     case "GENSEC_SPORTS":
       return <Navigate to="/gensec-sport" replace />;
+    case "CLUB_COORDINATOR":
+      return <Navigate to="/club-dashboard" replace />;
     default:
-      return <Home />; // fallback for student
+      return <Navigate to="/home" replace />; // fallback for student
   }
 };
 
