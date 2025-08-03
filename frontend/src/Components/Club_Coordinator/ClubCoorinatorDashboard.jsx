@@ -6,6 +6,7 @@ import ViewFeedback from "../Feedback/ViewFeedback";
 import AchievementsEndorsementTab from "../GenSec/AchievementsEndorsementTab";
 import { CreateTenure, ViewTenure } from "../Positions/TenureRecords";
 import EventList from "../Events/EventList";
+import Logout from "../Logout";
 import {
   Home,
   Users,
@@ -479,6 +480,7 @@ const ClubDashboard = () => {
         return <EventForm />;
       case "Feedback":
         return <ViewFeedback />;
+
       case "Achievements":
         return (
           <AchievementsEndorsementTab skillType={clubData.unit.category} />
@@ -492,6 +494,8 @@ const ClubDashboard = () => {
             </p>
           </div>
         );
+      case "Logout":
+        return <Logout />;
       default:
         return renderDashboardContent();
     }
