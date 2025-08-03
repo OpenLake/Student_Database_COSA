@@ -16,6 +16,8 @@ const eventsRoutes = require("./routes/events.js");
 const skillsRoutes = require("./routes/skillsRoutes.js");
 const achievementsRoutes = require("./routes/achievements.js");
 const positionsRoutes = require("./routes/positionRoutes.js");
+const organizationalUnitRoutes = require("./routes/orgUnit.js");
+
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
@@ -50,6 +52,8 @@ app.use("/api/events", eventsRoutes);
 app.use("/api/skills", skillsRoutes);
 app.use("/api/achievements", achievementsRoutes);
 app.use("/api/positions", positionsRoutes);
+app.use("/api/orgUnit", organizationalUnitRoutes);
+
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
   console.log(`connected to port ${process.env.PORT || 8000}`);
