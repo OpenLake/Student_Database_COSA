@@ -8,7 +8,6 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const { connectDB } = require("./db");
 const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
-const routes_tenure = require("./routes/tenureRoutes.js");
 const onboardingRoutes = require("./routes/onboarding.js");
 const profileRoutes = require("./routes/profile.js");
 const feedbackRoutes = require("./routes/feedbackRoutes.js");
@@ -44,7 +43,6 @@ app.use(myPassport.session());
 // Mount your route handlers
 app.use("/", routes_general);
 app.use("/auth", routes_auth);
-app.use("/tenure", routes_tenure);
 app.use("/onboarding", onboardingRoutes);
 app.use("/profile", profileRoutes);
 app.use("/api/feedback", feedbackRoutes);

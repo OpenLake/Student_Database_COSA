@@ -3,7 +3,6 @@ import React, { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
-import GoogleRegister from "./Components/Auth/GoogleRegister";
 import FeedbackForm from "./Components/Feedback/FeedbackForm";
 import ViewFeedback from "./Components/Feedback/ViewFeedback";
 import EventList from "./Components/Events/EventList";
@@ -223,7 +222,7 @@ function App() {
               </PublicRoute>
             }
           />
-          <Route path="/register/google/:id" element={<GoogleRegister />} />
+
           <Route
             path="/forgot-password"
             element={
