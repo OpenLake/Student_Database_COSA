@@ -52,6 +52,7 @@ passport.use(
                 ? profile.photos[0].value
                 : "https://www.gravatar.com/avatar/?d=mp",
           },
+          onboardingComplete: userRole !== "STUDENT",
         });
 
         await newUser.save();

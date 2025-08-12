@@ -194,6 +194,13 @@ const StudentDashboard = () => {
     { label: "Give Feedback", icon: MessageSquare, to: "/feedback" },
   ];
 
+  if (!isUserLoggedIn?._id) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-lg text-gray-600">Loading student data...</p>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
