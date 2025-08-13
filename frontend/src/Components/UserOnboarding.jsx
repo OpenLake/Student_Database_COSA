@@ -62,7 +62,7 @@ export default function OnboardingForm() {
     try {
       await completeOnboarding(userData);
       setIsOnboardingComplete(true);
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Error completing onboarding", error);
     }

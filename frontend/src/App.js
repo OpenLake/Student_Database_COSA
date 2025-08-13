@@ -67,8 +67,15 @@ const PublicRoute = ({ children, isAuthenticated, redirectTo = "/" }) => {
 function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState("STUDENT");
+  const [userRole, setUserRole] = useState(null);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(null);
+
+  const handleLogin = (userData) => {
+    // This function manually updates the state with the data from the login API
+    setIsUserLoggedIn(userData);
+    setUserRole(userData.role);
+    setIsOnboardingComplete(userData.onboardingComplete);
+  };
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -81,11 +88,8 @@ function App() {
           setUserRole(role);
           console.log("User role:", role);
           console.log(user);
-          if (role !== "STUDENT") {
-            setIsOnboardingComplete(true);
-          } else {
-            setIsOnboardingComplete(user.onboardingComplete);
-          }
+          setIsOnboardingComplete(user.onboardingComplete);
+          console.log("Onboarding complete:", user.onboardingComplete);
         } else {
           setIsUserLoggedIn(false);
         }
@@ -116,6 +120,9 @@ function App() {
     setUserRole,
     isOnboardingComplete,
     setIsOnboardingComplete,
+    isLoading,
+    setIsLoading,
+    handleLogin,
   };
 
   return (
@@ -304,7 +311,7 @@ function App() {
               </RoleProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/onboarding"
             element={
               isUserLoggedIn && !isOnboardingComplete ? (
@@ -315,17 +322,10 @@ function App() {
                 <Navigate to="/login" replace />
               )
             }
-          />
-          <Route
-            path="/"
-            element={
-              isUserLoggedIn ? (
-                <RoleRedirect />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          /> */}
+          <Route path="/" element={<RoleRedirect />} />
+          <Route path="/onboarding" element={<OnboardingForm />} />
+
           <Route
             path="/logout"
             element={

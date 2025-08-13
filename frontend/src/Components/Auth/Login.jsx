@@ -3,17 +3,23 @@ import { AdminContext } from "../../App";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
 import { loginUser } from "../../services/auth";
-
+import { useNavigate } from "react-router-dom";
 function Login() {
+  const { handleLogin } = useContext(AdminContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsUserLoggedIn } = useContext(AdminContext);
-
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const status = await loginUser(email, password);
-    if (status) {
-      setIsUserLoggedIn(status);
+    try {
+      const userObject = await loginUser(email, password);
+      if (userObject) {
+        handleLogin(userObject);
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
     }
   };
 

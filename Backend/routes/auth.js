@@ -83,6 +83,7 @@ router.post("/register", async (req, res) => {
           name: name,
           email: email,
         },
+        onboardingComplete: userRole !== "STUDENT",
       }),
       password,
     );
@@ -112,7 +113,11 @@ router.get(
   "/google/verify",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
+    if (req.user.onboardingComplete) {
+      res.redirect(`${process.env.FRONTEND_URL}/`);
+    } else {
+      res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
+    }
   },
 );
 
