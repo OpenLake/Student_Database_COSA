@@ -58,7 +58,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// GET all events (or filtered)
+// GET all events
 router.get("/events", async (req, res) => {
   try {
     const events = await Event.find().populate("organizing_unit_id", "name");
@@ -89,7 +89,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// Add this to your backend
+// GET event by ID
 router.get("/:id", async (req, res) => {
   try {
     const event = await Event.findById(req.params.id)
@@ -99,6 +99,80 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching event." });
+  }
+});
+
+router.get("/by-role/:userRole", async (req, res) => {
+  const userRole = req.params.userRole;
+  try {
+    let query = {};
+
+    // Build the query based on the user's role
+    switch (userRole) {
+      case "STUDENT":
+        query = { status: { $in: ["planned", "ongoing"] } };
+        break;
+
+      case "CLUB_COORDINATOR": {
+        const username = req.query.username;
+        if (!username) {
+          return res
+            .status(400)
+            .json({ message: "Username is required for Club Coordinator." });
+        }
+        // 1. Find the organizational unit where the contact email matches the username
+        const orgUnit = await OrganizationalUnit.findOne({
+          "contact_info.email": username,
+        });
+
+        if (!orgUnit) {
+          return res
+            .status(404)
+            .json({
+              message: "No organizational unit found for this coordinator.",
+            });
+        }
+        // 2. Set the query to filter events by the unit's _id
+        query = { organizing_unit_id: orgUnit._id };
+        break;
+      }
+      case "GENSEC_SCITECH":
+        query = { category: "technical" };
+        break;
+
+      case "GENSEC_ACADEMIC":
+        query = { category: "academic" };
+        break;
+
+      case "GENSEC_CULTURAL":
+        query = { category: "cultural" };
+        break;
+
+      case "GENSEC_SPORTS":
+        query = { category: "sports" };
+        break;
+
+      case "PRESIDENT":
+        query = {};
+        break;
+
+      default:
+        query = { status: { $in: ["planned", "ongoing"] } };
+        break;
+    }
+
+    const events = await Event.find(query)
+      .sort({ "schedule.start": 1 })
+      .populate("organizing_unit_id")
+      .populate("organizers")
+      .populate("participants")
+      .populate("winners.user")
+      .populate("room_requests.reviewed_by");
+
+    res.status(200).json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ message: "Server error while fetching events" });
   }
 });
 
