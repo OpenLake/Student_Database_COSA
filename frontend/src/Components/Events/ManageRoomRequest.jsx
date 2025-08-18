@@ -19,7 +19,7 @@ const ManageRequestsModal = ({
     (req) => req.status !== "Pending",
   );
 
-  const { isUserLoggedIn } = React.useContext(AdminContext);
+  const { isUserLoggedIn } = useContext(AdminContext);
   const handleAction = async (requestId, status) => {
     setError("");
     try {
