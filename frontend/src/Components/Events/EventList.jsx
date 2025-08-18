@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { AdminContext } from "../../App";
 import RoomRequestModal from "./RoomRequest"; // 1. Import the modal component
-
+import ManageRequestsModal from "./ManageRoomRequest";
 const EventList = () => {
   const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
   const [events, setEvents] = useState([]);
@@ -21,6 +21,7 @@ const EventList = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null);
+  const [selectedEventForManage, setSelectedEventForManage] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -75,6 +76,13 @@ const EventList = () => {
     );
   };
 
+  const handleManageUpdate = (updatedEvent) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event._id === updatedEvent._id ? updatedEvent : event,
+      ),
+    );
+  };
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
@@ -160,7 +168,10 @@ const EventList = () => {
             <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
               Review Event
             </button>
-            <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+            <button
+              onClick={() => setSelectedEventForManage(event)}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
               Manage Requests
             </button>
           </div>
@@ -319,6 +330,16 @@ const EventList = () => {
           eventId={selectedEventId}
           onClose={handleCloseModal}
           onSubmit={handleRoomRequestSubmit}
+          API_BASE={API_BASE}
+        />
+      )}
+      {selectedEventForManage && (
+        <ManageRequestsModal
+          eventId={selectedEventForManage._id}
+          eventTitle={selectedEventForManage.title}
+          requests={selectedEventForManage.room_requests}
+          onClose={() => setSelectedEventForManage(null)}
+          onUpdateRequest={handleManageUpdate}
           API_BASE={API_BASE}
         />
       )}

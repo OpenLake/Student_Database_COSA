@@ -209,4 +209,38 @@ router.post("/:eventId/room-requests", async (req, res) => {
       .json({ message: "Server error while adding room request." });
   }
 });
+
+router.patch("/room-requests/:requestId/status", async (req, res) => {
+  const { requestId } = req.params;
+  const { status, reviewed_by } = req.body;
+  if (!status || !["Approved", "Rejected"].includes(status)) {
+    return res
+      .status(400)
+      .json({
+        message: 'A valid status ("Approved" or "Rejected") is required.',
+      });
+  }
+  try {
+    const event = await Event.findOne({ "room_requests._id": requestId });
+    if (!event) {
+      return res
+        .status(404)
+        .json({ message: "Request or associated event not found." });
+    }
+    const request = event.room_requests.id(requestId);
+    if (request) {
+      request.status = status;
+      request.requested_at = new Date();
+      request.reviewed_by = reviewed_by;
+    }
+
+    const updatedEvent = await event.save();
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    console.error(`Error updating request status to ${status}:`, error);
+    res
+      .status(500)
+      .json({ message: "Server error while updating request status." });
+  }
+});
 module.exports = router;
