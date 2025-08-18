@@ -349,6 +349,27 @@ const eventSchema = new mongoose.Schema({
     videos: [String],
     documents: [String],
   },
+  room_requests: [
+    {
+      date: { type: Date, required: true },
+      time: { type: String, required: true },
+      room: { type: String, required: true },
+      description: { type: String },
+      status: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending",
+      },
+      requested_at: {
+        type: Date,
+        default: Date.now,
+      },
+      reviewed_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,
