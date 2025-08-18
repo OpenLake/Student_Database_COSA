@@ -126,11 +126,9 @@ router.get("/by-role/:userRole", async (req, res) => {
         });
 
         if (!orgUnit) {
-          return res
-            .status(404)
-            .json({
-              message: "No organizational unit found for this coordinator.",
-            });
+          return res.status(404).json({
+            message: "No organizational unit found for this coordinator.",
+          });
         }
         // 2. Set the query to filter events by the unit's _id
         query = { organizing_unit_id: orgUnit._id };
@@ -176,4 +174,39 @@ router.get("/by-role/:userRole", async (req, res) => {
   }
 });
 
+//room request
+router.post("/:eventId/room-requests", async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { date, time, room, description } = req.body;
+    if (!date || !time || !room) {
+      return res
+        .status(400)
+        .json({ message: "Date, time, and room are required fields." });
+    }
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found." });
+    }
+    const newRoomRequest = {
+      date,
+      time,
+      room,
+      description: description || "",
+    };
+
+    event.room_requests.push(newRoomRequest);
+    const updatedEvent = await event.save();
+    res.status(201).json(updatedEvent);
+  } catch (error) {
+    console.error("Error adding room request:", error);
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid event ID format." });
+    }
+    res
+      .status(500)
+      .json({ message: "Server error while adding room request." });
+  }
+});
 module.exports = router;
