@@ -174,6 +174,7 @@ const EventList = () => {
     if (
       ![
         "PRESIDENT",
+        "CLUB_COORDINATOR",
         "GENSEC_SCITECH",
         "GENSEC_ACADEMIC",
         "GENSEC_CULTURAL",
