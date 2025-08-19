@@ -1,32 +1,349 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import EventCard from "./EventCard";
-
+import React, { useState, useEffect, useContext } from "react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
+import { AdminContext } from "../../App";
+import RoomRequestModal from "./RoomRequest"; // 1. Import the modal component
+import ManageRequestsModal from "./ManageRoomRequest";
 const EventList = () => {
-  const [events, setEvents] = useState([]);
   const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { isUserLoggedIn } = useContext(AdminContext);
+  const username = isUserLoggedIn?.username || "";
+  const userRole = isUserLoggedIn?.role || "STUDENT";
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [selectedEventForManage, setSelectedEventForManage] = useState(null);
+
   useEffect(() => {
     const fetchEvents = async () => {
+      if (!userRole) return;
       try {
-        const res = await axios.get(`${API_BASE}/api/events/events`);
-        const sorted = res.data.sort(
-          (a, b) => new Date(b.schedule?.start) - new Date(a.schedule?.start),
-        );
-        setEvents(sorted);
+        setLoading(true);
+        setError(null);
+
+        let url = `${API_BASE}/api/events/by-role/${userRole}`;
+        if (userRole === "CLUB_COORDINATOR" && username) {
+          url += `?username=${encodeURIComponent(username)}`;
+        } else if (userRole === "CLUB_COORDINATOR" && !username) {
+          throw new Error("Username is missing for Club Coordinator.");
+        }
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || `Failed to fetch events: ${response.status}`,
+          );
+        }
+        const data = await response.json();
+        setEvents(data);
       } catch (err) {
-        console.error("Error fetching events:", err);
+        setError(err.message);
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchEvents();
-  }, []);
+  }, [userRole, username, API_BASE]);
+
+  const handleOpenModal = (eventId) => {
+    setSelectedEventId(eventId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedEventId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleRoomRequestSubmit = (updatedEvent) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event._id === updatedEvent._id ? updatedEvent : event,
+      ),
+    );
+  };
+
+  const handleManageUpdate = (updatedEvent) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event._id === updatedEvent._id ? updatedEvent : event,
+      ),
+    );
+  };
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (date) => {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      planned: "bg-blue-100 text-blue-800",
+      ongoing: "bg-green-100 text-green-800",
+      completed: "bg-gray-100 text-gray-800",
+      cancelled: "bg-red-100 text-red-800",
+    };
+    return colors[status] || "bg-gray-100 text-gray-800";
+  };
+
+  const getRoomRequestStatusIcon = (status) => {
+    switch (status) {
+      case "Approved":
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case "Rejected":
+        return <XCircle className="w-4 h-4 text-red-600" />;
+      default:
+        return <AlertCircle className="w-4 h-4 text-yellow-600" />;
+    }
+  };
+
+  const canRequestRoom = () => {
+    return [
+      "CLUB_COORDINATOR",
+      "GENSEC_SCITECH",
+      "GENSEC_ACADEMIC",
+      "GENSEC_CULTURAL",
+      "GENSEC_SPORTS",
+    ].includes(userRole);
+  };
+
+  const renderActionButtons = (event) => {
+    switch (userRole) {
+      case "STUDENT":
+        return (
+          <div className="flex gap-2">
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              Register
+            </button>
+            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+              View Details
+            </button>
+          </div>
+        );
+      case "CLUB_COORDINATOR":
+      case "GENSEC_SCITECH":
+      case "GENSEC_ACADEMIC":
+      case "GENSEC_CULTURAL":
+      case "GENSEC_SPORTS":
+        return (
+          <div className="flex flex-wrap gap-2">
+            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+              Manage Event
+            </button>
+            {canRequestRoom() && (
+              <button
+                className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
+                onClick={() => handleOpenModal(event._id)} // 4. Connect button to open the modal
+              >
+                Request Room
+              </button>
+            )}
+          </div>
+        );
+      case "PRESIDENT":
+        return (
+          <div className="flex gap-2">
+            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+              Review Event
+            </button>
+            <button
+              onClick={() => setSelectedEventForManage(event)}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              Manage Requests
+            </button>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderRoomRequests = (event) => {
+    if (
+      ![
+        "PRESIDENT",
+        "CLUB_COORDINATOR",
+        "GENSEC_SCITECH",
+        "GENSEC_ACADEMIC",
+        "GENSEC_CULTURAL",
+        "GENSEC_SPORTS",
+      ].includes(userRole) ||
+      !event.room_requests?.length
+    ) {
+      return null;
+    }
+
+    return (
+      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+        <h4 className="font-medium text-sm text-gray-900 mb-2">
+          Room Requests
+        </h4>
+        <div className="space-y-2">
+          {event.room_requests.map((request, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between text-sm"
+            >
+              <div className="flex items-center gap-2">
+                {getRoomRequestStatusIcon(request.status)}
+                <span>{request.room}</span>
+                <span className="text-gray-500">
+                  {formatDate(request.date)} at {request.time}
+                </span>
+              </div>
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${
+                  request.status === "Approved"
+                    ? "bg-green-100 text-green-800"
+                    : request.status === "Rejected"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                }`}
+              >
+                {request.status}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+        <AlertCircle className="w-6 h-6 text-red-600 mx-auto mb-2" />
+        <p className="text-red-700">Error loading events: {error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">All Events</h1>
-      {events.map((event) => (
-        <EventCard key={event._id} event={event} />
-      ))}
-    </div>
+    <>
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Header */}
+        <div className="mb-4">
+          <p>Events at IIT Bhilai</p>
+        </div>
+
+        {/* Events Grid */}
+        {events.length === 0 ? (
+          <div className="text-center py-12">
+            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No events found
+            </h3>
+            <p className="text-gray-600">
+              There are no events to display for your role.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event) => (
+              <div
+                key={event._id}
+                className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg flex flex-col"
+              >
+                <div className="p-6 flex-grow">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">
+                      {event.title}
+                    </h3>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(event.status)}`}
+                    >
+                      {event.status}
+                    </span>
+                  </div>
+
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {event.description}
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    {event.schedule?.start && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        <span>{formatDate(event.schedule.start)}</span>
+                      </div>
+                    )}
+                    {event.schedule?.start && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Clock className="w-4 h-4 mr-2" />
+                        <span>{formatTime(event.schedule.start)}</span>
+                      </div>
+                    )}
+                    {event.schedule?.venue && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 mr-2" />
+                        <span>{event.schedule.venue}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {renderRoomRequests(event)}
+                </div>
+
+                <div className="p-6 pt-4 border-t border-gray-200 bg-gray-50">
+                  {renderActionButtons(event)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/*Conditionally render the modal */}
+      {isModalOpen && (
+        <RoomRequestModal
+          eventId={selectedEventId}
+          onClose={handleCloseModal}
+          onSubmit={handleRoomRequestSubmit}
+          API_BASE={API_BASE}
+        />
+      )}
+      {selectedEventForManage && (
+        <ManageRequestsModal
+          eventId={selectedEventForManage._id}
+          eventTitle={selectedEventForManage.title}
+          requests={selectedEventForManage.room_requests}
+          onClose={() => setSelectedEventForManage(null)}
+          onUpdateRequest={handleManageUpdate}
+          API_BASE={API_BASE}
+        />
+      )}
+    </>
   );
 };
 
