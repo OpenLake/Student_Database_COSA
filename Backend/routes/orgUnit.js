@@ -1,6 +1,7 @@
 // routes/club.js
 const express = require("express");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
 const {
   OrganizationalUnit,
   Event,
@@ -66,4 +67,90 @@ router.get("/clubData/:email", async (req, res) => {
   }
 });
 
+// Fetches all units, or filters by category if provided in the query.
+router.get("/organizational-units", async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    const filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+    const units = await OrganizationalUnit.find(filter, "_id name type").sort({
+      name: 1,
+    });
+    res.status(200).json(units);
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: "Server error while fetching organizational units",
+        error,
+      });
+  }
+});
+
+// Create a new organizational unit
+router.post("/create", async (req, res) => {
+  try {
+    const {
+      name,
+      type,
+      description,
+      parent_unit_id,
+      hierarchy_level,
+      category,
+      is_active,
+      contact_info,
+      budget_info,
+    } = req.body;
+
+    if (!name || !type || !category || !hierarchy_level) {
+      return res.status(400).json({
+        message:
+          "Validation failed: name, type, category, and hierarchy_level are required.",
+      });
+    }
+
+    const newUnitData = {
+      unit_id: `org-${uuidv4()}`,
+      name,
+      type,
+      description,
+      parent_unit_id: parent_unit_id || null,
+      hierarchy_level,
+      category,
+      is_active,
+      contact_info,
+      budget_info,
+    };
+
+    const newUnit = new OrganizationalUnit(newUnitData);
+    await newUnit.save();
+
+    res.status(201).json(newUnit);
+  } catch (error) {
+    console.error("Error creating organizational unit:", error);
+
+    if (error.name === "ValidationError" || error.name === "CastError") {
+      return res
+        .status(400)
+        .json({ message: `Invalid data provided: ${error.message}` });
+    }
+
+    if (error.code === 11000) {
+      return res
+        .status(409)
+        .json({
+          message:
+            "Conflict: An organizational unit with this name or ID already exists.",
+        });
+    }
+
+    res
+      .status(500)
+      .json({ message: "Server error while creating organizational unit." });
+  }
+});
 module.exports = router;

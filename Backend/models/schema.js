@@ -130,9 +130,18 @@ const organizationalUnitSchema = new mongoose.Schema({
     email: {
       type: String,
     },
-    social_media: {
-      type: Object,
-    },
+    social_media: [
+      {
+        platform: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   budget_info: {
     allocated_budget: {
