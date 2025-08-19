@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-//const Event = require("../models/Event");
-const RoomRequest = require("../models/RoomRequest");
 
 router.get("/", (req, res) => {
   res.json({
@@ -19,47 +17,12 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/room/request", async (req, res) => {
-  try {
-    const request = new RoomRequest(req.body);
-    await request.save();
-    res.send({ message: "Request submitted", request });
-  } catch (error) {
-    res.status(500).send({ error: "Error submitting request" });
-  }
-});
-
-// View all booking requests
-router.get("/room/requests", async (req, res) => {
-  try {
-    const requests = await RoomRequest.find();
-    res.send(requests);
-  } catch (error) {
-    res.status(500).send({ error: "Error fetching requests" });
-  }
-});
-
 // Update request status
-const authenticatePresident = (req, res, next) => {
-  // if (req.user.role !== "president") {
-  //   return res.status(403).send({ message: "Unauthorized" });
-  // }
-  next();
-};
-
-router.put(
-  "/room/request/:id/status",
-  authenticatePresident,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-      await RoomRequest.findByIdAndUpdate(id, { status });
-      res.send({ message: "Status updated" });
-    } catch (error) {
-      res.status(500).send({ error: "Error updating status" });
-    }
-  },
-);
+// const authenticatePresident = (req, res, next) => {
+//   // if (req.user.role !== "president") {
+//   //   return res.status(403).send({ message: "Unauthorized" });
+//   // }
+//   next();
+// };
 
 module.exports = router;
