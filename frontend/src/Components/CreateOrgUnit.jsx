@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AlertCircle, Building2, Mail, DollarSign, Users } from "lucide-react";
 import { AdminContext } from "../App";
 const CreateOrgUnit = () => {
+  const navigate = useNavigate();
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const userRole = isUserLoggedIn ? isUserLoggedIn.role : "PRESIDENT";
   const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -117,21 +119,13 @@ const CreateOrgUnit = () => {
   };
 
   const updateSocialMediaField = (index, field, value) => {
-    // 1. Create a new copy of the social media fields array
     const updatedFields = [...socialMediaFields];
-
-    // 2. Update the specific platform or url value
     updatedFields[index][field] = value;
-
-    // 3. Set the state for the input fields
     setSocialMediaFields(updatedFields);
-
-    // 4. Filter out any pairs that are not fully filled out
     const validSocialMediaArray = updatedFields.filter(
       (field) => field.platform.trim() && field.url.trim(),
     );
 
-    // 5. Update formData with the CORRECT data shape (an array of objects)
     setFormData((prev) => ({
       ...prev,
       contact_info: {
@@ -516,6 +510,7 @@ const CreateOrgUnit = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => navigate(-1)}
                   className="px-8 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200"
                 >
                   Cancel
