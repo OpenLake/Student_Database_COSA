@@ -29,6 +29,7 @@ import ManagePositions from "./Components/ManagePosition";
 import ViewAchievements from "./Components/ViewAchievements";
 import Home from "./Components/Student_Page/Home";
 import ClubDashboard from "./Components/Club_Coordinator/ClubCoorinatorDashboard";
+import CreateOrgUnit from "./Components/CreateOrgUnit";
 const ALL_ADMIN_ROLES = [
   "GENSEC_SCITECH",
   "GENSEC_ACADEMIC",
@@ -208,6 +209,14 @@ function App() {
             element={
               <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
                 <ViewTenure />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-org-unit"
+            element={
+              <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+                <CreateOrgUnit />
               </RoleProtectedRoute>
             }
           />
