@@ -112,6 +112,7 @@ Student_Database_COSA/
 This project is maintained by:
 
 - [@Jagath-P](https://github.com/Jagath-P)
+- [@Khushagra30](https://github.com/Khushagra30)
 
 ---
 
