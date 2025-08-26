@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 import { Button, Form, FormGroup, Label, Input, Container } from "reactstrap";
 import GoogleIcon from "@mui/icons-material/Google";
 import { registerUser } from "../../services/auth";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 import EventForm from "../Events/EventForm";
 import ViewFeedback from "../Feedback/ViewFeedback";
 import AchievementsEndorsementTab from "../GenSec/AchievementsEndorsementTab";

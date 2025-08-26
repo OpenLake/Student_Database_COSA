@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Building2, Mail, DollarSign, Users } from "lucide-react";
-import { AdminContext } from "../App";
+import { AdminContext } from "../context/AdminContext";
 const CreateOrgUnit = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn } = React.useContext(AdminContext);

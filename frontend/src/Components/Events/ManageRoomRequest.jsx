@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { X as CloseIcon, ThumbsUp, ThumbsDown } from "lucide-react";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 const ManageRequestsModal = ({
   eventId,
   eventTitle,

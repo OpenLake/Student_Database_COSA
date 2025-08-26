@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AdminContext } from "../App.js"; // or wherever you defined AdminContext
+import { AdminContext } from "../context/AdminContext";
 
 const RoleProtectedRoute = ({ children, allowedRoles }) => {
   const { isUserLoggedIn, userRole } = useContext(AdminContext);
