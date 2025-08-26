@@ -3,7 +3,7 @@ const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
 //const { User } = require("./student");
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const getRole = require("../Middlewares/getRole");
+const getRole = require("../middlewares/getRole");
 const { User } = require("./schema");
 // Local Strategy
 passport.use(

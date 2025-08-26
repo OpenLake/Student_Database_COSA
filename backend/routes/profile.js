@@ -1,7 +1,7 @@
 // routes/profilePhoto.js
 const express = require("express");
 const router = express.Router();
-const upload = require("../Middlewares/upload");
+const upload = require("../middlewares/upload");
 const cloudinary = require("cloudinary").v2;
 //const { Student } = require("../models/student");
 const { User } = require("../models/schema");
