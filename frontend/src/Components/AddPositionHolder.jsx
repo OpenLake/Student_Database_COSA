@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserCheck, Calendar, BarChart3, Settings } from "lucide-react";
 import axios from "axios";
-import { AdminContext } from "../App";
+import { AdminContext } from "../context/AdminContext";
 const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const AddPositionHolder = ({ onClose }) => {
   const { isUserLoggedIn } = React.useContext(AdminContext);

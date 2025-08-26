@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { getConfigByRole, endorsementTabs } from "../../config/endorseConfig";
 import SkillsEndorsementTab from "./SkillsEndorsementTab";
 import AchievementsEndorsementTab from "./AchievementsEndorsementTab";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import classNames from "classnames";
-import { AdminContext } from "../../App"; // adjust path as needed
+import { AdminContext } from "../../context/AdminContext"; // adjust path as needed
 import ExpandableText from "./ExpandableText";
 const feedbackTypes = [
   "All",

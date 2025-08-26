@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { AdminContext } from "../App";
+import { AdminContext } from "../context/AdminContext";
 import {
   Plus,
   X,

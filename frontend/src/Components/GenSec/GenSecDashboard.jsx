@@ -1,10 +1,10 @@
-// src/components/GenSecDashboard.jsx
+// src/Components/GenSecDashboard.jsx
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, Settings, LogOut, ChevronRight } from "lucide-react";
 import { GENSEC_CONFIGS } from "../../config/gensecConfig";
 import { logoutUser } from "../../services/auth";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 
 const GenSecDashboard = ({ role }) => {
   const config = GENSEC_CONFIGS[role];

@@ -7,7 +7,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 import RoomRequestModal from "./RoomRequest"; // 1. Import the modal component
 import ManageRequestsModal from "./ManageRoomRequest";
 const EventList = () => {

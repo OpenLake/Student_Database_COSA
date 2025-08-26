@@ -20,7 +20,7 @@ import {
   Users,
 } from "lucide-react";
 import { fetchCredentials } from "../../services/auth";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 import ProfilePhoto from "./ProfilePhoto";
 
 // --- Validation helpers ---

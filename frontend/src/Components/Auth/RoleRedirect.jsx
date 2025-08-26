@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AdminContext } from "../../App.js";
+import { AdminContext } from "../../context/AdminContext";
 
 const RoleRedirect = () => {
   const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } =

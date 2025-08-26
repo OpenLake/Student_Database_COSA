@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { format } from "date-fns";
-import { AdminContext } from "../../App";
+import { AdminContext } from "../../context/AdminContext";
 
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";

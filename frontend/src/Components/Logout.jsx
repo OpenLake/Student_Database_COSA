@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../services/auth";
-import { AdminContext } from "../App";
+import { AdminContext } from "../context/AdminContext";
 
 const Logout = () => {
   const navigate = useNavigate();
