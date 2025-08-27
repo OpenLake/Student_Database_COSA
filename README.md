@@ -49,9 +49,9 @@ cd Student_Database_COSA
 
 ### 2. Backend Setup
 
-- Navigate to the `Backend` directory:
+- Navigate to the `backend` directory:
   ```bash
-  cd Backend
+  cd backend
   ```
 - Install the necessary packages:
   ```bash
@@ -86,7 +86,7 @@ Now, you should be able to access the frontend at `http://localhost:3000` and th
 ```
 Student_Database_COSA/
 │
-├── Backend/               # Node.js backend
+├── backend/               # Node.js backend
 │   ├── controllers/       # API route controllers
 │   ├── models/            # Database models (MongoDB schemas)
 │   ├── routes/            # API routes
