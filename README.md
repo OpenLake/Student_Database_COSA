@@ -10,6 +10,7 @@ A comprehensive platform for managing student data within CoSA, including detail
   <img src="https://img.shields.io/badge/Maintainers-2-yellow.svg" alt="Contributors">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
 </p>
+<img width="1071" height="752" alt="image" src="https://github.com/user-attachments/assets/bcd44ac4-4a52-409c-86eb-bb77f0058316" />
 
 ---
 
