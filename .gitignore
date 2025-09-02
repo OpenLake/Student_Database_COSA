@@ -34,7 +34,5 @@ yarn-error.log*
 frontend/.env
 backend/.env
 
-package.json
-package-lock.json
 node_modules
 .history
