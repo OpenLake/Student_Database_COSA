@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
-
+import api from "../../utils/api";
 const EventForm = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -43,13 +43,12 @@ const EventForm = () => {
 
   const [units, setUnits] = useState([]);
   const [users, setUsers] = useState([]);
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
   useEffect(() => {
     const fetchData = async () => {
       const [unitsRes, usersRes] = await Promise.all([
-        axios.get(`${API_BASE}/api/events/units`),
-        axios.get(`${API_BASE}/api/events/users`),
+        api.get(`/api/events/units`),
+        api.get(`/api/events/users`),
       ]);
 
       setUnits(unitsRes.data);
@@ -174,7 +173,7 @@ const EventForm = () => {
     };
 
     try {
-      await axios.post(`${API_BASE}/api/events/create`, finalPayload);
+      await api.post(`/api/events/create`, finalPayload);
       alert("✅ Event created successfully!");
     } catch (err) {
       console.error(err);

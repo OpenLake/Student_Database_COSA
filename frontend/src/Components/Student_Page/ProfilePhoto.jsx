@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import api from "../../utils/api";
 const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
   const [preview, setPreview] = useState(profilePic);
   const [loading, setLoading] = useState(false);
@@ -16,21 +16,12 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
     formData.append("ID_No", ID_No);
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/profile/photo-update`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      const res = await api.post(`/profile/photo-update`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setPreview(data.profilePic);
-        onPhotoUpdate(data.profilePic);
-      } else {
-        console.error("Upload failed");
-      }
+      setPreview(res.data.profilePic);
+      onPhotoUpdate(res.data.profilePic);
     } catch (err) {
       console.error("Error uploading file:", err);
     } finally {
@@ -43,20 +34,11 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/profile/photo-delete?ID_No=${ID_No}`,
-        {
-          method: "DELETE",
-        },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setPreview(data.profilePic);
-        onPhotoUpdate(data.profilePic);
-      } else {
-        console.error("Delete failed");
-      }
+      const res = await api.delete(`/profile/photo-delete`, {
+        params: { ID_No },
+      });
+      setPreview(res.data.profilePic);
+      onPhotoUpdate(res.data.profilePic);
     } catch (err) {
       console.error("Error deleting file:", err);
     } finally {

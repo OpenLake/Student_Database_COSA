@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { X as CloseIcon, ThumbsUp, ThumbsDown } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
+import api from "../../utils/api";
 const ManageRequestsModal = ({
   eventId,
   eventTitle,
   requests,
   onClose,
   onUpdateRequest,
-  API_BASE,
 }) => {
   const [error, setError] = useState("");
   const [localRequests, setLocalRequests] = useState(requests || []);
@@ -23,26 +23,15 @@ const ManageRequestsModal = ({
   const handleAction = async (requestId, status) => {
     setError("");
     try {
-      const response = await fetch(
-        `${API_BASE}/api/events/room-requests/${requestId}/status`,
+      const res = await api.patch(
+        `/api/events/room-requests/${requestId}/status`,
         {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(
-            { status },
-            { reviewed_by: isUserLoggedIn ? isUserLoggedIn._id : null },
-          ),
+          status,
+          reviewed_by: isUserLoggedIn ? isUserLoggedIn._id : null,
         },
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Failed to ${status} request.`);
-      }
-
-      const updatedEvent = await response.json();
+      const updatedEvent = res.data;
 
       // Update the local state to reflect the change immediately
       setLocalRequests(updatedEvent.room_requests);
@@ -50,7 +39,10 @@ const ManageRequestsModal = ({
       // Notify the parent EventList component of the change
       onUpdateRequest(updatedEvent);
     } catch (err) {
-      setError(err.message);
+      const message =
+        err.response?.data?.message || `Failed to ${status} request.`;
+      setError(message);
+      console.error("Error in handling action:", err);
     }
   };
 

@@ -106,7 +106,7 @@ router.post("/create", async (req, res) => {
       budget_info,
     } = req.body;
 
-    if (!name || !type || !category || !hierarchy_level) {
+    if (!name || !type || !category || !hierarchy_level ||!contact_info.email) {
       return res.status(400).json({
         message:
           "Validation failed: name, type, category, and hierarchy_level are required.",

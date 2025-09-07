@@ -22,7 +22,7 @@ import {
 import { fetchCredentials } from "../../services/auth";
 import { AdminContext } from "../../context/AdminContext";
 import ProfilePhoto from "./ProfilePhoto";
-
+import api from "../../utils/api";
 // --- Validation helpers ---
 const validateMobile = (number) => /^[0-9]{10}$/.test(number);
 const validateUrl = (url) =>
@@ -214,31 +214,17 @@ const StudentProfile = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/profile/updateStudentProfile`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: profile.user_id,
-            updatedDetails: {
-              personal_info: editedProfile.personal_info,
-              academic_info: editedProfile.academic_info,
-              contact_info: editedProfile.contact_info,
-            },
-          }),
-          credentials: "include",
+      const res = await api.put(`/profile/updateStudentProfile`, {
+        userId: profile.user_id,
+        updatedDetails: {
+          personal_info: editedProfile.personal_info,
+          academic_info: editedProfile.academic_info,
+          contact_info: editedProfile.contact_info,
         },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data.updatedStudent);
-        setIsEditing(false);
-        setToast({ message: "Profile updated successfully!", type: "success" });
-      } else {
-        throw new Error("Update failed");
-      }
+      });
+      setProfile(res.data.updatedStudent);
+      setIsEditing(false);
+      setToast({ message: "Profile updated successfully!", type: "success" });
     } catch (error) {
       setToast({ message: "Failed to update profile", type: "error" });
     } finally {

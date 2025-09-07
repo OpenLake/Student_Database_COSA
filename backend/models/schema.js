@@ -99,6 +99,7 @@ const organizationalUnitSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   type: {
     type: String,
@@ -129,6 +130,8 @@ const organizationalUnitSchema = new mongoose.Schema({
   contact_info: {
     email: {
       type: String,
+      required: true,
+      unique: true,
     },
     social_media: [
       {
@@ -592,8 +595,7 @@ const PositionHolder = mongoose.model("Position_Holder", positionHolderSchema);
 const Position = mongoose.model("Position", positionSchema);
 const OrganizationalUnit = mongoose.model(
   "Organizational_Unit",
-  organizationalUnitSchema,
-);
+  organizationalUnitSchema,);
 
 module.exports = {
   User,

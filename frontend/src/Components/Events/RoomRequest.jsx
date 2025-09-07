@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-const RoomRequestModal = ({ eventId, onClose, onSubmit, API_BASE }) => {
+import api from "../../utils/api";
+const RoomRequestModal = ({ eventId, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     date: "",
     time: "",
@@ -21,26 +22,17 @@ const RoomRequestModal = ({ eventId, onClose, onSubmit, API_BASE }) => {
     setSubmitting(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE}/api/events/${eventId}/room-requests`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        },
+      const response = await api.post(
+        `/api/events/${eventId}/room-requests`,
+        formData,
       );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to submit request.");
-      }
-      const updatedEvent = await response.json();
+      const updatedEvent = await response.data;
       onSubmit(updatedEvent);
       onClose();
     } catch (err) {
-      setError(err.message);
+      const message =
+        err.response?.data?.message || "Failed to submit room request.";
+      setError(message);
     } finally {
       setSubmitting(false);
     }

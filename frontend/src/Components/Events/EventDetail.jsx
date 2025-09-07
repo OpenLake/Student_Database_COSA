@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
-
+import api from "../../utils/api";
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/events/${id}`);
+        const res = await api.get(`/api/events/${id}`);
         setEvent(res.data);
       } catch (err) {
-        console.error("Error fetching event:", err);
+        console.error(
+          "Error fetching event:",
+          err.response?.data || err.message,
+        );
       }
     };
     fetchEvent();
   }, [id]);
 
-  if (!event) return <div className="text-center mt-10">Loading...</div>;
+  if (!event) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4">

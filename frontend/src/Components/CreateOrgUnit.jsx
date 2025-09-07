@@ -173,13 +173,23 @@ const CreateOrgUnit = () => {
     setIsSubmitting(true);
     setErrors((prev) => ({ ...prev, submit: "" }));
 
+    const validSocialMedia = socialMediaFields.filter(
+      (field) => field.platform.trim() && field.url.trim(),
+    );
+    const dataToSubmit = {
+      ...formData,
+      contact_info: {
+        ...formData.contact_info,
+        social_media: validSocialMedia,
+      },
+    };
     try {
       const response = await fetch(`${API_BASE}/api/orgUnit/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (!response.ok) {

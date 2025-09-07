@@ -10,9 +10,7 @@ import {
   Calendar,
   MapPin,
 } from "lucide-react";
-
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+import api from "../../utils/api";
 const ViewPosition = () => {
   const [positions, setPositions] = useState([]);
   const [filteredPositions, setFilteredPositions] = useState([]);
@@ -25,10 +23,9 @@ const ViewPosition = () => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/positions/get-all`);
-        const data = await response.json();
-        setPositions(data);
-        setFilteredPositions(data);
+        const res = await api.get(`/api/positions/get-all`);
+        setPositions(res.data);
+        setFilteredPositions(res.data);
       } catch (error) {
         console.error("Error fetching positions:", error);
       }

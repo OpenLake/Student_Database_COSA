@@ -3,7 +3,9 @@ import React, { useState } from "react";
 const ExpandableText = ({ text = "", limit = 200 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
 
   const isLong = text.length > limit;
   const displayText = expanded || !isLong ? text : text.slice(0, limit) + "...";

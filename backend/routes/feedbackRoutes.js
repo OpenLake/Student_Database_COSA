@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const {
   User,
   Feedback,
@@ -79,7 +80,7 @@ router.get("/get-targetid", async (req, res) => {
   }
 });
 
-router.get("/view-feedback", async (req, res) => {
+router.get("/view-feedback",isAuthenticated, async (req, res) => {
   try {
     const feedback = await Feedback.find()
       .populate("feedback_by", "personal_info.name username")

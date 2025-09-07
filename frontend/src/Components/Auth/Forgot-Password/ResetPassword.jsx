@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from "../../../utils/api";
 
 const ResetPassword = () => {
   const { id, token } = useParams();
@@ -15,16 +16,16 @@ const ResetPassword = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const res = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/auth/reset-password/${id}/${token}`,
-        );
-        const data = await res.json();
-        if (res.ok) {
+        const res = await api.get(`/auth/reset-password/${id}/${token}`);
+        if (res.status === 200) {
           setIsTokenValid(true);
+          toast.info(res.data.message || "Token verification result.");
         }
-        toast.info(data.message || "Token verification result.");
       } catch (error) {
-        toast.error("Error verifying token.");
+        const message =
+          error.response?.data?.message || "Error verifying token.";
+        toast.error(message);
+        setIsTokenValid(false);
       }
     };
     verifyToken();
@@ -35,28 +36,18 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/auth/reset-password/${id}/${token}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
-        },
+      const res = await api.post(`/auth/reset-password/${id}/${token}`, {
+        password,
+      });
+      toast.success(
+        res.data.message ||
+          "Password reset successfully! Naviagting to login page...",
       );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(
-          data.message ||
-            "Password reset successful! Navigating to login page...",
-        );
-        setTimeout(() => navigate("/login"), 2000);
-      } else {
-        toast.error(data.message || "Error resetting password.");
-      }
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
-      toast.error("Something went wrong.");
+      const message =
+        error.response?.data?.message || "Error resetting password.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

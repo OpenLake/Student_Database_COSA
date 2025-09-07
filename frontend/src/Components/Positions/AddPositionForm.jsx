@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, X, FileText, Users, BookOpen } from "lucide-react";
-import axios from "axios";
-
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+import api from "../../utils/api";
 const AddPositionForm = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -25,11 +22,10 @@ const AddPositionForm = () => {
   const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Mock organizational units - replace with actual API call
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/events/units`); // update path if needed
+        const res = await api.get(`/api/events/units`);
         setUnits(res.data);
       } catch (error) {
         console.error("Failed to fetch organizational units:", error);
@@ -191,10 +187,7 @@ const AddPositionForm = () => {
       };
 
       try {
-        const res = await axios.post(
-          `${API_BASE_URL}/api/positions/add-position`,
-          cleanedData,
-        ); // Adjust path if needed
+        const res = await api.post(`/api/positions/add-position`, cleanedData);
         console.log("Position created:", res.data);
         alert("Position created successfully!");
 
@@ -214,8 +207,11 @@ const AddPositionForm = () => {
           position_count: 1,
         });
       } catch (error) {
-        console.error("Error creating position:", error);
-        alert("Failed to create position. Please try again.");
+        const message =
+          error.response?.data?.message ||
+          "Failed to create position. Please try again.";
+        console.error("Error creating position:", message);
+        alert(message);
       }
     }
   };
