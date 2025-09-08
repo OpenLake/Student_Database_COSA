@@ -1,121 +1,59 @@
 import axios from "axios";
-
+import api from "../utils/api";
 export async function fetchCredentials() {
-  const response = await axios.get(
-    `${process.env.REACT_APP_BACKEND_URL}/auth/fetchAuth`,
-    {
-      withCredentials: true,
-    },
-  );
+  const response = await api.get(`/auth/fetchAuth`);
   return response.data;
 }
 
 export async function completeOnboarding(userData) {
-  const response = await axios.post(
-    `${process.env.REACT_APP_BACKEND_URL}/onboarding`,
-    userData,
-    { withCredentials: true },
-  );
+  const response = await api.post(`/onboarding`, userData);
   return response.data;
 }
 export async function registerUser(name, ID, email, password) {
-  const data = JSON.stringify({
-    name: name,
-    ID: ID,
-    email: email,
-    password: password,
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    data: data,
-  };
-
   try {
-    const response = await axios.request(config);
-
-    if (response.status === 200) {
-      return response.data.user;
-    } else {
-      return null;
-    }
+    const response = await api.post(`/auth/register`, {
+      name,
+      ID,
+      email,
+      password,
+    });
+    return response.data.user || null;
   } catch (error) {
     return null;
   }
 }
 
 export async function loginUser(email, password) {
-  const data = JSON.stringify({
-    email: email,
-    password: password,
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    data: data,
-  };
-
   try {
-    const response = await axios.request(config);
-
-    if (response.status === 200) {
-      return response.data.user;
-    } else {
-      return null;
-    }
+    const res = await api.post("/auth/login", { email, password });
+    return res.data.user || null;
   } catch (error) {
+    console.error("Login failed:", error.response?.data || error.message);
     return null;
   }
 }
 
 export async function registerStudentId(id, ID_No) {
-  const data = JSON.stringify({
-    token: id,
-    ID_No: ID_No,
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: `${process.env.REACT_APP_BACKEND_URL}/auth/google/register`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    data: data,
-  };
-
   try {
-    const response = await axios.request(config);
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      return null;
-    }
+    const res = await api.post("/auth/google/register", {
+      token: id,
+      ID_No,
+    });
+    return res.data || null;
   } catch (error) {
-    console.error("Error registering student ID:", error);
+    console.error(
+      "Error registering student ID:",
+      error.response?.data || error.message,
+    );
     return null;
   }
 }
-
 export async function logoutUser() {
-  await axios.post(
-    `${process.env.REACT_APP_BACKEND_URL}/auth/logout`,
-    {},
-    { withCredentials: true },
-  );
-  return;
+  try {
+    await api.post("/auth/logout");
+    return true;
+  } catch (error) {
+    console.error("Logout failed:", error.response?.data || error.message);
+    return false;
+  }
 }

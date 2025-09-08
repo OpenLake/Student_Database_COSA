@@ -11,10 +11,8 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import axios from "axios";
+import api from "../utils/api";
 import { AdminContext } from "../context/AdminContext";
-
-const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 const ViewAchievements = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
@@ -33,8 +31,8 @@ const ViewAchievements = () => {
     const fetchMyAchievements = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${API_BASE}/api/achievements/${isUserLoggedIn._id}`,
+        const response = await api.get(
+          `/api/achievements/${isUserLoggedIn._id}`,
         );
         setAchievements(response.data);
         setFilteredAchievements(response.data);

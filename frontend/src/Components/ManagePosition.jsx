@@ -7,11 +7,9 @@ import {
   Filter,
   Search,
 } from "lucide-react";
-import axios from "axios";
+import api from "../utils/api";
 import { AdminContext } from "../context/AdminContext";
 import AddPositionHolder from "./AddPositionHolder";
-const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-
 const ManagePositions = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [positions, setPositions] = useState([]);
@@ -30,9 +28,7 @@ const ManagePositions = () => {
       try {
         setLoading(true);
         // Assuming you have an API endpoint to fetch positions by user_id
-        const response = await axios.get(
-          `${API_BASE}/api/positions/${isUserLoggedIn._id}`,
-        );
+        const response = await api.get(`/api/positions/${isUserLoggedIn._id}`);
         setPositions(response.data);
         setFilteredPositions(response.data);
       } catch (error) {
