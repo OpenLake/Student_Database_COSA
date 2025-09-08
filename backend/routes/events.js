@@ -3,9 +3,12 @@ const express = require("express");
 const router = express.Router();
 const { Event, User, OrganizationalUnit } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
+const isAuthenticated= require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
+const {ROLE_GROUPS} = require("../utils/roles");
 
-// Create a new event
-router.post("/create", async (req, res) => {
+// Create a new event (new events can be created by admins only)
+router.post("/create",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   try {
     const {
       title,
@@ -22,7 +25,7 @@ router.post("/create", async (req, res) => {
     // Validate organizing unit
     const orgUnit = await OrganizationalUnit.findById(organizing_unit_id);
     if (!orgUnit)
-      return res.status(400).json({ message: "Invalid organizational unit." });
+     { return res.status(400).json({ message: "Invalid organizational unit." });}
 
     // Optional: Validate organizer IDs
     if (organizers && organizers.length > 0) {
@@ -58,7 +61,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// GET all events
+// GET all events (for all users: logged in or not logged in)
 router.get("/events", async (req, res) => {
   try {
     const events = await Event.find().populate("organizing_unit_id", "name");
@@ -69,7 +72,7 @@ router.get("/events", async (req, res) => {
   }
 });
 
-router.get("/units", async (req, res) => {
+router.get("/units", isAuthenticated, async (req, res) => {
   try {
     const units = await OrganizationalUnit.find();
     res.json(units);
@@ -79,7 +82,7 @@ router.get("/units", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
+router.get("/users",isAuthenticated, async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -102,7 +105,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/by-role/:userRole", async (req, res) => {
+router.get("/by-role/:userRole",isAuthenticated, async (req, res) => {
   const userRole = req.params.userRole;
   try {
     let query = {};
@@ -175,7 +178,7 @@ router.get("/by-role/:userRole", async (req, res) => {
 });
 
 //room request
-router.post("/:eventId/room-requests", async (req, res) => {
+router.post("/:eventId/room-requests",isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS,...ROLE_GROUPS.COORDINATORS]), async (req, res) => {
   try {
     const { eventId } = req.params;
     const { date, time, room, description } = req.body;
@@ -210,7 +213,7 @@ router.post("/:eventId/room-requests", async (req, res) => {
   }
 });
 
-router.patch("/room-requests/:requestId/status", async (req, res) => {
+router.patch("/room-requests/:requestId/status",isAuthenticated,authorizeRole("PRESIDENT"), async (req, res) => {
   const { requestId } = req.params;
   const { status, reviewed_by } = req.body;
   if (!status || !["Approved", "Rejected"].includes(status)) {

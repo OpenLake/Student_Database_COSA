@@ -30,11 +30,13 @@ export default function AchievementForm() {
       try {
         const response = await api.get("/api/events/events");
         setEvents(response.data);
+        console.log("Events:", response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
         setEvents([]);
       }
     };
+    fetchEvents();
   }, []);
 
   const types = ["academic", "cultural", "sports", "technical", "other"];
