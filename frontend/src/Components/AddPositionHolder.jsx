@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserCheck, Calendar, BarChart3, Settings } from "lucide-react";
-import axios from "axios";
 import { AdminContext } from "../context/AdminContext";
-const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+import api from "../utils/api";
 const AddPositionHolder = ({ onClose }) => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [formData, setFormData] = useState({
@@ -40,14 +39,12 @@ const AddPositionHolder = ({ onClose }) => {
     const fetchData = async () => {
       try {
         // Fetch all users
-        const usersRes = await axios.get(`${API_BASE}/api/events/users`);
+        const usersRes = await api.get(`/api/events/users`);
         setUsers(usersRes.data);
         setAppointingUsers(usersRes.data);
 
         // Fetch all positions
-        const positionsRes = await axios.get(
-          `${API_BASE}/api/positions/get-all`,
-        );
+        const positionsRes = await api.get(`/api/positions/get-all`);
         setPositions(positionsRes.data);
         console.log("Positions:", positionsRes.data);
       } catch (error) {
@@ -182,8 +179,8 @@ const AddPositionHolder = ({ onClose }) => {
       };
       console.log("Cleaned data:", cleanedData);
       try {
-        const response = await axios.post(
-          `${API_BASE}/api/positions/add-position-holder`,
+        const response = await api.post(
+          `/api/positions/add-position-holder`,
           cleanedData,
         );
         console.log("Position Holder form submitted:", response.data);

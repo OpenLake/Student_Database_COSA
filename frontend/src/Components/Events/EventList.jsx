@@ -8,10 +8,10 @@ import {
   XCircle,
 } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
-import RoomRequestModal from "./RoomRequest"; // 1. Import the modal component
+import RoomRequestModal from "./RoomRequest";
 import ManageRequestsModal from "./ManageRoomRequest";
+import api from "../../utils/api";
 const EventList = () => {
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,38 +25,34 @@ const EventList = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      if (!userRole) return;
+      if (!userRole) {
+        return;
+      }
       try {
         setLoading(true);
         setError(null);
 
-        let url = `${API_BASE}/api/events/by-role/${userRole}`;
+        let url = `/api/events/by-role/${userRole}`;
         if (userRole === "CLUB_COORDINATOR" && username) {
           url += `?username=${encodeURIComponent(username)}`;
         } else if (userRole === "CLUB_COORDINATOR" && !username) {
           throw new Error("Username is missing for Club Coordinator.");
         }
 
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || `Failed to fetch events: ${response.status}`,
-          );
-        }
-        const data = await response.json();
-        setEvents(data);
+        const response = await api.get(url);
+        setEvents(response.data);
       } catch (err) {
-        setError(err.message);
-        console.error("Fetch error:", err);
+        const message =
+          err.response?.data?.message || "Failed to fetch events.";
+        setError(message);
+        console.error("Fetch error:", message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchEvents();
-  }, [userRole, username, API_BASE]);
+  }, [userRole, username]);
 
   const handleOpenModal = (eventId) => {
     setSelectedEventId(eventId);
@@ -330,7 +326,6 @@ const EventList = () => {
           eventId={selectedEventId}
           onClose={handleCloseModal}
           onSubmit={handleRoomRequestSubmit}
-          API_BASE={API_BASE}
         />
       )}
       {selectedEventForManage && (
@@ -340,7 +335,6 @@ const EventList = () => {
           requests={selectedEventForManage.room_requests}
           onClose={() => setSelectedEventForManage(null)}
           onUpdateRequest={handleManageUpdate}
-          API_BASE={API_BASE}
         />
       )}
     </>

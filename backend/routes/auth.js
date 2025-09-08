@@ -1,34 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 //const secretKey = process.env.JWT_SECRET_TOKEN;
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const { restrictToPresident } = require("../middlewares");
 const passport = require("../models/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
 const { User } = require("../models/schema");
 const getRole = require("../middlewares/getRole");
-// Use a single database connection
-const connectDB = async () => {
-  if (
-    mongoose.connection.readyState === 0 ||
-    mongoose.connection.readyState === 3
-  ) {
-    try {
-      const dbUri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cosa-database.xypqv4j.mongodb.net/?retryWrites=true&w=majority`;
-      await mongoose.connect(dbUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log("Connected to MongoDB");
-    } catch (error) {
-      console.error("MongoDB connection error:", error);
-      throw error;
-    }
-  }
-};
+const isAuthenticated= require("../middlewares/isAuthenticated");
 
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
@@ -38,7 +18,7 @@ const forgotPasswordLimiter = rateLimit({
 });
 // Session Status
 
-router.get("/fetchAuth", function (req, res) {
+router.get("/fetchAuth",isAuthenticated, function (req, res) {
   if (req.isAuthenticated()) {
     res.json(req.user);
   } else {
@@ -220,20 +200,6 @@ router.post("/reset-password/:id/:token", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "Invalid or expired token" });
-  }
-});
-
-router.get("/", restrictToPresident, async function (req, res) {
-  try {
-    await connectDB();
-    return res
-      .status(200)
-      .json({ success: true, message: "Connected successfully" });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
   }
 });
 

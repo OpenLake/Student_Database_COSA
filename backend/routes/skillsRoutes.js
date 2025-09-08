@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { UserSkill, Skill } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
+const { ROLE_GROUPS } = require("../utils/roles");
 // GET unendorsed user skills for a particular skill type
-router.get("/user-skills/unendorsed/:type", async (req, res) => {
+router.get("/user-skills/unendorsed/:type",isAuthenticated, async (req, res) => {
   const skillType = req.params.type; // e.g. "cultural", "sports"
 
   try {
@@ -25,7 +28,7 @@ router.get("/user-skills/unendorsed/:type", async (req, res) => {
   }
 });
 
-router.post("/user-skills/endorse/:id", async (req, res) => {
+router.post("/user-skills/endorse/:id",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   const skillId = req.params.id;
   try {
     const userSkill = await UserSkill.findById(skillId);
@@ -42,7 +45,7 @@ router.post("/user-skills/endorse/:id", async (req, res) => {
 });
 
 // GET all unendorsed skills by type
-router.get("/unendorsed/:type", async (req, res) => {
+router.get("/unendorsed/:type",isAuthenticated, async (req, res) => {
   const skillType = req.params.type;
 
   try {
@@ -55,7 +58,7 @@ router.get("/unendorsed/:type", async (req, res) => {
 });
 
 // POST endorse a skill
-router.post("/endorse/:id", async (req, res) => {
+router.post("/endorse/:id",isAuthenticated,authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   const skillId = req.params.id;
 
   try {
@@ -76,7 +79,7 @@ router.post("/endorse/:id", async (req, res) => {
 });
 
 //get all endorsed skills
-router.get("/get-skills", async (req, res) => {
+router.get("/get-skills",isAuthenticated, async (req, res) => {
   try {
     const skills = await Skill.find({ is_endorsed: true });
     res.json(skills);
@@ -87,7 +90,7 @@ router.get("/get-skills", async (req, res) => {
 });
 
 //get all user skills (endorsed + unendorsed)
-router.get("/user-skills/:userId", async (req, res) => {
+router.get("/user-skills/:userId",isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const userSkills = await UserSkill.find({ user_id: userId })
@@ -101,7 +104,7 @@ router.get("/user-skills/:userId", async (req, res) => {
 });
 
 //create a new skill
-router.post("/create-skill", async (req, res) => {
+router.post("/create-skill",isAuthenticated, async (req, res) => {
   try {
     const { name, category, type, description } = req.body;
     const skill = new Skill({
@@ -119,7 +122,7 @@ router.post("/create-skill", async (req, res) => {
 });
 
 //create new user skill
-router.post("/create-user-skill", async (req, res) => {
+router.post("/create-user-skill",isAuthenticated, async (req, res) => {
   try {
     const { user_id, skill_id, proficiency_level, position_id } = req.body;
 

@@ -4,7 +4,7 @@ import Select from "react-select";
 import axios from "axios";
 import { AdminContext } from "../../context/AdminContext";
 import toast, { Toaster } from "react-hot-toast";
-
+import api from "../../utils/api";
 const feedbackTypes = [
   "Suggestion",
   "Complaint",
@@ -16,8 +16,6 @@ const feedbackTypes = [
 ];
 
 const targetTypes = ["User", "Event", "Club/Organization", "POR"];
-const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-
 const FeedbackForm = () => {
   const [targetOptions, setTargetOptions] = useState({
     users: [],
@@ -39,7 +37,7 @@ const FeedbackForm = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
 
   useEffect(() => {
-    axios.get(`${API_BASE}/api/feedback/get-targetid`).then((res) => {
+    api.get(`/api/feedback/get-targetid`).then((res) => {
       const { users, events, organizational_units, positions } = res.data;
 
       setTargetOptions({
@@ -110,9 +108,11 @@ const FeedbackForm = () => {
         ...formData,
         feedback_by: isUserLoggedIn._id,
       };
-      if (!payload.rating) delete payload.rating;
+      if (!payload.rating) {
+        delete payload.rating;
+      }
 
-      await axios.post(`${API_BASE}/api/feedback/add`, payload);
+      await api.post(`/api/feedback/add`, payload);
       toast.success("Feedback submitted successfully");
       setFormData({
         type: "",

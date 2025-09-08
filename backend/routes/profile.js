@@ -6,7 +6,7 @@ const cloudinary = require("cloudinary").v2;
 //const { Student } = require("../models/student");
 const { User } = require("../models/schema");
 const streamifier = require("streamifier");
-
+const isAuthenticated = require("../middlewares/isAuthenticated");
 // Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,15 +15,15 @@ cloudinary.config({
 });
 
 router.post(
-  "/photo-update",
+  "/photo-update",isAuthenticated,
   upload.fields([{ name: "image" }]),
   async (req, res) => {
     try {
       const { ID_No } = req.body;
-      if (!ID_No) return res.status(400).json({ error: "ID_No is required" });
+      if (!ID_No) { return res.status(400).json({ error: "ID_No is required" }); }
 
       const user = await User.findOne({ user_id: ID_No });
-      if (!user) return res.status(404).json({ error: "User not found" });
+      if (!user) { return res.status(404).json({ error: "User not found" });}
 
       if (
         !req.files ||
@@ -46,8 +46,8 @@ router.post(
           let stream = cloudinary.uploader.upload_stream(
             { folder: "profile-photos" },
             (error, result) => {
-              if (result) resolve(result);
-              else reject(error);
+              if (result) { resolve(result);}
+              else { reject(error); }
             },
           );
           streamifier.createReadStream(fileBuffer).pipe(stream);
@@ -69,13 +69,13 @@ router.post(
 );
 
 // Delete profile photo (reset to default)
-router.delete("/photo-delete", async (req, res) => {
+router.delete("/photo-delete",isAuthenticated, async (req, res) => {
   try {
     const { ID_No } = req.query; // Get ID_No from frontend for DELETE
-    if (!ID_No) return res.status(400).json({ error: "ID_No is required" });
+    if (!ID_No) { return res.status(400).json({ error: "ID_No is required" }); }
 
     const user = await user.findOne({ user_id: ID_No });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) { return res.status(404).json({ error: "User not found" }); }
 
     // Delete from Cloudinary if exists
     if (user.personal_info.cloudinaryUrl) {
@@ -91,8 +91,8 @@ router.delete("/photo-delete", async (req, res) => {
   }
 });
 
-// API to Update Student Profile (chnaged acc to new database schema)
-router.put("/updateStudentProfile", async (req, res) => {
+// API to Update Student Profile 
+router.put("/updateStudentProfile",isAuthenticated, async (req, res) => {
   try {
     const { userId, updatedDetails } = req.body;
     console.log("Received userId:", userId);
@@ -124,13 +124,13 @@ router.put("/updateStudentProfile", async (req, res) => {
         cloudinaryUrl,
       } = updatedDetails.personal_info;
 
-      if (name) user.personal_info.name = name;
-      if (email) user.personal_info.email = email;
-      if (phone) user.personal_info.phone = phone;
-      if (gender) user.personal_info.gender = gender;
-      if (date_of_birth) user.personal_info.date_of_birth = date_of_birth;
-      if (profilePic) user.personal_info.profilePic = profilePic;
-      if (cloudinaryUrl) user.personal_info.cloudinaryUrl = cloudinaryUrl;
+      if (name) { user.personal_info.name = name; }
+      if (email) { user.personal_info.email = email; }
+      if (phone) { user.personal_info.phone = phone; }
+      if (gender) { user.personal_info.gender = gender; }
+      if (date_of_birth) { user.personal_info.date_of_birth = date_of_birth; }
+      if (profilePic) { user.personal_info.profilePic = profilePic; }
+      if (cloudinaryUrl) { user.personal_info.cloudinaryUrl = cloudinaryUrl; }
     }
 
     // ---------- ACADEMIC INFO ----------
@@ -138,19 +138,19 @@ router.put("/updateStudentProfile", async (req, res) => {
       const { program, branch, batch_year, current_year, cgpa } =
         updatedDetails.academic_info;
 
-      if (program) user.academic_info.program = program;
-      if (branch) user.academic_info.branch = branch;
-      if (batch_year) user.academic_info.batch_year = batch_year;
-      if (current_year) user.academic_info.current_year = current_year;
-      if (cgpa !== undefined) user.academic_info.cgpa = cgpa;
+      if (program) { user.academic_info.program = program; }
+      if (branch) { user.academic_info.branch = branch; }
+      if (batch_year) { user.academic_info.batch_year = batch_year; }
+      if (current_year) { user.academic_info.current_year = current_year; }
+      if (cgpa !== undefined) { user.academic_info.cgpa = cgpa; }
     }
 
     // ---------- CONTACT INFO ----------
     if (updatedDetails.contact_info) {
       const { hostel, room_number, socialLinks } = updatedDetails.contact_info;
 
-      if (hostel) user.contact_info.hostel = hostel;
-      if (room_number) user.contact_info.room_number = room_number;
+      if (hostel) { user.contact_info.hostel = hostel; }
+      if (room_number) { user.contact_info.room_number = room_number; }
 
       // Social Links
       if (socialLinks) {

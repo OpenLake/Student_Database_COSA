@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { Position, PositionHolder } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
 // POST for adding a new position
-router.post("/add-position", async (req, res) => {
+router.post("/add-position",isAuthenticated, async (req, res) => {
   try {
     const {
       title,
@@ -41,7 +42,7 @@ router.post("/add-position", async (req, res) => {
 });
 
 // for getting all the position
-router.get("/get-all", async (req, res) => {
+router.get("/get-all",isAuthenticated, async (req, res) => {
   try {
     const positions = await Position.find().populate("unit_id", "name");
     res.json(positions);
@@ -53,7 +54,7 @@ router.get("/get-all", async (req, res) => {
 
 //add position holder
 
-router.post("/add-position-holder", async (req, res) => {
+router.post("/add-position-holder",isAuthenticated, async (req, res) => {
   try {
     const {
       user_id,
@@ -125,7 +126,7 @@ router.post("/add-position-holder", async (req, res) => {
 });
 
 // Get all position holders
-router.get("/get-all-position-holder", async (req, res) => {
+router.get("/get-all-position-holder",isAuthenticated, async (req, res) => {
   try {
     const positionHolders = await PositionHolder.find()
       .populate("user_id", "personal_info.name user_id username")
@@ -150,7 +151,7 @@ router.get("/get-all-position-holder", async (req, res) => {
 });
 
 // Get positions  by id
-router.get("/:userId", async (req, res) => {
+router.get("/:userId",isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const positionHolder = await PositionHolder.find({ user_id: userId })

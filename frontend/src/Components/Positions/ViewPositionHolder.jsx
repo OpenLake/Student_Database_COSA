@@ -12,9 +12,7 @@ import {
   Clock,
   DollarSign,
 } from "lucide-react";
-
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+import api from "../../utils/api";
 const ViewPositionHolder = () => {
   const [positionHolders, setPositionHolders] = useState([]);
   const [filteredHolders, setFilteredHolders] = useState([]);
@@ -28,13 +26,10 @@ const ViewPositionHolder = () => {
   useEffect(() => {
     const fetchPositionHolders = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/positions/get-all-position-holder`,
-        );
-        const data = await response.json();
-        setPositionHolders(data);
-        setFilteredHolders(data);
-        console.log(data);
+        const res = await api.get(`/api/positions/get-all-position-holder`);
+        setPositionHolders(res.data);
+        setFilteredHolders(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error("Error fetching positions:", error);
       }

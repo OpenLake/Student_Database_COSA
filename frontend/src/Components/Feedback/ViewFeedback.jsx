@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import classNames from "classnames";
-import { AdminContext } from "../../context/AdminContext"; // adjust path as needed
+import { AdminContext } from "../../context/AdminContext";
 import ExpandableText from "./ExpandableText";
+import api from "../../utils/api";
 const feedbackTypes = [
   "All",
   "Suggestion",
@@ -34,7 +35,7 @@ const ViewFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/feedback/view-feedback`);
+        const res = await api.get(`/api/feedback/view-feedback`);
         const sorted = res.data.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at),
         );
@@ -49,17 +50,16 @@ const ViewFeedback = () => {
   }, []);
 
   const handleResolve = async () => {
-    if (!actionTaken.trim()) return alert("Please enter actions taken.");
+    if (!actionTaken.trim()) {
+      return alert("Please enter actions taken.");
+    }
     setResolving(true);
 
     try {
-      await axios.put(
-        `${API_BASE}/api/feedback/mark-resolved/${modalFeedbackId}`,
-        {
-          actions_taken: actionTaken,
-          resolved_by: isUserLoggedIn._id,
-        },
-      );
+      await api.put(`/api/feedback/mark-resolved/${modalFeedbackId}`, {
+        actions_taken: actionTaken,
+        resolved_by: isUserLoggedIn._id,
+      });
       setFeedbacks((prev) =>
         prev.map((fb) =>
           fb._id === modalFeedbackId

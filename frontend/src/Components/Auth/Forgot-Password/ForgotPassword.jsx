@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import api from "../../../utils/api";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -11,27 +11,23 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/auth/forgot-password`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      const res = await api.post("/auth/forgot-password", { email });
 
-      const data = await res.json();
-      if (res.status === 400 && data.message.includes("Google Login")) {
+      if (res.status === 400 && res.data.message?.includes("Google Login")) {
         toast.error(
           "This email is linked with Google. Please sign in with Google.",
         );
-      } else if (res.ok) {
-        toast.success(data.message || "Reset link sent successfully!");
+      } else if (res.status === 200) {
+        toast.success(res.data.message || "Reset link sent successfully!");
       } else {
-        toast.error(data.message || "Something went wrong.");
+        toast.error(res.data.message || "Something went wrong.");
       }
     } catch (error) {
-      toast.error("Something went wrong.");
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

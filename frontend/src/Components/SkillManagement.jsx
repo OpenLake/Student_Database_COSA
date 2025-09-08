@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { AdminContext } from "../context/AdminContext";
 import {
   Plus,
@@ -21,7 +21,6 @@ const SkillManagement = ({ userId }) => {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
   const { isUserLoggedIn } = React.useContext(AdminContext);
 
@@ -43,11 +42,9 @@ const SkillManagement = ({ userId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const skillsRes = await axios.get(`${API_BASE}/api/skills/get-skills`);
+        const skillsRes = await api.get(`/api/skills/get-skills`);
         setSkills(skillsRes.data);
-        const positionsRes = await axios.get(
-          `${API_BASE}/api/positions/get-all`,
-        );
+        const positionsRes = await api.get(`/api/positions/get-all`);
         setPositions(positionsRes.data);
 
         console.log("Skills:", skillsRes.data);
@@ -66,8 +63,8 @@ const SkillManagement = ({ userId }) => {
       if (!isUserLoggedIn?._id) return;
 
       try {
-        const userSkillsRes = await axios.get(
-          `${API_BASE}/api/skills/user-skills/${isUserLoggedIn._id}`,
+        const userSkillsRes = await api.get(
+          `/api/skills/user-skills/${isUserLoggedIn._id}`,
         );
         setUserSkills(userSkillsRes.data);
         console.log("User skills:", userSkillsRes.data);
@@ -142,7 +139,7 @@ const SkillManagement = ({ userId }) => {
       let skillRes = null;
 
       if (showNewSkillForm) {
-        skillRes = await axios.post(`${API_BASE}/api/skills/create-skill`, {
+        skillRes = await api.post(`/api/skills/create-skill`, {
           name: newSkillData.name.trim(),
           category: newSkillData.category.trim(),
           type: newSkillData.type,
@@ -151,15 +148,12 @@ const SkillManagement = ({ userId }) => {
         skillIdToUse = skillRes.data._id;
       }
 
-      const userSkillRes = await axios.post(
-        `${API_BASE}/api/skills/create-user-skill`,
-        {
-          user_id: isUserLoggedIn._id,
-          skill_id: skillIdToUse,
-          proficiency_level: formData.proficiency_level,
-          position_id: formData.position_id || null,
-        },
-      );
+      const userSkillRes = await api.post(`/api/skills/create-user-skill`, {
+        user_id: isUserLoggedIn._id,
+        skill_id: skillIdToUse,
+        proficiency_level: formData.proficiency_level,
+        position_id: formData.position_id || null,
+      });
 
       const fullSkill = showNewSkillForm
         ? skillRes.data

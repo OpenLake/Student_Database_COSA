@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
-import axios from "axios";
+import api from "../../utils/api";
 import {
   User,
   Eye,
@@ -31,13 +31,10 @@ const StudentDashboard = () => {
   const [latestAchievement, setLatestAchievement] = useState(null);
 
   const { isUserLoggedIn } = useContext(AdminContext);
-  const API_BASE_URL =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/events/events`);
+        const res = await api.get(`/api/events/events`);
         const now = new Date();
 
         const upcomingEvents = res.data
@@ -61,9 +58,7 @@ const StudentDashboard = () => {
   useEffect(() => {
     const fetchLatestAchievement = async () => {
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/api/achievements/${isUserLoggedIn._id}`,
-        );
+        const res = await api.get(`/api/achievements/${isUserLoggedIn._id}`);
 
         if (Array.isArray(res.data) && res.data.length > 0) {
           const sorted = res.data.sort(
@@ -139,12 +134,10 @@ const StudentDashboard = () => {
       try {
         const [skillsRes, achievementsRes, positionsRes, feedbacksRes] =
           await Promise.all([
-            axios.get(
-              `${API_BASE_URL}/api/skills/user-skills/${isUserLoggedIn._id}`,
-            ),
-            axios.get(`${API_BASE_URL}/api/achievements/${isUserLoggedIn._id}`),
-            axios.get(`${API_BASE_URL}/api/positions/${isUserLoggedIn._id}`),
-            axios.get(`${API_BASE_URL}/api/feedback/${isUserLoggedIn._id}`),
+            api.get(`/api/skills/user-skills/${isUserLoggedIn._id}`),
+            api.get(`/api/achievements/${isUserLoggedIn._id}`),
+            api.get(`/api/positions/${isUserLoggedIn._id}`),
+            api.get(`/api/feedback/${isUserLoggedIn._id}`),
           ]);
 
         setCounts({

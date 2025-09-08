@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const {
   User,
   Feedback,
@@ -8,7 +9,10 @@ const {
   OrganizationalUnit,
 } = require("./../models/schema");
 const { v4: uuidv4 } = require("uuid");
-router.post("/add", async (req, res) => {
+const authorizeRole = require("../middlewares/authorizeRole");
+const { ROLE_GROUPS } = require("../utils/roles");
+
+router.post("/add",isAuthenticated, async (req, res) => {
   try {
     const {
       type,
@@ -46,7 +50,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.get("/get-targetid", async (req, res) => {
+router.get("/get-targetid",isAuthenticated, async (req, res) => {
   try {
     const users = await User.find({}, "_id user_id personal_info.name");
     const events = await Event.find({}, "_id title");
@@ -161,7 +165,7 @@ router.get("/view-feedback", async (req, res) => {
 });
 
 // requires user middleware that attaches user info to req.user
-router.put("/mark-resolved/:id", async (req, res) => {
+router.put("/mark-resolved/:id",isAuthenticated,authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   const feedbackId = req.params.id;
   const { actions_taken, resolved_by } = req.body;
   console.log(req.body);
@@ -196,7 +200,7 @@ router.put("/mark-resolved/:id", async (req, res) => {
 });
 
 //get all user given feedbacks
-router.get("/:userId", async (req, res) => {
+router.get("/:userId",isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const userFeedbacks = await Feedback.find({ feedback_by: userId }).populate(

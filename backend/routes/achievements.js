@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const { Achievement } = require("../models/schema"); // Update path as needed
 const { v4: uuidv4 } = require("uuid");
-// GET unverified achievements by type
-router.get("/unendorsed/:type", async (req, res) => {
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
+const {ROLE_GROUPS} = require("../utils/roles");
+
+// GET unverified achievements by type (achievements which are pending to verify fetched by admins only)
+router.get("/unendorsed/:type",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   const { type } = req.params;
 
   try {
@@ -23,8 +27,8 @@ router.get("/unendorsed/:type", async (req, res) => {
   }
 });
 
-// PATCH verify achievement by ID
-router.patch("/verify/:id", async (req, res) => {
+// PATCH verify achievement by ID (achievements can be verified by admins only)
+router.patch("/verify/:id",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
   const { id } = req.params;
   const { verified_by } = req.body; // Assuming you send the verifier's ID in the request body
   try {
@@ -45,8 +49,8 @@ router.patch("/verify/:id", async (req, res) => {
   }
 });
 
-//add achievement
-router.post("/add", async (req, res) => {
+//add achievement (achievements can be added by all the users (students -> their own ahieve, admins -> council achieve + student achieve))
+router.post("/add", isAuthenticated, async (req, res) => {
   try {
     const {
       title,
@@ -90,8 +94,8 @@ router.post("/add", async (req, res) => {
   }
 });
 
-//get all user achievements (endorsed + unendorsed)
-router.get("/:userId", async (req, res) => {
+//get all user achievements (endorsed + unendorsed) (must be accessible by the user themselves and admins, so all users)
+router.get("/:userId", isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const userAchievements = await Achievement.find({ user_id: userId })

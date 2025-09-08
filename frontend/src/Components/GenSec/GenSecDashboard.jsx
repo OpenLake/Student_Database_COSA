@@ -12,10 +12,11 @@ const GenSecDashboard = ({ role }) => {
   const { setIsUserLoggedIn, setUserRole } = useContext(AdminContext); //context access
   const navigate = useNavigate();
 
-  if (!config)
+  if (!config) {
     return (
       <div className="text-center text-red-500 p-4">Invalid GenSec role.</div>
     );
+  }
 
   const { title, displayName, theme, avatar, icon, categories, menuItems } =
     config;

@@ -10,16 +10,19 @@ const {
   Achievement,
   Feedback,
 } = require("../models/schema");
-router.get("/clubData/:email", async (req, res) => {
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
+const { ROLE_GROUPS } = require("../utils/roles");
+router.get("/clubData/:email",isAuthenticated, async (req, res) => {
   try {
     const email = req.params.email;
-    if (!email) return res.status(400).json({ error: "Missing email" });
+    if (!email) { return res.status(400).json({ error: "Missing email" }); }
 
     const unit = await OrganizationalUnit.findOne({
       "contact_info.email": email,
     }).populate("parent_unit_id");
     if (!unit)
-      return res.status(404).json({ error: "Organizational Unit not found" });
+     { return res.status(404).json({ error: "Organizational Unit not found" }); }
 
     const events = await Event.find({ organizing_unit_id: unit._id })
       .populate("participants")
@@ -68,7 +71,7 @@ router.get("/clubData/:email", async (req, res) => {
 });
 
 // Fetches all units, or filters by category if provided in the query.
-router.get("/organizational-units", async (req, res) => {
+router.get("/organizational-units", isAuthenticated,async (req, res) => {
   try {
     const { category } = req.query;
 
@@ -92,7 +95,7 @@ router.get("/organizational-units", async (req, res) => {
 });
 
 // Create a new organizational unit
-router.post("/create", async (req, res) => {
+router.post("/create",isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS,"PRESIDENT"]), async (req, res) => {
   try {
     const {
       name,
@@ -106,7 +109,7 @@ router.post("/create", async (req, res) => {
       budget_info,
     } = req.body;
 
-    if (!name || !type || !category || !hierarchy_level) {
+    if (!name || !type || !category || !hierarchy_level ||!contact_info.email) {
       return res.status(400).json({
         message:
           "Validation failed: name, type, category, and hierarchy_level are required.",

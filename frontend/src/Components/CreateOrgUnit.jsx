@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Building2, Mail, DollarSign, Users } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
+import api from "../utils/api";
 const CreateOrgUnit = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const userRole = isUserLoggedIn ? isUserLoggedIn.role : "PRESIDENT";
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
   const getRoleCategory = (role) => {
     switch (role) {
       case "GENSEC_SCITECH":
@@ -52,7 +52,7 @@ const CreateOrgUnit = () => {
     const fetchParentUnits = async () => {
       setIsLoadingParents(true);
       setErrors((prev) => ({ ...prev, fetch: "" }));
-      let url = `${API_BASE}/api/orgUnit/organizational-units`;
+      let url = `/api/orgUnit/organizational-units`;
       const category = getRoleCategory(userRole);
 
       if (userRole !== "PRESIDENT" && category) {
@@ -61,11 +61,7 @@ const CreateOrgUnit = () => {
 
       try {
         console.log(`Fetching parent units from: ${url}`);
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch parent units");
-        }
-        const data = await response.json();
+        const { data } = await api.get(url);
         setAvailableParentUnits(data);
       } catch (error) {
         console.error("Error fetching parent units:", error);
@@ -173,24 +169,29 @@ const CreateOrgUnit = () => {
     setIsSubmitting(true);
     setErrors((prev) => ({ ...prev, submit: "" }));
 
+    const validSocialMedia = socialMediaFields.filter(
+      (field) => field.platform.trim() && field.url.trim(),
+    );
+    const dataToSubmit = {
+      ...formData,
+      contact_info: {
+        ...formData.contact_info,
+        social_media: validSocialMedia,
+      },
+    };
     try {
-      const response = await fetch(`${API_BASE}/api/orgUnit/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An unknown error occurred.");
-      }
+      const res = await api.post(`/api/orgUnit/create`, dataToSubmit);
       alert("Organizational unit created successfully!");
+      console.log("Submission successful:", res);
+      navigate(-1);
     } catch (error) {
       console.error("Submission failed:", error);
-      setErrors((prev) => ({ ...prev, submit: error.message }));
-      alert(`Error: ${error.message}`);
+      setErrors((prev) => ({
+        ...prev,
+        submit:
+          error.response?.data?.message || error.message || "Submission failed",
+      }));
+      alert(`Error: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsSubmitting(false);
     }

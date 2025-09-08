@@ -9,6 +9,7 @@ import {
   Star,
 } from "lucide-react";
 import { AdminContext } from "../context/AdminContext";
+import api from "../utils/api";
 export default function AchievementForm() {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [formData, setFormData] = useState({
@@ -24,16 +25,18 @@ export default function AchievementForm() {
     certificate_url: "",
   });
   const [events, setEvents] = useState([]);
-  const API_BASE_URL =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/events/events`)
-      .then((res) => res.json())
-      .then((data) => setEvents(data))
-      .catch((err) => {
-        console.error("Error fetching events:", err);
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get("/api/events/events");
+        setEvents(response.data);
+        console.log("Events:", response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
         setEvents([]);
-      });
+      }
+    };
+    fetchEvents();
   }, []);
 
   const types = ["academic", "cultural", "sports", "technical", "other"];
@@ -49,19 +52,7 @@ export default function AchievementForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/api/achievements/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to submit achievement");
-      }
-
+      const response = await api.post(`/api/achievements/add`, formData);
       alert("Achievement submitted successfully!");
       setFormData({
         title: "",
@@ -76,7 +67,10 @@ export default function AchievementForm() {
       });
     } catch (error) {
       console.error("Error submitting achievement:", error);
-      alert("Error submitting achievement: " + error.message);
+      alert(
+        "Error submitting achievement: " +
+          (error.response?.data.message || error.message),
+      );
     }
   };
 

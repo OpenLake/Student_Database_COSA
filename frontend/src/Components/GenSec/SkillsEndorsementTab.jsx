@@ -1,22 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-// Real API fetch for unendorsed skills
+import api from "../../utils/api";
 const fetchUnendorsedSkills = async (skillType) => {
-  const res = await fetch(`${API_BASE_URL}/api/skills/unendorsed/${skillType}`);
-  if (!res.ok) throw new Error("Failed to fetch skills");
-  return await res.json();
+  try {
+    const res = await api.get(`/api/skills/unendorsed/${skillType}`);
+    return res.data;
+  } catch (error) {
+    const message =
+      error.response?.data?.message || "Failed to fetch unendorsed skills";
+    throw new Error(message);
+  }
 };
 
 const endorseSkill = async (skillId) => {
-  const res = await fetch(`${API_BASE_URL}/api/skills/endorse/${skillId}`, {
-    method: "POST",
-  });
-  if (!res.ok) throw new Error("Failed to endorse skill");
-  return await res.json();
+  try {
+    const res = await api.post(`/api/skills/endorse/${skillId}`);
+    return res.data;
+  } catch (error) {
+    const message = error.response?.data?.message || "Failed to endorse skill";
+    throw new Error(message);
+  }
 };
 
 // Skill Card Component

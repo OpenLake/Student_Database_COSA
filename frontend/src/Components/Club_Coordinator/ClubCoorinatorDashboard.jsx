@@ -7,6 +7,7 @@ import AchievementsEndorsementTab from "../GenSec/AchievementsEndorsementTab";
 import { CreateTenure, ViewTenure } from "../Positions/TenureRecords";
 import EventList from "../Events/EventList";
 import Logout from "../Logout";
+import api from "../../utils/api";
 import {
   Home,
   Users,
@@ -30,15 +31,10 @@ const ClubDashboard = () => {
   const [clubData, setClubData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_BASE_URL =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
   const { isUserLoggedIn } = React.useContext(AdminContext);
-  const [currentUser] = useState({
-    name: "John Doe",
-    role: "Club Coordinator",
-  });
+
   const navigate = useNavigate();
-  // Transform the API data to match dashboard expectations
+
   const transformApiData = (apiData) => {
     const {
       unit,
@@ -116,27 +112,24 @@ const ClubDashboard = () => {
     const fetchClubData = async () => {
       try {
         const email = isUserLoggedIn?.username;
-        if (!email) return;
-        const response = await fetch(
-          `${API_BASE_URL}/api/orgUnit/clubData/${email}`,
-        );
-        if (!response.ok) throw new Error("Failed to fetch club data");
-        const data = await response.json();
-        console.log("Club data (raw):", data);
+        if (!email) {
+          return;
+        }
+        const res = await api.get(`/api/orgUnit/clubData/${email}`);
         // Transform the API data
-        const transformedData = transformApiData(data);
+        const transformedData = transformApiData(res.data);
         setClubData(transformedData);
-        console.log("Club data (transformed):", transformedData);
       } catch (err) {
         console.error(err);
-        setError(err.message);
+        const message =
+          err.response?.data?.message || "Error fetching club data";
+        setError(message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchClubData();
-  }, [isUserLoggedIn?.username, API_BASE_URL]);
+  }, [isUserLoggedIn?.username]);
 
   const sidebarItems = [
     { name: "Dashboard", icon: Home, active: true },
@@ -161,7 +154,9 @@ const ClubDashboard = () => {
   };
 
   const getProgressPercentage = () => {
-    if (!clubData?.budget_info?.allocated_budget) return 0;
+    if (!clubData?.budget_info?.allocated_budget) {
+      return 0;
+    }
     return (
       (clubData.budget_info.spent_amount /
         clubData.budget_info.allocated_budget) *

@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { AdminContext } from "../../context/AdminContext";
-
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
-
+import api from "../../utils/api";
 const AchievementsEndorsementTab = ({ skillType }) => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [achievements, setAchievements] = useState([]);
@@ -17,24 +13,28 @@ const AchievementsEndorsementTab = ({ skillType }) => {
 
   // API call to fetch unendorsed achievements
   const fetchUnverifiedAchievements = async (type) => {
-    const res = await fetch(
-      `${API_BASE_URL}/api/achievements/unendorsed/${type}`,
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch unendorsed achievements");
-    return res.json();
+    try {
+      const res = await api.get(`/api/achievements/unendorsed/${type}`);
+      return res.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Failed to fetch unendorsed achievements";
+      throw new Error(message);
+    }
   };
   // API call to verify an achievement
   const verifyAchievement = async (id) => {
-    const res = await fetch(`${API_BASE_URL}/api/achievements/verify/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ verified_by: isUserLoggedIn._id }),
-    });
-    if (!res.ok) throw new Error("Failed to verify achievement");
-    return res.json();
+    try {
+      const res = await api.patch(`/api/achievements/verify/${id}`, {
+        verified_by: isUserLoggedIn._id,
+      });
+      return res.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to verify achievement";
+      throw new Error(message);
+    }
   };
 
   const loadAchievements = async () => {
@@ -71,12 +71,17 @@ const AchievementsEndorsementTab = ({ skillType }) => {
     }
   };
 
-  if (loading) return <p className="text-gray-500">Loading achievements...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (achievements.length === 0)
+  if (loading) {
+    return <p className="text-gray-500">Loading achievements...</p>;
+  }
+  if (error) {
+    return <p className="text-red-600">{error}</p>;
+  }
+  if (achievements.length === 0) {
     return (
       <p className="text-gray-500">No achievements pending endorsement.</p>
     );
+  }
   console.log("Achievements:", achievements);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
