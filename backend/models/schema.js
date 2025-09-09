@@ -6,7 +6,6 @@ var findOrCreate = require("mongoose-findorcreate");
 const userSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    unique: true,
     //user_id is the ID provided by institute, ie ID no
   },
   role: {
@@ -86,6 +85,16 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+userSchema.index(
+  { user_id: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { user_id: { $exists: true, $type: "string" } },
+    name: "user_id_partial_unique"
+  }
+);
+
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
