@@ -11,6 +11,8 @@ import { getStudentRoutes } from "./routes/StudentRoutes";
 import OnboardingForm from "./Components/UserOnboarding";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 import Unauthorised from "./Components/Unauthorised";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const authData = useAuth();
@@ -22,31 +24,48 @@ function App() {
   }
 
   return (
-    <AdminContext.Provider value={authData}>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          {getPublicRoutes(isUserLoggedIn)}
+    <>
+      <AdminContext.Provider value={authData}>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            {getPublicRoutes(isUserLoggedIn)}
 
-          {/* Admin Routes */}
-          {getAdminRoutes()}
+            {/* Admin Routes */}
+            {getAdminRoutes()}
 
-          {/* Student Routes */}
-          {getStudentRoutes(isUserLoggedIn, isOnboardingComplete)}
+            {/* Student Routes */}
+            {getStudentRoutes(isUserLoggedIn, isOnboardingComplete)}
 
-          {/* Special Routes */}
-          <Route path="/" element={<RoleRedirect />} />
-          <Route path="/onboarding" element={<OnboardingForm />} />
-          <Route path="/unauthorised" element={<Unauthorised />} />
+            {/* Special Routes */}
+            <Route path="/" element={<RoleRedirect />} />
+            <Route path="/onboarding" element={<OnboardingForm />} />
+            <Route path="/unauthorised" element={<Unauthorised />} />
 
-          {/* Catch-all route */}
-          <Route
-            path="*"
-            element={<Navigate to={isUserLoggedIn ? "/" : "/login"} replace />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </AdminContext.Provider>
+            {/* Catch-all route */}
+            <Route
+              path="*"
+              element={
+                <Navigate to={isUserLoggedIn ? "/" : "/login"} replace />
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </AdminContext.Provider>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 9999 }} // Add this
+        toastStyle={{ zIndex: 9999 }} // And this
+      />
+    </>
   );
 }
 
