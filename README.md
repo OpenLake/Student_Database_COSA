@@ -125,6 +125,15 @@ We welcome contributions! Feel free to open an issue or submit a pull request. B
 1. Fork the repository.
 2. Create a new branch.
 3. Submit a pull request with your changes.
+4. Issues: Check out the Issues section for discussions and tasks.
+5. Feature Requests: Suggest new features by opening an issue.
+6. Community Discussions: Join our [Discord](https://discord.gg/4ygfBmjW) server to connect with maintainers and contributors.
+7. We are transitioning to a new design. You can find the Figma design [link](https://www.figma.com/design/30y4S7ZfFo92GAwV2uacOG/Student-DB_CoSA?node-id=0-1&t=e95ozkVrFmlxgdOK-1)
+
+
+
+
+
 
 ---
 
