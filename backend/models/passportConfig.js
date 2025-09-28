@@ -2,7 +2,6 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-//const getRole = require("../middlewares/getRole");
 const { User } = require("./schema");
 // Local Strategy
 passport.use(
@@ -38,7 +37,6 @@ passport.use(
           return done(null, user);
         }
         // If user doesn't exist, create a new user in your database
-        //const userRole = await getRole(profile.emails[0].value);
         const newUser = new User({
           username: profile.emails[0].value,
           role: "STUDENT",
