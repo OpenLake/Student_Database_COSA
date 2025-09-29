@@ -12,7 +12,6 @@ Please read this guide before contributing to ensure smooth collaboration.
 * [Development Workflow](#development-workflow)
     * [Pull Request Process](#pull-request-process)
 * [Issue/PR labels](#issue-pr-labels)
-* [License](#license)
 
 ## Code of Conduct
 
@@ -25,7 +24,7 @@ If you believe someone is violating the code of conduct, we ask that you report 
 
 ## I just have a question!
 
-* Join our community chat on Discord: `[https://discord.gg/hQFhv2t4]`.
+* Join our community chat on Discord: [https://discord.gg/hQFhv2t4](https://discord.gg/hQFhv2t4).
 
 ## How Can I Contribute?
 
