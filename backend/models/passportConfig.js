@@ -1,9 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
-//const { User } = require("./student");
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const getRole = require("../middlewares/getRole");
 const { User } = require("./schema");
 // Local Strategy
 passport.use(
@@ -39,10 +37,9 @@ passport.use(
           return done(null, user);
         }
         // If user doesn't exist, create a new user in your database
-        const userRole = await getRole(profile.emails[0].value);
         const newUser = new User({
           username: profile.emails[0].value,
-          role: userRole,
+          role: "STUDENT",
           strategy: "google",
           personal_info: {
             name: profile.displayName || "No Name",
@@ -52,7 +49,7 @@ passport.use(
                 ? profile.photos[0].value
                 : "https://www.gravatar.com/avatar/?d=mp",
           },
-          onboardingComplete: userRole !== "STUDENT",
+          onboardingComplete: false,
         });
 
         await newUser.save();

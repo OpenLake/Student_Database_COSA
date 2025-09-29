@@ -7,7 +7,6 @@ const passport = require("../models/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
 const { User } = require("../models/schema");
-const getRole = require("../middlewares/getRole");
 const isAuthenticated= require("../middlewares/isAuthenticated");
 
 //rate limiter - for password reset try
@@ -52,18 +51,17 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    const userRole = await getRole(email);
     const newUser = await User.register(
       new User({
         user_id: ID,
-        role: userRole,
+        role: "STUDENT",
         strategy: "local",
         username: email,
         personal_info: {
           name: name,
           email: email,
         },
-        onboardingComplete: userRole !== "STUDENT",
+        onboardingComplete: false,
       }),
       password,
     );

@@ -1,6 +1,7 @@
 // routes/club.js
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const {
   OrganizationalUnit,
@@ -9,10 +10,13 @@ const {
   PositionHolder,
   Achievement,
   Feedback,
+  User,
 } = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
+
+
 router.get("/clubData/:email",isAuthenticated, async (req, res) => {
   try {
     const email = req.params.email;
@@ -96,6 +100,10 @@ router.get("/organizational-units", isAuthenticated,async (req, res) => {
 
 // Create a new organizational unit
 router.post("/create",isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS,"PRESIDENT"]), async (req, res) => {
+
+  const session=await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const {
       name,
@@ -130,11 +138,37 @@ router.post("/create",isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS,"PRE
     };
 
     const newUnit = new OrganizationalUnit(newUnitData);
-    await newUnit.save();
+    await newUnit.save(session);
 
-    res.status(201).json(newUnit);
+    const existingUser = await User.findOne({ username: contact_info.email }).session(session);
+        if (existingUser) {
+            // If user exists, we must abort the transaction to avoid an inconsistent state
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(409).json({ message: "A user with this email already exists. The organizational unit was not created." });
+        }
+    
+    const newUser = new User({
+            username: contact_info.email,
+            role: "CLUB_COORDINATOR", // Assign the specified role
+            strategy: "google",        // Set strategy to google
+            onboardingComplete: true,  // Set onboarding to true
+            personal_info: {
+                name: name, // Use the organization's name for the user's name
+                email: contact_info.email,
+            },
+        });
+        await newUser.save({ session }); // Pass the session to the save command
+
+        // --- 5. If both operations were successful, commit the transaction ---
+        await session.commitTransaction();
+        session.endSession();
+
+       res.status(201).json(newUnit);
   } catch (error) {
-    console.error("Error creating organizational unit:", error);
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Error creating organizational unit and user: ", error);
 
     if (error.name === "ValidationError" || error.name === "CastError") {
       return res
