@@ -54,17 +54,34 @@ cd Student_Database_COSA
   ```bash
   cd backend
   ```
-- Install the necessary packages:
+- Install the necessary packages and dependencies:
   ```bash
   npm install
+  ```
+- **Create your environment file:**
+  In the `backend` directory, copy the example environment file (.env.example) to create your own local version.
+  ```bash
+  # For macOS/Linux
+  cp .env.example .env
+  
+  # For Windows
+  copy .env.example .env
+  ```
+  Now, open the new `.env` file and fill in your actual values.
+
+- **Seed the database:**
+  This next command populates the database with initial necessary data. **You only need to run this once during the initial setup.**
+  ```bash
+  node seed.js
   ```
 - Run the backend server:
   ```bash
   node index.js
   ```
+The backend server should now be running on `http://localhost:5000`.Keep this terminal open.
 
 ### 3. Frontend Setup
-
+**Open a new, separate terminal window.** This is important, as your backend server needs to keep running in the first terminal.
 - Navigate to the `frontend` directory:
   ```bash
   cd ../frontend
@@ -73,12 +90,24 @@ cd Student_Database_COSA
   ```bash
   npm install
   ```
+- **Create your environment file:**
+  Just like the backend, copy the example file to create your local frontend environment file.
+  ```bash
+  # For macOS/Linux
+  cp .env.example .env
+
+  # For Windows
+  copy .env.example .env
+  ```
+  Open the new `.env` file and update any variables if necessary (e.g., the backend API URL).
 - Start the frontend server:
   ```bash
   npm start
   ```
 
-Now, you should be able to access the frontend at `http://localhost:3000` and the backend at `http://localhost:5000`.
+### 4. You're All Set! 🎉
+
+The frontend development server will open in your browser at **`http://localhost:3000`**. You can now start exploring and contributing to the application!
 
 ---
 
@@ -91,8 +120,9 @@ Student_Database_COSA/
 │   ├── controllers/       # API route controllers
 │   ├── models/            # Database models (MongoDB schemas)
 │   ├── routes/            # API routes
-│   ├── middleware/        # Authentication and role-based middleware
-│   └── index.js           # Main server file
+│   ├── middleware/        # Authentication and role-based middleware 
+|   ├── seed.js            # Database seeder script
+|   └── index.js           # Main server file
 │
 ├── frontend/              # React.js frontend
 │   ├── public/            # Public assets
@@ -113,27 +143,13 @@ Student_Database_COSA/
 This project is maintained by:
 
 - [@harshitap1305](https://github.com/harshitap1305)
-- [@Jagath-P](https://github.com/Jagath-P)
-- [@Khushagra30](https://github.com/Khushagra30)
+- [@sakshi1755](https://github.com/sakshi1755)
 
 ---
 
 ## 🤝 Contributing
-
-We welcome contributions! Feel free to open an issue or submit a pull request. Before contributing, please make sure to:
-
-1. Fork the repository.
-2. Create a new branch.
-3. Submit a pull request with your changes.
-4. Issues: Check out the Issues section for discussions and tasks.
-5. Feature Requests: Suggest new features by opening an issue.
-6. Community Discussions: Join our [Discord](https://discord.gg/4ygfBmjW) server to connect with maintainers and contributors.
-7. We are transitioning to a new design. You can find the Figma design [link](https://www.figma.com/design/30y4S7ZfFo92GAwV2uacOG/Student-DB_CoSA?node-id=0-1&t=e95ozkVrFmlxgdOK-1)
-
-
-
-
-
+We welcome contributions from the community! For complete guidelines on how to get started, please read our **[Contributing Guide](CONTRIBUTING.md)**.
+You can also check out the [Issues tab](https://github.com/OpenLake/Student_Database_COSA/issues) for tasks, join our [Discord server](https://discord.gg/4ygfBmjW) to connect with the team, and view the new [Figma design](https://www.figma.com/design/30y4S7ZfFo92GAwV2uacOG/Student-DB_CoSA?node-id=0-1&t=e95ozkVrFmlxgdOK-1).
 
 ---
 
