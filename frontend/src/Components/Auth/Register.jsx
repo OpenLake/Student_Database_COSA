@@ -5,6 +5,7 @@ import isIITBhilaiEmail from "../../utils/emailValidator";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
+import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
 
 export default function Register() {
@@ -44,35 +45,45 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0A0F08] flex items-center justify-center p-4">
+    <div
+      className="min-h-screen w-full flex items-center justify-center p-4 relative"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Blur Overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          zIndex: 0,
+        }}
+      />
+      {/* Shade Overlay */}
+      <div className="absolute inset-0 bg-black/40" style={{ zIndex: 1 }} />
+      
       {/* Main container */}
-      <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-12 lg:gap-16 w-full max-w-7xl">
-        {/* Cream Register Box */}
-        <div
-          className="bg-[#FDFAE2] rounded-[30px] p-6 sm:p-8 w-[700px] min-h-[650px] flex items-center justify-center max-w-full sm:max-w-full"
-          style={{
-            boxShadow: `
-              inset 0 10px 40px rgba(0, 0, 0, 0.2),
-              inset 0 15px 20px rgba(0, 0, 0, 0.3),
-              inset 0 10px 20px rgba(0, 0, 0, 0.2),
-              inset 4px 4px 4px rgba(0, 0, 0, 0.1),
-              inset -4px -4px 4px rgba(255, 255, 255, 0.3)
-            `,
-          }}
-        >
+      <div
+        className="flex flex-wrap flex-col-reverse lg:flex-row items-center justify-center gap-12 lg:gap-16 w-full max-w-7xl relative"
+        style={{ zIndex: 2 }}
+      >
+        <div>
           <form
             onSubmit={handleSubmit}
-            className="bg-white p-6 rounded-xl shadow-md w-[480px]"
+            className="bg-white p-8 rounded-xl shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl"
             style={{
               boxShadow: `
-                  0 20px 40px rgba(0, 0, 0, 0.15),
-                  0 10px 20px rgba(0, 0, 0, 0.1),
-                  0 4px 8px rgba(0, 0, 0, 0.08),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.8)
-                `,
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 10px 20px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8)
+              `,
             }}
           >
-            <h2 className="text-xl font-bold text-center mb-6">Sign Up</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
             <hr className="mb-6" />
 
             {/* Name */}
@@ -160,8 +171,8 @@ export default function Register() {
           </form>
         </div>
 
-        {/* CoSA Logo outside cream box */}
-        <div className="flex flex-col items-center text-white">
+        {/* CoSA Logo outside form */}
+        <div className="flex flex-col items-center text-white w-full max-w-xs mb-8 lg:mb-0">
           <img src={cosa} alt="CoSA Logo" className="w-52 h-52 mb-6" />
           <h1 className="text-2xl font-semibold">CoSA</h1>
         </div>
