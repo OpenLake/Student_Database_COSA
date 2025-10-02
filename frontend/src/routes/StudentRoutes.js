@@ -6,7 +6,7 @@ import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Student/AddUserAchievements";
 import ViewAchievements from "../Components/ViewAchievements";
 import ManagePositions from "../Components/ManagePosition";
-import SkillManagement from "../Components/SkillManagement";
+import SkillManagement from "../Components/Student/UserSkillManagement";
 import Logout from "../Components/Logout";
 import Home from "../Components/Student/Home";
 import StudentProfile from "../Components/Student/ProfilePage";
