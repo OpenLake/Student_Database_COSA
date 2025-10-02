@@ -10,7 +10,7 @@ import StudentProfile from "../Components/Student/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Student/AddUserAchievements";
 import ViewAchievements from "../Components/ViewAchievements";
-import SkillManagement from "../Components/SkillManagement";
+import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 
 export const dashboardComponents = {
@@ -27,6 +27,6 @@ export const dashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
-  skills: SkillManagement,
+  skills: UserSkillManagement,
   por: ManagePositions,
 };
