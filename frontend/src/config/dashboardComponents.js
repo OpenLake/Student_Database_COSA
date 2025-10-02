@@ -6,11 +6,11 @@ import EventForm from "../Components/Events/EventForm";
 import CreateOrgUnit from "../Components/CreateOrgUnit";
 import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
-import StudentProfile from "../Components/Student_Page/ProfilePage";
+import StudentProfile from "../Components/Student/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
-import AchievementForm from "../Components/AddAchievements";
-import ViewAchievements from "../Components/ViewAchievements";
-import SkillManagement from "../Components/SkillManagement";
+import AchievementForm from "../Components/Student/AddUserAchievements";
+import ViewAchievements from "../Components/Student/ViewUserAchievements";
+import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 
 export const dashboardComponents = {
@@ -27,6 +27,6 @@ export const dashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
-  skills: SkillManagement,
+  skills: UserSkillManagement,
   por: ManagePositions,
 };

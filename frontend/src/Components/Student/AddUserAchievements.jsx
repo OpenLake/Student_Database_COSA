@@ -8,8 +8,8 @@ import {
   Tag,
   Star,
 } from "lucide-react";
-import { AdminContext } from "../context/AdminContext";
-import api from "../utils/api";
+import { AdminContext } from "../../context/AdminContext";
+import api from "../../utils/api";
 export default function AchievementForm() {
   const { isUserLoggedIn } = React.useContext(AdminContext);
   const [formData, setFormData] = useState({

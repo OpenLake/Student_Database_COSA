@@ -3,13 +3,13 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { ProtectedRoute } from "../Components/common/ProtectedRoute";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
-import AchievementForm from "../Components/AddAchievements";
-import ViewAchievements from "../Components/ViewAchievements";
+import AchievementForm from "../Components/Student/AddUserAchievements";
+import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import ManagePositions from "../Components/ManagePosition";
-import SkillManagement from "../Components/SkillManagement";
+import SkillManagement from "../Components/Student/UserSkillManagement";
 import Logout from "../Components/Logout";
-import Home from "../Components/Student_Page/Home";
-import StudentProfile from "../Components/Student_Page/ProfilePage";
+import Home from "../Components/Student/Home";
+import StudentProfile from "../Components/Student/ProfilePage";
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route

@@ -11,8 +11,8 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import api from "../utils/api";
-import { AdminContext } from "../context/AdminContext";
+import api from "../../utils/api";
+import { AdminContext } from "../../context/AdminContext";
 
 const ViewAchievements = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);

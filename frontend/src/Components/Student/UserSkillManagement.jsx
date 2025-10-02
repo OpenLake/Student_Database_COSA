@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import api from "../utils/api";
-import { AdminContext } from "../context/AdminContext";
+import api from "../../utils/api";
+import { AdminContext } from "../../context/AdminContext";
 import {
   Plus,
   X,
@@ -60,7 +60,7 @@ const SkillManagement = ({ userId }) => {
   // Fetch user skills
   useEffect(() => {
     const fetchUserSkills = async () => {
-      if (!isUserLoggedIn?._id) return;
+      if (!isUserLoggedIn?._id) {return;}
 
       try {
         const userSkillsRes = await api.get(
