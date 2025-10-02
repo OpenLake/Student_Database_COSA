@@ -192,9 +192,9 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4">
+    <div className="min-h-screen bg-white py-12 ">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="max-w-xl mx-auto border border-black rounded-lg shadow-md p-8">
+      <div className="max-w-3xl mx-auto border border-black rounded-lg shadow-md p-8">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-black">
             Student Feedback Form

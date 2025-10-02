@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCredentials, completeOnboarding } from "../services/auth";
-import { AdminContext } from "../context/AdminContext";
-import logo from "../assets/image.png";
+import { fetchCredentials, completeOnboarding } from "../../services/auth";
+import { AdminContext } from "../../context/AdminContext";
+import logo from "../../assets/image.png";
 
 export default function OnboardingForm() {
   const navigate = useNavigate();
