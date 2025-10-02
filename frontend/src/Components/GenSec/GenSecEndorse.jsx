@@ -54,13 +54,17 @@ const UserSkillCard = ({ skill, onEndorse, isEndorsing }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-pink-50 border border-pink-100 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+      {/* Card Header */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {skill.skill_id.name}
+            User Skill Request
           </h3>
-          <p className="text-sm text-gray-600 mb-2">
+          <h4 className="text-md font-medium text-gray-800 mb-2">
+            {skill.skill_id.name}
+          </h4>
+          <p className="text-sm text-gray-600 mb-3">
             {skill.skill_id.category}
           </p>
           <span
@@ -70,39 +74,74 @@ const UserSkillCard = ({ skill, onEndorse, isEndorsing }) => {
               skill.proficiency_level.slice(1)}
           </span>
         </div>
-        <button
-          onClick={() => onEndorse(skill._id)}
-          disabled={isEndorsing}
-          className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-        >
-          {isEndorsing ? "Endorsing..." : "Endorse"}
-        </button>
       </div>
 
-      <div className="border-t border-gray-100 pt-4">
-        <div className="flex items-center justify-between mb-3">
+      {/* User Information */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2 text-sm">
+          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <span className="text-xs font-medium text-gray-700">
+              {skill.user_id.personal_info.name.charAt(0)}
+            </span>
+          </div>
           <div>
             <p className="font-medium text-gray-900">
               {skill.user_id.personal_info.name}
             </p>
-            <p className="text-sm text-gray-600">
-              {skill.user_id.user_id} • @{skill.user_id.username}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">
-              Submitted: {formatDate(skill.created_at)}
-            </p>
+            <p className="text-sm text-gray-600">{skill.user_id.user_id}</p>
           </div>
         </div>
+      </div>
 
-        {skill.position_id && (
-          <div className="bg-gray-50 rounded-md p-3">
-            <p className="text-sm font-medium text-gray-900">
-              Position: {skill.position_id.title}
-            </p>
-          </div>
-        )}
+      {/* Position Information */}
+      {skill.position_id && (
+        <div className="bg-white rounded-md p-3 mb-4">
+          <p className="text-sm font-medium text-gray-900">
+            Position: {skill.position_id.title}
+          </p>
+        </div>
+      )}
+
+      {/* Date Information */}
+      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        <span>Submitted: {formatDate(skill.created_at)}</span>
+      </div>
+
+      {/* Action Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => onEndorse(skill._id)}
+          disabled={isEndorsing}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span>{isEndorsing ? "Processing..." : "View"}</span>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -157,7 +196,7 @@ const UserSkillsTab = ({ skillType }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -181,10 +220,10 @@ const UserSkillsTab = ({ skillType }) => {
           </svg>
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">
-          All user skills endorsed!
+          No Pending Endorsements
         </h3>
         <p className="text-gray-600">
-          There are no pending {skillType} user skills to review at this time.
+          All {skillType} user skills have been reviewed and endorsed.
         </p>
       </div>
     );
@@ -215,7 +254,7 @@ const UserSkillsTab = ({ skillType }) => {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {skills.map((skill) => (
           <UserSkillCard
             key={skill._id}
@@ -235,7 +274,7 @@ const TabNavigation = ({ activeTab, onTabChange, skillType }) => {
       case "user":
         return (
           <svg
-            className="w-4 h-4"
+            className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -251,7 +290,7 @@ const TabNavigation = ({ activeTab, onTabChange, skillType }) => {
       case "skill":
         return (
           <svg
-            className="w-4 h-4"
+            className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -267,7 +306,7 @@ const TabNavigation = ({ activeTab, onTabChange, skillType }) => {
       case "achievement":
         return (
           <svg
-            className="w-4 h-4"
+            className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -286,20 +325,20 @@ const TabNavigation = ({ activeTab, onTabChange, skillType }) => {
   };
 
   return (
-    <div className="border-b border-gray-200">
-      <nav className="-mb-px flex space-x-8">
+    <div className="border-b border-gray-200 bg-white">
+      <nav className="-mb-px flex space-x-8 px-4 sm:px-6 lg:px-8">
         {endorsementTabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+            className={`flex items-center gap-3 py-4 px-2 border-b-3 font-semibold text-base transition-colors min-w-0 ${
               activeTab === tab.id
-                ? "border-gray-900 text-gray-900"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
+                ? "border-blue-600 text-blue-600 bg-blue-50"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+            } rounded-t-lg`}
           >
             {getTabIcon(tab.icon)}
-            {tab.label}
+            <span className="whitespace-nowrap">{tab.label}</span>
           </button>
         ))}
       </nav>
@@ -309,9 +348,8 @@ const TabNavigation = ({ activeTab, onTabChange, skillType }) => {
 
 // Main Component
 const GenSecEndorse = () => {
-  // Mock admin context - replace with useContext(AdminContext)
-  const { userRole } = React.useContext(AdminContext); // Default to GENSEC_CULT if context is not available
-  const adminRole = userRole; // This should come from AdminContext
+  const { userRole } = React.useContext(AdminContext);
+  const adminRole = userRole;
 
   const [currentPage, setCurrentPage] = useState("endorsement"); // 'endorsement' or 'history'
   const [activeTab, setActiveTab] = useState("user-skills");
@@ -346,13 +384,25 @@ const GenSecEndorse = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {config.pageTitle}
-                </h1>
-                <p className="mt-1 text-sm text-gray-600">
-                  {config.description}
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 text-gray-600">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Pending Endorsement
+                  </h1>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Review and approve pending requests for your department
+                  </p>
+                </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">
@@ -369,7 +419,7 @@ const GenSecEndorse = () => {
 
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <TabNavigation
             activeTab={activeTab}
             onTabChange={handleTabChange}
@@ -380,8 +430,8 @@ const GenSecEndorse = () => {
 
       {/* Tab Description */}
       <div className="bg-gray-50 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <p className="text-sm text-gray-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <p className="text-sm text-gray-600 font-medium">
             {endorsementTabs.find((tab) => tab.id === activeTab)?.description}
           </p>
         </div>
