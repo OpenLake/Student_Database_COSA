@@ -4,7 +4,7 @@ import { Route } from "react-router-dom";
 import { ProtectedRoute } from "../Components/common/ProtectedRoute";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Student/AddUserAchievements";
-import ViewAchievements from "../Components/ViewAchievements";
+import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import ManagePositions from "../Components/ManagePosition";
 import SkillManagement from "../Components/Student/UserSkillManagement";
 import Logout from "../Components/Logout";

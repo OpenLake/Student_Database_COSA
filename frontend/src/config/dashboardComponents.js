@@ -9,7 +9,7 @@ import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorse
 import StudentProfile from "../Components/Student/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Student/AddUserAchievements";
-import ViewAchievements from "../Components/ViewAchievements";
+import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 
