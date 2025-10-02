@@ -8,6 +8,7 @@ import LoadingScreen from "./Components/common/LoadingScreen";
 import { getPublicRoutes } from "./routes/PublicRoutes";
 import { getAdminRoutes } from "./routes/AdminRoutes";
 import { getStudentRoutes } from "./routes/StudentRoutes";
+import { getDashboardRoutes } from "./routes/Dashboard";
 import OnboardingForm from "./Components/UserOnboarding";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 import Unauthorised from "./Components/Unauthorised";
@@ -36,6 +37,9 @@ function App() {
 
             {/* Student Routes */}
             {getStudentRoutes(isUserLoggedIn, isOnboardingComplete)}
+
+            {/* Dashboard Routes */}
+            {getDashboardRoutes(isUserLoggedIn, isOnboardingComplete)}
 
             {/* Special Routes */}
             <Route path="/" element={<RoleRedirect />} />

@@ -1,0 +1,32 @@
+//import Dashboard from "../Components/Dashboard";
+import { CreateTenure, ViewTenure } from "../Components/Positions/TenureRecords";
+import ViewFeedback from "../Components/Feedback/ViewFeedback";
+import EventList from "../Components/Events/EventList";
+import EventForm from "../Components/Events/EventForm";
+import CreateOrgUnit from "../Components/CreateOrgUnit";
+import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
+import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
+import StudentProfile from "../Components/Student_Page/ProfilePage";
+import FeedbackForm from "../Components/Feedback/FeedbackForm";
+import AchievementForm from "../Components/AddAchievements";
+import ViewAchievements from "../Components/ViewAchievements";
+import SkillManagement from "../Components/SkillManagement";
+import ManagePositions from "../Components/ManagePosition";
+
+export const dashboardComponents = {
+  //dashboard: Dashboard,
+  cosa: ViewTenure,
+  "manage-positions": CreateTenure,
+  "view-feedback": ViewFeedback,
+  events: EventList,
+  "add-event": EventForm,
+  "add-org-unit": CreateOrgUnit,
+  "gensec-endorse": GenSecEndorse,
+  "endorse-achievements": AchievementsEndorsementTab,
+  profile: StudentProfile,
+  "give-feedback": FeedbackForm,
+  "add-achievements": AchievementForm,
+  "view-achievements": ViewAchievements,
+  skills: SkillManagement,
+  por: ManagePositions,
+};

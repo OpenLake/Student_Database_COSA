@@ -75,17 +75,17 @@ export default function AchievementForm() {
   };
 
   return (
-    <div className="min-h-screen bg-white py-8 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-white py-4 px-4">
+      <div className="max-w-4xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="bg-black rounded-full p-3">
+            <div className="flex justify-center mb-2">
+              <div className="bg-black rounded-full p-2">
                 <Trophy className="w-8 h-8 text-white" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-black mb-2">
+            <h1 className="text-2xl font-bold text-black mb-1">
               Add New Achievement
             </h1>
             <p className="text-gray-600">
@@ -93,7 +93,7 @@ export default function AchievementForm() {
             </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Title */}
             <div>
               <label className="flex items-center text-sm font-medium text-black mb-2">
@@ -106,7 +106,7 @@ export default function AchievementForm() {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="e.g., First Place in Science Fair"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 required
               />
             </div>
@@ -114,7 +114,7 @@ export default function AchievementForm() {
             {/* Description */}
             <div>
               <label className="flex items-center text-sm font-medium text-black mb-2">
-                <FileText className="w-4 h-4 mr-2" />
+                <FileText className="w-4 h-3 mr-1" />
                 Description
               </label>
               <textarea
@@ -123,7 +123,7 @@ export default function AchievementForm() {
                 onChange={handleInputChange}
                 placeholder="Provide details about your achievement..."
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none"
               />
             </div>
 
@@ -140,7 +140,7 @@ export default function AchievementForm() {
                   value={formData.category}
                   onChange={handleInputChange}
                   placeholder="Enter Category"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 />
               </div>
 
@@ -153,7 +153,7 @@ export default function AchievementForm() {
                   name="type"
                   value={formData.type}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                   required
                 >
                   <option value="">Select Type</option>
@@ -175,7 +175,7 @@ export default function AchievementForm() {
                 name="event_id"
                 value={formData.event_id}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
               >
                 <option value="">Select Event (optional)</option>
                 {events.map((event) => (
@@ -198,7 +198,7 @@ export default function AchievementForm() {
                   value={formData.level}
                   onChange={handleInputChange}
                   placeholder="Enter achievement level"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 />
               </div>
 
@@ -213,7 +213,7 @@ export default function AchievementForm() {
                   value={formData.position}
                   onChange={handleInputChange}
                   placeholder="e.g., 1st, 2nd, Winner"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function AchievementForm() {
                 name="date_achieved"
                 value={formData.date_achieved}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 required
               />
             </div>
@@ -246,7 +246,7 @@ export default function AchievementForm() {
                 value={formData.certificate_url}
                 onChange={handleInputChange}
                 placeholder="https://example.com/certificate.pdf"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Upload your certificate to a cloud service and paste the link
