@@ -9,7 +9,7 @@ import { getPublicRoutes } from "./routes/PublicRoutes";
 import { getAdminRoutes } from "./routes/AdminRoutes";
 import { getStudentRoutes } from "./routes/StudentRoutes";
 import { getDashboardRoutes } from "./routes/Dashboard";
-import OnboardingForm from "./Components/UserOnboarding";
+import OnboardingForm from "./Components/Auth/UserOnboarding";
 import RoleRedirect from "./Components/Auth/RoleRedirect";
 import Unauthorised from "./Components/Unauthorised";
 import "react-toastify/dist/ReactToastify.css";
