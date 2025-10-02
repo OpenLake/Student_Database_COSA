@@ -7,7 +7,7 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
   // Handle file selection and preview
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) {return;}
 
     setLoading(true);
 
