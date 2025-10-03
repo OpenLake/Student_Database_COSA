@@ -54,80 +54,46 @@ const UserSkillCard = ({ skill, onEndorse, isEndorsing }) => {
   };
 
   return (
-    <div className="bg-pink-50 border border-pink-100 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+    <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
       {/* Card Header */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            User Skill Request
-          </h3>
-          <h4 className="text-md font-medium text-gray-800 mb-2">
-            {skill.skill_id.name}
-          </h4>
-          <p className="text-sm text-gray-600 mb-3">
-            {skill.skill_id.category}
-          </p>
-          <span
-            className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getProficiencyColor(skill.proficiency_level)}`}
-          >
-            {skill.proficiency_level.charAt(0).toUpperCase() +
-              skill.proficiency_level.slice(1)}
-          </span>
-        </div>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          {skill.skill_id.name}
+        </h3>
+        <p className="text-sm text-gray-600 mb-2">{skill.skill_id.category}</p>
+        <span
+          className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getProficiencyColor(skill.proficiency_level)}`}
+        >
+          {skill.proficiency_level.charAt(0).toUpperCase() +
+            skill.proficiency_level.slice(1)}
+        </span>
       </div>
 
       {/* User Information */}
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2 text-sm">
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-700">
-              {skill.user_id.personal_info.name.charAt(0)}
-            </span>
-          </div>
-          <div>
-            <p className="font-medium text-gray-900">
-              {skill.user_id.personal_info.name}
-            </p>
-            <p className="text-sm text-gray-600">{skill.user_id.user_id}</p>
-          </div>
+      <div className="flex items-center gap-2 mb-3 text-sm">
+        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+          <span className="text-xs font-medium text-gray-700">
+            {skill.user_id.personal_info.name.charAt(0)}
+          </span>
         </div>
-      </div>
-
-      {/* Position Information */}
-      {skill.position_id && (
-        <div className="bg-white rounded-md p-3 mb-4">
-          <p className="text-sm font-medium text-gray-900">
-            Position: {skill.position_id.title}
+        <div>
+          <p className="font-medium text-gray-900">
+            {skill.user_id.personal_info.name}
           </p>
+          <p className="text-sm text-gray-600">{skill.user_id.user_id}</p>
         </div>
-      )}
-
-      {/* Date Information */}
-      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-        <span>Submitted: {formatDate(skill.created_at)}</span>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => onEndorse(skill._id)}
-          disabled={isEndorsing}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span>{isEndorsing ? "Processing..." : "View"}</span>
+      {/* Position and Date Information */}
+      <div className="space-y-2 mb-2">
+        {skill.position_id && (
+          <div className="bg-white rounded-md p-2">
+            <p className="text-sm font-medium text-gray-900">
+              Position: {skill.position_id.title}
+            </p>
+          </div>
+        )}
+        <div className="flex items-center gap-2 text-sm text-gray-600">
           <svg
             className="w-4 h-4"
             fill="none"
@@ -138,9 +104,21 @@ const UserSkillCard = ({ skill, onEndorse, isEndorsing }) => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9 5l7 7-7 7"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
             />
           </svg>
+          <span>Submitted: {formatDate(skill.created_at)}</span>
+        </div>
+      </div>
+
+      {/* Action Button */}
+      <div className="flex justify-end pt-2 border-t border-pink-200">
+        <button
+          onClick={() => onEndorse(skill._id)}
+          disabled={isEndorsing}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span>{isEndorsing ? "Endorsing..." : "Endorse"}</span>
         </button>
       </div>
     </div>

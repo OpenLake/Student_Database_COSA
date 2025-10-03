@@ -34,49 +34,41 @@ const SkillCard = ({ skill, onEndorse, isEndorsing }) => {
     });
 
   return (
-    <div className="bg-pink-50 border border-pink-100 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+    <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
       {/* Card Header */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            Skill Request
-          </h3>
-          <h4 className="text-md font-medium text-gray-800 mb-2">
-            {skill.name}
-          </h4>
-          <p className="text-sm text-gray-600 mb-3">{skill.category}</p>
-          {skill.description && (
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              "{skill.description}"
-            </p>
-          )}
-        </div>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          {skill.name}
+        </h3>
+        <p className="text-sm text-gray-600 mb-2">{skill.category}</p>
+        {skill.description && (
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+            "{skill.description}"
+          </p>
+        )}
       </div>
 
-      {/* Skill ID Badge */}
-      {skill.skill_id && (
-        <div className="mb-3">
+      {/* Skill ID and Date */}
+      <div className="flex items-center justify-between mb-2">
+        {skill.skill_id && (
           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
             ID: {skill.skill_id}
           </span>
+        )}
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Calendar className="w-4 h-4" />
+          <span>{formatDate(skill.created_at)}</span>
         </div>
-      )}
-
-      {/* Date Information */}
-      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
-        <Calendar className="w-4 h-4" />
-        <span>Created: {formatDate(skill.created_at)}</span>
       </div>
 
       {/* Action Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-2 border-t border-pink-200">
         <button
           onClick={() => onEndorse(skill._id)}
           disabled={isEndorsing}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>{isEndorsing ? "Processing..." : "View"}</span>
-          <ChevronRight className="w-4 h-4" />
+          <span>{isEndorsing ? "Endorsing..." : "Endorse"}</span>
         </button>
       </div>
     </div>

@@ -117,26 +117,21 @@ const AchievementsEndorsementTab = ({ skillType }) => {
       {achievements.map((ach) => (
         <div
           key={ach._id}
-          className="bg-pink-50 border border-pink-100 rounded-lg p-6 hover:shadow-md transition-shadow duration-200"
+          className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
         >
           {/* Card Header */}
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                Achievement Request
-              </h3>
-              <h4 className="text-md font-medium text-gray-800 mb-2">
-                {ach.title}
-              </h4>
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                "{ach.description}"
-              </p>
-            </div>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {ach.title}
+            </h3>
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+              "{ach.description}"
+            </p>
           </div>
 
           {/* User Information */}
           {ach.user_id && (
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-700">
+            <div className="flex items-center gap-2 mb-2 text-sm text-gray-700">
               <User className="w-4 h-4" />
               <span className="font-medium">
                 {ach.user_id.personal_info?.name}
@@ -149,48 +144,45 @@ const AchievementsEndorsementTab = ({ skillType }) => {
 
           {/* Event Information */}
           {ach.event_id && (
-            <div className="bg-white rounded-md p-3 mb-3">
+            <div className="bg-white rounded-md p-2 mb-2">
               <p className="text-sm font-medium text-gray-900">
                 Event: {ach.event_id.title}
               </p>
               {ach.event_id.description && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-xs text-gray-600 mt-1">
                   {ach.event_id.description}
                 </p>
               )}
             </div>
           )}
 
-          {/* Date Information */}
-          <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
-            <Calendar className="w-4 h-4" />
-            <span>{format(new Date(ach.date_achieved), "dd MMM yyyy")}</span>
-          </div>
-
-          {/* Certificate Link */}
-          {ach.certificate_url && (
-            <div className="mb-4">
+          {/* Date and Certificate */}
+          <div className="flex items-center justify-between mb-2 text-sm">
+            <div className="flex items-center gap-2 text-gray-600">
+              <Calendar className="w-4 h-4" />
+              <span>{format(new Date(ach.date_achieved), "dd MMM yyyy")}</span>
+            </div>
+            {ach.certificate_url && (
               <a
                 href={ach.certificate_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
               >
-                <ExternalLink className="w-4 h-4" />
-                View Certificate
+                <ExternalLink className="w-3 h-3" />
+                Certificate
               </a>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Action Button */}
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-2 border-t border-pink-200">
             <button
               onClick={() => handleVerify(ach._id)}
               disabled={verifying.has(ach._id)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{verifying.has(ach._id) ? "Processing..." : "View"}</span>
-              <ChevronRight className="w-4 h-4" />
+              <span>{verifying.has(ach._id) ? "Endorsing..." : "Endorse"}</span>
             </button>
           </div>
         </div>
