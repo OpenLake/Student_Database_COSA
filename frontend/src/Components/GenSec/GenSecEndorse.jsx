@@ -152,13 +152,18 @@ const UserSkillsTab = ({ skillType }) => {
   const handleEndorse = async (skillId) => {
     try {
       setEndorsingSkills((prev) => new Set([...prev, skillId]));
+      
+      // Make the API call
+      await endorseSkill(skillId);
 
-      const result = await endorseSkill(skillId);
+      // --- FIX START ---
+      // Removed the `if (result.success)` condition.
+      // Now, we update the state to remove the endorsed skill from the list
+      // as long as the API call above doesn't fail.
+      setSkills((prev) => prev.filter((skill) => skill._id !== skillId));
+      console.log("User skill endorsed successfully");
+      // --- FIX END ---
 
-      if (result.success) {
-        setSkills((prev) => prev.filter((skill) => skill._id !== skillId));
-        console.log("User skill endorsed successfully");
-      }
     } catch (err) {
       console.error("Error endorsing skill:", err);
       setError("Failed to endorse skill. Please try again.");
