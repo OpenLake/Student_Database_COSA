@@ -66,16 +66,16 @@ const TabNavigation = ({ activeTab, onTabChange }) => {
   };
 
   return (
-    <div className="border-b border-gray-200 bg-white">
-      <nav className="-mb-px flex space-x-8 px-4 sm:px-6 lg:px-8">
+    <div className="border-b border-yellow-200 bg-[#FDFAE2]">
+      <nav className="-mb-px flex space-x-4 sm:space-x-8 px-4 sm:px-6 lg:px-8 overflow-x-auto">
         {endorsementTabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex items-center gap-3 py-4 px-2 border-b-3 font-semibold text-base transition-colors min-w-0 ${
+            className={`flex items-center gap-3 py-4 px-2 border-b-2 font-semibold text-base transition-colors min-w-0 ${
               activeTab === tab.id
-                ? "border-blue-600 text-blue-600 bg-blue-50"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                ? "border-sky-500 text-sky-700"
+                : "border-transparent text-yellow-900/60 hover:text-yellow-900 hover:border-gray-300/70"
             } rounded-t-lg`}
           >
             {getTabIcon(tab.icon)}
@@ -114,14 +114,15 @@ const GenSecEndorse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FEFDF7]">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-[#FDFAE2] border-b border-yellow-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              {/* Left Side: Title and Description */}
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 text-gray-600">
+                <div className="w-6 h-6 text-gray-600 flex-shrink-0">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -132,20 +133,12 @@ const GenSecEndorse = () => {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-gray-800">
                     Pending Endorsement
                   </h1>
-                  <p className="mt-1 text-sm text-gray-600">
+                  <p className="mt-1 text-sm text-gray-500">
                     Review and approve pending requests for your department
                   </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">
-                    {config.displayTitle}
-                  </p>
-                  <p className="text-sm text-gray-600">Endorsement Panel</p>
                 </div>
               </div>
             </div>
@@ -154,14 +147,14 @@ const GenSecEndorse = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-10">
         <div className="max-w-7xl mx-auto">
           <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       </div>
 
       {/* Tab Description */}
-      <div className="bg-gray-50 border-b border-gray-200">
+      <div className="border-b border-yellow-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-sm text-gray-600 font-medium">
             {endorsementTabs.find((tab) => tab.id === activeTab)?.description}
