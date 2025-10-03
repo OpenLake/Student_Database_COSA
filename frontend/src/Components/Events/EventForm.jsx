@@ -192,44 +192,42 @@ const EventForm = ({ event = null, onClose }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow space-y-8"
+      className="max-w-3xl mx-auto p-4 bg-white rounded-xl shadow space-y-4 max-h-[calc(100vh-6rem)] overflow-y-auto"
     >
-      <h2 className="text-3xl font-bold text-center text-indigo-700">
+      <h2 className="text-xl font-semibold text-center text-indigo-700">
         {event ? "Edit Event" : "Create New Event"}
       </h2>
 
       {/* Title + Description */}
-      <div>
-        <label className="font-medium">Event Title</label>
+      <div className="grid grid-cols-1 gap-2">
+        <label className="text-sm font-medium">Event Title</label>
         <input
           name="title"
           value={formData.title}
           onChange={handleChange}
           required
-          className="w-full p-2 mt-1 border rounded"
+          className="w-full p-1.5 mt-1 border rounded text-sm"
         />
-      </div>
 
-      <div>
-        <label className="font-medium">Description</label>
+        <label className="text-sm font-medium">Description</label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows={3}
-          className="w-full p-2 mt-1 border rounded"
+          rows={2}
+          className="w-full p-1.5 mt-1 border rounded text-sm"
         />
       </div>
 
       {/* Category + Type */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="font-medium">Category</label>
+          <label className="text-sm font-medium">Category</label>
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full p-2 mt-1 border rounded"
+            className="w-full p-1.5 mt-1 border rounded text-sm"
             required
           >
             <option value="">Select</option>
@@ -241,26 +239,26 @@ const EventForm = ({ event = null, onClose }) => {
           </select>
         </div>
         <div>
-          <label className="font-medium">Type</label>
+          <label className="text-sm font-medium">Type</label>
           <input
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full p-2 mt-1 border rounded"
+            className="w-full p-1.5 mt-1 border rounded text-sm"
             placeholder="e.g. Competition"
           />
         </div>
       </div>
 
       {/* Organizing Unit + Organizers */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="font-medium">Organizing Unit</label>
+          <label className="text-sm font-medium">Organizing Unit</label>
           <select
             name="organizing_unit_id"
             value={formData.organizing_unit_id}
             onChange={handleChange}
-            className="w-full p-2 mt-1 border rounded"
+            className="w-full p-1.5 mt-1 border rounded text-sm"
             required
           >
             <option value="">Select</option>
@@ -272,7 +270,7 @@ const EventForm = ({ event = null, onClose }) => {
           </select>
         </div>
         <div>
-          <label className="font-medium">Organizers</label>
+          <label className="text-sm font-medium">Organizers</label>
           <Select
             isMulti
             options={organizerOptions}
@@ -285,80 +283,86 @@ const EventForm = ({ event = null, onClose }) => {
                 organizers: selected.map((s) => s.value),
               }))
             }
-            className="mt-1"
+            className="mt-1 text-sm"
             classNamePrefix="select"
             placeholder="Select organizers..."
+            styles={{
+              control: (base) => ({ ...base, minHeight: 34, height: 34 }),
+              valueContainer: (base) => ({ ...base, padding: "0 6px" }),
+              input: (base) => ({ ...base, margin: 0, padding: 0 }),
+            }}
           />
         </div>
       </div>
 
-      {/* Schedule, Registration, Budget Sections */}
       {/* Schedule */}
       <div>
-        <h3 className="text-lg font-semibold border-b pb-1 mb-2">Schedule</h3>
-        <div className="grid grid-cols-2 gap-4">
+        <h3 className="text-sm font-semibold border-b pb-1 mb-2">Schedule</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <div>
-            <label>Start Date</label>
+            <label className="text-sm">Start Date</label>
             <input
               type="date"
               value={formData.schedule.date.start}
               onChange={(e) =>
                 handleScheduleDateTimeChange("date", "start", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             />
           </div>
           <div>
-            <label>Start Time</label>
+            <label className="text-sm">Start Time</label>
             <input
               type="time"
               value={formData.schedule.time.start}
               onChange={(e) =>
                 handleScheduleDateTimeChange("time", "start", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             />
           </div>
           <div>
-            <label>End Date</label>
+            <label className="text-sm">End Date</label>
             <input
               type="date"
               value={formData.schedule.date.end}
               onChange={(e) =>
                 handleScheduleDateTimeChange("date", "end", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             />
           </div>
           <div>
-            <label>End Time</label>
+            <label className="text-sm">End Time</label>
             <input
               type="time"
               value={formData.schedule.time.end}
               onChange={(e) =>
                 handleScheduleDateTimeChange("time", "end", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             />
           </div>
-          <div className="col-span-2">
-            <label>Venue</label>
+
+          <div className="sm:col-span-2 col-span-2">
+            <label className="text-sm">Venue</label>
             <input
               value={formData.schedule.venue}
               onChange={(e) =>
                 handleNestedChange("schedule", "venue", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             />
           </div>
-          <div className="col-span-2">
-            <label>Mode</label>
+
+          <div className="sm:col-span-2 col-span-2">
+            <label className="text-sm">Mode</label>
             <select
               value={formData.schedule.mode}
               onChange={(e) =>
                 handleNestedChange("schedule", "mode", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm mt-1"
             >
               <option value="">Select</option>
               <option value="online">Online</option>
@@ -371,10 +375,10 @@ const EventForm = ({ event = null, onClose }) => {
 
       {/* Registration */}
       <div>
-        <h3 className="text-lg font-semibold border-b pb-1 mb-2">
+        <h3 className="text-sm font-semibold border-b pb-1 mb-2">
           Registration
         </h3>
-        <label className="flex items-center space-x-2">
+        <label className="flex items-center space-x-2 text-sm">
           <input
             type="checkbox"
             checked={formData.registration.required}
@@ -392,7 +396,7 @@ const EventForm = ({ event = null, onClose }) => {
         </label>
 
         {formData.registration.required && (
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
             <input
               type="date"
               value={formData.registration.date.start}
@@ -403,7 +407,7 @@ const EventForm = ({ event = null, onClose }) => {
                   e.target.value,
                 )
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm"
             />
             <input
               type="time"
@@ -415,7 +419,7 @@ const EventForm = ({ event = null, onClose }) => {
                   e.target.value,
                 )
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm"
             />
             <input
               type="date"
@@ -423,7 +427,7 @@ const EventForm = ({ event = null, onClose }) => {
               onChange={(e) =>
                 handleRegistrationDateTimeChange("date", "end", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm"
             />
             <input
               type="time"
@@ -431,8 +435,9 @@ const EventForm = ({ event = null, onClose }) => {
               onChange={(e) =>
                 handleRegistrationDateTimeChange("time", "end", e.target.value)
               }
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1.5 text-sm"
             />
+
             <input
               type="number"
               placeholder="Fees"
@@ -440,7 +445,7 @@ const EventForm = ({ event = null, onClose }) => {
               onChange={(e) =>
                 handleNestedChange("registration", "fees", e.target.value)
               }
-              className="w-full border rounded p-2 col-span-2"
+              className="w-full border rounded p-1.5 text-sm col-span-2"
             />
             <input
               type="number"
@@ -453,7 +458,7 @@ const EventForm = ({ event = null, onClose }) => {
                   e.target.value,
                 )
               }
-              className="w-full border rounded p-2 col-span-2"
+              className="w-full border rounded p-1.5 text-sm col-span-2"
             />
           </div>
         )}
@@ -461,7 +466,7 @@ const EventForm = ({ event = null, onClose }) => {
 
       {/* Budget & Sponsors */}
       <div>
-        <h3 className="text-lg font-semibold border-b pb-1 mb-2">
+        <h3 className="text-sm font-semibold border-b pb-1 mb-2">
           Budget & Sponsors
         </h3>
         <input
@@ -474,7 +479,7 @@ const EventForm = ({ event = null, onClose }) => {
               budget: { ...prev.budget, allocated: e.target.value },
             }))
           }
-          className="w-full border rounded p-2 mb-3"
+          className="w-full border rounded p-1.5 mb-2 text-sm"
         />
         {formData.budget.sponsors.map((sponsor, index) => (
           <input
@@ -483,22 +488,22 @@ const EventForm = ({ event = null, onClose }) => {
             value={sponsor}
             onChange={(e) => handleSponsorChange(index, e.target.value)}
             placeholder={`Sponsor ${index + 1}`}
-            className="w-full border rounded p-2 mb-2"
+            className="w-full border rounded p-1.5 mb-1 text-sm"
           />
         ))}
         <button
           type="button"
           onClick={addSponsor}
-          className="text-indigo-600 hover:underline text-sm"
+          className="text-indigo-600 hover:underline text-xs mt-1"
         >
           + Add Sponsor
         </button>
       </div>
 
-      <div className="pt-4 flex gap-2">
+      <div className="pt-2 flex gap-2">
         <button
           type="submit"
-          className="flex-1 w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-900 text-lg font-semibold"
+          className="flex-1 bg-black text-white py-1.5 px-3 rounded hover:bg-gray-900 text-sm font-semibold"
         >
           {event ? "Update Event" : "Create Event"}
         </button>
@@ -506,7 +511,7 @@ const EventForm = ({ event = null, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 w-full py-2 px-4 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 text-lg font-semibold"
+            className="flex-1 py-1.5 px-3 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm font-semibold"
           >
             Cancel
           </button>

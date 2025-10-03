@@ -311,14 +311,40 @@ router.put("/:eventId", isAuthenticated, isEventContact, async (req, res) => {
   try {
     const { eventId } = req.params;
     const updates = req.body;
+
+    // 🔍 DEBUG LOGS - START
+    console.log("\n=== 📝 UPDATE EVENT DEBUG ===");
+    console.log("Event ID:", eventId);
+    console.log(
+      "Updates received (full body):",
+      JSON.stringify(updates, null, 2),
+    );
+    console.log("Number of fields to update:", Object.keys(updates).length);
+    console.log("Fields being updated:", Object.keys(updates));
+    console.log("========================\n");
+    // 🔍 DEBUG LOGS - END
+
+    // Fetch the event BEFORE update to compare
+    const eventBefore = await Event.findById(eventId);
+    console.log("Event BEFORE update:", JSON.stringify(eventBefore, null, 2));
+
     const event = await Event.findByIdAndUpdate(eventId, updates, {
       new: true,
+      runValidators: true, // Added this to ensure validation runs
     });
+
+    console.log("\n=== ✅ UPDATE RESULT ===");
+    console.log("Event AFTER update:", JSON.stringify(event, null, 2));
+    console.log("Update successful:", !!event);
+    console.log("========================\n");
+
     if (!event) return res.status(404).json({ message: "Event not found" });
     return res.json({ message: "Event updated", event });
   } catch (err) {
-    console.error("update event error:", err);
-    return res.status(500).json({ message: "Server error" });
+    console.error("❌ update event error:", err);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 });
 
