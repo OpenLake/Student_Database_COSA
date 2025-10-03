@@ -11,6 +11,8 @@ import { AdminContext } from "../../context/AdminContext";
 import RoomRequestModal from "./RoomRequest";
 import ManageRequestsModal from "./ManageRoomRequest";
 import api from "../../utils/api";
+import EventForm from "./EventForm";
+
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,12 +24,12 @@ const EventList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedEventForManage, setSelectedEventForManage] = useState(null);
+  const [editingEvent, setEditingEvent] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      if (!userRole) {
-        return;
-      }
+      if (!userRole) return;
+
       try {
         setLoading(true);
         setError(null);
@@ -79,20 +81,19 @@ const EventList = () => {
       ),
     );
   };
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("en-US", {
+
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-  };
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString("en-US", {
+  const formatTime = (date) =>
+    new Date(date).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
 
   const getStatusColor = (status) => {
     const colors = {
@@ -138,40 +139,47 @@ const EventList = () => {
             </button>
           </div>
         );
+
       case "CLUB_COORDINATOR":
       case "GENSEC_SCITECH":
       case "GENSEC_ACADEMIC":
       case "GENSEC_CULTURAL":
       case "GENSEC_SPORTS":
+      case "PRESIDENT":
         return (
           <div className="flex flex-wrap gap-2">
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
-              Manage Event
+            <button
+              onClick={() => setEditingEvent(event)}
+              className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
+            >
+              Edit
             </button>
-            {canRequestRoom() && (
+
+            {userRole !== "PRESIDENT" && canRequestRoom() && (
               <button
                 className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
-                onClick={() => handleOpenModal(event._id)} // 4. Connect button to open the modal
+                onClick={() => handleOpenModal(event._id)}
               >
                 Request Room
               </button>
             )}
+
+            {userRole === "PRESIDENT" && (
+              <>
+                <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                  Review Event
+                </button>
+                <button
+                  onClick={() => setSelectedEventForManage(event)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                  Manage Requests
+                </button>
+              </>
+            )}
           </div>
         );
-      case "PRESIDENT":
-        return (
-          <div className="flex gap-2">
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-              Review Event
-            </button>
-            <button
-              onClick={() => setSelectedEventForManage(event)}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-            >
-              Manage Requests
-            </button>
-          </div>
-        );
+
       default:
         return null;
     }
@@ -248,12 +256,10 @@ const EventList = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
         <div className="mb-4">
           <p>Events at IIT Bhilai</p>
         </div>
 
-        {/* Events Grid */}
         {events.length === 0 ? (
           <div className="text-center py-12">
             <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -277,7 +283,9 @@ const EventList = () => {
                       {event.title}
                     </h3>
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(event.status)}`}
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        event.status,
+                      )}`}
                     >
                       {event.status}
                     </span>
@@ -320,7 +328,24 @@ const EventList = () => {
         )}
       </div>
 
-      {/*Conditionally render the modal */}
+      {/* EventForm modal for editing */}
+      {editingEvent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-10 z-50">
+          <div className="bg-white rounded-xl w-full max-w-4xl p-4 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-700 font-bold"
+              onClick={() => setEditingEvent(null)}
+            >
+              X
+            </button>
+            <EventForm
+              event={editingEvent}
+              onClose={() => setEditingEvent(null)}
+            />
+          </div>
+        </div>
+      )}
+
       {isModalOpen && (
         <RoomRequestModal
           eventId={selectedEventId}

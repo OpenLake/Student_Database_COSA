@@ -1,60 +1,78 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Select from "react-select";
 import api from "../../utils/api";
-const EventForm = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    type: "",
-    organizing_unit_id: "",
-    organizers: [],
-    schedule: {
-      date: {
-        start: "",
-        end: "",
-      },
-      time: {
-        start: "",
-        end: "",
-      },
-      venue: "",
-      mode: "",
-    },
-    registration: {
-      required: false,
-      date: {
-        start: "",
-        end: "",
-      },
-      time: {
-        start: "",
-        end: "",
-      },
-      fees: "",
-      max_participants: "",
-    },
-    budget: {
-      allocated: "",
-      sponsors: [""],
-    },
-  });
 
+const EventForm = ({ event = null, onClose }) => {
   const [units, setUnits] = useState([]);
   const [users, setUsers] = useState([]);
 
+  const [formData, setFormData] = useState({
+    title: event?.title || "",
+    description: event?.description || "",
+    category: event?.category || "",
+    type: event?.type || "",
+    organizing_unit_id: event?.organizing_unit_id || "",
+    organizers: event?.organizers?.map((o) => o._id) || [],
+    schedule: {
+      date: {
+        start: event
+          ? new Date(event.schedule.start).toISOString().slice(0, 10)
+          : "",
+        end: event
+          ? new Date(event.schedule.end).toISOString().slice(0, 10)
+          : "",
+      },
+      time: {
+        start: event
+          ? new Date(event.schedule.start).toTimeString().slice(0, 5)
+          : "",
+        end: event
+          ? new Date(event.schedule.end).toTimeString().slice(0, 5)
+          : "",
+      },
+      venue: event?.schedule?.venue || "",
+      mode: event?.schedule?.mode || "",
+    },
+    registration: {
+      required: event?.registration?.required || false,
+      date: {
+        start: event?.registration?.start
+          ? new Date(event.registration.start).toISOString().slice(0, 10)
+          : "",
+        end: event?.registration?.end
+          ? new Date(event.registration.end).toISOString().slice(0, 10)
+          : "",
+      },
+      time: {
+        start: event?.registration?.start
+          ? new Date(event.registration.start).toTimeString().slice(0, 5)
+          : "",
+        end: event?.registration?.end
+          ? new Date(event.registration.end).toTimeString().slice(0, 5)
+          : "",
+      },
+      fees: event?.registration?.fees || "",
+      max_participants: event?.registration?.max_participants || "",
+    },
+    budget: {
+      allocated: event?.budget?.allocated || "",
+      sponsors: event?.budget?.sponsors || [""],
+    },
+  });
+
   useEffect(() => {
     const fetchData = async () => {
-      const [unitsRes, usersRes] = await Promise.all([
-        api.get(`/api/events/units`),
-        api.get(`/api/events/users`),
-      ]);
-
-      setUnits(unitsRes.data);
-      setUsers(usersRes.data);
+      try {
+        const [unitsRes, usersRes] = await Promise.all([
+          api.get(`/api/events/units`),
+          api.get(`/api/events/users`),
+        ]);
+        setUnits(unitsRes.data);
+        setUsers(usersRes.data);
+      } catch (err) {
+        console.error("Failed to fetch units or users", err);
+      }
     };
-
     fetchData();
   }, []);
 
@@ -79,10 +97,7 @@ const EventForm = () => {
   const handleNestedChange = (section, key, value) => {
     setFormData((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: value,
-      },
+      [section]: { ...prev[section], [key]: value },
     }));
   };
 
@@ -91,10 +106,7 @@ const EventForm = () => {
       ...prev,
       schedule: {
         ...prev.schedule,
-        [type]: {
-          ...prev.schedule[type],
-          [field]: value,
-        },
+        [type]: { ...prev.schedule[type], [field]: value },
       },
     }));
   };
@@ -104,10 +116,7 @@ const EventForm = () => {
       ...prev,
       registration: {
         ...prev.registration,
-        [type]: {
-          ...prev.registration[type],
-          [field]: value,
-        },
+        [type]: { ...prev.registration[type], [field]: value },
       },
     }));
   };
@@ -117,26 +126,19 @@ const EventForm = () => {
     updated[index] = value;
     setFormData((prev) => ({
       ...prev,
-      budget: {
-        ...prev.budget,
-        sponsors: updated,
-      },
+      budget: { ...prev.budget, sponsors: updated },
     }));
   };
 
   const addSponsor = () => {
     setFormData((prev) => ({
       ...prev,
-      budget: {
-        ...prev.budget,
-        sponsors: [...prev.budget.sponsors, ""],
-      },
+      budget: { ...prev.budget, sponsors: [...prev.budget.sponsors, ""] },
     }));
   };
 
-  const combineDateTime = (dateStr, timeStr) => {
-    return new Date(`${dateStr}T${timeStr}`);
-  };
+  const combineDateTime = (dateStr, timeStr) =>
+    new Date(`${dateStr}T${timeStr}`);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -173,11 +175,17 @@ const EventForm = () => {
     };
 
     try {
-      await api.post(`/api/events/create`, finalPayload);
-      alert("✅ Event created successfully!");
+      if (event) {
+        await api.put(`/api/events/${event._id}`, finalPayload);
+        alert("✅ Event updated successfully!");
+      } else {
+        await api.post(`/api/events/create`, finalPayload);
+        alert("✅ Event created successfully!");
+      }
+      if (onClose) onClose();
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to create event.");
+      alert("❌ Failed to submit event.");
     }
   };
 
@@ -187,7 +195,7 @@ const EventForm = () => {
       className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow space-y-8"
     >
       <h2 className="text-3xl font-bold text-center text-indigo-700">
-        Create New Event
+        {event ? "Edit Event" : "Create New Event"}
       </h2>
 
       {/* Title + Description */}
@@ -284,7 +292,8 @@ const EventForm = () => {
         </div>
       </div>
 
-      {/* Schedule Section */}
+      {/* Schedule, Registration, Budget Sections */}
+      {/* Schedule */}
       <div>
         <h3 className="text-lg font-semibold border-b pb-1 mb-2">Schedule</h3>
         <div className="grid grid-cols-2 gap-4">
@@ -360,7 +369,7 @@ const EventForm = () => {
         </div>
       </div>
 
-      {/* Registration Section */}
+      {/* Registration */}
       <div>
         <h3 className="text-lg font-semibold border-b pb-1 mb-2">
           Registration
@@ -395,7 +404,6 @@ const EventForm = () => {
                 )
               }
               className="w-full border rounded p-2"
-              placeholder="Start Date"
             />
             <input
               type="time"
@@ -408,7 +416,6 @@ const EventForm = () => {
                 )
               }
               className="w-full border rounded p-2"
-              placeholder="Start Time"
             />
             <input
               type="date"
@@ -417,7 +424,6 @@ const EventForm = () => {
                 handleRegistrationDateTimeChange("date", "end", e.target.value)
               }
               className="w-full border rounded p-2"
-              placeholder="End Date"
             />
             <input
               type="time"
@@ -426,7 +432,6 @@ const EventForm = () => {
                 handleRegistrationDateTimeChange("time", "end", e.target.value)
               }
               className="w-full border rounded p-2"
-              placeholder="End Time"
             />
             <input
               type="number"
@@ -466,10 +471,7 @@ const EventForm = () => {
           onChange={(e) =>
             setFormData((prev) => ({
               ...prev,
-              budget: {
-                ...prev.budget,
-                allocated: e.target.value,
-              },
+              budget: { ...prev.budget, allocated: e.target.value },
             }))
           }
           className="w-full border rounded p-2 mb-3"
@@ -493,14 +495,22 @@ const EventForm = () => {
         </button>
       </div>
 
-      {/* Submit Button */}
-      <div className="pt-4">
+      <div className="pt-4 flex gap-2">
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-900 text-lg font-semibold"
+          className="flex-1 w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-900 text-lg font-semibold"
         >
-          Submit Event
+          {event ? "Update Event" : "Create Event"}
         </button>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 w-full py-2 px-4 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 text-lg font-semibold"
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );
