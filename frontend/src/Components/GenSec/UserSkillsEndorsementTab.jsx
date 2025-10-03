@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api";
+import { User, Briefcase, Tag } from "lucide-react";
 
 // API call to fetch unendorsed user skills
 const fetchUnendorsedSkills = async (skillType) => {
@@ -29,97 +30,62 @@ const endorseSkill = async (skillId) => {
 };
 
 const UserSkillCard = ({ skill, onEndorse, isEndorsing }) => {
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   const getProficiencyColor = (level) => {
     switch (level.toLowerCase()) {
       case "beginner":
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-200 text-gray-800";
       case "intermediate":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-200 text-blue-800";
       case "advanced":
-        return "bg-green-100 text-green-800";
+        return "bg-green-200 text-green-800";
       case "expert":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-200 text-purple-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-200 text-gray-800";
     }
   };
 
   return (
-    <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-      {/* Card Header */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {skill.skill_id.name}
-        </h3>
-        <p className="text-sm text-gray-600 mb-2">{skill.skill_id.category}</p>
-        <span
-          className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getProficiencyColor(
-            skill.proficiency_level
-          )}`}
-        >
-          {skill.proficiency_level.charAt(0).toUpperCase() +
-            skill.proficiency_level.slice(1)}
-        </span>
-      </div>
-
-      {/* User Information */}
-      <div className="flex items-center gap-2 mb-3 text-sm">
-        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-          <span className="text-xs font-medium text-gray-700">
-            {skill.user_id.personal_info.name.charAt(0)}
+    <div className="bg-[#FDFAE2] border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex-grow">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-bold text-gray-800 pr-2">
+            {skill.skill_id.name}
+          </h3>
+          <span
+            className={`flex-shrink-0 mt-1 px-2 py-0.5 rounded-full text-xs font-semibold ${getProficiencyColor(
+              skill.proficiency_level
+            )}`}
+          >
+            {skill.proficiency_level}
           </span>
         </div>
-        <div>
-          <p className="font-medium text-gray-900">
-            {skill.user_id.personal_info.name}
-          </p>
-          <p className="text-sm text-gray-600">{skill.user_id.user_id}</p>
-        </div>
-      </div>
 
-      {/* Position and Date Information */}
-      <div className="space-y-2 mb-2">
-        {skill.position_id && (
-          <div className="bg-white rounded-md p-2">
-            <p className="text-sm font-medium text-gray-900">
-              Position: {skill.position_id.title}
-            </p>
+        <div className="space-y-2 text-sm text-gray-700 border-t border-yellow-200 pt-3 mt-3">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
+            <span>{skill.user_id.personal_info.name}</span>
           </div>
-        )}
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <span>Submitted: {formatDate(skill.created_at)}</span>
+          {skill.position_id && (
+            <div className="flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-gray-500 flex-shrink-0" />
+              <span>Position: {skill.position_id.title}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-gray-500 flex-shrink-0" />
+            <span>Category: {skill.skill_id.category}</span>
+          </div>
         </div>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-end pt-2 border-t border-pink-200">
+      <div className="mt-4">
         <button
           onClick={() => onEndorse(skill._id)}
           disabled={isEndorsing}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>{isEndorsing ? "Endorsing..." : "Endorse"}</span>
+          {isEndorsing ? "Endorsing..." : "Endorse"}
         </button>
       </div>
     </div>
@@ -178,29 +144,29 @@ const UserSkillsEndorsementTab = ({ skillType }) => {
 
   if (skills.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+        <div className="text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <svg
+                    className="w-8 h-8 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No Pending Endorsements
+            </h3>
+            <p className="text-gray-600">
+                All {skillType} user skills have been reviewed and endorsed.
+            </p>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          No Pending Endorsements
-        </h3>
-        <p className="text-gray-600">
-          All {skillType} user skills have been reviewed and endorsed.
-        </p>
-      </div>
     );
   }
 
@@ -208,24 +174,24 @@ const UserSkillsEndorsementTab = ({ skillType }) => {
     <div className="space-y-6">
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="flex">
-            <svg
-              className="h-5 w-5 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div className="ml-3">
-              <p className="text-sm text-red-800">{error}</p>
+            <div className="flex">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                </svg>
+                <div className="ml-3">
+                    <p className="text-sm text-red-800">{error}</p>
+                </div>
             </div>
-          </div>
         </div>
       )}
 

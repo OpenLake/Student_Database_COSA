@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronRight, Award, Calendar } from "lucide-react";
+import { Award, Calendar, Tag } from "lucide-react";
 import api from "../../utils/api";
+
 const fetchUnendorsedSkills = async (skillType) => {
   try {
     const res = await api.get(`/api/skills/unendorsed/${skillType}`);
@@ -24,7 +25,6 @@ const endorseSkill = async (skillId) => {
   }
 };
 
-// Skill Card Component
 const SkillCard = ({ skill, onEndorse, isEndorsing }) => {
   const formatDate = (dateString) =>
     new Date(dateString).toLocaleDateString("en-US", {
@@ -34,41 +34,34 @@ const SkillCard = ({ skill, onEndorse, isEndorsing }) => {
     });
 
   return (
-    <div className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-      {/* Card Header */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {skill.name}
-        </h3>
-        <p className="text-sm text-gray-600 mb-2">{skill.category}</p>
+    <div className="bg-[#FDFAE2] border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex-grow">
+        <h3 className="text-lg font-bold text-gray-800">{skill.name}</h3>
         {skill.description && (
-          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-            "{skill.description}"
+          <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+            {skill.description}
           </p>
         )}
-      </div>
 
-      {/* Skill ID and Date */}
-      <div className="flex items-center justify-between mb-2">
-        {skill.skill_id && (
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
-            ID: {skill.skill_id}
-          </span>
-        )}
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span>{formatDate(skill.created_at)}</span>
+        <div className="space-y-2 text-sm text-gray-700 border-t border-yellow-200 pt-3 mt-3">
+          <div className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-gray-500 flex-shrink-0" />
+            <span>Category: {skill.category}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
+            <span>Submitted: {formatDate(skill.created_at)}</span>
+          </div>
         </div>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-end pt-2 border-t border-pink-200">
+      <div className="mt-4">
         <button
           onClick={() => onEndorse(skill._id)}
           disabled={isEndorsing}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>{isEndorsing ? "Endorsing..." : "Endorse"}</span>
+          {isEndorsing ? "Endorsing..." : "Endorse"}
         </button>
       </div>
     </div>
@@ -102,17 +95,8 @@ const SkillsEndorsementTab = ({ skillType }) => {
   const handleEndorse = async (skillId) => {
     try {
       setEndorsingSkills((prev) => new Set([...prev, skillId]));
-
-      // Make the API call
       await endorseSkill(skillId);
-
-      // --- FIX START ---
-      // Removed the `if (result.success)` condition.
-      // Now, we update the state to remove the endorsed skill from the list
-      // as long as the API call above doesn't fail.
       setSkills((prev) => prev.filter((s) => s._id !== skillId));
-      // --- FIX END ---
-      
     } catch (err) {
       console.error("Error endorsing skill:", err);
       setError("Failed to endorse skill. Please try again.");
@@ -124,7 +108,7 @@ const SkillsEndorsementTab = ({ skillType }) => {
       });
     }
   };
-
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
