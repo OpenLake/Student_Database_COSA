@@ -3,13 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { AdminContext } from "../../context/AdminContext";
-import {
-  ChevronRight,
-  User,
-  Calendar,
-  Award,
-  ExternalLink,
-} from "lucide-react";
+import { User, Calendar, Award, ExternalLink } from "lucide-react";
 import api from "../../utils/api";
 
 const AchievementsEndorsementTab = ({ skillType }) => {
@@ -19,7 +13,6 @@ const AchievementsEndorsementTab = ({ skillType }) => {
   const [verifying, setVerifying] = useState(new Set());
   const [error, setError] = useState("");
 
-  // API call to fetch unendorsed achievements
   const fetchUnverifiedAchievements = async (type) => {
     try {
       const res = await api.get(`/api/achievements/unendorsed/${type}`);
@@ -31,7 +24,7 @@ const AchievementsEndorsementTab = ({ skillType }) => {
       throw new Error(message);
     }
   };
-  // API call to verify an achievement
+
   const verifyAchievement = async (id) => {
     try {
       const res = await api.patch(`/api/achievements/verify/${id}`, {
@@ -111,78 +104,59 @@ const AchievementsEndorsementTab = ({ skillType }) => {
     );
   }
 
-  console.log("Achievements:", achievements);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {achievements.map((ach) => (
         <div
           key={ach._id}
-          className="bg-pink-50 border border-pink-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+          className="bg-[#FDFAE2] border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md"
         >
-          {/* Card Header */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {ach.title}
-            </h3>
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+          <div className="flex-grow">
+            <h3 className="text-lg font-bold text-gray-800">{ach.title}</h3>
+            <p className="text-xs text-gray-500 mb-3 line-clamp-2">
               "{ach.description}"
             </p>
-          </div>
 
-          {/* User Information */}
-          {ach.user_id && (
-            <div className="flex items-center gap-2 mb-2 text-sm text-gray-700">
-              <User className="w-4 h-4" />
-              <span className="font-medium">
-                {ach.user_id.personal_info?.name}
-              </span>
-              <span className="text-gray-500">
-                {ach.user_id.user_id ? `• ${ach.user_id.user_id}` : ""}
-              </span>
-            </div>
-          )}
-
-          {/* Event Information */}
-          {ach.event_id && (
-            <div className="bg-white rounded-md p-2 mb-2">
-              <p className="text-sm font-medium text-gray-900">
-                Event: {ach.event_id.title}
-              </p>
-              {ach.event_id.description && (
-                <p className="text-xs text-gray-600 mt-1">
-                  {ach.event_id.description}
-                </p>
+            <div className="space-y-2 text-sm text-gray-700 border-t border-yellow-200 pt-3 mt-3">
+              {ach.user_id && (
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span>{ach.user_id.personal_info?.name}</span>
+                </div>
+              )}
+              {ach.event_id && (
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span>Event: {ach.event_id.title}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span>{format(new Date(ach.date_achieved), "dd MMM yyyy")}</span>
+              </div>
+              {ach.certificate_url && (
+                <div className="flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <a
+                    href={ach.certificate_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View Certificate
+                  </a>
+                </div>
               )}
             </div>
-          )}
-
-          {/* Date and Certificate */}
-          <div className="flex items-center justify-between mb-2 text-sm">
-            <div className="flex items-center gap-2 text-gray-600">
-              <Calendar className="w-4 h-4" />
-              <span>{format(new Date(ach.date_achieved), "dd MMM yyyy")}</span>
-            </div>
-            {ach.certificate_url && (
-              <a
-                href={ach.certificate_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-              >
-                <ExternalLink className="w-3 h-3" />
-                Certificate
-              </a>
-            )}
           </div>
 
-          {/* Action Button */}
-          <div className="flex justify-end pt-2 border-t border-pink-200">
+          <div className="mt-4">
             <button
               onClick={() => handleVerify(ach._id)}
               disabled={verifying.has(ach._id)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{verifying.has(ach._id) ? "Endorsing..." : "Endorse"}</span>
+              {verifying.has(ach._id) ? "Endorsing..." : "Endorse"}
             </button>
           </div>
         </div>
