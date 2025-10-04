@@ -11,6 +11,17 @@ import {
   MapPin,
 } from "lucide-react";
 import api from "../../utils/api";
+
+// New Theme Color Palette:
+// Background: #FDFAE2 (Cream)
+// Primary Text: #5E4B3D (Dark Brown)
+// Secondary Text: #7D6B5F (Muted Brown)
+// Accent: #A98B74 (Warm Tan)
+// Accent Hover: #856A5D (Darker Tan)
+// Borders: #DCD3C9 (Light Tan)
+// Light Backgrounds: #F5F1EC (Light Cream)
+// Light Accent Backgrounds: #EAE0D5 (Very Light Tan)
+
 const ViewPosition = () => {
   const [positions, setPositions] = useState([]);
   const [filteredPositions, setFilteredPositions] = useState([]);
@@ -81,14 +92,14 @@ const ViewPosition = () => {
 
   const handleEdit = (position) => {
     console.log("Edit position:", position);
-    alert("comming soon");
+    alert("coming soon");
   };
 
   const handleDelete = (position) => {
     // if (window.confirm(`Are you sure you want to delete the position "${position.title}"?`)) {
     //   console.log('Delete position:', position);
     // }
-    alert("comming soon");
+    alert("coming soon");
   };
 
   const formatDate = (dateString) => {
@@ -110,20 +121,20 @@ const ViewPosition = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-[#FDFAE2] py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] mb-6">
+          <div className="px-6 py-4 border-b border-[#DCD3C9]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#A98B74] rounded-lg flex items-center justify-center">
                 <Eye className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-xl font-semibold text-[#5E4B3D]">
                   View Positions
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-[#7D6B5F]">
                   Browse and manage organizational positions
                 </p>
               </div>
@@ -135,13 +146,13 @@ const ViewPosition = () => {
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Search positions by title, ID, department, or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-white text-[#5E4B3D] placeholder-[#A98B74] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
                 />
               </div>
 
@@ -150,7 +161,7 @@ const ViewPosition = () => {
                 <select
                   value={selectedUnit}
                   onChange={(e) => setSelectedUnit(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
                 >
                   <option value="">All Departments</option>
                   {units.map((unit) => (
@@ -163,7 +174,7 @@ const ViewPosition = () => {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
                 >
                   <option value="">All Types</option>
                   {positionTypes.map((type) => (
@@ -176,110 +187,57 @@ const ViewPosition = () => {
             </div>
 
             {/* Results count */}
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-[#7D6B5F]">
               Showing {filteredPositions.length} of {positions.length} positions
             </div>
           </div>
         </div>
 
-        {/* Positions Grid */}
+{/* Positions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPositions.map((position) => (
             <div
               key={position._id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] hover:shadow-md transition-shadow flex flex-col justify-between"
             >
-              {/* Card Header */}
-              <div className="p-4 border-b border-gray-200">
+              {/* Card Header (Removed the extra div wrapper and the bottom border) */}
+              <div className="p-4">
                 <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">
-                      {position.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      ID: {position.position_id}
-                    </p>
-                  </div>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                  <h4 className="font-semibold text-[#5E4B3D] pr-2">
+                    {position.title}
+                  </h4>
+                  <span className="flex-shrink-0 px-2 py-1 bg-[#EAE0D5] text-[#856A5D] text-xs rounded-full">
                     {position.position_type}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                  <MapPin className="w-4 h-4" />
-                  {position.unit_id.name}
+                <div className="flex items-center gap-2 text-sm text-[#7D6B5F] mb-2">
+                  <MapPin className="w-4 h-4 flex-shrink-0" />
+                  <span>{position.unit_id.name}</span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Users className="w-4 h-4" />
-                  {position.position_count} position
-                  {position.position_count !== 1 ? "s" : ""}
-                </div>
-              </div>
-
-              {/* Card Content */}
-              <div className="p-4 space-y-3">
-                <div>
-                  <p className="text-sm text-gray-700 line-clamp-3">
-                    {position.description}
-                  </p>
-                </div>
-
-                {/* Requirements Summary */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <BookOpen className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">
-                      Min CGPA: {position.requirements.min_cgpa}
-                    </span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-600">
-                      {getYearLabel(position.requirements.min_year)}+
-                    </span>
-                  </div>
-
-                  {position.requirements.skills_required.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {position.requirements.skills_required
-                        .slice(0, 3)
-                        .map((skill, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      {position.requirements.skills_required.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                          +{position.requirements.skills_required.length - 3}{" "}
-                          more
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Created Date */}
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Calendar className="w-3 h-3" />
-                  Created {formatDate(position.created_at)}
+                <div className="flex items-center gap-2 text-sm text-[#7D6B5F]">
+                  <Users className="w-4 h-4 flex-shrink-0" />
+                  <span>
+                    {position.position_count} position
+                    {position.position_count !== 1 ? "s" : ""}
+                  </span>
                 </div>
               </div>
 
-              {/* Card Actions */}
-              <div className="p-4 border-t border-gray-200">
+              {/* Card Actions (This top border now creates the single separator line) */}
+              <div className="p-4 border-t border-[#DCD3C9]">
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleViewDetails(position)}
-                    className="flex-1 px-3 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-1"
+                    className="flex-1 px-1 py-2 bg-[#A98B74] text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
                   >
                     <Eye className="w-4 h-4" />
                     View Details
                   </button>
                   <button
                     onClick={() => handleEdit(position)}
-                    className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors"
+                    className="px-3 py-2 bg-[#F5F1EC] text-[#7D6B5F] text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -297,137 +255,160 @@ const ViewPosition = () => {
 
         {/* Empty State */}
         {filteredPositions.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-            <Eye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] p-12 text-center">
+            <Eye className="w-12 h-12 text-[#A98B74] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[#5E4B3D] mb-2">
               No positions found
             </h3>
-            <p className="text-gray-600">
+            <p className="text-[#7D6B5F]">
               Try adjusting your search or filter criteria.
             </p>
           </div>
         )}
 
-        {/* Position Details Modal */}
+        {/* MODAL START: Redesigned for better layout and professionalism */}
         {showDetails && selectedPosition && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+              {/* Modal Header */}
+              <div className="sticky top-0 bg-white border-b border-[#DCD3C9] px-6 py-4 flex-shrink-0">
                 <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                      {selectedPosition.title}
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      ID: {selectedPosition.position_id}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <h2 className="text-xl font-semibold text-[#5E4B3D]">
+                        {selectedPosition.title}
+                      </h2>
+                      <p className="text-sm text-[#7D6B5F]">
+                        ID: {selectedPosition.position_id}
+                      </p>
+                    </div>
+                    <span className="px-2 py-1 bg-[#EAE0D5] text-[#856A5D] text-xs rounded-full">
+                      {selectedPosition.position_type}
+                    </span>
                   </div>
                   <button
                     onClick={() => setShowDetails(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-[#A98B74] hover:text-[#7D6B5F]"
                   >
                     ✕
                   </button>
                 </div>
               </div>
 
-              <div className="p-6 space-y-6">
-                {/* Basic Information */}
-                <div>
-                  <h3 className="font-medium text-gray-900 mb-3">
-                    Basic Information
-                  </h3>
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Department:</span>
-                      <span className="font-medium">
-                        {selectedPosition.unit_id.name}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Type:</span>
-                      <span className="font-medium">
-                        {selectedPosition.position_type}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">
-                        Positions Available:
-                      </span>
-                      <span className="font-medium">
-                        {selectedPosition.position_count}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Created:</span>
-                      <span className="font-medium">
-                        {formatDate(selectedPosition.created_at)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div>
-                  <h3 className="font-medium text-gray-900 mb-3">
-                    Description
-                  </h3>
-                  <p className="text-gray-700 bg-gray-50 rounded-lg p-4">
-                    {selectedPosition.description}
-                  </p>
-                </div>
-
-                {/* Responsibilities */}
-                <div>
-                  <h3 className="font-medium text-gray-900 mb-3">
-                    Responsibilities
-                  </h3>
-                  <ul className="space-y-2">
-                    {selectedPosition.responsibilities.map(
-                      (responsibility, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
-                          <span className="text-gray-700">
-                            {responsibility}
+              {/* Modal Body */}
+              <div className="p-6 overflow-y-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+                  {/* Left Column: Key Details & Requirements */}
+                  <div className="md:col-span-1 space-y-6">
+                    {/* Details Section */}
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                        Details
+                      </h3>
+                      <div className="text-sm space-y-2 pt-2">
+                        <div className="flex justify-between">
+                          <span className="text-[#7D6B5F]">Department:</span>
+                          <span className="font-medium text-[#5E4B3D] text-right">
+                            {selectedPosition.unit_id.name}
                           </span>
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                </div>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#7D6B5F]">Available:</span>
+                          <span className="font-medium text-[#5E4B3D]">
+                            {selectedPosition.position_count}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#7D6B5F]">Created:</span>
+                          <span className="font-medium text-[#5E4B3D]">
+                            {formatDate(selectedPosition.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Requirements */}
-                <div>
-                  <h3 className="font-medium text-gray-900 mb-3">
-                    Requirements
-                  </h3>
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Minimum CGPA:</span>
-                      <span className="font-medium">
-                        {selectedPosition.requirements.min_cgpa}
-                      </span>
+                    {/* Requirements Section */}
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                        Requirements
+                      </h3>
+                      <div className="text-sm space-y-2 pt-2">
+                        <div className="flex justify-between">
+                          <span className="text-[#7D6B5F]">Min. CGPA:</span>
+                          <span className="font-medium text-[#5E4B3D]">
+                            {selectedPosition.requirements.min_cgpa}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#7D6B5F]">Min. Year:</span>
+                          <span className="font-medium text-[#5E4B3D]">
+                            {getYearLabel(
+                              selectedPosition.requirements.min_year,
+                            )}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Minimum Year:</span>
-                      <span className="font-medium">
-                        {getYearLabel(selectedPosition.requirements.min_year)}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Required Skills:</span>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {selectedPosition.requirements.skills_required.map(
-                          (skill, index) => (
-                            <span
-                              key={index}
-                              className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded"
-                            >
-                              {skill}
-                            </span>
-                          ),
+
+                    {/* Skills Section */}
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                        Skills
+                      </h3>
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {selectedPosition.requirements.skills_required.length >
+                        0 ? (
+                          selectedPosition.requirements.skills_required.map(
+                            (skill, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-[#EAE0D5] text-[#856A5D] text-sm rounded"
+                              >
+                                {skill}
+                              </span>
+                            ),
+                          )
+                        ) : (
+                          <span className="text-sm text-[#7D6B5F]">
+                            No specific skills listed.
+                          </span>
                         )}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Description & Responsibilities */}
+                  <div className="md:col-span-2 space-y-6">
+                    {/* Description Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#5E4B3D] mb-2">
+                        Description
+                      </h3>
+                      <p className="text-sm text-[#7D6B5F] bg-[#F5F1EC] rounded-lg p-4">
+                        {selectedPosition.description}
+                      </p>
+                    </div>
+
+                    {/* Responsibilities Section */}
+                    <div>
+                      <h3 className="font-semibold text-[#5E4B3D] mb-2">
+                        Responsibilities
+                      </h3>
+                      <ul className="space-y-2">
+                        {selectedPosition.responsibilities.map(
+                          (resp, index) => (
+                            <li
+                              key={index}
+                              className="flex items-start gap-3"
+                            >
+                              <span className="w-2 h-2 bg-[#A98B74] rounded-full mt-[7px] flex-shrink-0"></span>
+                              <span className="text-sm text-[#7D6B5F]">
+                                {resp}
+                              </span>
+                            </li>
+                          ),
+                        )}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -435,6 +416,7 @@ const ViewPosition = () => {
             </div>
           </div>
         )}
+        {/* MODAL END */}
       </div>
     </div>
   );
