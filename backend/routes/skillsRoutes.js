@@ -94,8 +94,14 @@ router.get("/user-skills/:userId",isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const userSkills = await UserSkill.find({ user_id: userId })
-      .populate("skill_id", "name")
-      .populate("position_id", "title");
+      .populate("skill_id")
+      .populate({
+        path: "position_id",
+        populate: {
+          path: "unit_id",
+          select: "name",
+        },
+      });
     res.json(userSkills);
   } catch (err) {
     console.error("Failed to get user skills:", err);

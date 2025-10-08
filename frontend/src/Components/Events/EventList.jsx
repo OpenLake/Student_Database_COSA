@@ -28,7 +28,7 @@ const EventList = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      if (!userRole) return;
+      if (!userRole) {return;}
 
       try {
         setLoading(true);
@@ -330,8 +330,8 @@ const EventList = () => {
 
       {/* EventForm modal for editing */}
       {editingEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-10 z-50">
-          <div className="bg-white rounded-xl w-full max-w-4xl p-4 relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-10 z-50 overflow-y-auto">
+          <div className="bg-white rounded-xl w-full max-w-4xl p-4 relative my-8">
             <button
               className="absolute top-2 right-2 text-gray-700 font-bold"
               onClick={() => setEditingEvent(null)}

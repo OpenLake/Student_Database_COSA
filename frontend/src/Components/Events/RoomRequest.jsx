@@ -142,7 +142,7 @@ const RoomRequestModal = ({ eventId, onClose, onSubmit }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-stone-700 text-white rounded-md hover:bg-stone-800 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
             >
               {submitting ? "Submitting..." : "Submit Request"}
             </button>
