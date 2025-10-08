@@ -1,0 +1,14 @@
+# CanonForces Issue Template Configuration
+# This file configures the issue template chooser and adds helpful information
+
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord Community
+    url: https://discord.gg/4YnYtVeF
+    about: Join our Discord server to discuss issues, get help, and connect with other contributors.
+  - name: 📚 Documentation
+    url: https://github.com/OpenLake/canonforces#readme
+    about: Check our README and documentation for setup instructions and project information.
+  - name: 🐛 Known Issues
+    url: https://github.com/OpenLake/canonforces/issues?q=is%3Aissue+is%3Aopen+label%3Abug
+    about: Check if your issue has already been reported by browsing existing bug reports.
