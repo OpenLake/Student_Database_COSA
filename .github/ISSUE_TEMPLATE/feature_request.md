@@ -3,7 +3,11 @@ name: "✨ Feature Request"
 about: Suggest an idea for the CoSA Student Database
 title: "Feat: [Brief Description]"
 labels: "enhancement"
-assignees: harshitap1305, sakshi1755
+assignees: ''
+---
+
+### Pre-submission Checklist
+- [ ] I have searched the [existing issues](https://github.com/OpenLake/Student_Database_COSA/issues) to ensure this feature has not already been requested.
 ---
 
 ## 🚀 Problem Statement
