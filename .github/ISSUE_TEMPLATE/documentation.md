@@ -1,12 +1,12 @@
 ---
-name: "📚 Documentation"
+name: " Documentation"
 about: Report missing, outdated, or unclear documentation
 title: "Docs: [Brief Description]"
 labels: "documentation"
 assignees: ""
 ---
 
-## 📚 Documentation Issue
+##  Documentation Issue
 <!-- What documentation needs attention? -->
 **Type of Issue:**
 - [ ] Missing documentation
@@ -17,7 +17,7 @@ assignees: ""
 
 ---
 
-## 🎯 What Documentation?
+##  What Documentation?
 <!-- Be specific about which documentation is affected -->
 **Documentation Location:** [e.g., README.md, CONTRIBUTING.md, API docs, code comments]
 
@@ -27,7 +27,7 @@ assignees: ""
 
 ---
 
-## 📝 What's Missing or Wrong?
+##  What's Missing or Wrong?
 <!-- Detailed description of the documentation issue -->
 **Problem:** [Describe the specific documentation issue]
 
@@ -38,7 +38,7 @@ assignees: ""
 
 ---
 
-## ✅ Expected Documentation
+## Expected Documentation
 <!-- What should the documentation say/include? -->
 **What it should say:** [Describe what the correct documentation should include]
 
@@ -48,7 +48,7 @@ assignees: ""
 
 ---
 
-## 🎯 Target Audience
+##  Target Audience
 <!-- Who is this documentation for? -->
 - **Primary Users:** [Developers/Contributors/End Users/API Consumers]
 - **Skill Level:** [Beginner/Intermediate/Advanced]
@@ -56,7 +56,7 @@ assignees: ""
 
 ---
 
-## 🔗 Related Resources
+##  Related Resources
 <!-- Links to related documentation or issues -->
 - **Related Documentation:** [Links to related docs]
 - **Related Issues:** #[issue-number]
@@ -64,7 +64,7 @@ assignees: ""
 
 ---
 
-## 📊 Impact Assessment
+##  Impact Assessment
 <!-- How does this affect users? -->
 - **Impact:** [High/Medium/Low - e.g., "High - prevents new contributors from getting started"]
 - **Affected Users:** [New contributors/Existing developers/API consumers]
@@ -72,7 +72,7 @@ assignees: ""
 
 ---
 
-## 💡 Proposed Solution
+## Proposed Solution
 <!-- If you have ideas for how to fix this -->
 **Suggested Fix:** [Describe how you think this should be addressed]
 
@@ -82,7 +82,7 @@ assignees: ""
 
 ---
 
-## 📸 Screenshots (if applicable)
+##  Screenshots (if applicable)
 <!-- Show current documentation vs what it should look like -->
 | Current | Proposed |
 |---------|----------|
@@ -90,10 +90,10 @@ assignees: ""
 
 ---
 
-## 💬 Community & Support
+##  Community & Support
 Need help with documentation or want to discuss improvements?  
 Join our Discord 👉 [Student Database COSA Discord](https://discord.gg/hQFhv2t4)
 
 ---
 
-**💡 Tip:** Good documentation makes the project more accessible to everyone!
+** Tip:** Good documentation makes the project more accessible to everyone!
