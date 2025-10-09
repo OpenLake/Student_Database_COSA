@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+"use client";
+
+import { useState, useEffect, useContext } from "react";
+import { Calendar, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import RoomRequestModal from "./RoomRequest";
 import ManageRequestsModal from "./ManageRoomRequest";
 import api from "../../utils/api";
 import EventForm from "./EventForm";
+import EventCard from "./EventCard";
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -26,21 +22,20 @@ const EventList = () => {
   const [selectedEventForManage, setSelectedEventForManage] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
 
+  const [contactMap, setContactMap] = useState({});
   useEffect(() => {
     const fetchEvents = async () => {
-      if (!userRole) {return;}
+      if (!userRole) return;
 
       try {
         setLoading(true);
         setError(null);
-
         let url = `/api/events/by-role/${userRole}`;
         if (userRole === "CLUB_COORDINATOR" && username) {
           url += `?username=${encodeURIComponent(username)}`;
         } else if (userRole === "CLUB_COORDINATOR" && !username) {
           throw new Error("Username is missing for Club Coordinator.");
         }
-
         const response = await api.get(url);
         setEvents(response.data);
       } catch (err) {
@@ -56,6 +51,41 @@ const EventList = () => {
     fetchEvents();
   }, [userRole, username]);
 
+  useEffect(() => {
+    const fetchContacts = async () => {
+      if (!isUserLoggedIn || events.length === 0) return;
+
+      try {
+        const roleAllowsEdit = [
+          "CLUB_COORDINATOR",
+          "GENSEC_SCITECH",
+          "GENSEC_ACADEMIC",
+          "GENSEC_CULTURAL",
+          "GENSEC_SPORTS",
+          "PRESIDENT",
+        ].includes(userRole);
+
+        if (!roleAllowsEdit) return;
+
+        const results = await Promise.allSettled(
+          events.map((e) => api.get(`/api/events/${e._id}/is-contact`)),
+        );
+
+        const map = {};
+        results.forEach((res, idx) => {
+          const id = events[idx]._id;
+          map[id] =
+            res.status === "fulfilled" ? !!res.value.data.isContact : false;
+        });
+        setContactMap(map);
+      } catch (e) {
+        console.warn("Failed to check contact flags for events.");
+      }
+    };
+    fetchContacts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUserLoggedIn, events]);
+
   const handleOpenModal = (eventId) => {
     setSelectedEventId(eventId);
     setIsModalOpen(true);
@@ -67,42 +97,15 @@ const EventList = () => {
   };
 
   const handleRoomRequestSubmit = (updatedEvent) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event._id === updatedEvent._id ? updatedEvent : event,
-      ),
+    setEvents((prev) =>
+      prev.map((ev) => (ev._id === updatedEvent._id ? updatedEvent : ev)),
     );
   };
 
   const handleManageUpdate = (updatedEvent) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event._id === updatedEvent._id ? updatedEvent : event,
-      ),
+    setEvents((prev) =>
+      prev.map((ev) => (ev._id === updatedEvent._id ? updatedEvent : ev)),
     );
-  };
-
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-
-  const formatTime = (date) =>
-    new Date(date).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-  const getStatusColor = (status) => {
-    const colors = {
-      planned: "bg-blue-100 text-blue-800",
-      ongoing: "bg-green-100 text-green-800",
-      completed: "bg-gray-100 text-gray-800",
-      cancelled: "bg-red-100 text-red-800",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
   };
 
   const getRoomRequestStatusIcon = (status) => {
@@ -116,124 +119,42 @@ const EventList = () => {
     }
   };
 
-  const canRequestRoom = () => {
-    return [
+  const canRequestRoom = () =>
+    [
       "CLUB_COORDINATOR",
       "GENSEC_SCITECH",
       "GENSEC_ACADEMIC",
       "GENSEC_CULTURAL",
       "GENSEC_SPORTS",
     ].includes(userRole);
+
+  const getRequestState = (event) => {
+    const reqs = event?.room_requests || [];
+    if (reqs.some((r) => r.status === "Approved")) return "approved";
+    if (reqs.some((r) => r.status === "Pending")) return "requested";
+    return "none";
   };
 
-  const renderActionButtons = (event) => {
-    switch (userRole) {
-      case "STUDENT":
-        return (
-          <div className="flex gap-2">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-              Register
-            </button>
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
-              View Details
-            </button>
-          </div>
-        );
+  const canEditRole = [
+    "CLUB_COORDINATOR",
+    "GENSEC_SCITECH",
+    "GENSEC_ACADEMIC",
+    "GENSEC_CULTURAL",
+    "GENSEC_SPORTS",
+    "PRESIDENT",
+  ].includes(userRole);
 
-      case "CLUB_COORDINATOR":
-      case "GENSEC_SCITECH":
-      case "GENSEC_ACADEMIC":
-      case "GENSEC_CULTURAL":
-      case "GENSEC_SPORTS":
-      case "PRESIDENT":
-        return (
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setEditingEvent(event)}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
-            >
-              Edit
-            </button>
-
-            {userRole !== "PRESIDENT" && canRequestRoom() && (
-              <button
-                className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
-                onClick={() => handleOpenModal(event._id)}
-              >
-                Request Room
-              </button>
-            )}
-
-            {userRole === "PRESIDENT" && (
-              <>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-                  Review Event
-                </button>
-                <button
-                  onClick={() => setSelectedEventForManage(event)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                >
-                  Manage Requests
-                </button>
-              </>
-            )}
-          </div>
-        );
-
-      default:
-        return null;
+  const handleDelete = async (eventId) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    try {
+      await api.delete(`/api/events/${eventId}`);
+      setEvents((prev) => prev.filter((e) => e._id !== eventId));
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          "Failed to delete event. You may not have permission.",
+      );
     }
-  };
-
-  const renderRoomRequests = (event) => {
-    if (
-      ![
-        "PRESIDENT",
-        "CLUB_COORDINATOR",
-        "GENSEC_SCITECH",
-        "GENSEC_ACADEMIC",
-        "GENSEC_CULTURAL",
-        "GENSEC_SPORTS",
-      ].includes(userRole) ||
-      !event.room_requests?.length
-    ) {
-      return null;
-    }
-
-    return (
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-sm text-gray-900 mb-2">
-          Room Requests
-        </h4>
-        <div className="space-y-2">
-          {event.room_requests.map((request, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between text-sm"
-            >
-              <div className="flex items-center gap-2">
-                {getRoomRequestStatusIcon(request.status)}
-                <span>{request.room}</span>
-                <span className="text-gray-500">
-                  {formatDate(request.date)} at {request.time}
-                </span>
-              </div>
-              <span
-                className={`px-2 py-1 rounded-full text-xs ${
-                  request.status === "Approved"
-                    ? "bg-green-100 text-green-800"
-                    : request.status === "Rejected"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-yellow-100 text-yellow-800"
-                }`}
-              >
-                {request.status}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
   };
 
   if (loading) {
@@ -256,9 +177,25 @@ const EventList = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto p-6">
-        <div className="mb-4">
-          <p>Events at IIT Bhilai</p>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-stone-900 text-white">
+              <Calendar className="h-4 w-4" />
+            </span>
+            <h2 className="text-2xl font-extrabold text-stone-900">Events</h2>
+          </div>
+          {/* Add Event action left as-is for authorized users (open create form) */}
+          {canEditRole && (
+            <button
+              type="button"
+              onClick={() => setEditingEvent({})}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800"
+            >
+              + Add Event
+            </button>
+          )}
         </div>
+        <div className="border-t border-stone-200 mb-6" />
 
         {events.length === 0 ? (
           <div className="text-center py-12">
@@ -271,66 +208,32 @@ const EventList = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <div
-                key={event._id}
-                className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg flex flex-col"
-              >
-                <div className="p-6 flex-grow">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">
-                      {event.title}
-                    </h3>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        event.status,
-                      )}`}
-                    >
-                      {event.status}
-                    </span>
-                  </div>
-
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {event.description}
-                  </p>
-
-                  <div className="space-y-2 mb-4">
-                    {event.schedule?.start && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        <span>{formatDate(event.schedule.start)}</span>
-                      </div>
-                    )}
-                    {event.schedule?.start && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="w-4 h-4 mr-2" />
-                        <span>{formatTime(event.schedule.start)}</span>
-                      </div>
-                    )}
-                    {event.schedule?.venue && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2" />
-                        <span>{event.schedule.venue}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {renderRoomRequests(event)}
-                </div>
-
-                <div className="p-6 pt-4 border-t border-gray-200 bg-gray-50">
-                  {renderActionButtons(event)}
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {events.map((event) => {
+              const requestState = getRequestState(event);
+              return (
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  userRole={userRole}
+                  canRequestRoom={canRequestRoom()}
+                  requestState={requestState}
+                  onOpenRequestModal={handleOpenModal}
+                  onEdit={(e) => setEditingEvent(e)}
+                  onDelete={handleDelete}
+                  onManageRequests={(e) => setSelectedEventForManage(e)}
+                  canEdit={canEditRole}
+                  canDelete={!!contactMap[event._id]}
+                />
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* EventForm modal for editing */}
-      {editingEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-10 z-50 overflow-y-auto">
+      {/* EventForm modal for create/edit */}
+      {editingEvent !== null && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-start pt-10 z-50 overflow-y-auto">
           <div className="bg-white rounded-xl w-full max-w-4xl p-4 relative my-8">
             <button
               className="absolute top-2 right-2 text-gray-700 font-bold"
@@ -338,14 +241,16 @@ const EventList = () => {
             >
               X
             </button>
+            {/* If editingEvent is {}, render create form */}
             <EventForm
-              event={editingEvent}
+              event={editingEvent && editingEvent._id ? editingEvent : null}
               onClose={() => setEditingEvent(null)}
             />
           </div>
         </div>
       )}
 
+      {/* Room request modal */}
       {isModalOpen && (
         <RoomRequestModal
           eventId={selectedEventId}
@@ -353,6 +258,8 @@ const EventList = () => {
           onSubmit={handleRoomRequestSubmit}
         />
       )}
+
+      {/* President manage requests modal */}
       {selectedEventForManage && (
         <ManageRequestsModal
           eventId={selectedEventForManage._id}
