@@ -1,17 +1,17 @@
 ---
-name: "📦 Pull Request"
+name: " Pull Request"
 about: Propose and submit changes to the project for review
 title: "PR: [Brief Description of Changes]"
 labels: ""
 assignees: harshitap1305, sakshi1755
 ---
 
-## 📌 Related Issue
+##  Related Issue
 -   Closes #[issue_number]
 
 ---
 
-## ✨ Changes Introduced
+##  Changes Introduced
 -   **Added:** [Describe the new feature or functionality you added]
 -   **Fixed:** [Describe the bug you fixed]
 -   **Updated:** [Describe what you updated or refactored]
@@ -19,21 +19,21 @@ assignees: harshitap1305, sakshi1755
 
 ---
 
-## 🤔 Why This Change?
+##  Why This Change?
 -   **Problem:** [What specific issue does this solve?]
 -   **Solution:** [How does this PR address that problem?]
 -   **Impact:** [Who benefits from this change and how? e.g., "Improves admin workflow by automating X."]
 
 ---
 
-## 🖼️ Screenshots / Video (if applicable)
+##  Screenshots / Video (if applicable)
 | Before | After |
 | :----: | :---: |
 |        |       |
 
 ---
 
-## 🧪 Testing
+##  Testing
 -   [ ] Ran unit tests and all passed (`npm test` in the relevant directory).
 -   [ ] Manually tested the following scenarios:
     -   **Test Case 1:** [Describe steps + Expected Result]
@@ -43,16 +43,16 @@ assignees: harshitap1305, sakshi1755
 
 ---
 
-## 📝 Documentation Updates
+##  Documentation Updates
 -   [ ] Updated the `README.md` with new instructions.
 -   [ ] Added clear code comments where logic is complex.
 -   [ ] N/A
 
 ---
 
-## ✅ Checklist
+##  Checklist
 -   [ ] I have created a new branch for this PR (`git checkout -b feature/my-amazing-feature`).
--   [ ] I have starred the repository ⭐.
+-   [ ] I have starred the repository.
 -   [ ] My code follows the project's coding style and conventions.
 -   [ ] My commit messages are clear and follow the project's guidelines.
 -   [ ] I have performed a self-review of my own code.
@@ -62,7 +62,7 @@ assignees: harshitap1305, sakshi1755
 
 ---
 
-## 🚀 Deployment Notes
+##  Deployment Notes
 -   [ ] Requires a database migration/schema update.
 -   [ ] Requires new environment variables to be set.
 -   [ ] N/A
