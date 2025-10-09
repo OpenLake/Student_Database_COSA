@@ -92,7 +92,7 @@ assignees: ""
 
 ## 💬 Community & Support
 Need help with documentation or want to discuss improvements?  
-Join our Discord 👉 [Student Database COSA Discord](https://discord.gg/4YnYtVeF)
+Join our Discord 👉 [Student Database COSA Discord](https://discord.gg/hQFhv2t4)
 
 ---
 
