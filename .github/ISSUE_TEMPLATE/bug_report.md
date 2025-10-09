@@ -3,7 +3,7 @@ name: Bug Report
 about: Report unexpected behavior or errors in the CoSA Student Database
 title: "Bug: [Short Description]"
 labels: bug
-assignees: harshitap1305, sakshi1755
+assignees: ''
 ---
 
 ## 🐞 Describe the Bug
