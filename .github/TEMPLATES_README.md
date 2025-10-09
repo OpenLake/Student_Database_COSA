@@ -1,10 +1,10 @@
-# 📋 CoSA Student Database: Templates & Review Workflow
+# CoSA Student Database: Templates & Review Workflow
 
 This document outlines the GitHub issue/PR templates and the review workflow implemented for the CoSA Student Database project.
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 We've established a set of GitHub templates to:
 * ✅ Ensure contributors provide complete context (**what**, **why**, and **how**).
@@ -14,7 +14,7 @@ We've established a set of GitHub templates to:
 
 ---
 
-## 📦 Pull Request (PR) Template
+##  Pull Request (PR) Template
 
 Our PR template is designed to capture all necessary information for a smooth review.
 
@@ -25,18 +25,18 @@ Our PR template is designed to capture all necessary information for a smooth re
 * **Deployment Notes** to flag any special instructions for releases.
 
 ### Sections Include:
-1.  📌 Related Issue
-2.  ✨ Changes Introduced
-3.  🤔 Why This Change?
-4.  🖼️ Screenshots / Video
-5.  🧪 Testing
-6.  📝 Documentation Updates
-7.  ✅ Checklist
-8.  🚀 Deployment Notes
+1.   Related Issue
+2.   Changes Introduced
+3.   Why This Change?
+4.   Screenshots / Video
+5.   Testing
+6.   Documentation Updates
+7.   Checklist
+8.   Deployment Notes
 
 ---
 
-## 🐛 Issue Templates
+##  Issue Templates
 
 We provide several templates to handle different types of issues effectively. These are located in the `.github/ISSUE_TEMPLATE/` directory.
 
@@ -56,7 +56,7 @@ For tracking documentation-related tasks, such as correcting typos, adding examp
 
 ---
 
-## 👥 Review Workflow
+##  Review Workflow
 
 We use a `CODEOWNERS` file to automate the assignment of reviewers, ensuring that the right people see the right PRs.
 
@@ -73,7 +73,7 @@ This file automatically assigns reviewers based on which files are changed:
 
 ---
 
-## 🚀 Benefits
+##  Benefits
 
 ### For Contributors:
 * Clear guidance on what information to provide.
@@ -92,7 +92,7 @@ This file automatically assigns reviewers based on which files are changed:
 
 ---
 
-## 📝 Usage Guidelines
+##  Usage Guidelines
 
 ### When Creating a Pull Request:
 1.  Use the template to provide complete context.
