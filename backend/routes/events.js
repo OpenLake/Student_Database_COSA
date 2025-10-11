@@ -1,4 +1,3 @@
-// backend/routes/events.js
 const express = require("express");
 const router = express.Router();
 const { Event, User, OrganizationalUnit } = require("../models/schema");
@@ -6,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const isEventContact = require("../middlewares/isEventContact");
 const authorizeRole = require("../middlewares/authorizeRole");
-const { ROLE_GROUPS } = require("../utils/roles");
+const { ROLE_GROUPS, ROLES } = require("../utils/roles");
 
 // Create a new event (new events can be created by admins only)
 router.post(
@@ -83,7 +82,45 @@ router.get("/events", async (req, res) => {
 
 router.get("/units", isAuthenticated, async (req, res) => {
   try {
-    const units = await OrganizationalUnit.find();
+    const role = (req.user && req.user.role) || "";
+    const userEmail = String(
+      (req.user &&
+        (req.user.username ||
+          (req.user.personal_info && req.user.personal_info.email))) ||
+        "",
+    )
+      .trim()
+      .toLowerCase();
+
+    const categoryForRole = {
+      [ROLES.GENSEC_SCITECH]: "scitech",
+      [ROLES.GENSEC_ACADEMIC]: "academic",
+      [ROLES.GENSEC_CULTURAL]: "cultural",
+      [ROLES.GENSEC_SPORTS]: "sports",
+    };
+
+    let units = [];
+
+    if (role === ROLES.PRESIDENT) {
+      // President sees all units
+      units = await OrganizationalUnit.find();
+    } else if (categoryForRole[role]) {
+      // GenSecs see units by category
+      units = await OrganizationalUnit.find({
+        category: categoryForRole[role],
+      });
+    } else if (role === ROLES.CLUB_COORDINATOR) {
+      // Club Coordinator sees only their own unit (matched by contact email)
+      const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const coordUnit = await OrganizationalUnit.findOne({
+        "contact_info.email": new RegExp(`^${escapeRegex(userEmail)}$`, "i"),
+      });
+      units = coordUnit ? [coordUnit] : [];
+    } else {
+      // Default: return all units (keeps previous behavior for non-admins if needed)
+      units = await OrganizationalUnit.find();
+    }
+
     res.json(units);
   } catch (err) {
     console.error(err);
@@ -322,7 +359,6 @@ router.put("/:eventId", isAuthenticated, isEventContact, async (req, res) => {
     console.log("Number of fields to update:", Object.keys(updates).length);
     console.log("Fields being updated:", Object.keys(updates));
     console.log("========================\n");
-    // 🔍 DEBUG LOGS - END
 
     // Fetch the event BEFORE update to compare
     const eventBefore = await Event.findById(eventId);
