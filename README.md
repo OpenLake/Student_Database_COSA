@@ -149,7 +149,7 @@ This project is maintained by:
 
 ## 🤝 Contributing
 We welcome contributions from the community! For complete guidelines on how to get started, please read our **[Contributing Guide](CONTRIBUTING.md)**.
-You can also check out the [Issues tab](https://github.com/OpenLake/Student_Database_COSA/issues) for tasks, join our [Discord server](https://discord.gg/hQFhv2t4) to connect with the team, and view the new [Figma design](https://www.figma.com/design/30y4S7ZfFo92GAwV2uacOG/Student-DB_CoSA?node-id=0-1&t=e95ozkVrFmlxgdOK-1).
+You can also check out the [Issues tab](https://github.com/OpenLake/Student_Database_COSA/issues) for tasks, join our [Discord server](https://discord.gg/3wFjfeTuPu) to connect with the team, and view the new [Figma design](https://www.figma.com/design/30y4S7ZfFo92GAwV2uacOG/Student-DB_CoSA?node-id=0-1&t=e95ozkVrFmlxgdOK-1).
 
 ---
 
