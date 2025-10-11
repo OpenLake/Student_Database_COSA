@@ -24,7 +24,7 @@ If you believe someone is violating the code of conduct, we ask that you report 
 
 ## I just have a question!
 
-* Join our community chat on Discord: [https://discord.gg/hQFhv2t4](https://discord.gg/hQFhv2t4).
+* Join our community chat on Discord: [https://discord.gg/hQFhv2t4](https://discord.gg/3wFjfeTuPu).
 
 ## How Can I Contribute?
 
