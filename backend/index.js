@@ -16,6 +16,7 @@ const skillsRoutes = require("./routes/skillsRoutes.js");
 const achievementsRoutes = require("./routes/achievements.js");
 const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
+const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
 const app = express();
 
@@ -60,6 +61,7 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/achievements", achievementsRoutes);
 app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
+app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 // Start the server
