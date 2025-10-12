@@ -91,8 +91,8 @@ userSchema.index(
   {
     unique: true,
     partialFilterExpression: { user_id: { $exists: true, $type: "string" } },
-    name: "user_id_partial_unique"
-  }
+    name: "user_id_partial_unique",
+  },
 );
 
 userSchema.plugin(passportLocalMongoose);
@@ -594,6 +594,44 @@ const feedbackSchema = new mongoose.Schema({
   },
 });
 
+//announcement collection
+const announcementSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["General", "Event", "OrganizationalUnit", "Position"],
+    required: true,
+  },
+  target_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: "type",
+  },
+  is_pinned: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = mongoose.model("User", userSchema);
 const Feedback = mongoose.model("Feedback", feedbackSchema);
 const Achievement = mongoose.model("Achievement", achievementSchema);
@@ -604,7 +642,9 @@ const PositionHolder = mongoose.model("Position_Holder", positionHolderSchema);
 const Position = mongoose.model("Position", positionSchema);
 const OrganizationalUnit = mongoose.model(
   "Organizational_Unit",
-  organizationalUnitSchema,);
+  organizationalUnitSchema,
+);
+const Announcement = mongoose.model("Announcement", announcementSchema);
 
 module.exports = {
   User,
@@ -616,4 +656,5 @@ module.exports = {
   PositionHolder,
   Position,
   OrganizationalUnit,
+  Announcement,
 };
