@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Announcement } = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
 
 router.post("/", isAuthenticated, async (req, res) => {
   try {
@@ -98,6 +99,93 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching announcement by id:", error);
     res.status(500).json({ error: "Failed to fetch announcement" });
+  }
+});
+
+// PUT /:id - update an announcement by id
+router.put(
+  "/:id",
+  isAuthenticated,
+  // allow authors, admins and gensec/president roles to update announcements
+  authorizeRole(["admin", "gen_sec", "president", "gensec"]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      if (!id || typeof id !== "string" || id.length !== 24) {
+        return res.status(400).json({ error: "Invalid announcement id" });
+      }
+
+      const announcement = await Announcement.findById(id);
+      if (!announcement) {
+        return res.status(404).json({ error: "Announcement not found" });
+      }
+
+      // Only the author or privileged roles can update
+      const isAuthor =
+        announcement.author &&
+        announcement.author.toString() === req.user._id.toString();
+      const allowedRoles = ["admin", "gen_sec", "president", "gensec"];
+      if (!isAuthor && !allowedRoles.includes(req.user.role)) {
+        return res
+          .status(403)
+          .json({ error: "Forbidden: cannot edit this announcement" });
+      }
+
+      const { title, content, type, target_id, isPinned } = req.body;
+      if (title !== undefined) announcement.title = title;
+      if (content !== undefined) announcement.content = content;
+      if (type !== undefined) announcement.type = type;
+      if (target_id !== undefined) announcement.target_id = target_id;
+      if (typeof isPinned !== "undefined") announcement.is_pinned = !!isPinned;
+
+      announcement.updatedAt = Date.now();
+      await announcement.save();
+
+      const populated = await Announcement.findById(announcement._id).populate(
+        "author",
+        "name email",
+      );
+
+      res.json(populated);
+    } catch (error) {
+      console.error("Error updating announcement:", error);
+      res.status(500).json({ error: "Failed to update announcement" });
+    }
+  },
+);
+
+// DELETE /:id - delete an announcement by id
+router.delete("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || typeof id !== "string" || id.length !== 24) {
+      return res.status(400).json({ error: "Invalid announcement id" });
+    }
+
+    const announcement = await Announcement.findById(id);
+    if (!announcement) {
+      return res.status(404).json({ error: "Announcement not found" });
+    }
+
+    // Only the author or privileged roles can delete
+    const isAuthor =
+      announcement.author &&
+      announcement.author.toString() === req.user._id.toString();
+    const allowedRoles = ["admin", "gen_sec", "president", "gensec"];
+    if (!isAuthor && !allowedRoles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .json({ error: "Forbidden: cannot delete this announcement" });
+    }
+
+    await Announcement.deleteOne({ _id: id });
+
+    res.json({ message: "Announcement deleted", id });
+  } catch (error) {
+    console.error("Error deleting announcement:", error);
+    res.status(500).json({ error: "Failed to delete announcement" });
   }
 });
 
