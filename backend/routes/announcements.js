@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { Announcement } = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
-const authorizeRole = require("../middlewares/authorizeRole");
 
 router.post("/", isAuthenticated, async (req, res) => {
   try {
@@ -107,7 +106,7 @@ router.put(
   "/:id",
   isAuthenticated,
   // allow authors, admins and gensec/president roles to update announcements
-  authorizeRole(["admin", "gen_sec", "president", "gensec"]),
+  // authorizeRole(["admin", "gen_sec", "president", "gensec"]),
   async (req, res) => {
     try {
       const { id } = req.params;
