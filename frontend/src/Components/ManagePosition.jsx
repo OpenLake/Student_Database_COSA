@@ -299,6 +299,22 @@ const ManagePositions = () => {
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Main Heading */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Briefcase className="w-8 h-8 text-gray-700" strokeWidth={2} />
+                <h1
+                  className="text-4xl font-black text-gray-900"
+                  style={{ fontFamily: "'Archivo Black', sans-serif" }}
+                >
+                  Your PORs
+                </h1>
+              </div>
+              <button className="w-10 h-10 rounded-full border-2 border-gray-700 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                <span className="text-gray-700 text-xl font-bold">i</span>
+              </button>
+            </div>
+
             {Object.entries(groupedPositions).map(
               ([unitName, unitPositions]) => {
                 const unitConfig = getUnitConfig(unitName);
