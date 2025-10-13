@@ -220,9 +220,7 @@ const ManagePositions = () => {
                 <Eye className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-extrabold text-gray-900">
-                  Your PORs
-                </h1>
+                <h1 className="text-xl font-extrabold text-gray-900">PORs</h1>
                 <p className="text-sm text-gray-600">
                   View all your current and past positions
                 </p>
