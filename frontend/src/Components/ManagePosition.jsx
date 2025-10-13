@@ -120,6 +120,7 @@ const ManagePositions = () => {
     if (unitLower.includes("cosa") || unitLower.includes("cultural")) {
       return {
         bg: "bg-green-100",
+        textColor: "#15803d", // green-700
         text: "text-green-700",
         icon: Grid3x3,
         iconBg: "bg-green-100",
@@ -127,6 +128,7 @@ const ManagePositions = () => {
     } else if (unitLower.includes("cult")) {
       return {
         bg: "bg-green-200",
+        textColor: "#15803d", // green-700
         text: "text-green-700",
         icon: Palette,
         iconBg: "bg-green-100",
@@ -134,6 +136,7 @@ const ManagePositions = () => {
     } else if (unitLower.includes("scitech") || unitLower.includes("tech")) {
       return {
         bg: "bg-red-200",
+        textColor: "#b91c1c", // red-700
         text: "text-red-700",
         icon: Microscope,
         iconBg: "bg-red-100",
@@ -141,6 +144,7 @@ const ManagePositions = () => {
     } else if (unitLower.includes("sport")) {
       return {
         bg: "bg-cyan-100",
+        textColor: "#0e7490", // cyan-700
         text: "text-cyan-700",
         icon: Trophy,
         iconBg: "bg-cyan-100",
@@ -148,6 +152,7 @@ const ManagePositions = () => {
     } else if (unitLower.includes("academic") || unitLower.includes("social")) {
       return {
         bg: "bg-yellow-100",
+        textColor: "#a16207", // yellow-700
         text: "text-yellow-700",
         icon: Users,
         iconBg: "bg-yellow-100",
@@ -155,6 +160,7 @@ const ManagePositions = () => {
     } else {
       return {
         bg: "bg-purple-200",
+        textColor: "#7e22ce", // purple-700
         text: "text-purple-700",
         icon: Briefcase,
         iconBg: "bg-purple-100",
@@ -298,6 +304,9 @@ const ManagePositions = () => {
                 const unitConfig = getUnitConfig(unitName);
                 const IconComponent = unitConfig.icon;
 
+                // Debug - check what classes are being generated
+                console.log("Unit:", unitName, "Config:", unitConfig);
+
                 return (
                   <div
                     key={unitName}
@@ -309,11 +318,15 @@ const ManagePositions = () => {
                           className={`w-9 h-9 ${unitConfig.iconBg} rounded-md flex items-center justify-center`}
                         >
                           <IconComponent
-                            className={`w-5 h-5 ${unitConfig.text}`}
+                            className="w-5 h-5"
+                            style={{ color: unitConfig.textColor }}
                             strokeWidth={2}
                           />
                         </div>
-                        <h2 className={`text-2xl font-bold ${unitConfig.text}`}>
+                        <h2
+                          className="text-2xl font-bold"
+                          style={{ color: unitConfig.textColor }}
+                        >
                           {unitName}
                         </h2>
                       </div>
