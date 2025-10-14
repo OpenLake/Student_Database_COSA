@@ -1,17 +1,51 @@
 const express = require("express");
 const router = express.Router();
-const { Announcement } = require("../models/schema");
+const {
+  Announcement,
+  Event,
+  OrganizationalUnit,
+  Position,
+} = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 router.post("/", isAuthenticated, async (req, res) => {
   try {
-    const { title, content, type, isPinned } = req.body;
+    const { title, content, type, isPinned, targetEventId } = req.body;
+    let targetId = null;
+
+    if (type === "Event") {
+      const event = await Event.findOne({
+        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
+      });
+      if (!event) {
+        return res.status(404).send("No event found");
+      }
+      targetId = event.id;
+    } else if (type === "OrganizationalUnit") {
+      const orgUnit = await OrganizationalUnit.findOne({
+        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
+      });
+      if (!orgUnit) {
+        return res.status(404).send("No Organizational Unit found");
+      }
+      targetId = orgUnit.id;
+    } else if (type === "Position") {
+      const pos = await Position.findOne({
+        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
+      });
+      if (!pos) {
+        return res.status(404).send("No Position found");
+      }
+      targetId = pos.id;
+    }
+
     const newAnnouncement = new Announcement({
-      title,
-      content,
       author: req.user._id,
-      type: type || "General",
+      content,
       is_pinned: isPinned || false,
+      title,
+      type: type || "General",
+      target_id: targetId,
     });
     await newAnnouncement.save();
     res.status(201).json(newAnnouncement);
