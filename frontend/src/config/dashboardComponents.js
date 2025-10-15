@@ -1,4 +1,5 @@
 //import Dashboard from "../Components/Dashboard";
+import Home from "../Components/Dashboard/Home"
 import { CreateTenure, ViewTenure } from "../Components/Positions/TenureRecords";
 import ViewFeedback from "../Components/Feedback/ViewFeedback";
 import EventList from "../Components/Events/EventList";
@@ -13,8 +14,8 @@ import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 
-export const dashboardComponents = {
-  //dashboard: Dashboard,
+export const DashboardComponents = {
+  dashboard: Home,
   cosa: ViewTenure,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
