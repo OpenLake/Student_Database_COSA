@@ -7,6 +7,10 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const isEventContact = require("../middlewares/isEventContact");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
+const eventsController = require("../controllers/eventControllers");
+
+
+router.get("/latest", eventsController.getLatestEvents);
 
 // Create a new event (new events can be created by admins only)
 router.post(

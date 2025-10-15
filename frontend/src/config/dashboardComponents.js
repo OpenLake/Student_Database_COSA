@@ -13,7 +13,7 @@ import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 
-export const dashboardComponents = {
+export const DashboardComponents = {
   //dashboard: Dashboard,
   cosa: ViewTenure,
   "manage-positions": CreateTenure,
