@@ -61,8 +61,8 @@ export default function RoleBasedDashboard() {
    const { isUserLoggedIn } = React.useContext(AdminContext);
    const role=isUserLoggedIn?.role || "STUDENT"; // Default to STUDENT if role is undefined
 
-  const navItems = NavbarConfig[role];
-  const [selectedRoute, setSelectedRoute] = useState(navItems[0].key);
+  const navItems = NavbarConfig[role] || [];
+  const [selectedRoute, setSelectedRoute] = useState(navItems[0]?.key);
   const ActiveComponent = DashboardComponents[selectedRoute] || (() => <div>Home</div>);
   const [showLogout, setShowLogout] = useState(false);
   const [updates, setUpdates] = useState([]);
@@ -79,6 +79,13 @@ export default function RoleBasedDashboard() {
 
     fetchLatestUpdates();
   }, []);
+
+  useEffect(() => {
+    // If there are nav items but no route is selected, set it to the first one.
+    if (navItems.length > 0 && !selectedRoute) {
+      setSelectedRoute(navItems[0].key);
+    }
+  }, [navItems, selectedRoute]);
 
   useEffect(() => {
     if (navItems.length > 0) {
