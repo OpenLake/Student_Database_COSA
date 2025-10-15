@@ -6,7 +6,8 @@ import logo from "../../assets/COSA.png"
 import api from "../../utils/api";
 import UpdatesCard from "./Cards/Common/LatestUpdatesCard";
 import LeftColumn from "./LeftColumn";
-
+import { AdminContext } from "../../context/AdminContext";
+import { is } from "date-fns/locale";
 
 const Navbar = ({ role, navItems, selected, setSelected, showLogout, setShowLogout }) => (
   <div className="fixed top-0 left-0 z-50 flex items-center justify-between w-full p-3 border-b border-black/10 bg-white/90 ">
@@ -57,7 +58,9 @@ const Navbar = ({ role, navItems, selected, setSelected, showLogout, setShowLogo
 );
 
 export default function RoleBasedDashboard() {
-  const [role, setRole] = useState("STUDENT");
+   const { isUserLoggedIn } = React.useContext(AdminContext);
+   const role=isUserLoggedIn?.role || "STUDENT"; // Default to STUDENT if role is undefined
+
   const navItems = NavbarConfig[role];
   const [selectedRoute, setSelectedRoute] = useState(navItems[0].key);
   const ActiveComponent = DashboardComponents[selectedRoute] || (() => <div>Home</div>);
@@ -77,29 +80,23 @@ export default function RoleBasedDashboard() {
     fetchLatestUpdates();
   }, []);
 
+  useEffect(() => {
+    if (navItems.length > 0) {
+      setSelectedRoute(navItems[0].key);
+    }
+  }, [role]);
+
+  if(!isUserLoggedIn){
+    return <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold mb-4">Loading Dashboard.....</h2>
+      </div>
+    </div>
+  }
   return (
     <div className="min-h-screen bg-[#FDFAE2]">
       <Navbar role={role} navItems={navItems} selected={selectedRoute} setSelected={setSelectedRoute} showLogout={showLogout} setShowLogout={setShowLogout} />
       <div className="p-6" style={{ paddingTop: "96px" }}>
-        {/* Role switcher */}
-        <div className="flex items-center justify-end gap-2 mb-4">
-          <label className="text-sm text-slate-700">Preview role:</label>
-          <select
-            value={role}
-            onChange={(e) => {
-              const newRole = e.target.value;
-              setRole(newRole);
-              setSelectedRoute(NavbarConfig[newRole][0].key);
-            }}
-            className="p-2 rounded-md"
-          >
-            {Object.keys(NavbarConfig).map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
-        </div>
 
         {/* 3-column layout */}
         <div style={{
