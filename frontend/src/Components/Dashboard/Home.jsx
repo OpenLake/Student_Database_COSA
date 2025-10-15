@@ -1,7 +1,6 @@
 import React from 'react';
 import { PieChart, AreaChart, Users } from 'lucide-react';
 
-// You can expand this component with real data later
 const Home = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
