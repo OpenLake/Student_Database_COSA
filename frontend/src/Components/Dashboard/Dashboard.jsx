@@ -7,28 +7,6 @@ import api from "../../utils/api";
 import UpdatesCard from "./Cards/Common/LatestUpdatesCard";
 import LeftColumn from "./LeftColumn";
 
-const CGPACard = ({ cgpa = 8.5 }) => (
-  <div className="p-4 bg-white/90 rounded-2xl shadow-sm">
-    <div className="flex items-center justify-between">
-      <div>
-        <div className="text-xs text-slate-600">Current CGPA</div>
-        <div className="text-3xl font-bold">{cgpa}</div>
-        <div className="text-sm text-green-600">Good</div>
-      </div>
-    </div>
-  </div>
-);
-
-const SkillsCard = ({ skills = ["UI/UX Design", "Web Dev", "DSA"] }) => (
-  <div className="p-4 bg-white/90 rounded-2xl shadow-sm">
-    <div className="font-semibold mb-3">Current Skills</div>
-    <ul className="text-sm space-y-2">
-      {skills.map((s, i) => (
-        <li key={i} className="text-slate-700">• {s}</li>
-      ))}
-    </ul>
-  </div>
-);
 
 const Navbar = ({ role, navItems, selected, setSelected, showLogout, setShowLogout }) => (
   <div className="fixed top-0 left-0 z-50 flex items-center justify-between w-full p-3 border-b border-black/10 bg-white/90 ">
