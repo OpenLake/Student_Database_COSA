@@ -64,19 +64,13 @@ export default function RoleBasedDashboard() {
   const [showLogout, setShowLogout] = useState(false);
   const [updates, setUpdates] = useState([]);
 
-  const DUMMY_UPDATES = [
-    { id: 1, title: "Event Name", date: "Mon 11" },
-    { id: 2, title: "Event Name", date: "Mon 12" },
-  ];
    useEffect(() => {
     const fetchLatestUpdates = async () => {
       try {
-        // Make sure to use the correct full URL or a proxy
         const response = await api.get('/api/events/latest'); 
         setUpdates(response.data);
       } catch (error) {
         console.error("Failed to fetch updates:", error);
-        // Optionally, set an error state here
       }
     };
 
