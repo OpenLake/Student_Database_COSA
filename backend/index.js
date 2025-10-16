@@ -30,6 +30,10 @@ app.use(
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+    secure: process.env.NODE_ENV === "production",          // HTTPS only in prod
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  // cross-origin in prod
+  },
   }),
 );
 
