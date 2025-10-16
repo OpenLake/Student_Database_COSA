@@ -95,7 +95,7 @@ router.get("/", async (req, res) => {
       .sort(sort)
       .skip((pageNum - 1) * limNum)
       .limit(limNum)
-      .populate("author", "name email");
+      .populate("author", "username personal_info.email");
 
     res.json({
       total,
@@ -121,7 +121,7 @@ router.get("/:id", async (req, res) => {
 
     const announcement = await Announcement.findById(id).populate(
       "author",
-      "name email",
+      "username personal_info.email",
     );
 
     if (!announcement) {
@@ -177,7 +177,7 @@ router.put(
 
       const populated = await Announcement.findById(announcement._id).populate(
         "author",
-        "name email",
+        "username personal_info.email",
       );
 
       res.json(populated);
