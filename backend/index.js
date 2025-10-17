@@ -18,6 +18,11 @@ const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const dashboardRoutes = require("./routes/dashboard.js");
 const app = express();
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 // Connect to MongoDB
