@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import api from "../../../utils/api";
 import cosa from "../../../assets/COSA.png";
 import backgroundImage from "../../../assets/iitbh.jpg";
-
+import LoadingSpinner from '../../common/LoadingScreen'
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -119,7 +119,7 @@ const ForgotPassword = () => {
                 />
               </svg>
             ) : null}
-            {loading ? "Sending..." : "Send Reset Link"}
+            {loading ? <LoadingSpinner size='sm' fullscreen = {false}/> : "Send Reset Link"}
           </button>
         </form>
         {/* CoSA Logo */}

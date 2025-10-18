@@ -7,7 +7,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
-
+import LoadingSpinner from '../common/LoadingScreen'
 export default function Register() {
   const { setIsUserLoggedIn } = useContext(AdminContext);
   const [name, setName] = useState("");
@@ -136,7 +136,7 @@ export default function Register() {
                   : "bg-black text-white hover:opacity-90"
               }`}
             >
-              {loading ? "Registering..." : "Register"}
+              {loading ? <LoadingSpinner size='sm' fullscreen={false}/>: "Register"}
             </button>
 
             <div className="flex items-center my-1">

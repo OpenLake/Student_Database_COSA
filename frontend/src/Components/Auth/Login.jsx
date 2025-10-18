@@ -6,7 +6,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
-
+import LoadingSpinner from '../common/LoadingScreen'
 export default function Login() {
   const { handleLogin } = useContext(AdminContext);
   const [email, setEmail] = useState("");
@@ -116,7 +116,7 @@ export default function Login() {
                 : "bg-black text-white hover:opacity-90"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <LoadingSpinner fullscreen={false} size="sm"/> : "Login"}
           </button>
 
           <div className="flex items-center my-1">

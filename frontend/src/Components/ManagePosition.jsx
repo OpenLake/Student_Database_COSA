@@ -11,6 +11,8 @@ import {
 import api from "../utils/api";
 import { AdminContext } from "../context/AdminContext";
 import AddPositionHolder from "./AddPositionHolder";
+import LoadingSpinner from "./common/LoadingScreen";
+
 
 const ManagePositions = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
@@ -102,9 +104,7 @@ const ManagePositions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFAE2] flex items-center justify-center text-[#7D6B5F]">
-        Loading your positions...
-      </div>
+    <LoadingSpinner/>
     );
   }
 

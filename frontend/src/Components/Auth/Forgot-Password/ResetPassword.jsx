@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import api from "../../../utils/api";
 import cosa from "../../../assets/COSA.png";
 import backgroundImage from "../../../assets/iitbh.jpg";
-
+import LoadingSpinner from '../../common/LoadingScreen'
 const ResetPassword = () => {
   const { id, token } = useParams();
   const navigate = useNavigate();
@@ -141,7 +141,7 @@ const ResetPassword = () => {
                     />
                   </svg>
                 ) : null}
-                {loading ? "Resetting..." : "Reset Password"}
+                {loading ? <LoadingSpinner size='sm' fullscreen={false}/>: "Reset Password"}
               </button>
             </>
           )}
