@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
-
+import LoadingSpinner from '../common/LoadingScreen'
 const RoleRedirect = () => {
   const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } =
     useContext(AdminContext);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingSpinner/>;
 
   if (!isUserLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -17,7 +17,7 @@ const RoleRedirect = () => {
   }
 
   if (!userRole) {
-    return <div>Loading user role...</div>; // Or just return null for a blank screen
+    return <LoadingSpinner/> // Or just return null for a blank screen
   }
   return <Navigate to="/dashboard" replace />; 
 };

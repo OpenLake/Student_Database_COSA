@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { navItems } from "../../config/presidentConfig.js";
+import LoadingSpinner from "../common/LoadingScreen.js";
 const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
@@ -81,8 +82,8 @@ const PresidentDashboard = () => {
           <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500">
             <p className="text-gray-500 text-sm">Pending Approvals</p>
             <p className="text-2xl font-bold text-gray-800">
-              {isLoading ? (
-                <span className="text-gray-400">Loading...</span>
+              {!isLoading ? (
+                <span className="text-gray-400"><LoadingSpinner fullscreen={false} size="sm"/></span>
               ) : (
                 pendingRequests
               )}
@@ -92,7 +93,7 @@ const PresidentDashboard = () => {
             <p className="text-gray-500 text-sm">Room Bookings</p>
             <p className="text-2xl font-bold text-gray-800">
               {isLoading ? (
-                <span className="text-gray-400">Loading...</span>
+                <span className="text-gray-400"><LoadingSpinner fullscreen={false} size="sm"/></span>
               ) : (
                 roomBookings
               )}
@@ -102,7 +103,7 @@ const PresidentDashboard = () => {
             <p className="text-gray-500 text-sm">Upcoming Events</p>
             <p className="text-2xl font-bold text-gray-800">
               {isLoading ? (
-                <span className="text-gray-400">Loading...</span>
+                <span className="text-gray-400"><LoadingSpinner fullscreen={false} size="sm"/></span>
               ) : (
                 upcomingEvents
               )}
@@ -112,7 +113,7 @@ const PresidentDashboard = () => {
             <p className="text-gray-500 text-sm">COSA Records</p>
             <p className="text-2xl font-bold text-gray-800">
               {isLoading ? (
-                <span className="text-gray-400">Loading...</span>
+                <span className="text-gray-400"><LoadingSpinner fullscreen={false} size="sm"/></span>
               ) : (
                 cosaRecords
               )}
@@ -158,7 +159,7 @@ const PresidentDashboard = () => {
           <div className="p-4">
             {isLoading ? (
               <p className="text-center text-gray-500 py-4">
-                Loading activities...
+               <LoadingSpinner fullscreen={false} size="sm"/>
               </p>
             ) : recentActivities.length === 0 ? (
               <p className="text-center text-gray-500 py-4">

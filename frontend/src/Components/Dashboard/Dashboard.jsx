@@ -7,7 +7,7 @@ import { AdminContext } from "../../context/AdminContext";
 import Layout from "../common/Layout";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";
 import Home from "./Home";
-
+import LoadingSpinner from "../common/LoadingScreen";
 function Content() {
   const { selected: selectedRoute } = useSidebar();
   const ActiveComponent =
@@ -18,15 +18,10 @@ function Content() {
 export default function RoleBasedDashboard() {
   const { isUserLoggedIn } = React.useContext(AdminContext);
 
+
   if (!isUserLoggedIn) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">
-            Loading Dashboard.....
-          </h2>
-        </div>
-      </div>
+     <LoadingSpinner/>
     );
   }
 

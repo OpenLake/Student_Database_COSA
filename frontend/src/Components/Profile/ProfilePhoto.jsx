@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import api from "../../utils/api";
+import LoadingSpinner from "../common/LoadingScreen";
 const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
   const [preview, setPreview] = useState(profilePic);
   const [loading, setLoading] = useState(false);
@@ -61,8 +62,10 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
       {isEditing && (
         <div className="bg-[#FDFAE2] flex flex-col items-center gap-2">
           <label className="bg-[#FDFAE2] cursor-pointer bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
-            {loading ? "Uploading..." : "Change Photo"}
-            <input
+            {loading ? <LoadingSpinner fullscreen={false} size="sm"/> : "Change Photo"}
+
+      
+           <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
@@ -75,7 +78,7 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
             onClick={handleDelete}
             disabled={loading}
           >
-            {loading ? "Processing..." : "Delete Photo"}
+            {loading ? <LoadingSpinner size="sm" fullscreen={false}/>: "Delete Photo"}
           </button>
         </div>
       )}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import api from "../../utils/api";
+import LoadingSpinner from '../common/LoadingScreen'
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
@@ -22,7 +23,7 @@ const EventDetail = () => {
   }, [id]);
 
   if (!event) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return <LoadingSpinner/>
   }
 
   return (
