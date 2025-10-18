@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import api from "../../utils/api";
 import { AdminContext } from "../../context/AdminContext";
+import LoadingSpinner from "../common/LoadingScreen";
 
 const ViewAchievements = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
@@ -142,13 +143,7 @@ const ViewAchievements = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-500">Loading your achievements...</div>
-          </div>
-        </div>
-      </div>
+    <LoadingSpinner/>
     );
   }
 

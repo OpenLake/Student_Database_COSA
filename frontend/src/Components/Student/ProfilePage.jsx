@@ -4,6 +4,7 @@ import { fetchCredentials } from "../../services/auth";
 import { AdminContext } from "../../context/AdminContext";
 import ProfilePhoto from "./ProfilePhoto";
 import api from "../../utils/api";
+import LoadingSpinner from "../common/LoadingScreen";
 
 // --- Validation & Helpers ---
 const validateMobile = (number) => /^[0-9]{10}$/.test(number);
@@ -169,7 +170,7 @@ const StudentProfile = () => {
             <button onClick={handleEdit} className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors shadow"><Edit3 className="w-4 h-4" /><span>Edit</span></button>
           ) : (
             <>
-              <button onClick={handleSave} disabled={loading} className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-emerald-700 transition-colors shadow disabled:opacity-70"><Save className="w-4 h-4" /><span>{loading ? "Saving..." : "Save"}</span></button>
+              <button onClick={handleSave} disabled={loading} className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-emerald-700 transition-colors shadow disabled:opacity-70"><Save className="w-4 h-4" /><span>{loading ? <LoadingSpinner fullscreen={false} size="sm"/> : "Save"}</span></button>
               <button onClick={handleCancel} className="flex items-center gap-1 bg-rose-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-rose-700 transition-colors shadow"><X className="w-4 h-4" /><span>Cancel</span></button>
             </>
           )}

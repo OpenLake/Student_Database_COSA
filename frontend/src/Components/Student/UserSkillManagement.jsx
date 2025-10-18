@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import api from "../../utils/api";
 import { AdminContext } from "../../context/AdminContext";
 import { Plus, X, ChevronDown, Calendar, CheckCircle2, CircleOff, User } from "lucide-react";
+import LoadingSpinner from "../common/LoadingScreen";
 
 const SkillManagement = () => {
   const [skills, setSkills] = useState([]);
@@ -311,7 +312,7 @@ const SkillManagement = () => {
                     disabled={loading}
                     className="flex-1 bg-[#A98B74] text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                   >
-                    {loading ? "Adding..." : "Add Skill"}
+                    {loading ? <LoadingSpinner size="sm" fullscreen={false}/>: "Add Skill"}
                   </button>
                 </div>
               </div>

@@ -25,9 +25,9 @@ import {
   Star,
 } from "lucide-react";
 import ViewPosition from "../Positions/ViewPosition";
-
+import LoadingSpinner from '../common/LoadingScreen'
 const ClubDashboard = () => {
-  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [activeTab, setActiveTab] = useState("Feedback");
   const [clubData, setClubData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -498,12 +498,7 @@ const ClubDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50 items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          <p className="mt-4 text-gray-600">Loading club data...</p>
-        </div>
-      </div>
+      <LoadingSpinner/>
     );
   }
 
@@ -523,20 +518,20 @@ const ClubDashboard = () => {
     );
   }
 
-  if (!clubData) {
-    return (
-      <div className="flex h-screen bg-gray-50 items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 text-lg">No club data found</p>
-        </div>
-      </div>
-    );
-  }
+   if (!clubData) {
+     return (
+       <div className="flex h-screen bg-gray-50 items-center justify-center">
+         <div className="text-center">
+           <p className="text-gray-600 text-lg">No club data found</p>
+         </div>
+       </div>
+     );
+   }
 
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-80 bg-black text-white flex flex-col">
+       <div className="w-80 bg-black text-white flex flex-col">
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
