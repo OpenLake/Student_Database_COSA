@@ -27,7 +27,7 @@ import {
 import ViewPosition from "../Positions/ViewPosition";
 import LoadingSpinner from '../common/LoadingScreen'
 const ClubDashboard = () => {
-  const [activeTab, setActiveTab] = useState("Feedback");
+  const [activeTab, setActiveTab] = useState("Dashboard");
   const [clubData, setClubData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
