@@ -5,6 +5,7 @@ export const useEvents = (userRole, username) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [latestEvents, setLatestEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -36,11 +37,24 @@ export const useEvents = (userRole, username) => {
     fetchEvents();
   }, [userRole, username]);
 
+  useEffect(() => {
+    const fetchLatestUpdates = async () => {
+      try {
+        const response = await api.get("/api/events/latest");
+        setLatestEvents(response.data);
+      } catch (error) {
+        console.error("Failed to fetch updates:", error);
+      }
+    };
+
+    fetchLatestUpdates();
+  }, []);
+
   const updateEvent = (updatedEvent) => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
-        event._id === updatedEvent._id ? updatedEvent : event,
-      ),
+        event._id === updatedEvent._id ? updatedEvent : event
+      )
     );
   };
 
@@ -49,5 +63,6 @@ export const useEvents = (userRole, username) => {
     loading,
     error,
     updateEvent,
+    latestEvents,
   };
 };

@@ -6,7 +6,6 @@ var findOrCreate = require("mongoose-findorcreate");
 const userSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    //user_id is the ID provided by institute, ie ID no
   },
   role: {
     type: String,

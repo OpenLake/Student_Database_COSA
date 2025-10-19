@@ -39,12 +39,11 @@ const GridLayout = ({ config, components }) => {
 
 const Layout = ({ headerText, gridConfig, components, children = null }) => {
   const { profile } = useProfile();
-  const details =
-    profile?.academic_info?.batch_year +
-    " | " +
-    profile?.academic_info?.program +
-    " | " +
-    profile?.user_id;
+  if (profile.academic_info) {
+    details = `${profile.academic_info.batch_year} | ${profile.academic_info.program} | ${profile.user_id}`;
+  } else {
+    details = profile.personal_info?.email || "No academic info available";
+  }
 
   return (
     <div className="h-screen overflow-hidden bg-[#000]">

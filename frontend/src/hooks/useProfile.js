@@ -36,15 +36,16 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
-
+  console.log(isUserLoggedIn)
   // Fetch profile data on mount
   useEffect(() => {
-    if (isUserLoggedIn?.user_id) {
+    // if (isUserLoggedIn?.user_id) {
       setLoading(true);
       fetchCredentials()
         .then((data) => {
           if (data) {
             setProfile(data);
+            console.log(data)
             setEditedProfile(JSON.parse(JSON.stringify(data))); // Deep copy
           }
         })
@@ -52,8 +53,9 @@ export const useProfile = () => {
           setToast({ message: "Error fetching profile", type: "error" }),
         )
         .finally(() => setLoading(false));
-    }
+    // }
   }, [isUserLoggedIn]);
+
 
   // Validation logic
   const validateAll = () => {

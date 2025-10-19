@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { PieChart, AreaChart, Users } from "lucide-react";
 import api from "../../utils/api";
 import LeftColumn from "./LeftColumn";
-import UpdatesCard from "./Cards/Common/LatestUpdatesCard";
+import UpdatesCard from "../common/LatestUpdatesCard";
 import Layout from "../common/Layout";
 
-const Home = () => {
+export const Home = () => {
   return (
     // <div className="p-6 bg-gray-50 min-h-screen">
     // <header className="mb-8">
@@ -15,7 +15,7 @@ const Home = () => {
     //   </p>
     // </header>
 
-    <div className="text-center border-2 border-dashed border-gray-300 rounded-xl p-12 bg-white">
+    <div className="text-center rounded-xl p-12 bg-white">
       <div className="flex justify-center items-center gap-4 text-gray-400 mb-4">
         <PieChart size={48} strokeWidth={1.5} />
         <AreaChart size={48} strokeWidth={1.5} />

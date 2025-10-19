@@ -3,6 +3,8 @@ import EventList from "../Components/Events/EventList";
 import Layout from "../Components/common/Layout";
 import EventForm from "../Components/Events/EventForm";
 import { useState } from "react";
+import Calendar from "../Components/common/Calendar";
+import LatestUpdates from "../Components/common/LatestUpdatesCard";
 
 const EventsPage = () => {
   const [addEvent, setAddEvent] = useState(false);
@@ -10,6 +12,8 @@ const EventsPage = () => {
   const components = {
     EventList: EventList,
     EventForm: EventForm,
+    Calendar: Calendar,
+    LatestUpdates: LatestUpdates,
   };
   const gridConfig = [
     {
@@ -17,11 +21,31 @@ const EventsPage = () => {
       component: addEvent ? "EventForm" : "EventList",
       position: {
         colStart: 0,
-        colEnd: 15,
+        colEnd: 14,
         rowStart: 0,
         rowEnd: addEvent ? 16 : 12,
       },
       props: { addEvent: addEvent, setAddEvent: setAddEvent },
+    },
+    {
+      id: "calendar",
+      component: "Calendar",
+      position: {
+        colStart: 14,
+        colEnd: 20,
+        rowStart: 0,
+        rowEnd: 7,
+      },
+    },
+    {
+      id: "updates",
+      component: "LatestUpdates",
+      position: {
+        colStart: 14,
+        colEnd: 20,
+        rowStart: 7,
+        rowEnd: 16,
+      },
     },
   ];
   return (

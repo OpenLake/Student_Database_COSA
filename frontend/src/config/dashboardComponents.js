@@ -23,25 +23,26 @@ import OrganizationPage from "../pages/organizationsPage";
 import AchievementsPage from "../pages/achievementsPage";
 import SkillsPage from "../pages/skillsPage";
 import EndorsementPage from "../pages/endorsementPage";
+import { HomePage } from "../pages/homePage";
 
 export const DashboardComponents = {
-  dashboard: DashboardContent,
-  cosa: ViewTenure,
-  "manage-positions": CreateTenure,
-  "view-feedback": ViewFeedback,
+  dashboard: HomePage,
   events: EventsPage,
-  "add-event": EventForm,
-  "add-org-unit": CreateOrgUnit,
-  "gensec-endorse": GenSecEndorse,
-  "endorse-achievements": AchievementsEndorsementTab,
-  profile: StudentProfile,
-  "give-feedback": FeedbackForm,
-  "add-achievements": AchievementForm,
-  "view-achievements": ViewAchievements,
   skills: SkillsPage,
   por: PORsPage,
   feedback: FeedbackPage,
   organization: OrganizationPage,
   achievements: AchievementsPage,
   endorsement: EndorsementPage,
+  profile: StudentProfile,
+  cosa: ViewTenure,
+  "manage-positions": CreateTenure,
+  "view-feedback": ViewFeedback,
+  "add-event": EventForm,
+  "add-org-unit": CreateOrgUnit,
+  "gensec-endorse": GenSecEndorse,
+  "endorse-achievements": AchievementsEndorsementTab,
+  "give-feedback": FeedbackForm,
+  "add-achievements": AchievementForm,
+  "view-achievements": ViewAchievements,
 };

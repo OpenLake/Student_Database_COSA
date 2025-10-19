@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
 import api from "../../utils/api";
-import UpdatesCard from "./Cards/Common/LatestUpdatesCard";
 import LeftColumn from "./LeftColumn";
 import { AdminContext } from "../../context/AdminContext";
 import Layout from "../common/Layout";
