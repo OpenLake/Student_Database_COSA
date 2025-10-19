@@ -14,10 +14,14 @@ import RoleRedirect from "./Components/Auth/RoleRedirect";
 import Unauthorised from "./Components/Unauthorised";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { NavbarConfig } from "./config/navbarConfig";
+import { SidebarProvider } from "./hooks/useSidebar";
 
 function App() {
   const authData = useAuth();
   const { isUserLoggedIn, isOnboardingComplete, isLoading } = authData;
+  // const role = isUserLoggedIn?.role || "STUDENT";
+  // const navItems = NavbarConfig[role] || [];
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -27,6 +31,7 @@ function App() {
   return (
     <>
       <AdminContext.Provider value={authData}>
+        {/* <SidebarProvider role={role} navItems={navItems}> */}
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}
@@ -55,6 +60,7 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
+        {/* </SidebarProvider> */}
       </AdminContext.Provider>
       <ToastContainer
         position="top-right"

@@ -158,7 +158,7 @@ const AddPositionHolderForm = () => {
 
       const normalizedEmail = currentUserEmail.toLowerCase();
       const coordinatorUnit = units.find(
-        (unit) => unit.contact_info?.email?.toLowerCase() === normalizedEmail,
+        (unit) => unit.contact_info?.email?.toLowerCase() === normalizedEmail
       );
 
       if (!coordinatorUnit) {
@@ -168,7 +168,7 @@ const AddPositionHolderForm = () => {
 
       const coordinatorUnitId = getUnitIdentifier(coordinatorUnit);
       const filtered = positions.filter(
-        (position) => getUnitIdentifier(position.unit_id) === coordinatorUnitId,
+        (position) => getUnitIdentifier(position.unit_id) === coordinatorUnitId
       );
       setScopedPositions(filtered);
       return;
@@ -182,7 +182,7 @@ const AddPositionHolderForm = () => {
       return;
     }
     const isStillAccessible = scopedPositions.some(
-      (position) => position._id === formData.position_id,
+      (position) => position._id === formData.position_id
     );
     if (!isStillAccessible) {
       setFormData((prev) => ({ ...prev, position_id: "" }));
@@ -223,7 +223,7 @@ const AddPositionHolderForm = () => {
   const currentYear = new Date().getFullYear();
   const tenureYearOptions = Array.from(
     { length: currentYear - 2015 },
-    (_, i) => `${2016 + i}-${2017 + i}`,
+    (_, i) => `${2016 + i}-${2017 + i}`
   ).reverse();
 
   const filteredUsers = users.filter(
@@ -232,7 +232,7 @@ const AddPositionHolderForm = () => {
         .toLowerCase()
         .includes(userSearchTerm.toLowerCase()) ||
       user.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
-      user.user_id.toLowerCase().includes(userSearchTerm.toLowerCase()),
+      user.user_id.toLowerCase().includes(userSearchTerm.toLowerCase())
   );
   const filteredPositions = scopedPositions.filter((position) => {
     const searchTerm = positionSearchTerm.toLowerCase();
@@ -247,7 +247,7 @@ const AddPositionHolderForm = () => {
       user.personal_info.name
         .toLowerCase()
         .includes(appointedBySearchTerm.toLowerCase()) ||
-      user.username.toLowerCase().includes(appointedBySearchTerm.toLowerCase()),
+      user.username.toLowerCase().includes(appointedBySearchTerm.toLowerCase())
   );
 
   const validateForm = () => {
@@ -328,10 +328,10 @@ const AddPositionHolderForm = () => {
 
   const selectedUser = users.find((user) => user._id === formData.user_id);
   const selectedPosition = scopedPositions.find(
-    (position) => position._id === formData.position_id,
+    (position) => position._id === formData.position_id
   );
   const selectedAppointedBy = appointingUsers.find(
-    (user) => user._id === formData.appointment_details.appointed_by,
+    (user) => user._id === formData.appointment_details.appointed_by
   );
 
   const inputStyles =
@@ -346,22 +346,13 @@ const AddPositionHolderForm = () => {
     ) : null;
 
   return (
-    <div className="min-h-screen w-full bg-[#FDFAE2] flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen w-full bg-white flex items-center justify-center p-4 font-sans">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-stone-200 space-y-6"
+        className="w-full px-8 bg-white/80 backdrop-blur-sm rounded-2xl"
       >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-stone-800">
-            Add Position Holder
-          </h2>
-          <p className="text-stone-500 mt-1 text-sm">
-            Assign users to organizational positions.
-          </p>
-        </div>
-
         {/* Section 1: Assignment Information */}
-        <div className="pt-4 border-t border-stone-200">
+        <div className="">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div ref={userDropdownRef} className="relative">
               <label className={labelStyles}>
@@ -511,9 +502,9 @@ const AddPositionHolderForm = () => {
 
         {/* Section 2: Appointment Details */}
         <div className="pt-4 border-t border-stone-200">
-          <h3 className="text-base font-semibold text-stone-700 mb-3">
+          <div className="text-lg font-semibold text-stone-700 mb-3">
             Appointment Details (Optional)
-          </h3>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div ref={appointedByDropdownRef} className="relative">
               <label className={labelStyles}>Appointed By</label>
@@ -531,7 +522,7 @@ const AddPositionHolderForm = () => {
                     handleNestedChange(
                       "appointment_details",
                       "appointed_by",
-                      "",
+                      ""
                     );
                   }
                 }}
@@ -549,7 +540,7 @@ const AddPositionHolderForm = () => {
                           handleNestedChange(
                             "appointment_details",
                             "appointed_by",
-                            user._id,
+                            user._id
                           );
                           setAppointedBySearchTerm("");
                           setIsAppointedByDropdownOpen(false);
@@ -582,7 +573,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "appointment_details",
                     "appointment_date",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 className={inputStyles}
@@ -593,9 +584,9 @@ const AddPositionHolderForm = () => {
 
         {/* Section 3: Performance Metrics */}
         <div className="pt-4 border-t border-stone-200">
-          <h3 className="text-base font-semibold text-stone-700 mb-3">
+          <div className="text-lg font-semibold text-stone-700 mb-3">
             Performance Metrics (Optional)
-          </h3>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={labelStyles}>Events Organized</label>
@@ -607,7 +598,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "events_organized",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 className={inputStyles}
@@ -624,7 +615,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "budget_utilized",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 className={inputStyles}
@@ -638,7 +629,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "feedback",
-                    e.target.value,
+                    e.target.value
                   )
                 }
                 placeholder="Provide feedback or notes..."
