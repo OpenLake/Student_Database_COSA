@@ -12,7 +12,7 @@ import {
   CreateTenure,
   ViewTenure,
 } from "../Components/Positions/TenureRecords";
-import CreateOrgUnit from "../Components/CreateOrgUnit";
+import CreateOrgUnit from "../Components/organization/CreateOrgUnit";
 import EventForm from "../Components/Events/EventForm";
 import ClubDashboard from "../Components/Club_Coordinator/ClubCoorinatorDashboard";
 

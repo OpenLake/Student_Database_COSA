@@ -7,7 +7,7 @@ import {
 import ViewFeedback from "../Components/Feedback/ViewFeedback";
 import EventList from "../Components/Events/EventList";
 import EventForm from "../Components/Events/EventForm";
-import CreateOrgUnit from "../Components/CreateOrgUnit";
+import CreateOrgUnit from "../Components/organization/CreateOrgUnit";
 import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
 import StudentProfile from "../Components/Student/ProfilePage";
@@ -22,6 +22,7 @@ import FeedbackPage from "../pages/feedbackPage";
 import OrganizationPage from "../pages/organizationsPage";
 import AchievementsPage from "../pages/achievementsPage";
 import SkillsPage from "../pages/skillsPage";
+import EndorsementPage from "../pages/endorsementPage";
 
 export const DashboardComponents = {
   dashboard: DashboardContent,
@@ -42,4 +43,5 @@ export const DashboardComponents = {
   feedback: FeedbackPage,
   organization: OrganizationPage,
   achievements: AchievementsPage,
+  endorsement: EndorsementPage,
 };

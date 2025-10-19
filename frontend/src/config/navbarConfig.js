@@ -16,7 +16,7 @@ const GENSEC_COMMON_NAV = [
   { key: "dashboard", label: "Home", icon: Home },
   // { key: "cosa", label: "CoSA", icon: Users },
   { key: "events", label: "Events", icon: Calendar },
-  { key: "gensec-endorse", label: "Endorsements", icon: Award },
+  { key: "endorsement", label: "Endorsements", icon: Award },
   { key: "feedback", label: "Feedback", icon: ClipboardList },
   // { key: "add-event", label: "Add Event", icon: Plus },
   { key: "por", label: "PORs", icon: UserPlus },

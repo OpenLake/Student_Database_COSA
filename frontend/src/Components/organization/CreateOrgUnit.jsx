@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Building2 } from "lucide-react";
-import { AdminContext } from "../context/AdminContext";
-import api from "../utils/api";
+import { AdminContext } from "../../context/AdminContext";
+import api from "../../utils/api";
 
 // Define the initial empty state for the form so we can reset it later
 const initialFormState = {
