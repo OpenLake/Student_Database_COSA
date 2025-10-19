@@ -37,7 +37,7 @@ const GridLayout = ({ config, components }) => {
   );
 };
 
-const Layout = ({ headerText, gridConfig, components, children }) => {
+const Layout = ({ headerText, gridConfig, components, children = null }) => {
   const { profile } = useProfile();
   const details =
     profile?.academic_info?.batch_year +

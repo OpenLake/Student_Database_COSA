@@ -1,29 +1,29 @@
+import Achievements from "../Components/Achievements/Achievements";
 import Layout from "../Components/common/Layout";
-import Organization from "../Components/organization/organization";
 
-const OrganizationPage = () => {
+const AchievementsPage = () => {
   const components = {
-    Organization: Organization,
+    Achievements: Achievements,
   };
   const gridConfig = [
     {
       id: "main",
-      component: "Organization",
+      component: "Achievements",
       position: {
         colStart: 0,
         colEnd: 15,
         rowStart: 0,
-        rowEnd: 12,
+        rowEnd: 16,
       },
     },
   ];
   return (
     <Layout
-      headerText="Organization"
+      headerText="Achievements"
       gridConfig={gridConfig}
       components={components}
     />
   );
 };
 
-export default OrganizationPage;
+export default AchievementsPage;

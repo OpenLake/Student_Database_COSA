@@ -12,13 +12,15 @@ import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
 import StudentProfile from "../Components/Student/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
-import AchievementForm from "../Components/Student/AddUserAchievements";
-import ViewAchievements from "../Components/Student/ViewUserAchievements";
+import AchievementForm from "../Components/Achievements/AddUserAchievements";
+import ViewAchievements from "../Components/Achievements/ViewUserAchievements";
 import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 import EventsPage from "../pages/eventsPage";
 import PORsPage from "../pages/porsPage";
 import FeedbackPage from "../pages/feedbackPage";
+import OrganizationPage from "../pages/organizationsPage";
+import AchievementsPage from "../pages/achievementsPage";
 
 export const DashboardComponents = {
   dashboard: DashboardContent,
@@ -37,4 +39,6 @@ export const DashboardComponents = {
   skills: UserSkillManagement,
   por: PORsPage,
   feedback: FeedbackPage,
+  organization: OrganizationPage,
+  achievements: AchievementsPage,
 };

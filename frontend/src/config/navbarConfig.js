@@ -20,7 +20,7 @@ const GENSEC_COMMON_NAV = [
   { key: "feedback", label: "Feedback", icon: ClipboardList },
   // { key: "add-event", label: "Add Event", icon: Plus },
   { key: "por", label: "PORs", icon: UserPlus },
-  { key: "add-org-unit", label: "Clubs", icon: Users },
+  { key: "organization", label: "Clubs", icon: Users },
 ];
 
 export const NavbarConfig = {
@@ -31,7 +31,7 @@ export const NavbarConfig = {
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
-    { key: "add-org-unit", label: "Clubs", icon: Users },
+    { key: "organization", label: "Clubs", icon: Users },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
   GENSEC_ACADEMIC: GENSEC_COMMON_NAV,
@@ -45,7 +45,7 @@ export const NavbarConfig = {
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
-    { key: "endorse-achievements", label: "Endorse Achievement", icon: Award },
+    { key: "achievements", label: "Achievements", icon: Award },
   ],
 
   STUDENT: [
@@ -55,7 +55,7 @@ export const NavbarConfig = {
     { key: "events", label: "Events", icon: Calendar },
     { key: "feedback", label: "Feedback", icon: MessageSquare },
     // { key: "view-feedback", label: "Feedback", icon: ClipboardList },
-    { key: "add-achievements", label: "Achieve", icon: Trophy },
+    { key: "achievements", label: "Achieve", icon: Trophy },
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
