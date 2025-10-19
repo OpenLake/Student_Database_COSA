@@ -20,6 +20,7 @@ const GENSEC_COMMON_NAV = [
   { key: "feedback", label: "Feedback", icon: ClipboardList },
   // { key: "add-event", label: "Add Event", icon: Plus },
   { key: "por", label: "PORs", icon: UserPlus },
+    { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
 ];
 
@@ -31,6 +32,7 @@ export const NavbarConfig = {
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
+    { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
@@ -45,6 +47,7 @@ export const NavbarConfig = {
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
+    { key: "profile", label: "Profile", icon: User },
     { key: "achievements", label: "Achievements", icon: Award },
   ],
 

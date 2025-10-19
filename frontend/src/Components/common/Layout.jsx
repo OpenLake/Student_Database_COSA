@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import { useProfile } from "../../hooks/useProfile";
+import UserIcon from "./userIcon";
 
 const GridLayout = ({ config, components }) => {
   return (
@@ -38,12 +39,6 @@ const GridLayout = ({ config, components }) => {
 };
 
 const Layout = ({ headerText, gridConfig, components, children = null }) => {
-  const { profile } = useProfile();
-  if (profile.academic_info) {
-    details = `${profile.academic_info.batch_year} | ${profile.academic_info.program} | ${profile.user_id}`;
-  } else {
-    details = profile.personal_info?.email || "No academic info available";
-  }
 
   return (
     <div className="h-screen overflow-hidden bg-[#000]">
@@ -59,29 +54,7 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
             </h1>
 
             {/* Profile Section */}
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <div className="text-base font-semibold text-black">
-                  {profile?.personal_info?.name || "Profile Name"}
-                </div>
-                <div className="text-xs text-black/60">
-                  {details || "Profile Details"}
-                </div>
-              </div>
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-300 flex-shrink-0">
-                {profile?.personal_info?.profilePic ? (
-                  <img
-                    src={profile?.personal_info.profilePic}
-                    alt={profile?.personal_info.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-400 text-white font-semibold text-sm">
-                    {profile?.personal_info?.name?.charAt(0) || "U"}
-                  </div>
-                )}
-              </div>
-            </div>
+            <UserIcon />
           </div>
 
           {/* Content Area - Grid or Children */}
