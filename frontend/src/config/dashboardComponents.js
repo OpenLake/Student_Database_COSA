@@ -14,13 +14,14 @@ import StudentProfile from "../Components/Student/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Achievements/AddUserAchievements";
 import ViewAchievements from "../Components/Achievements/ViewUserAchievements";
-import UserSkillManagement from "../Components/Student/UserSkillManagement";
+import UserSkillManagement from "../Components/Skills/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
 import EventsPage from "../pages/eventsPage";
 import PORsPage from "../pages/porsPage";
 import FeedbackPage from "../pages/feedbackPage";
 import OrganizationPage from "../pages/organizationsPage";
 import AchievementsPage from "../pages/achievementsPage";
+import SkillsPage from "../pages/skillsPage";
 
 export const DashboardComponents = {
   dashboard: DashboardContent,
@@ -36,7 +37,7 @@ export const DashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
-  skills: UserSkillManagement,
+  skills: SkillsPage,
   por: PORsPage,
   feedback: FeedbackPage,
   organization: OrganizationPage,
