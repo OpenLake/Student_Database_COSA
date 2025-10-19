@@ -121,25 +121,10 @@ const ViewPosition = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFAE2] py-8 px-4">
+    <div className="min-h-screen bg-white px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] mb-6">
-          <div className="px-6 py-4 border-b border-[#DCD3C9]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                <Eye className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-black">
-                  View Positions
-                </h1>
-                <p className="text-sm text-black">
-                  Browse and manage organizational positions
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="bg-white rounded-lg [#DCD3C9] mb-6">
 
           {/* Search and Filters */}
           <div className="p-6 space-y-4">
@@ -198,7 +183,7 @@ const ViewPosition = () => {
           {filteredPositions.map((position) => (
             <div
               key={position._id}
-              className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] hover:shadow-md transition-shadow flex flex-col justify-between"
+              className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col justify-between"
             >
               {/* Card Header (Removed the extra div wrapper and the bottom border) */}
               <div className="p-4">
@@ -255,7 +240,7 @@ const ViewPosition = () => {
 
         {/* Empty State */}
         {filteredPositions.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] p-12 text-center">
+          <div className="bg-white rounded-lg [#DCD3C9] p-12 text-center">
             <Eye className="w-12 h-12 text-black mx-auto mb-4" />
             <h3 className="text-lg font-medium text-black mb-2">
               No positions found

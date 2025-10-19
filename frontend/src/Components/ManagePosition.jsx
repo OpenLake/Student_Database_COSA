@@ -102,7 +102,7 @@ const ManagePositions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFAE2] flex items-center justify-center text-black">
+      <div className="min-h-screen bg-white flex items-center justify-center text-black">
         Loading your positions...
       </div>
     );
@@ -110,7 +110,7 @@ const ManagePositions = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#FDFAE2] flex items-center justify-center text-red-700">
+      <div className="min-h-screen bg-white flex items-center justify-center text-red-700">
         {error}
       </div>
     );

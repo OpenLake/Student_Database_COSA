@@ -317,22 +317,13 @@ const AddPositionForm = (props) => {
   const selectedUnit = units.find((unit) => unit._id === formData.unit_id);
 
   return (
-    <div className="min-h-screen w-full bg-[#FDFAE2] flex items-center justify-center p-4 font-sans">
+    <div className="w-full bg-white flex items-center justify-center p-4 font-sans">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-3xl p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-stone-200 space-y-6"
+        className="w-full px-8 bg-white/80 backdrop-blur-sm rounded-2xl"
       >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-stone-800">
-            Add New Position
-          </h2>
-          <p className="text-stone-500 mt-1 text-sm">
-            Define a new role within an organizational unit.
-          </p>
-        </div>
-
         {/* Section 1: Basic Information */}
-        <div className="pt-4 border-t border-stone-200">
+        <div className="">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={labelStyles}>
@@ -364,7 +355,7 @@ const AddPositionForm = (props) => {
                     className={inputStyles}
                     placeholder="No eligible unit found for your email"
                   />
-                  <p className="text-xs text-stone-500 mt-1">
+                  <p className="text-xs text-black mt-1">
                     Your role is Club Coordinator. The unit is pre-selected and
                     cannot be changed.
                   </p>
@@ -400,7 +391,7 @@ const AddPositionForm = (props) => {
                           </div>
                         ))
                       ) : (
-                        <div className="px-3 py-2 text-sm text-stone-500">
+                        <div className="px-3 py-2 text-sm text-black">
                           No units found.
                         </div>
                       )}

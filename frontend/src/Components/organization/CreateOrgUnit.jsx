@@ -158,7 +158,7 @@ const CreateOrgUnit = () => {
   ) : null;
 
   return (
-    <div className="min-h-screen w-full bg-[#FDFAE2] flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen w-full bg-white flex items-center justify-center p-4 font-sans">
       <form onSubmit={handleSubmit} className="w-full max-w-4xl p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-stone-200 space-y-6">
         {/* Header */}
         <div className="text-center">

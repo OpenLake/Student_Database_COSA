@@ -7,7 +7,7 @@ import {
 
 const AchievementCard = ({ achievement }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-lg gray-200 overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-start justify-between">

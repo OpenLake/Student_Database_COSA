@@ -303,7 +303,7 @@ const StudentDashboard = () => {
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                  className="bg-white rounded-xl p-6 gray-200 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-between mb-1">
                     <div className={`p-3 rounded-lg ${card.color}`}>
@@ -324,7 +324,7 @@ const StudentDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* upcoming events */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 min-h-[525px]">
+              <div className="bg-white rounded-xl p-6 gray-200 min-h-[525px]">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-gray-900">
                     Upcoming Events
@@ -381,7 +381,7 @@ const StudentDashboard = () => {
             {/* Quick Actions & Latest Achievement */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+              <div className="bg-white rounded-xl p-6 gray-200">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   Quick Actions
                 </h2>

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {Search,Eye,Edit,Trash2,UserCheck,Award,Clock,DollarSign,} from "lucide-react";
+import {
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  UserCheck,
+  Award,
+  Clock,
+  DollarSign,
+} from "lucide-react";
 import api from "../../utils/api";
 
 const ViewPositionHolder = () => {
@@ -33,7 +42,7 @@ const ViewPositionHolder = () => {
   ].sort();
   const departments = [
     ...new Set(
-      positionHolders.map((holder) => holder.position_id?.unit_id?.name),
+      positionHolders.map((holder) => holder.position_id?.unit_id?.name)
     ),
   ].filter(Boolean); // Filter out any null/undefined department names
 
@@ -56,7 +65,7 @@ const ViewPositionHolder = () => {
           holder.position_id?.title
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          holder.por_id?.toLowerCase().includes(searchTerm.toLowerCase()),
+          holder.por_id?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -65,12 +74,12 @@ const ViewPositionHolder = () => {
     }
     if (selectedTenure) {
       filtered = filtered.filter(
-        (holder) => holder.tenure_year === selectedTenure,
+        (holder) => holder.tenure_year === selectedTenure
       );
     }
     if (selectedDepartment) {
       filtered = filtered.filter(
-        (holder) => holder.position_id?.unit_id?.name === selectedDepartment,
+        (holder) => holder.position_id?.unit_id?.name === selectedDepartment
       );
     }
 
@@ -98,7 +107,9 @@ const ViewPositionHolder = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) {return "N/A";}
+    if (!dateString) {
+      return "N/A";
+    }
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -133,26 +144,10 @@ const ViewPositionHolder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFAE2] py-8 px-4">
+    <div className="min-h-screen bg-white px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] mb-6">
-          <div className="px-6 py-4 border-b border-[#DCD3C9]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                <UserCheck className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-black">
-                  View Position Holders
-                </h1>
-                <p className="text-sm text-black">
-                  Browse and manage position holder assignments
-                </p>
-              </div>
-            </div>
-          </div>
-
+        <div className="bg-white rounded-lg [#DCD3C9] mb-6">
           {/* Search and Filters */}
           <div className="p-6 space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
@@ -217,9 +212,9 @@ const ViewPositionHolder = () => {
           {filteredHolders.map((holder) => (
             <div
               key={holder._id}
-              className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] hover:shadow-md transition-shadow flex flex-col"
+              className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col"
             >
-              <div className="p-4 border-b border-[#DCD3C9] flex-grow">
+              <div className="p-4  flex-grow">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="font-semibold text-black text-lg">
@@ -245,25 +240,6 @@ const ViewPositionHolder = () => {
                   <p className="text-sm text-black">
                     {holder.position_id?.unit_id?.name || "Unknown Dept"}
                   </p>
-                </div>
-              </div>
-              <div className="p-4 bg-[#F5F1EC]">
-                <div className="flex items-center justify-around text-center">
-                  <div>
-                    <span className="text-xs text-black">Events</span>
-                    <p className="text-lg font-bold text-black">
-                      {holder.performance_metrics?.events_organized || 0}
-                    </p>
-                  </div>
-                  <div className="border-l border-[#DCD3C9] h-8"></div>
-                  <div>
-                    <span className="text-xs text-black">Budget</span>
-                    <p className="text-sm font-bold text-black">
-                      {formatCurrency(
-                        holder.performance_metrics?.budget_utilized,
-                      )}
-                    </p>
-                  </div>
                 </div>
               </div>
               <div className="p-4 border-t border-[#DCD3C9]">
@@ -294,7 +270,7 @@ const ViewPositionHolder = () => {
 
         {/* Empty State */}
         {filteredHolders.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] p-12 text-center">
+          <div className="bg-white rounded-lg [#DCD3C9] p-12 text-center">
             <UserCheck className="w-12 h-12 text-black mx-auto mb-4" />
             <h3 className="text-lg font-medium text-black mb-2">
               No position holders found
@@ -405,7 +381,7 @@ const ViewPositionHolder = () => {
                           <div className="text-lg font-bold text-black">
                             {formatCurrency(
                               selectedHolder.performance_metrics
-                                ?.budget_utilized,
+                                ?.budget_utilized
                             )}
                           </div>
                           <div className="text-sm text-black">
@@ -433,9 +409,7 @@ const ViewPositionHolder = () => {
                         <div className="bg-[#F5F1EC] rounded-lg p-4 text-sm space-y-2">
                           {selectedHolder.appointment_details?.appointed_by && (
                             <div className="flex justify-between">
-                              <span className="text-black">
-                                Appointed By:
-                              </span>
+                              <span className="text-black">Appointed By:</span>
                               <span className="font-medium text-black">
                                 {
                                   selectedHolder.appointment_details
@@ -451,7 +425,7 @@ const ViewPositionHolder = () => {
                               <span className="font-medium text-black">
                                 {formatDate(
                                   selectedHolder.appointment_details
-                                    .appointment_date,
+                                    .appointment_date
                                 )}
                               </span>
                             </div>

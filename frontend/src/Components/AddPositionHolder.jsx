@@ -136,8 +136,8 @@ const AddPositionHolder = ({ onClose }) => {
   const selectedAppointedBy = appointingUsers.find((u) => u._id === formData.appointment_details.appointed_by);
 
   return (
-    <div className="bg-[#FDFAE2] max-h-[90vh] overflow-y-auto px-5 py-6 rounded-xl shadow-md border border-[#E4D8C3]">
-      <div className="bg-white rounded-xl shadow-sm border border-[#EADCCB]">
+    <div className="bg-white max-h-[90vh] overflow-y-auto px-5 py-6 rounded-xl shadow-md border border-[#E4D8C3]">
+      <div className="bg-white rounded-xl [#EADCCB]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-[#EADCCB] bg-[#FAF6EF] flex items-center gap-3">
           <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center shadow-sm">

@@ -69,7 +69,7 @@ export const ViewTenure = () => {
       <Tabs>
         <TabList className="flex border-b-2 border-gray-200">
           <Tab className="py-2 px-4 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
-            View Position
+            View Positions
           </Tab>
           <Tab className="py-2 px-4 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
             View Position Holder (POR)

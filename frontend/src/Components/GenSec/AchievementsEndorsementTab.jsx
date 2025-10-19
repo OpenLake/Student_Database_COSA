@@ -109,7 +109,7 @@ const AchievementsEndorsementTab = ({ skillType }) => {
       {achievements.map((ach) => (
         <div
           key={ach._id}
-          className="bg-[#FDFAE2] border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md"
+          className="bg-white border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md"
         >
           <div className="flex-grow">
             <h3 className="text-lg font-bold text-gray-800">{ach.title}</h3>
