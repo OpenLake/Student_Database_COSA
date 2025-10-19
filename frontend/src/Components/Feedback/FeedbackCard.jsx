@@ -52,6 +52,10 @@ export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
                 year: "numeric",
               })}
             </span>
+            <span className="text-gray-600">
+              <span className="font-medium">Target:</span>{" "}
+              <span className="text-green-600">{feedback.target_id}</span>
+            </span>
           </div>
         </div>
 

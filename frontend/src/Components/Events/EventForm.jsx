@@ -182,8 +182,6 @@ const initialFormState = {
   },
 };
 
-// --- Main EventForm Component ---
-
 const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
   const [units, setUnits] = useState([]);
   const [users, setUsers] = useState([]);
@@ -271,17 +269,18 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
     })),
   ];
 
-  // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleNestedChange = (section, key, value) => {
     setFormData((prev) => ({
       ...prev,
       [section]: { ...prev[section], [key]: value },
     }));
   };
+
   const handleDateTimeChange = (section, type, field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -291,6 +290,7 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
       },
     }));
   };
+
   const handleSponsorChange = (index, value) => {
     const updatedSponsors = [...formData.budget.sponsors];
     updatedSponsors[index] = value;
@@ -299,12 +299,14 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
       budget: { ...prev.budget, sponsors: updatedSponsors },
     }));
   };
+
   const addSponsor = () => {
     setFormData((prev) => ({
       ...prev,
       budget: { ...prev.budget, sponsors: [...prev.budget.sponsors, ""] },
     }));
   };
+
   const handleRemoveSponsor = (index) => {
     if (formData.budget.sponsors.length === 1) {
       return handleSponsorChange(index, "");
@@ -318,7 +320,6 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
     }));
   };
 
-  // handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     const combineDateTime = (dateStr, timeStr) =>
@@ -352,221 +353,210 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
     };
     try {
       if (event) {
-        // Logic for UPDATING an event
         await api.put(`/api/events/${event._id}`, finalPayload);
         alert("✅ Event updated successfully!");
       } else {
-        // Logic for CREATING a new event
         await api.post(`/api/events/create`, finalPayload);
         alert("✅ Event created successfully!");
-        setFormData(initialFormState); // Reset form after successful creation
+        setFormData(initialFormState);
       }
-      onClose?.(); // Close the form/modal if onClose is provided
+      if (onClose) {
+        onClose();
+      } else if (setAddEvent) {
+        setAddEvent(false);
+      }
     } catch (err) {
       console.error(err);
       alert("❌ Failed to submit event.");
     }
   };
 
-  // Style definitions are unchanged
   const inputStyles =
     "w-full p-2 mt-1 bg-white border border-stone-300 rounded-lg text-sm text-stone-900 placeholder-stone-400 focus:ring-1 focus:ring-stone-400 focus:border-stone-400 transition";
   const labelStyles = "text-sm font-medium text-stone-600";
-  const customSelectStyles = {
-    /* Style object from previous step is unchanged */
-  };
+  const customSelectStyles = {};
 
   return (
-    addEvent && (
-      <div className="min-h-screen w-full bg-[#FDFAE2] flex flex-col items-center justify-center p-4 font-sans">
-        <div className="">
-          <button
-            className="text-red-500 font-bold"
-            onClick={() => setAddEvent(false)}
-          >
-            Close
-          </button>
-        </div>
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-4xl p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-stone-200 space-y-4"
-        >
-          <h2 className="text-2xl font-bold text-center text-stone-800">
-            {event ? "Edit Event" : "Create New Event"}
-          </h2>
-          <div className="grid grid-cols-1 gap-2">
-            <label className={labelStyles}>Event Title</label>
-            <input
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className={inputStyles}
-            />
-            <label className={labelStyles}>Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={2}
-              className={inputStyles}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelStyles}>Category</label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={inputStyles}
-                required
-              >
-                <option value="">Select Category</option>
-                {["cultural", "technical", "sports", "academic", "other"].map(
-                  (c) => (
-                    <option key={c} value={c} className="capitalize">
-                      {c}
-                    </option>
-                  ),
-                )}
-              </select>
-            </div>
-            <div>
-              <label className={labelStyles}>Type</label>
-              <input
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className={inputStyles}
-                placeholder="e.g. Competition, Workshop"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelStyles}>Organizing Unit</label>
-              <select
-                name="organizing_unit_id"
-                value={formData.organizing_unit_id}
-                onChange={handleChange}
-                className={inputStyles}
-                required
-              >
-                <option value="">Select Unit</option>
-                {units.map((u) => (
-                  <option key={u._id} value={u._id}>
-                    {u.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={labelStyles}>Organizers</label>
-              <Select
-                isMulti
-                options={organizerOptions}
-                value={organizerOptions.filter((opt) =>
-                  formData.organizers.includes(opt.value),
-                )}
-                onChange={(selected) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    organizers: selected.map((s) => s.value),
-                  }))
-                }
-                className="mt-1 text-sm"
-                styles={customSelectStyles}
-              />
-            </div>
-          </div>
-          <ScheduleFields
-            data={formData.schedule}
-            handleDateTimeChange={handleDateTimeChange}
-            handleNestedChange={handleNestedChange}
-            inputStyles={inputStyles}
-            labelStyles={labelStyles}
+    <div className="bg-white px-8 py-2">
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4">
+        <div className="grid grid-cols-1 gap-2">
+          <label className={labelStyles}>Event Title</label>
+          <input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className={inputStyles}
           />
+          <label className={labelStyles}>Description</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={2}
+            className={inputStyles}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <h3 className="text-base font-semibold text-stone-700 border-b border-stone-200 pb-1 mb-3">
-              Registration
-            </h3>
-            <label className="flex items-center space-x-3 text-sm text-stone-700">
+            <label className={labelStyles}>Category</label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={inputStyles}
+              required
+            >
+              <option value="">Select Category</option>
+              {["cultural", "technical", "sports", "academic", "other"].map(
+                (c) => (
+                  <option key={c} value={c} className="capitalize">
+                    {c}
+                  </option>
+                ),
+              )}
+            </select>
+          </div>
+          <div>
+            <label className={labelStyles}>Type</label>
+            <input
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className={inputStyles}
+              placeholder="e.g. Competition, Workshop"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelStyles}>Organizing Unit</label>
+            <select
+              name="organizing_unit_id"
+              value={formData.organizing_unit_id}
+              onChange={handleChange}
+              className={inputStyles}
+              required
+            >
+              <option value="">Select Unit</option>
+              {units.map((u) => (
+                <option key={u._id} value={u._id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelStyles}>Organizers</label>
+            <Select
+              isMulti
+              options={organizerOptions}
+              value={organizerOptions.filter((opt) =>
+                formData.organizers.includes(opt.value),
+              )}
+              onChange={(selected) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  organizers: selected.map((s) => s.value),
+                }))
+              }
+              className="mt-1 text-sm"
+              styles={customSelectStyles}
+            />
+          </div>
+        </div>
+        <ScheduleFields
+          data={formData.schedule}
+          handleDateTimeChange={handleDateTimeChange}
+          handleNestedChange={handleNestedChange}
+          inputStyles={inputStyles}
+          labelStyles={labelStyles}
+        />
+        <div>
+          <h3 className="text-base font-semibold text-stone-700 border-b border-stone-200 pb-1 mb-3">
+            Registration
+          </h3>
+          <label className="flex items-center space-x-3 text-sm text-stone-700">
+            <input
+              type="checkbox"
+              checked={formData.registration.required}
+              onChange={(e) =>
+                handleNestedChange(
+                  "registration",
+                  "required",
+                  e.target.checked,
+                )
+              }
+              className="h-4 w-4 rounded border-stone-300 text-stone-700 focus:ring-stone-600"
+            />
+            <span>Registration Required</span>
+          </label>
+          {formData.registration.required && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+              <DateTimeFields
+                section="registration"
+                data={formData.registration}
+                handler={handleDateTimeChange}
+                styles={inputStyles}
+              />
               <input
-                type="checkbox"
-                checked={formData.registration.required}
+                type="number"
+                placeholder="Fees"
+                value={formData.registration.fees}
+                onChange={(e) =>
+                  handleNestedChange("registration", "fees", e.target.value)
+                }
+                className={`${inputStyles} col-span-2`}
+              />
+              <input
+                type="number"
+                placeholder="Max Participants"
+                value={formData.registration.max_participants}
                 onChange={(e) =>
                   handleNestedChange(
                     "registration",
-                    "required",
-                    e.target.checked,
+                    "max_participants",
+                    e.target.value,
                   )
                 }
-                className="h-4 w-4 rounded border-stone-300 text-stone-700 focus:ring-stone-600"
+                className={`${inputStyles} col-span-2`}
               />
-              <span>Registration Required</span>
-            </label>
-            {formData.registration.required && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
-                <DateTimeFields
-                  section="registration"
-                  data={formData.registration}
-                  handler={handleDateTimeChange}
-                  styles={inputStyles}
-                />
-                <input
-                  type="number"
-                  placeholder="Fees"
-                  value={formData.registration.fees}
-                  onChange={(e) =>
-                    handleNestedChange("registration", "fees", e.target.value)
-                  }
-                  className={`${inputStyles} col-span-2`}
-                />
-                <input
-                  type="number"
-                  placeholder="Max Participants"
-                  value={formData.registration.max_participants}
-                  onChange={(e) =>
-                    handleNestedChange(
-                      "registration",
-                      "max_participants",
-                      e.target.value,
-                    )
-                  }
-                  className={`${inputStyles} col-span-2`}
-                />
-              </div>
-            )}
-          </div>
-          <BudgetFields
-            data={formData.budget}
-            setFormData={setFormData}
-            handleSponsorChange={handleSponsorChange}
-            handleRemoveSponsor={handleRemoveSponsor}
-            addSponsor={addSponsor}
-            inputStyles={inputStyles}
-          />
-          <div className="pt-2 flex gap-4">
+            </div>
+          )}
+        </div>
+        <BudgetFields
+          data={formData.budget}
+          setFormData={setFormData}
+          handleSponsorChange={handleSponsorChange}
+          handleRemoveSponsor={handleRemoveSponsor}
+          addSponsor={addSponsor}
+          inputStyles={inputStyles}
+        />
+        <div className="pt-2 flex gap-4">
+          <button
+            type="submit"
+            className="flex-1 bg-stone-800 text-white py-2.5 px-4 rounded-lg hover:bg-stone-700 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500"
+          >
+            {event ? "Update Event" : "Create Event"}
+          </button>
+          {(onClose || setAddEvent) && (
             <button
-              type="submit"
-              className="flex-1 bg-stone-800 text-white py-2.5 px-4 rounded-lg hover:bg-stone-700 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500"
+              type="button"
+              onClick={() => {
+                if (onClose) {
+                  onClose();
+                } else if (setAddEvent) {
+                  setAddEvent(false);
+                }
+              }}
+              className="flex-1 py-2.5 px-4 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-100 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-300"
             >
-              {event ? "Update Event" : "Create Event"}
+              Cancel
             </button>
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 py-2.5 px-4 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-100 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-300"
-              >
-                Cancel
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
-    )
+          )}
+        </div>
+      </form>
+    </div>
   );
 };
 
