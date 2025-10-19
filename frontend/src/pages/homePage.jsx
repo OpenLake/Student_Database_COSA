@@ -1,4 +1,4 @@
-import LeftColumn from "../Components/Dashboard/LeftColumn";
+import QuickStats from "../Components/Dashboard/QuickStats";
 import UpdatesCard from "../Components/common/LatestUpdatesCard";
 import Layout from "../Components/common/Layout";
 import Home from "../Components/Dashboard/Home";
@@ -7,7 +7,7 @@ import Calendar from "../Components/common/Calendar";
 export const HomePage = () => {
   const components = {
     Home: Home,
-    LeftColumn: LeftColumn,
+    QuickStats: QuickStats,
     UpdatesCard: UpdatesCard,
     Calendar: Calendar,
   };
@@ -25,7 +25,7 @@ export const HomePage = () => {
     },
     {
       id: "stats",
-      component: "LeftColumn",
+      component: "QuickStats",
       position: {
         colStart: 0,
         colEnd: 14,

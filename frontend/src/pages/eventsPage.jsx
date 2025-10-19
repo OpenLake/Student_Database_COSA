@@ -5,6 +5,7 @@ import EventForm from "../Components/Events/EventForm";
 import { useState } from "react";
 import Calendar from "../Components/common/Calendar";
 import LatestUpdates from "../Components/common/LatestUpdatesCard";
+import NSCard from "../Components/NsoNss/NSCard";
 
 const EventsPage = () => {
   const [addEvent, setAddEvent] = useState(false);
@@ -14,6 +15,7 @@ const EventsPage = () => {
     EventForm: EventForm,
     Calendar: Calendar,
     LatestUpdates: LatestUpdates,
+    NSCard: NSCard,
   };
   const gridConfig = [
     {
@@ -23,7 +25,7 @@ const EventsPage = () => {
         colStart: 0,
         colEnd: 14,
         rowStart: 0,
-        rowEnd: addEvent ? 16 : 12,
+        rowEnd: addEvent ? 14 : 10,
       },
       props: { addEvent: addEvent, setAddEvent: setAddEvent },
     },
@@ -44,6 +46,16 @@ const EventsPage = () => {
         colStart: 14,
         colEnd: 20,
         rowStart: 7,
+        rowEnd: 16,
+      },
+    },
+    {
+      id: "NSONSS",
+      component: "NSCard",
+      position: {
+        colStart: 0,
+        colEnd: 14,
+        rowStart: 10,
         rowEnd: 16,
       },
     },

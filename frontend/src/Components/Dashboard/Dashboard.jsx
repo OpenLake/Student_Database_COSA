@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
 import api from "../../utils/api";
-import LeftColumn from "./LeftColumn";
+import LeftColumn from "./QuickStats";
 import { AdminContext } from "../../context/AdminContext";
 import Layout from "../common/Layout";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";

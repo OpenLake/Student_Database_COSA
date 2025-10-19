@@ -66,7 +66,7 @@ const EventList = ({ addEvent, setAddEvent }) => {
   return (
     !addEvent && (
       <>
-        <div className="min-h-screen bg-white text-gray-800 font-[Inter]">
+        <div className="bg-white text-gray-800 font-[Inter]">
           <div className="max-w-7xl mx-auto p-6">
             <div className="flex items-center justify-between">
               <div className="">
@@ -84,7 +84,7 @@ const EventList = ({ addEvent, setAddEvent }) => {
               )}
             </div>
             {/* Gray horizontal line separator */}
-            <div className="w-full h-[2px] bg-gray-300 my-3"></div>
+            <div className="w-full h-[2px] bg-gray-300 mb-3"></div>
 
             {events.length === 0 ? (
               <EmptyState />

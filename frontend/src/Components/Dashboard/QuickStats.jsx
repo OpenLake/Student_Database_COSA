@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSidebar } from "../../hooks/useSidebar";
 import api from "../../utils/api";
 
-const LeftColumn = () => {
+const QuickStats = () => {
   const { role } = useSidebar();
   const [stats, setStats] = useState({
     totalSkills: 0,
@@ -32,9 +32,9 @@ const LeftColumn = () => {
     role && typeof role === "string" && role.startsWith("GENSEC");
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Quick Stats</h2>
-      <div className="grid grid-cols-2 gap-4">
+    <div className="pt-6 pl-6 pr-2 pb-2">
+      <div className="text-2xl font-bold mb-4">Quick Stats</div>
+      <div className="grid grid-cols-4 gap-2">
         {isStudent && (
           <>
             <StatCard title="Skills" value={stats.totalSkills} />
@@ -58,10 +58,10 @@ const LeftColumn = () => {
 };
 
 const StatCard = ({ title, value }) => (
-  <div className="bg-gradient-to-br from-blue-500 to-purple-500 p-4 rounded-xl text-white">
+  <div className="p-4 rounded-xl text-black border">
     <p className="text-sm opacity-80">{title}</p>
     <p className="text-3xl font-bold">{value}</p>
   </div>
 );
 
-export default LeftColumn;
+export default QuickStats;

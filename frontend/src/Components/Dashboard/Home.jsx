@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, AreaChart, Users } from "lucide-react";
 import api from "../../utils/api";
-import LeftColumn from "./LeftColumn";
+import LeftColumn from "./QuickStats";
 import UpdatesCard from "../common/LatestUpdatesCard";
 import Layout from "../common/Layout";
 
