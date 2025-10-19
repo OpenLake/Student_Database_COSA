@@ -1,6 +1,9 @@
 //import Dashboard from "../Components/Dashboard";
-import Home from "../Components/Dashboard/Home"
-import { CreateTenure, ViewTenure } from "../Components/Positions/TenureRecords";
+import Home, { DashboardContent } from "../Components/Dashboard/Home";
+import {
+  CreateTenure,
+  ViewTenure,
+} from "../Components/Positions/TenureRecords";
 import ViewFeedback from "../Components/Feedback/ViewFeedback";
 import EventList from "../Components/Events/EventList";
 import EventForm from "../Components/Events/EventForm";
@@ -13,13 +16,16 @@ import AchievementForm from "../Components/Student/AddUserAchievements";
 import ViewAchievements from "../Components/Student/ViewUserAchievements";
 import UserSkillManagement from "../Components/Student/UserSkillManagement";
 import ManagePositions from "../Components/ManagePosition";
+import EventsPage from "../pages/eventsPage";
+import PORsPage from "../pages/porsPage";
+import FeedbackPage from "../pages/feedbackPage";
 
 export const DashboardComponents = {
-  dashboard: Home,
+  dashboard: DashboardContent,
   cosa: ViewTenure,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
-  events: EventList,
+  events: EventsPage,
   "add-event": EventForm,
   "add-org-unit": CreateOrgUnit,
   "gensec-endorse": GenSecEndorse,
@@ -29,5 +35,6 @@ export const DashboardComponents = {
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
   skills: UserSkillManagement,
-  por: ManagePositions,
+  por: PORsPage,
+  feedback: FeedbackPage,
 };

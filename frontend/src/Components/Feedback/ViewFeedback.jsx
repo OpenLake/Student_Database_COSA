@@ -88,32 +88,10 @@ const ViewFeedback = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="bg-white border border-gray-200 rounded-lg p-8 mb-8 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-                Feedbacks
-              </h1>
-              <p className="mt-2 text-lg text-gray-600">
-                Monitor and manage user feedback across the platform
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold text-gray-900">
-                {feedbacks.length}
-              </div>
-              <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                Total Feedbacks
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Filters Section */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
+        <div className="bg-white rounded-lg p-6 mb-8">
           {/* Status Filters */}
           <div className="mb-6">
             <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
@@ -134,6 +112,14 @@ const ViewFeedback = () => {
                   {status}
                 </button>
               ))}
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-gray-900">
+                {feedbacks.length}
+              </div>
+              <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                Total Feedbacks
+              </div>
             </div>
           </div>
 
@@ -163,14 +149,14 @@ const ViewFeedback = () => {
 
         {/* Feedback Cards */}
         {loading ? (
-          <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-12 text-center ">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
             <p className="mt-4 text-lg font-medium text-gray-600">
               Loading feedbacks...
             </p>
           </div>
         ) : filteredFeedbacks.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-12 text-center ">
             <div className="text-6xl text-gray-300 mb-4">📭</div>
             <p className="text-xl font-medium text-gray-500">
               No feedbacks found
@@ -184,7 +170,7 @@ const ViewFeedback = () => {
             {filteredFeedbacks.map((fb) => (
               <div
                 key={fb._id}
-                className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="bg-white rounded-lg p-6  hover:shadow-md transition-shadow duration-200"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
@@ -214,7 +200,7 @@ const ViewFeedback = () => {
                 {/* Content */}
                 <div className="space-y-4">
                   {/* Target Information */}
-                  <div className="bg-gray-50 border border-gray-200 rounded p-4">
+                  <div className="bg-gray-50 rounded p-4">
                     <div className="text-sm font-semibold text-gray-900 mb-2">
                       Target Information
                     </div>

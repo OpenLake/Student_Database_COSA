@@ -10,6 +10,7 @@ import SkillManagement from "../Components/Student/UserSkillManagement";
 import Logout from "../Components/Logout";
 import Home from "../Components/Student/Home";
 import StudentProfile from "../Components/Student/ProfilePage";
+import ProfilePage from "../pages/profilePage";
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route

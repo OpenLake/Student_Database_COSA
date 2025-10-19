@@ -192,10 +192,10 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white py-12 ">
+    <div className="bg-white px-8 py-2">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="max-w-3xl mx-auto border border-black rounded-lg shadow-md p-8">
-        <div className="text-center mb-8">
+      <div className="max-w-3xl mx-auto rounded-lg">
+        {/* <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-black">
             Student Feedback Form
           </h2>
@@ -203,7 +203,7 @@ const FeedbackForm = () => {
             Your feedback helps us improve our services and overall COSA.
           </p>
           <div className="w-16 h-1 bg-black mx-auto mt-4"></div>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

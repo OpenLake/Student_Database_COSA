@@ -56,7 +56,7 @@ const ManagePositions = () => {
           position.position_id?.unit_id?.name
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase())
+          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -117,81 +117,75 @@ const ManagePositions = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFAE2] py-8 px-4">
+    <div className="px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] mb-6">
-          <div className="px-6 py-4 border-b border-[#DCD3C9] flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#A98B74] rounded-lg flex items-center justify-center">
-                <Eye className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-[#5E4B3D]">
-                  My Positions
-                </h1>
-                <p className="text-sm text-[#7D6B5F]">
-                  View all your current and past positions
-                </p>
+        <div className=" pt-6 pb-2 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center justify-between">
+            <div className="">
+              <div className="text-2xl font-bold tracking-tight text-gray-900">
+                Your PORs
               </div>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 bg-[#A98B74] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
-            >
-              <Plus className="w-4 h-4" /> Add Position
-            </button>
           </div>
+          {/* Gray horizontal line separator */}
+          {/* <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-[#A98B74] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Add Position
+          </button> */}
+          <div className="w-full h-[2px] bg-gray-300"></div>
+        </div>
 
-          {/* Filters */}
-          <div className="p-6 space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search by title, department, or year..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white text-[#5E4B3D] placeholder-[#A98B74] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="completed">Completed</option>
-                  <option value="terminated">Terminated</option>
-                </select>
-
-                <select
-                  value={tenureFilter}
-                  onChange={(e) => setTenureFilter(e.target.value)}
-                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
-                >
-                  <option value="all">All Tenures</option>
-                  {uniqueTenureYears.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        {/* Filters */}
+        <div className="">
+          <div className="flex flex lg:flex-row gap-4 pb-2">
+            <div className="flex-1 relative round-xl">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search by title, department, or year..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-white text-[#5E4B3D] placeholder-[#A98B74] border border-[#DCD3C9] rounded-full focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
+              />
             </div>
-            <div className="text-sm text-[#7D6B5F]">
-              Showing {filteredPositions.length} of {positions.length} positions
+
+            <div className="flex flex-wrap gap-3">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="terminated">Terminated</option>
+              </select>
+
+              <select
+                value={tenureFilter}
+                onChange={(e) => setTenureFilter(e.target.value)}
+                className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
+              >
+                <option value="all">All Tenures</option>
+                {uniqueTenureYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+          <div className="text-sm text-[#7D6B5F]">
+            Showing {filteredPositions.length} of {positions.length} positions
           </div>
         </div>
 
         {/* Positions Grid */}
         {filteredPositions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] p-12 text-center">
+          <div className="bg-white rounded-lg p-12 text-center">
             <UserCheck className="w-12 h-12 text-[#A98B74] mx-auto mb-4" />
             <h3 className="text-lg font-medium text-[#5E4B3D] mb-2">
               No positions found
@@ -201,26 +195,26 @@ const ManagePositions = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredPositions.map((position) => (
               <div
                 key={position._id}
                 className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] hover:shadow-md transition-shadow flex flex-col"
               >
-                <div className="p-4 border-b border-[#DCD3C9] flex-grow">
+                <div className="px-4 py-2 border-b border-[#DCD3C9] flex-grow">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold text-[#5E4B3D] text-lg">
+                      <div className="font-semibold text-[#5E4B3D] text-xl">
                         {position.position_id?.title || "Unknown Position"}
-                      </h3>
-                      <p className="text-sm text-[#7D6B5F]">
+                      </div>
+                      <div className="text-sm text-[#7D6B5F]">
                         {position.position_id?.unit_id?.name ||
                           "Unknown Department"}
-                      </p>
+                      </div>
                     </div>
                     <span
-                      className={`px-2 py-1 ml-2 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(
-                        position.status
+                      className={`px-2 py-2 ml-2 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(
+                        position.status,
                       )}`}
                     >
                       {position.status?.charAt(0).toUpperCase() +
@@ -228,7 +222,7 @@ const ManagePositions = () => {
                     </span>
                   </div>
 
-                  <div className="text-sm text-[#7D6B5F] space-y-1">
+                  <div className="text-sm text-[#7D6B5F]">
                     <p>
                       <span className="font-medium">Tenure:</span>{" "}
                       {position.tenure_year}
@@ -244,14 +238,14 @@ const ManagePositions = () => {
                       <p>
                         <span className="font-medium">Date:</span>{" "}
                         {formatDate(
-                          position.appointment_details.appointment_date
+                          position.appointment_details.appointment_date,
                         )}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#F5F1EC] flex justify-around text-center">
+                {/* <div className="p-4 bg-[#F5F1EC] flex justify-around text-center">
                   <div>
                     <span className="text-xs text-[#7D6B5F]">Events</span>
                     <p className="text-lg font-bold text-[#5E4B3D]">
@@ -267,9 +261,9 @@ const ManagePositions = () => {
                       )}
                     </p>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="p-4 border-t border-[#DCD3C9] text-xs text-[#7D6B5F] flex justify-between">
+                <div className="px-4 py-2 border-t border-[#DCD3C9] text-xs text-[#7D6B5F] flex justify-between">
                   <span>Created: {formatDate(position.created_at)}</span>
                   {position.updated_at !== position.created_at && (
                     <span>Updated: {formatDate(position.updated_at)}</span>

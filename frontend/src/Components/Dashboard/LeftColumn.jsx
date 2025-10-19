@@ -1,59 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useSidebar } from "../../hooks/useSidebar";
 import api from "../../utils/api";
-import { DashboardCardsConfig } from "../../config/leftColumnDashboard"; 
 
-const LeftColumn = ({ role }) => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const LeftColumn = () => {
+  const { role } = useSidebar();
+  const [stats, setStats] = useState({
+    totalSkills: 0,
+    totalFeedbacksGiven: 0,
+    totalAchievements: 0,
+    totalPORs: 0,
+  });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        setLoading(true);
-        const response = await api.get("/api/dashboard/stats");
-        console.log(response.data);
+        const response = await api.get("/api/users/stats");
         setStats(response.data);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch dashboard stats:", err);
-        setError("Could not load stats.");
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch stats:", error);
       }
     };
+
     fetchStats();
-  }, [role]);
+  }, []);
 
-  if (loading) {
-    return <div className="space-y-4"> {/* Skeleton Loaders Go Here */} </div>;
-  }
+  console.log(stats);
 
-  if (error || !stats) {
-    return <div className="p-4 bg-white/90 rounded-2xl shadow-sm text-red-500">{error}</div>;
-  }
-  
-  // Determine which card configuration to use
-  const cardConfigKey = role.startsWith("GENSEC") ? "GENSEC" : role;
-  const cardsToRender = DashboardCardsConfig[cardConfigKey] || [];
+  const isStudent =
+    role && typeof role === "string" && role.startsWith("STUDENT");
+  const isGensec =
+    role && typeof role === "string" && role.startsWith("GENSEC");
 
   return (
-    <div className="space-y-4">
-      {cardsToRender.length > 0 ? (
-        cardsToRender.map(({ Component, props: propMappers }, index) => {
-          // Create the props for the component by running the mapping functions
-          const componentProps = Object.keys(propMappers).reduce((acc, key) => {
-            acc[key] = propMappers[key](stats);
-            return acc;
-          }, {});
-
-          return <Component key={index} {...componentProps} />;
-        })
-      ) : (
-        <div>No stats available for this role.</div>
-      )}
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Quick Stats</h2>
+      <div className="grid grid-cols-2 gap-4">
+        {isStudent && (
+          <>
+            <StatCard title="Skills" value={stats.totalSkills} />
+            <StatCard title="Feedbacks" value={stats.totalFeedbacksGiven} />
+            <StatCard title="Achievements" value={stats.totalAchievements} />
+            <StatCard title="PORs" value={stats.totalPORs} />
+          </>
+        )}
+        {isGensec && (
+          <>
+            <StatCard title="Events" value={stats.totalEvents || 0} />
+            <StatCard
+              title="Endorsements"
+              value={stats.totalEndorsements || 0}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 };
+
+const StatCard = ({ title, value }) => (
+  <div className="bg-gradient-to-br from-blue-500 to-purple-500 p-4 rounded-xl text-white">
+    <p className="text-sm opacity-80">{title}</p>
+    <p className="text-3xl font-bold">{value}</p>
+  </div>
+);
 
 export default LeftColumn;
