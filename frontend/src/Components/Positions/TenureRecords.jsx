@@ -21,7 +21,7 @@ export const TenureRecords = () => {
       </div>
       <button
         onClick={() => setAdd(!add)}
-        className="flex items-center gap-2 bg-[#A98B74] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
+        className="flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
       >
         {add ? (
           <div className="flex gap-2">

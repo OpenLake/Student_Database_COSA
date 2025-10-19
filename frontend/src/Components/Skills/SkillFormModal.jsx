@@ -21,10 +21,10 @@ const SkillFormModal = ({
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-[#DCD3C9]">
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#DCD3C9]">
-          <h2 className="text-xl font-bold text-[#5E4B3D]">Add New Skill</h2>
+          <h2 className="text-xl font-bold text-black">Add New Skill</h2>
           <button
             onClick={onClose}
-            className="text-[#A98B74] hover:text-[#7D6B5F] p-1"
+            className="text-black hover:text-black p-1"
           >
             <X className="w-5 h-5" />
           </button>
@@ -33,14 +33,14 @@ const SkillFormModal = ({
         <div className="space-y-5">
           {/* Skill Selection */}
           <div>
-            <label className="block mb-2 text-sm font-semibold text-[#5E4B3D]">
+            <label className="block mb-2 text-sm font-semibold text-black">
               Select Skill
             </label>
             <div className="relative">
               <select
                 value={formData.skill_id}
                 onChange={(e) => onSkillChange(e.target.value)}
-                className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] appearance-none bg-white text-[#5E4B3D]"
+                className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black appearance-none bg-white text-black"
               >
                 <option value="">Choose a skill...</option>
                 {skills.map((skill) => (
@@ -50,19 +50,19 @@ const SkillFormModal = ({
                 ))}
                 <option value="other">+ Add new skill</option>
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 pointer-events-none" />
             </div>
           </div>
 
           {/* New Skill Form */}
           {showNewSkillForm && (
             <div className="p-4 bg-[#F5F1EC] border border-[#DCD3C9] rounded-lg space-y-4">
-              <h3 className="font-semibold text-[#5E4B3D] text-sm">
+              <h3 className="font-semibold text-black text-sm">
                 Create New Skill
               </h3>
 
               <div>
-                <label className="block text-sm mb-2 font-medium text-[#5E4B3D]">
+                <label className="block text-sm mb-2 font-medium text-black">
                   Skill Name *
                 </label>
                 <input
@@ -71,14 +71,14 @@ const SkillFormModal = ({
                   onChange={(e) =>
                     onNewSkillDataChange({ name: e.target.value })
                   }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
                   placeholder="Enter skill name"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm mb-2 font-medium text-[#5E4B3D]">
+                <label className="block text-sm mb-2 font-medium text-black">
                   Category *
                 </label>
                 <input
@@ -87,14 +87,14 @@ const SkillFormModal = ({
                   onChange={(e) =>
                     onNewSkillDataChange({ category: e.target.value })
                   }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
                   placeholder="e.g., Programming, Design"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm mb-2 font-medium text-[#5E4B3D]">
+                <label className="block text-sm mb-2 font-medium text-black">
                   Type *
                 </label>
                 <select
@@ -102,7 +102,7 @@ const SkillFormModal = ({
                   onChange={(e) =>
                     onNewSkillDataChange({ type: e.target.value })
                   }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
                   required
                 >
                   <option value="technical">Technical</option>
@@ -114,7 +114,7 @@ const SkillFormModal = ({
               </div>
 
               <div>
-                <label className="block text-sm mb-2 font-medium text-[#5E4B3D]">
+                <label className="block text-sm mb-2 font-medium text-black">
                   Description
                 </label>
                 <textarea
@@ -122,7 +122,7 @@ const SkillFormModal = ({
                   onChange={(e) =>
                     onNewSkillDataChange({ description: e.target.value })
                   }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
                   rows={3}
                   placeholder="Optional: A brief description"
                 />
@@ -132,7 +132,7 @@ const SkillFormModal = ({
 
           {/* Proficiency Level */}
           <div>
-            <label className="block text-sm mb-2 font-semibold text-[#5E4B3D]">
+            <label className="block text-sm mb-2 font-semibold text-black">
               Proficiency Level *
             </label>
             <select
@@ -140,7 +140,7 @@ const SkillFormModal = ({
               onChange={(e) =>
                 onFormDataChange({ proficiency_level: e.target.value })
               }
-              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
             >
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
@@ -151,7 +151,7 @@ const SkillFormModal = ({
 
           {/* Associated Position */}
           <div>
-            <label className="block text-sm mb-2 font-semibold text-[#5E4B3D]">
+            <label className="block text-sm mb-2 font-semibold text-black">
               Associated Position (Optional)
             </label>
             <select
@@ -159,7 +159,7 @@ const SkillFormModal = ({
               onChange={(e) =>
                 onFormDataChange({ position_id: e.target.value })
               }
-              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
             >
               <option value="">No specific position</option>
               {positions.map((pos) => (
@@ -174,14 +174,14 @@ const SkillFormModal = ({
           <div className="flex gap-3 pt-6 border-t border-[#DCD3C9]">
             <button
               onClick={onClose}
-              className="flex-1 bg-white border border-[#DCD3C9] text-[#7D6B5F] py-3 rounded-lg hover:bg-[#F5F1EC] transition-colors font-medium"
+              className="flex-1 bg-white border border-[#DCD3C9] text-black py-3 rounded-lg hover:bg-[#F5F1EC] transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               onClick={onSubmit}
               disabled={loading}
-              className="flex-1 bg-[#A98B74] text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {loading ? "Adding..." : "Add Skill"}
             </button>

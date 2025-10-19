@@ -56,7 +56,7 @@ const ManagePositions = () => {
           position.position_id?.unit_id?.name
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase()),
+          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -93,7 +93,7 @@ const ManagePositions = () => {
       completed: "bg-[#EAE0D5] text-[#856A5D]",
       terminated: "bg-red-100 text-red-800",
     };
-    return colors[status] || "bg-[#F5F1EC] text-[#7D6B5F]";
+    return colors[status] || "bg-[#F5F1EC] text-black";
   };
 
   const uniqueTenureYears = [
@@ -102,7 +102,7 @@ const ManagePositions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFAE2] flex items-center justify-center text-[#7D6B5F]">
+      <div className="min-h-screen bg-[#FDFAE2] flex items-center justify-center text-black">
         Loading your positions...
       </div>
     );
@@ -131,7 +131,7 @@ const ManagePositions = () => {
           {/* Gray horizontal line separator */}
           {/* <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-[#A98B74] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
+            className="flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Position
           </button> */}
@@ -142,13 +142,13 @@ const ManagePositions = () => {
         <div className="">
           <div className="flex flex lg:flex-row gap-4 pb-2">
             <div className="flex-1 relative round-xl">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search by title, department, or year..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white text-[#5E4B3D] placeholder-[#A98B74] border border-[#DCD3C9] rounded-full focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
+                className="w-full pl-8 pr-10 py-2 border-2 border-black rounded-md bg-white text-black focus:outline-none"
               />
             </div>
 
@@ -156,7 +156,7 @@ const ManagePositions = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
+                className="px-3 py-2 border-2 border-black rounded-md bg-white text-black focus:outline-none"
               >
                 <option value="all">All Statuses</option>
                 <option value="active">Active</option>
@@ -167,7 +167,7 @@ const ManagePositions = () => {
               <select
                 value={tenureFilter}
                 onChange={(e) => setTenureFilter(e.target.value)}
-                className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74]"
+                className="px-3 py-2  border-2 border-black rounded-md bg-white text-black focus:outline-none"
               >
                 <option value="all">All Tenures</option>
                 {uniqueTenureYears.map((year) => (
@@ -178,7 +178,7 @@ const ManagePositions = () => {
               </select>
             </div>
           </div>
-          <div className="text-sm text-[#7D6B5F]">
+          <div className="text-sm text-black">
             Showing {filteredPositions.length} of {positions.length} positions
           </div>
         </div>
@@ -186,11 +186,11 @@ const ManagePositions = () => {
         {/* Positions Grid */}
         {filteredPositions.length === 0 ? (
           <div className="bg-white rounded-lg p-12 text-center">
-            <UserCheck className="w-12 h-12 text-[#A98B74] mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-[#5E4B3D] mb-2">
+            <UserCheck className="w-12 h-12 text-black mx-auto mb-4" />
+            <div className="text-lg font-medium text-black mb-2">
               No positions found
-            </h3>
-            <p className="text-[#7D6B5F]">
+            </div>
+            <p className="text-black">
               You currently have no assigned positions.
             </p>
           </div>
@@ -199,22 +199,22 @@ const ManagePositions = () => {
             {filteredPositions.map((position) => (
               <div
                 key={position._id}
-                className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] hover:shadow-md transition-shadow flex flex-col"
+                className="bg-white rounded-lg shadow-sm border-2 border-black hover:shadow-md transition-shadow flex flex-col"
               >
-                <div className="px-4 py-2 border-b border-[#DCD3C9] flex-grow">
+                <div className="px-4 py-2  flex-grow">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <div className="font-semibold text-[#5E4B3D] text-xl">
+                      <div className="font-semibold text-black text-xl">
                         {position.position_id?.title || "Unknown Position"}
                       </div>
-                      <div className="text-sm text-[#7D6B5F]">
+                      <div className="text-sm text-black">
                         {position.position_id?.unit_id?.name ||
                           "Unknown Department"}
                       </div>
                     </div>
                     <span
                       className={`px-2 py-2 ml-2 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(
-                        position.status,
+                        position.status
                       )}`}
                     >
                       {position.status?.charAt(0).toUpperCase() +
@@ -222,7 +222,7 @@ const ManagePositions = () => {
                     </span>
                   </div>
 
-                  <div className="text-sm text-[#7D6B5F]">
+                  <div className="text-sm text-black">
                     <p>
                       <span className="font-medium">Tenure:</span>{" "}
                       {position.tenure_year}
@@ -238,7 +238,7 @@ const ManagePositions = () => {
                       <p>
                         <span className="font-medium">Date:</span>{" "}
                         {formatDate(
-                          position.appointment_details.appointment_date,
+                          position.appointment_details.appointment_date
                         )}
                       </p>
                     )}
@@ -247,15 +247,15 @@ const ManagePositions = () => {
 
                 {/* <div className="p-4 bg-[#F5F1EC] flex justify-around text-center">
                   <div>
-                    <span className="text-xs text-[#7D6B5F]">Events</span>
-                    <p className="text-lg font-bold text-[#5E4B3D]">
+                    <span className="text-xs text-black">Events</span>
+                    <p className="text-lg font-bold text-black">
                       {position.performance_metrics?.events_organized || 0}
                     </p>
                   </div>
-                  <div className="border-l border-[#DCD3C9] h-8"></div>
+                  <div className="border-l border-black h-8"></div>
                   <div>
-                    <span className="text-xs text-[#7D6B5F]">Budget</span>
-                    <p className="text-sm font-bold text-[#5E4B3D]">
+                    <span className="text-xs text-black">Budget</span>
+                    <p className="text-sm font-bold text-black">
                       {formatCurrency(
                         position.performance_metrics?.budget_utilized
                       )}
@@ -263,7 +263,7 @@ const ManagePositions = () => {
                   </div>
                 </div> */}
 
-                <div className="px-4 py-2 border-t border-[#DCD3C9] text-xs text-[#7D6B5F] flex justify-between">
+                <div className="px-4 py-2 border-t border-black text-xs text-black flex justify-between">
                   <span>Created: {formatDate(position.created_at)}</span>
                   {position.updated_at !== position.created_at && (
                     <span>Updated: {formatDate(position.updated_at)}</span>
@@ -280,7 +280,7 @@ const ManagePositions = () => {
           <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-lg p-6">
             <button
               onClick={() => setShowAddModal(false)}
-              className="absolute top-3 right-3 text-[#7D6B5F] hover:text-[#5E4B3D]"
+              className="absolute top-3 right-3 text-black hover:text-black"
             >
               ✕
             </button>

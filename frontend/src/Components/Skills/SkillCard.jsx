@@ -13,14 +13,14 @@ const getProficiencyColor = (level) => {
 
 const SkillCard = ({ userSkill }) => {
   return (
-    <div className="bg-white border border-[#DCD3C9] p-4 rounded-lg shadow-sm hover:shadow-md hover:border-[#A98B74] transition-all">
+    <div className="bg-white border border-[#DCD3C9] p-4 rounded-lg shadow-sm hover:shadow-md hover:border-black transition-all">
       <div className="grid grid-cols-2 gap-4 items-center">
         {/* Left Side */}
         <div className="flex flex-col gap-1">
-          <h5 className="font-bold text-base text-[#5E4B3D] truncate">
+          <h5 className="font-bold text-base text-black truncate">
             {userSkill.skill_id?.name || "Unnamed Skill"}
           </h5>
-          <div className="flex items-center gap-2 text-sm text-[#7D6B5F]">
+          <div className="flex items-center gap-2 text-sm text-black">
             <Calendar className="w-4 h-4" />
             <span>
               {new Date(userSkill.created_at).toLocaleDateString()}
@@ -44,7 +44,7 @@ const SkillCard = ({ userSkill }) => {
               <span>Endorsed</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 text-sm text-[#7D6B5F] font-medium">
+            <div className="flex items-center gap-1.5 text-sm text-black font-medium">
               <CircleOff className="w-4 h-4" />
               <span>Not Endorsed</span>
             </div>

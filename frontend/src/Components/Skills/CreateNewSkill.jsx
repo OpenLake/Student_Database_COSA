@@ -12,7 +12,7 @@ const InputField = ({
   rows,
 }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-sm font-medium text-[#5E4B3D]">
+    <label className="text-sm font-medium text-black">
       {label} {required && "*"}
     </label>
     {type === "textarea" ? (
@@ -21,13 +21,13 @@ const InputField = ({
         onChange={onChange}
         rows={rows || 2}
         placeholder={placeholder}
-        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-black focus:border-black text-black"
       />
     ) : type === "select" ? (
       <select
         value={value}
         onChange={onChange}
-        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-black focus:border-black text-black"
         required={required}
       >
         {options.map((opt) => (
@@ -43,7 +43,7 @@ const InputField = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-[#A98B74] focus:border-[#A98B74] text-[#5E4B3D]"
+        className="w-full p-2 text-sm border border-[#DCD3C9] rounded focus:ring-1 focus:ring-black focus:border-black text-black"
       />
     )}
   </div>
@@ -111,14 +111,14 @@ const CreateNewSkill = () => {
       <div className="flex gap-3 pt-6 border-t border-[#DCD3C9]">
         <button
           onClick={handleClose}
-          className="flex-1 bg-white border border-[#DCD3C9] text-[#7D6B5F] py-3 rounded-lg hover:bg-[#F5F1EC] transition-colors font-medium"
+          className="flex-1 bg-white border border-[#DCD3C9] text-black py-3 rounded-lg hover:bg-[#F5F1EC] transition-colors font-medium"
         >
           Cancel
         </button>
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="flex-1 bg-[#A98B74] text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           {loading ? "Adding..." : "Add Skill"}
         </button>

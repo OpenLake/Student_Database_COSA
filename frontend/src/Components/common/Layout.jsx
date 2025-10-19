@@ -50,7 +50,7 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
           {/* Header Section */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h1 className="text-3xl text-black">
-              Welcome to the <span className="font-bold">{headerText}</span>
+              Welcome to the <span className="font-bold">{headerText}</span> Section
             </h1>
 
             {/* Profile Section */}

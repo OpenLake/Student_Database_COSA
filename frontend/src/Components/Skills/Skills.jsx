@@ -27,7 +27,7 @@ const Skills = () => {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-[#5E4B3D] text-white px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-colors font-medium shadow"
+          className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-colors font-medium shadow"
         >
           <Plus className="w-4 h-4" />
           Add Skill

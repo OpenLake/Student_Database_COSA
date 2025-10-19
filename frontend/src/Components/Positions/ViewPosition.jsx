@@ -127,14 +127,14 @@ const ViewPosition = () => {
         <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] mb-6">
           <div className="px-6 py-4 border-b border-[#DCD3C9]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#A98B74] rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
                 <Eye className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-[#5E4B3D]">
+                <h1 className="text-xl font-semibold text-black">
                   View Positions
                 </h1>
-                <p className="text-sm text-[#7D6B5F]">
+                <p className="text-sm text-black">
                   Browse and manage organizational positions
                 </p>
               </div>
@@ -146,13 +146,13 @@ const ViewPosition = () => {
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A98B74] w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Search positions by title, ID, department, or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white text-[#5E4B3D] placeholder-[#A98B74] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-white text-black placeholder-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
                 />
               </div>
 
@@ -161,7 +161,7 @@ const ViewPosition = () => {
                 <select
                   value={selectedUnit}
                   onChange={(e) => setSelectedUnit(e.target.value)}
-                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
+                  className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
                 >
                   <option value="">All Departments</option>
                   {units.map((unit) => (
@@ -174,7 +174,7 @@ const ViewPosition = () => {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-3 py-2 bg-white text-[#5E4B3D] border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-[#A98B74] focus:border-[#A98B74] outline-none"
+                  className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
                 >
                   <option value="">All Types</option>
                   {positionTypes.map((type) => (
@@ -187,7 +187,7 @@ const ViewPosition = () => {
             </div>
 
             {/* Results count */}
-            <div className="text-sm text-[#7D6B5F]">
+            <div className="text-sm text-black">
               Showing {filteredPositions.length} of {positions.length} positions
             </div>
           </div>
@@ -203,7 +203,7 @@ const ViewPosition = () => {
               {/* Card Header (Removed the extra div wrapper and the bottom border) */}
               <div className="p-4">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-[#5E4B3D] pr-2">
+                  <h4 className="font-semibold text-black pr-2">
                     {position.title}
                   </h4>
                   <span className="flex-shrink-0 px-2 py-1 bg-[#EAE0D5] text-[#856A5D] text-xs rounded-full">
@@ -211,12 +211,12 @@ const ViewPosition = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-[#7D6B5F] mb-2">
+                <div className="flex items-center gap-2 text-sm text-black mb-2">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span>{position.unit_id.name}</span>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-[#7D6B5F]">
+                <div className="flex items-center gap-2 text-sm text-black">
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span>
                     {position.position_count} position
@@ -230,14 +230,14 @@ const ViewPosition = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleViewDetails(position)}
-                    className="flex-1 px-1 py-2 bg-[#A98B74] text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
+                    className="flex-1 px-1 py-2 bg-black text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
                   >
                     <Eye className="w-4 h-4" />
                     View Details
                   </button>
                   <button
                     onClick={() => handleEdit(position)}
-                    className="px-3 py-2 bg-[#F5F1EC] text-[#7D6B5F] text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
+                    className="px-3 py-2 bg-[#F5F1EC] text-black text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -256,11 +256,11 @@ const ViewPosition = () => {
         {/* Empty State */}
         {filteredPositions.length === 0 && (
           <div className="bg-white rounded-lg shadow-sm border border-[#DCD3C9] p-12 text-center">
-            <Eye className="w-12 h-12 text-[#A98B74] mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-[#5E4B3D] mb-2">
+            <Eye className="w-12 h-12 text-black mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-black mb-2">
               No positions found
             </h3>
-            <p className="text-[#7D6B5F]">
+            <p className="text-black">
               Try adjusting your search or filter criteria.
             </p>
           </div>
@@ -275,10 +275,10 @@ const ViewPosition = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
                     <div>
-                      <h2 className="text-xl font-semibold text-[#5E4B3D]">
+                      <h2 className="text-xl font-semibold text-black">
                         {selectedPosition.title}
                       </h2>
-                      <p className="text-sm text-[#7D6B5F]">
+                      <p className="text-sm text-black">
                         ID: {selectedPosition.position_id}
                       </p>
                     </div>
@@ -288,7 +288,7 @@ const ViewPosition = () => {
                   </div>
                   <button
                     onClick={() => setShowDetails(false)}
-                    className="text-[#A98B74] hover:text-[#7D6B5F]"
+                    className="text-black hover:text-black"
                   >
                     ✕
                   </button>
@@ -302,25 +302,25 @@ const ViewPosition = () => {
                   <div className="md:col-span-1 space-y-6">
                     {/* Details Section */}
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                      <h3 className="font-semibold text-black border-b border-[#DCD3C9] pb-2">
                         Details
                       </h3>
                       <div className="text-sm space-y-2 pt-2">
                         <div className="flex justify-between">
-                          <span className="text-[#7D6B5F]">Department:</span>
-                          <span className="font-medium text-[#5E4B3D] text-right">
+                          <span className="text-black">Department:</span>
+                          <span className="font-medium text-black text-right">
                             {selectedPosition.unit_id.name}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-[#7D6B5F]">Available:</span>
-                          <span className="font-medium text-[#5E4B3D]">
+                          <span className="text-black">Available:</span>
+                          <span className="font-medium text-black">
                             {selectedPosition.position_count}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-[#7D6B5F]">Created:</span>
-                          <span className="font-medium text-[#5E4B3D]">
+                          <span className="text-black">Created:</span>
+                          <span className="font-medium text-black">
                             {formatDate(selectedPosition.created_at)}
                           </span>
                         </div>
@@ -329,19 +329,19 @@ const ViewPosition = () => {
 
                     {/* Requirements Section */}
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                      <h3 className="font-semibold text-black border-b border-[#DCD3C9] pb-2">
                         Requirements
                       </h3>
                       <div className="text-sm space-y-2 pt-2">
                         <div className="flex justify-between">
-                          <span className="text-[#7D6B5F]">Min. CGPA:</span>
-                          <span className="font-medium text-[#5E4B3D]">
+                          <span className="text-black">Min. CGPA:</span>
+                          <span className="font-medium text-black">
                             {selectedPosition.requirements.min_cgpa}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-[#7D6B5F]">Min. Year:</span>
-                          <span className="font-medium text-[#5E4B3D]">
+                          <span className="text-black">Min. Year:</span>
+                          <span className="font-medium text-black">
                             {getYearLabel(
                               selectedPosition.requirements.min_year,
                             )}
@@ -352,7 +352,7 @@ const ViewPosition = () => {
 
                     {/* Skills Section */}
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-[#5E4B3D] border-b border-[#DCD3C9] pb-2">
+                      <h3 className="font-semibold text-black border-b border-[#DCD3C9] pb-2">
                         Skills
                       </h3>
                       <div className="flex flex-wrap gap-2 pt-2">
@@ -369,7 +369,7 @@ const ViewPosition = () => {
                             ),
                           )
                         ) : (
-                          <span className="text-sm text-[#7D6B5F]">
+                          <span className="text-sm text-black">
                             No specific skills listed.
                           </span>
                         )}
@@ -381,17 +381,17 @@ const ViewPosition = () => {
                   <div className="md:col-span-2 space-y-6">
                     {/* Description Section */}
                     <div>
-                      <h3 className="font-semibold text-[#5E4B3D] mb-2">
+                      <h3 className="font-semibold text-black mb-2">
                         Description
                       </h3>
-                      <p className="text-sm text-[#7D6B5F] bg-[#F5F1EC] rounded-lg p-4">
+                      <p className="text-sm text-black bg-[#F5F1EC] rounded-lg p-4">
                         {selectedPosition.description}
                       </p>
                     </div>
 
                     {/* Responsibilities Section */}
                     <div>
-                      <h3 className="font-semibold text-[#5E4B3D] mb-2">
+                      <h3 className="font-semibold text-black mb-2">
                         Responsibilities
                       </h3>
                       <ul className="space-y-2">
@@ -401,8 +401,8 @@ const ViewPosition = () => {
                               key={index}
                               className="flex items-start gap-3"
                             >
-                              <span className="w-2 h-2 bg-[#A98B74] rounded-full mt-[7px] flex-shrink-0"></span>
-                              <span className="text-sm text-[#7D6B5F]">
+                              <span className="w-2 h-2 bg-black rounded-full mt-[7px] flex-shrink-0"></span>
+                              <span className="text-sm text-black">
                                 {resp}
                               </span>
                             </li>
