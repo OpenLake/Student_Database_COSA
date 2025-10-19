@@ -26,14 +26,14 @@ const Sidebar = () => {
         <SidebarClose className="text-white cursor-pointer" />
       </div>
       {/* Navigation Items */}
-      <nav className="flex-1 flex flex-col gap-2 bg-zinc-900 rounded-2xl p-2 overflow-visible">
+      <nav className="flex-1 flex flex-col gap-3 bg-zinc-900 rounded-2xl px-2 overflow-visible py-4">
         {navItems.map(
           (item) =>
             item.label !== "Profile" && (
               <button
                 key={item.key}
                 onClick={() => setSelected(item.key)}
-                className={`flex items-center gap-3 px-4 py-3 mx-1 transition-all duration-200 ${
+                className={`flex items-center gap-3 px-4 py-2 mx-1 transition-all duration-200 ${
                   selected === item.key
                     ? "bg-white text-black font-medium rounded-xl"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
@@ -42,7 +42,7 @@ const Sidebar = () => {
                 <item.icon size={20} />
                 <span className="text-[15px]">{item.label}</span>
               </button>
-            )
+            ),
         )}
       </nav>
 

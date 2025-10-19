@@ -90,17 +90,29 @@ const TabNavigation = ({ activeTab, onTabChange }) => {
 // Main Component
 const GenSecEndorse = () => {
   const { userRole } = React.useContext(AdminContext);
-  const adminRole = userRole;
-
   const [activeTab, setActiveTab] = useState("user-skills");
 
-  const config = getConfigByRole(adminRole);
+  // Get config with fallback
+  const config = React.useMemo(() => {
+    const roleConfig = getConfigByRole(userRole);
+    // Provide a default config if getConfigByRole returns undefined
+    return roleConfig || { skillType: "technical" };
+  }, [userRole]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
   };
 
   const renderTabContent = () => {
+    // Safety check - this should never be undefined now, but good to be defensive
+    if (!config || !config.skillType) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-600">Loading configuration...</p>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "user-skills":
         return <UserSkillsEndorsementTab skillType={config.skillType} />;
@@ -115,36 +127,6 @@ const GenSecEndorse = () => {
 
   return (
     <div className="min-h-screen bg-[#FEFDF7]">
-      {/* Header */}
-      {/* <div className="bg-white border-b border-yellow-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 text-gray-600 flex-shrink-0">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-800">
-                    Pending Endorsement
-                  </h1>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Review and approve pending requests for your department
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       {/* Tab Navigation */}
       <div className="sticky top-0 z-10">
         <div className="max-w-7xl mx-auto">

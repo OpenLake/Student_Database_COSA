@@ -21,7 +21,7 @@ const AchievementsPage = () => {
       },
     },
     {
-      id: "main",
+      id: "certificates",
       component: "Certificates",
       position: {
         colStart: 14,

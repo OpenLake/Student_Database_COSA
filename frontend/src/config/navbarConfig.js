@@ -20,7 +20,7 @@ const GENSEC_COMMON_NAV = [
   { key: "feedback", label: "Feedback", icon: ClipboardList },
   // { key: "add-event", label: "Add Event", icon: Plus },
   { key: "por", label: "PORs", icon: UserPlus },
-    { key: "profile", label: "Profile", icon: User },
+  { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
 ];
 
@@ -48,7 +48,7 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
-    { key: "achievements", label: "Achievements", icon: Award },
+    { key: "endorsement", label: "Endorsements", icon: Award },
   ],
 
   STUDENT: [
