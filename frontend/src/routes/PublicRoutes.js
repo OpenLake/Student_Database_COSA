@@ -8,24 +8,12 @@ import Login from "../Components/Auth/Login";
 import Register from "../Components/Auth/Register";
 import ForgotPassword from "../Components/Auth/Forgot-Password/ForgotPassword";
 import ResetPassword from "../Components/Auth/Forgot-Password/ResetPassword";
-import AnnouncementPage from "../Components/Announcements/AnnouncementPage";
-import CreateAnnouncement from "../Components/Announcements/Create-Announcement/CreateAnnouncement";
 
 export const getPublicRoutes = (isUserLoggedIn) => [
   // Public routes accessible to everyone
   <Route key="events" path="/events" element={<EventList />} />,
   <Route key="event-detail" path="/events/:id" element={<EventDetail />} />,
   <Route key="view-feedback" path="/viewfeedback" element={<ViewFeedback />} />,
-  <Route
-    key="announcement"
-    path="/announcements"
-    element={<AnnouncementPage />}
-  />,
-  <Route
-    key="create-announcement"
-    path="/announcements/create-announcement"
-    element={<CreateAnnouncement />}
-  />,
 
   // Authentication routes - only for non-authenticated users
   <Route
