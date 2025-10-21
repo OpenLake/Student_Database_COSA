@@ -3,8 +3,11 @@ import UpdatesCard from "../Components/common/LatestUpdatesCard";
 import Layout from "../Components/common/Layout";
 import Home from "../Components/Dashboard/Home";
 import Calendar from "../Components/common/Calendar";
+import { useSidebar } from "../hooks/useSidebar";
 
 export const HomePage = () => {
+  const { isCollapsed } = useSidebar();
+
   const components = {
     Home: Home,
     QuickStats: QuickStats,
@@ -18,7 +21,7 @@ export const HomePage = () => {
       component: "Home",
       position: {
         colStart: 0,
-        colEnd: 14,
+        colEnd: isCollapsed ? 18 : 14,
         rowStart: 0,
         rowEnd: 10,
       },
@@ -28,7 +31,7 @@ export const HomePage = () => {
       component: "QuickStats",
       position: {
         colStart: 0,
-        colEnd: 14,
+        colEnd: isCollapsed ? 18 : 14,
         rowStart: 10,
         rowEnd: 16,
       },
@@ -38,8 +41,8 @@ export const HomePage = () => {
       id: "updates",
       component: "UpdatesCard",
       position: {
-        colStart: 14,
-        colEnd: 20,
+        colStart: isCollapsed ? 18 : 14,
+        colEnd: isCollapsed ? 25 : 20,
         rowStart: 7,
         rowEnd: 16,
       },
@@ -48,8 +51,8 @@ export const HomePage = () => {
       id: "calendar",
       component: "Calendar",
       position: {
-        colStart: 14,
-        colEnd: 20,
+        colStart: isCollapsed ? 18 : 14,
+        colEnd: isCollapsed ? 25 : 20,
         rowStart: 0,
         rowEnd: 7,
       },
