@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { useProfile } from "./useProfile";
+import { AdminContext } from "../context/AdminContext";
 
 // Hook for managing position holder form logic
 export const usePositionHolderForm = (currentUser) => {
@@ -118,6 +119,8 @@ export const usePositionHolderForm = (currentUser) => {
 
 // Hook for viewing position holders
 export const usePositionHolders = () => {
+  const { isUserLoggedIn } = useContext(AdminContext);
+  const userRole = isUserLoggedIn?.role || "STUDENT";
   const { profile } = useProfile();
 
   const [positionHolders, setPositionHolders] = useState([]);
@@ -145,7 +148,10 @@ export const usePositionHolders = () => {
   useEffect(() => {
     let filtered = positionHolders;
     filtered = filtered.filter(
-      (holder) => holder.position_id?.unit_id?.name === profile?.personal_info.name
+      (holder) =>
+        (userRole !== "STUDENT"
+          ? holder.position_id?.unit_id?.name
+          : holder.user_id?.personal_info?.name) === profile?.personal_info.name
     );
 
     if (searchTerm) {

@@ -17,9 +17,9 @@ export const InfoCard = ({
   <div className="bg-[#FDFAE2] rounded-xl px-6 py-6">
     <div className="mb-2">
       <div className="flex justify-between items-start gap-4">
-        <div className="text-2xl font-bold text-black">{title}</div>
+        <div className="text-xl font-bold text-black truncate">{title}</div>
         <span
-          className={`p-2 ${badgeColor} text-xs rounded-full font-medium shadow-sm`}
+          className={`p-2 ${badgeColor} text-xs rounded-full font-medium shadow-sm truncate`}
         >
           {badgeText}
         </span>
