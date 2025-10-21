@@ -23,7 +23,7 @@ export const TenureRecords = () => {
         onClick={() => setAdd(!add)}
         className="flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
       >
-        {add ? (
+        {!add ? (
           <div className="flex gap-2">
             <Plus className="w-6 h-6" /> <span>Add Position</span>
           </div>
@@ -65,13 +65,13 @@ export const CreateTenure = () => {
 // ViewTenure: for viewing positions and holders
 export const ViewTenure = () => {
   return (
-    <div className="bg-white min-h-screen text-black">
+    <div className="bg-white text-black">
       <Tabs>
         <TabList className="flex border-b-2 border-gray-200">
-          <Tab className="py-2 px-4 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
+          <Tab className="py-2 px-2 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
             View Positions
           </Tab>
-          <Tab className="py-2 px-4 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
+          <Tab className="py-2 px-2 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">
             View Position Holder (POR)
           </Tab>
         </TabList>

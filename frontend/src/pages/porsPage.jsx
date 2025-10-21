@@ -17,7 +17,7 @@ const PORsPage = () => {
       component: "PORs",
       position: {
         colStart: 0,
-        colEnd: 14,
+        colEnd: 15,
         rowStart: 0,
         rowEnd: 16,
       },
@@ -26,7 +26,7 @@ const PORsPage = () => {
       id: "work",
       component: "WorkAssigned",
       position: {
-        colStart: 14,
+        colStart: 15,
         colEnd: 20,
         rowStart: 0,
         rowEnd: 8,
@@ -36,7 +36,7 @@ const PORsPage = () => {
       id: "points",
       component: "ClubPoints",
       position: {
-        colStart: 14,
+        colStart: 15,
         colEnd: 20,
         rowStart: 8,
         rowEnd: 16,

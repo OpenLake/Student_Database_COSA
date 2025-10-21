@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  Search,
   Eye,
   Edit,
   Trash2,
@@ -9,88 +8,29 @@ import {
   Clock,
   DollarSign,
 } from "lucide-react";
-import api from "../../utils/api";
+import { usePositionHolders } from "../../hooks/usePositionHolders";
+import { SearchInput } from "./PositionCard";
 
 const ViewPositionHolder = () => {
-  const [positionHolders, setPositionHolders] = useState([]);
-  const [filteredHolders, setFilteredHolders] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedTenure, setSelectedTenure] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedHolder, setSelectedHolder] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-
-  useEffect(() => {
-    const fetchPositionHolders = async () => {
-      try {
-        const res = await api.get(`/api/positions/get-all-position-holder`);
-        setPositionHolders(res.data);
-        setFilteredHolders(res.data);
-      } catch (error) {
-        console.error("Error fetching positions:", error);
-      }
-    };
-
-    fetchPositionHolders();
-  }, []);
-
-  // Get unique values for filters
-  const statuses = ["active", "completed", "terminated"];
-  const tenureYears = [
-    ...new Set(positionHolders.map((holder) => holder.tenure_year)),
-  ].sort();
-  const departments = [
-    ...new Set(
-      positionHolders.map((holder) => holder.position_id?.unit_id?.name)
-    ),
-  ].filter(Boolean); // Filter out any null/undefined department names
-
-  // Filter position holders
-  useEffect(() => {
-    let filtered = positionHolders;
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (holder) =>
-          holder.user_id?.personal_info?.name
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          holder.user_id?.username
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          holder.user_id?.user_id
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          holder.position_id?.title
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          holder.por_id?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedStatus) {
-      filtered = filtered.filter((holder) => holder.status === selectedStatus);
-    }
-    if (selectedTenure) {
-      filtered = filtered.filter(
-        (holder) => holder.tenure_year === selectedTenure
-      );
-    }
-    if (selectedDepartment) {
-      filtered = filtered.filter(
-        (holder) => holder.position_id?.unit_id?.name === selectedDepartment
-      );
-    }
-
-    setFilteredHolders(filtered);
-  }, [
-    searchTerm,
-    selectedStatus,
-    selectedTenure,
-    selectedDepartment,
+  const {
+    filteredHolders,
     positionHolders,
-  ]);
+    searchTerm,
+    setSearchTerm,
+    selectedStatus,
+    setSelectedStatus,
+    selectedTenure,
+    setSelectedTenure,
+    selectedDepartment,
+    setSelectedDepartment,
+    selectedHolder,
+    setSelectedHolder,
+    showDetails,
+    setShowDetails,
+    statuses,
+    tenureYears,
+    departments,
+  } = usePositionHolders();
 
   const handleViewDetails = (holder) => {
     setSelectedHolder(holder);
@@ -107,9 +47,7 @@ const ViewPositionHolder = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) {
-      return "N/A";
-    }
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -146,21 +84,15 @@ const ViewPositionHolder = () => {
   return (
     <div className="min-h-screen bg-white px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg [#DCD3C9] mb-6">
-          {/* Search and Filters */}
+        {/* Header with Search and Filters */}
+        <div className="bg-white rounded-lg mb-6">
           <div className="p-6 space-y-4">
             <div className="flex flex-col lg:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search by name, email, ID, position, or POR ID..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white text-black placeholder-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
-                />
-              </div>
+              <SearchInput
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Search by name, email, ID, position, or POR ID..."
+              />
               <div className="flex flex-wrap gap-3">
                 <select
                   value={selectedStatus}
@@ -214,7 +146,7 @@ const ViewPositionHolder = () => {
               key={holder._id}
               className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col"
             >
-              <div className="p-4  flex-grow">
+              <div className="p-4 flex-grow">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="font-semibold text-black text-lg">
@@ -270,7 +202,7 @@ const ViewPositionHolder = () => {
 
         {/* Empty State */}
         {filteredHolders.length === 0 && (
-          <div className="bg-white rounded-lg [#DCD3C9] p-12 text-center">
+          <div className="bg-white rounded-lg p-12 text-center">
             <UserCheck className="w-12 h-12 text-black mx-auto mb-4" />
             <h3 className="text-lg font-medium text-black mb-2">
               No position holders found
@@ -305,6 +237,7 @@ const ViewPositionHolder = () => {
                   </button>
                 </div>
               </div>
+
               {/* Modal Body */}
               <div className="p-6 overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
@@ -359,6 +292,7 @@ const ViewPositionHolder = () => {
                       </div>
                     </div>
                   </div>
+
                   {/* Right Column */}
                   <div className="md:col-span-2 space-y-6">
                     <div className="space-y-2">
