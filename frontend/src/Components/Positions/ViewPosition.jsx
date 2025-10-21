@@ -1,7 +1,11 @@
+import { useContext } from "react";
 import { usePositions } from "../../hooks/usePositions";
 import { PositionCard, SearchInput } from "./PositionCard";
+import { AdminContext } from "../../context/AdminContext";
 
 const ViewPosition = () => {
+  const { isUserLoggedIn } = useContext(AdminContext);
+  const userRole = isUserLoggedIn?.role || "STUDENT";
   const {
     filteredPositions,
     searchTerm,
@@ -17,28 +21,30 @@ const ViewPosition = () => {
   } = usePositions();
 
   return (
-    <div className="min-h-screen bg-white px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-white px-4">
+      <div className="mx-auto">
         <div className="bg-white rounded-lg mb-6">
-          <div className="p-6 space-y-4">
+          <div className="space-y-4">
             <div className="flex flex-col md:flex-row gap-4">
               <SearchInput
                 value={searchTerm}
                 onChange={setSearchTerm}
                 placeholder="Search positions..."
               />
-              <select
-                value={selectedUnit}
-                onChange={(e) => setSelectedUnit(e.target.value)}
-                className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg"
-              >
-                <option value="">All Departments</option>
-                {units.map((unit) => (
-                  <option key={unit} value={unit}>
-                    {unit}
-                  </option>
-                ))}
-              </select>
+              {userRole !== "CLUB_COORDINATOR" && (
+                <select
+                  value={selectedUnit}
+                  onChange={(e) => setSelectedUnit(e.target.value)}
+                  className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg"
+                >
+                  <option value="">All Departments</option>
+                  {units.map((unit) => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
         </div>
@@ -62,4 +68,4 @@ const ViewPosition = () => {
   );
 };
 
-export default ViewPosition
+export default ViewPosition;

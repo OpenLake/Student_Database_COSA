@@ -46,7 +46,7 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
 
       {/* Main Content Area */}
       <div className="ml-56 h-screen p-6">
-        <div className="bg-[#f5f1e8] rounded-[3rem] h-full flex flex-col p-6">
+        <div className="bg-[#FDFAE2] rounded-[3rem] h-full flex flex-col p-6">
           {/* Header Section */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h1 className="text-3xl text-black">

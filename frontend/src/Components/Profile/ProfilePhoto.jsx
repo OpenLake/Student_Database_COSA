@@ -49,7 +49,7 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
   };
 
   return (
-    <div className="bg-[#f5f1e8] flex flex-col items-center gap-4">
+    <div className="bg-[#FDFAE2] flex flex-col items-center gap-4">
       <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-300">
         <img
           src={preview}
@@ -59,8 +59,8 @@ const ProfilePhoto = ({ isEditing, ID_No, profilePic, onPhotoUpdate }) => {
       </div>
 
       {isEditing && (
-        <div className="bg-[#f5f1e8] flex flex-col items-center gap-2">
-          <label className="bg-[#f5f1e8] cursor-pointer bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
+        <div className="bg-[#FDFAE2] flex flex-col items-center gap-2">
+          <label className="bg-[#FDFAE2] cursor-pointer bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
             {loading ? "Uploading..." : "Change Photo"}
             <input
               type="file"

@@ -21,7 +21,7 @@ export const TenureRecords = () => {
       </div>
       <button
         onClick={() => setAdd(!add)}
-        className="flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
+        className="flex items-center text-black text-sm pr-4"
       >
         {!add ? (
           <div className="flex gap-2">
@@ -40,7 +40,7 @@ export const TenureRecords = () => {
 
 export const CreateTenure = () => {
   return (
-    <div className="bg-white min-h-screen text-black">
+    <div className="bg-white text-black">
       <Tabs>
         <TabList className="flex border-b-2 border-gray-200">
           <Tab className="py-2 px-4 font-medium cursor-pointer border-b-3 border-transparent focus:outline-none [&.react-tabs__tab--selected]:border-gray-400">

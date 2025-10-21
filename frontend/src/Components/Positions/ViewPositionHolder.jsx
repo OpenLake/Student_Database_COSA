@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Eye,
   Edit,
@@ -9,9 +9,12 @@ import {
   DollarSign,
 } from "lucide-react";
 import { usePositionHolders } from "../../hooks/usePositionHolders";
-import { SearchInput } from "./PositionCard";
+import { PositionHolderCard, SearchInput } from "./PositionCard";
+import { AdminContext } from "../../context/AdminContext";
 
 const ViewPositionHolder = () => {
+  const { isUserLoggedIn } = useContext(AdminContext);
+  const userRole = isUserLoggedIn?.role || "STUDENT";
   const {
     filteredHolders,
     positionHolders,
@@ -86,8 +89,8 @@ const ViewPositionHolder = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header with Search and Filters */}
         <div className="bg-white rounded-lg mb-6">
-          <div className="p-6 space-y-4">
-            <div className="flex flex-col lg:flex-row gap-4">
+          <div className="space-y-4">
+            <div className="flex :flex-row gap-4">
               <SearchInput
                 value={searchTerm}
                 onChange={setSearchTerm}
@@ -118,18 +121,20 @@ const ViewPositionHolder = () => {
                     </option>
                   ))}
                 </select>
-                <select
-                  value={selectedDepartment}
-                  onChange={(e) => setSelectedDepartment(e.target.value)}
-                  className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
-                >
-                  <option value="">All Departments</option>
-                  {departments.map((dept) => (
-                    <option key={dept} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
-                </select>
+                {userRole !== "CLUB_COORDINATOR" && (
+                  <select
+                    value={selectedDepartment}
+                    onChange={(e) => setSelectedDepartment(e.target.value)}
+                    className="px-3 py-2 bg-white text-black border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none"
+                  >
+                    <option value="">All Departments</option>
+                    {departments.map((dept) => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
             <div className="text-sm text-black">
@@ -142,61 +147,67 @@ const ViewPositionHolder = () => {
         {/* Position Holders Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredHolders.map((holder) => (
-            <div
-              key={holder._id}
-              className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col"
-            >
-              <div className="p-4 flex-grow">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-black text-lg">
-                      {holder.user_id?.personal_info?.name || "N/A"}
-                    </h3>
-                    <p className="text-sm text-black truncate">
-                      {holder.user_id?.user_id || "N/A"} •{" "}
-                      {holder.user_id?.username || "N/A"}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-2 py-1 ml-2 rounded-full text-xs font-medium flex-shrink-0 flex items-center gap-1 ${getStatusColor(holder.status)}`}
-                  >
-                    {getStatusIcon(holder.status)}
-                    {holder.status?.charAt(0).toUpperCase() +
-                      holder.status?.slice(1)}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-medium text-black">
-                    {holder.position_id?.title || "Unknown Position"}
-                  </p>
-                  <p className="text-sm text-black">
-                    {holder.position_id?.unit_id?.name || "Unknown Dept"}
-                  </p>
-                </div>
-              </div>
-              <div className="p-4 border-t border-[#DCD3C9]">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleViewDetails(holder)}
-                    className="flex-1 px-3 py-2 bg-black text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
-                  >
-                    <Eye className="w-4 h-4" /> View
-                  </button>
-                  <button
-                    onClick={() => handleEdit(holder)}
-                    className="px-3 py-2 bg-[#F5F1EC] text-black text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(holder)}
-                    className="px-3 py-2 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <PositionHolderCard
+              holder={holder}
+              onViewDetails={() => handleViewDetails(holder)}
+              onEdit={() => handleEdit(holder)}
+              onDelete={() => handleDelete(holder)}
+            />
+            // <div
+            //   key={holder._id}
+            //   className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col"
+            // >
+            //   <div className="p-4 flex-grow">
+            //     <div className="flex items-start justify-between mb-3">
+            //       <div className="flex-1">
+            //         <h3 className="font-semibold text-black text-lg">
+            //           {holder.user_id?.personal_info?.name || "N/A"}
+            //         </h3>
+            //         <p className="text-sm text-black truncate">
+            //           {holder.user_id?.user_id || "N/A"} •{" "}
+            //           {holder.user_id?.username || "N/A"}
+            //         </p>
+            //       </div>
+            //       <span
+            //         className={`px-2 py-1 ml-2 rounded-full text-xs font-medium flex-shrink-0 flex items-center gap-1 ${getStatusColor(holder.status)}`}
+            //       >
+            //         {getStatusIcon(holder.status)}
+            //         {holder.status?.charAt(0).toUpperCase() +
+            //           holder.status?.slice(1)}
+            //       </span>
+            //     </div>
+            //     <div>
+            //       <p className="font-medium text-black">
+            //         {holder.position_id?.title || "Unknown Position"}
+            //       </p>
+            //       <p className="text-sm text-black">
+            //         {holder.position_id?.unit_id?.name || "Unknown Dept"}
+            //       </p>
+            //     </div>
+            //   </div>
+            //   <div className="p-4 border-t border-[#DCD3C9]">
+            //     <div className="flex gap-2">
+            //       <button
+            //         onClick={() => handleViewDetails(holder)}
+            //         className="flex-1 px-3 py-2 bg-black text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
+            //       >
+            //         <Eye className="w-4 h-4" /> View
+            //       </button>
+            //       <button
+            //         onClick={() => handleEdit(holder)}
+            //         className="px-3 py-2 bg-[#F5F1EC] text-black text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
+            //       >
+            //         <Edit className="w-4 h-4" />
+            //       </button>
+            //       <button
+            //         onClick={() => handleDelete(holder)}
+            //         className="px-3 py-2 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition-colors"
+            //       >
+            //         <Trash2 className="w-4 h-4" />
+            //       </button>
+            //     </div>
+            //   </div>
+            // </div>
           ))}
         </div>
 
