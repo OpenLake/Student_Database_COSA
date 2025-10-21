@@ -146,7 +146,7 @@ export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => {
       descriptionItems={desc}
       onAction={() => onViewDetails(position)}
       onActionText="View Details"
-      onActionColor="#BAFFB4"
+      onActionColor="bg-[#BAFFB4]"
       onActionDisabled={false}
       onEdit={() => onEdit(position)}
       onDelete={() => onDelete(position)}
