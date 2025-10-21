@@ -2,10 +2,14 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import { useProfile } from "../../hooks/useProfile";
 import UserIcon from "./userIcon";
+import { useSidebar } from "../../hooks/useSidebar";
 
 const GridLayout = ({ config, components }) => {
+  const { isCollapsed } = useSidebar();
   return (
-    <div className="grid grid-cols-20 grid-rows-16 gap-3 w-full h-full">
+    <div
+      className={`grid grid-cols-[${isCollapsed ? 25 : 20}] grid-rows-16 gap-3 w-full h-full`}
+    >
       {config.map((item, index) => {
         const Component = components[item.component];
 
@@ -39,20 +43,20 @@ const GridLayout = ({ config, components }) => {
 };
 
 const Layout = ({ headerText, gridConfig, components, children = null }) => {
-
+  const { isCollapsed } = useSidebar();
   return (
     <div className="h-screen overflow-hidden bg-[#000]">
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="ml-56 h-screen p-6">
+      <div className={`ml-${isCollapsed ? 14 : 56} h-screen p-6`}>
         <div className="bg-[#FDFAE2] rounded-[3rem] h-full flex flex-col p-6">
           {/* Header Section */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h1 className="text-3xl text-black">
-              Welcome to the <span className="font-bold">{headerText}</span> Section
+              Welcome to the <span className="font-bold">{headerText}</span>{" "}
+              Section
             </h1>
-
             {/* Profile Section */}
             <UserIcon />
           </div>

@@ -1,10 +1,12 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 
+// Context
 const SidebarContext = createContext(null);
 
 export const SidebarProvider = ({ children, role, navItems }) => {
   const [selected, setSelected] = useState(navItems[0]?.key);
   const [showLogout, setShowLogout] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     if (navItems.length > 0) {
@@ -25,6 +27,8 @@ export const SidebarProvider = ({ children, role, navItems }) => {
     setSelected,
     showLogout,
     setShowLogout,
+    isCollapsed,
+    setIsCollapsed,
   };
 
   return (
