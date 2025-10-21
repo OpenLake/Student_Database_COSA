@@ -31,7 +31,7 @@ export const HomePage = () => {
       component: "QuickStats",
       position: {
         colStart: 0,
-        colEnd: isCollapsed ? 18 : 14,
+        colEnd: isCollapsed ? 5 : 5,
         rowStart: 10,
         rowEnd: 16,
       },
