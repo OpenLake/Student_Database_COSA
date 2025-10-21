@@ -8,7 +8,10 @@ const GridLayout = ({ config, components }) => {
   const { isCollapsed } = useSidebar();
   return (
     <div
-      className={`grid grid-cols-[${isCollapsed ? 25 : 20}] grid-rows-16 gap-3 w-full h-full`}
+      className={`grid ${isCollapsed ? "grid-cols-24" : "grid-cols-20"} grid-rows-16 gap-3 w-full h-full transition-all duration-300`}
+      style={{
+        gridTemplateColumns: `repeat(${isCollapsed ? 25 : 20}, minmax(0, 1fr))`,
+      }}
     >
       {config.map((item, index) => {
         const Component = components[item.component];
@@ -49,7 +52,9 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className={`ml-${isCollapsed ? 14 : 56} h-screen p-6`}>
+      <div
+        className={`h-screen p-6 transition-all duration-300 ${isCollapsed ? "ml-20" : "ml-56"}`}
+      >
         <div className="bg-[#FDFAE2] rounded-[3rem] h-full flex flex-col p-6">
           {/* Header Section */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
