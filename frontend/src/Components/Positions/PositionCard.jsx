@@ -119,7 +119,7 @@ export const DynamicFieldArray = ({
 
 export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => {
   const desc = [
-    { key: "Created by", value: position.created_by || "Unknown", icon: Edit },
+    // { key: "Created by", value: position.created_by || "Unknown", icon: Edit },
     {
       key: "Created on",
       value: new Date(position.created_at || Date.now()).toLocaleDateString(
