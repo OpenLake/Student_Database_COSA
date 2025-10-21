@@ -6,9 +6,12 @@ const inputStyles =
   "w-full p-2 mt-1 bg-white border border-stone-300 rounded-lg text-sm text-stone-900 placeholder-stone-400 focus:ring-1 focus:ring-stone-400 focus:border-stone-400 transition";
 const labelStyles = "text-sm font-medium text-stone-600";
 
+// I need to make a way to  link types to their type IDs which i Will do later
+
 function CreateAnnouncement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [type, setType] = useState("General");
   const navigate = useNavigate();
 
   const submitForm = async (e) => {
@@ -91,6 +94,11 @@ function CreateAnnouncement() {
               id="type"
               name="type"
               defaultValue="General"
+              onChange={(e) => {
+                e.preventDefault();
+                // console.log(e.target.value);
+                return setType(e.target.value);
+              }}
             >
               <option value="General">General</option>
               <option value="Event">Event</option>
@@ -111,6 +119,21 @@ function CreateAnnouncement() {
             </label>
           </div>
         </div>
+
+        {type !== "General" && (
+          <div>
+            <label className={labelStyles} htmlFor="typeId">
+              Type ID
+            </label>
+            <input
+              className={inputStyles}
+              type="text"
+              id="typeId"
+              name="typeId"
+              required
+            />
+          </div>
+        )}
 
         <div className="pt-4 flex gap-4">
           <button
