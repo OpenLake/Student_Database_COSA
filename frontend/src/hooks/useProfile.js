@@ -36,7 +36,7 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
-  console.log(isUserLoggedIn)
+  // console.log(isUserLoggedIn)
   // Fetch profile data on mount
   useEffect(() => {
     // if (isUserLoggedIn?.user_id) {
@@ -45,7 +45,7 @@ export const useProfile = () => {
         .then((data) => {
           if (data) {
             setProfile(data);
-            console.log(data)
+            // console.log(data)
             setEditedProfile(JSON.parse(JSON.stringify(data))); // Deep copy
           }
         })

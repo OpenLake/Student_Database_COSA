@@ -11,6 +11,7 @@ import {
 import api from "../utils/api";
 import { AdminContext } from "../context/AdminContext";
 import AddPositionHolder from "./AddPositionHolder";
+import ViewPositionHolder from "./Positions/ViewPositionHolder";
 
 const ManagePositions = () => {
   const { isUserLoggedIn } = React.useContext(AdminContext);
@@ -128,17 +129,10 @@ const ManagePositions = () => {
               </div>
             </div>
           </div>
-          {/* Gray horizontal line separator */}
-          {/* <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-[#856A5D] transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Add Position
-          </button> */}
           <div className="w-full h-[2px] bg-gray-300"></div>
         </div>
-
-        {/* Filters */}
+        <ViewPositionHolder />
+{/* 
         <div className="">
           <div className="flex flex lg:flex-row gap-4 pb-2">
             <div className="flex-1 relative round-xl">
@@ -183,7 +177,6 @@ const ManagePositions = () => {
           </div>
         </div>
 
-        {/* Positions Grid */}
         {filteredPositions.length === 0 ? (
           <div className="bg-white rounded-lg p-12 text-center">
             <UserCheck className="w-12 h-12 text-black mx-auto mb-4" />
@@ -245,24 +238,6 @@ const ManagePositions = () => {
                   </div>
                 </div>
 
-                {/* <div className="p-4 bg-[#F5F1EC] flex justify-around text-center">
-                  <div>
-                    <span className="text-xs text-black">Events</span>
-                    <p className="text-lg font-bold text-black">
-                      {position.performance_metrics?.events_organized || 0}
-                    </p>
-                  </div>
-                  <div className="border-l border-black h-8"></div>
-                  <div>
-                    <span className="text-xs text-black">Budget</span>
-                    <p className="text-sm font-bold text-black">
-                      {formatCurrency(
-                        position.performance_metrics?.budget_utilized
-                      )}
-                    </p>
-                  </div>
-                </div> */}
-
                 <div className="px-4 py-2 border-t border-black text-xs text-black flex justify-between">
                   <span>Created: {formatDate(position.created_at)}</span>
                   {position.updated_at !== position.created_at && (
@@ -272,10 +247,10 @@ const ManagePositions = () => {
               </div>
             ))}
           </div>
-        )}
+        )} */}
       </div>
 
-      {showAddModal && (
+      {/* {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-lg p-6">
             <button
@@ -287,7 +262,7 @@ const ManagePositions = () => {
             <AddPositionHolder onClose={() => setShowAddModal(false)} />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

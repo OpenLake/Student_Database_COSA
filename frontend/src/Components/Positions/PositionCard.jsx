@@ -16,7 +16,10 @@ import {
   DollarSign,
   MapPin,
   Calendar,
+  Clock1,
+  IdCard,
 } from "lucide-react";
+import { InfoCard } from "../common/InfoCard";
 
 export const ErrorMessage = ({ message }) =>
   message ? (
@@ -114,49 +117,98 @@ export const DynamicFieldArray = ({
   </div>
 );
 
-export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => (
-  <div className="bg-white rounded-lg border-2 border-black hover:shadow-md transition-shadow flex flex-col justify-between">
-    <div className="p-4">
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="font-semibold text-black pr-2">{position.title}</h4>
-        <span className="flex-shrink-0 px-2 py-1 bg-[#EAE0D5] text-[#856A5D] text-xs rounded-full">
-          {position.position_type}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 text-sm text-black mb-2">
-        <MapPin className="w-4 h-4 flex-shrink-0" />
-        <span>{position.unit_id?.name}</span>
-      </div>
-      <div className="flex items-center gap-2 text-sm text-black">
-        <Users className="w-4 h-4 flex-shrink-0" />
-        <span>
-          {position.position_count} position
-          {position.position_count !== 1 ? "s" : ""}
-        </span>
-      </div>
-    </div>
-    <div className="p-4 border-t border-[#DCD3C9]">
-      <div className="flex gap-2">
-        <button
-          onClick={() => onViewDetails(position)}
-          className="flex-1 px-1 py-2 bg-black text-white text-sm rounded-lg hover:bg-[#856A5D] transition-colors flex items-center justify-center gap-1"
-        >
-          <Eye className="w-4 h-4" />
-          View Details
-        </button>
-        <button
-          onClick={() => onEdit(position)}
-          className="px-3 py-2 bg-[#F5F1EC] text-black text-sm rounded-lg hover:bg-[#EAE0D5] transition-colors"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => onDelete(position)}
-          className="px-3 py-2 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  </div>
-);
+export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => {
+  const desc = [
+    // { key: "Created by", value: position.created_by || "Unknown", icon: Edit },
+    {
+      key: "Created on",
+      value: new Date(position.created_at || Date.now()).toLocaleDateString(
+        "en-GB",
+        { day: "numeric", month: "long", year: "numeric" }
+      ),
+      icon: Calendar,
+    },
+    {
+      key: "Last Updated",
+      value: new Date(position.updated_at || Date.now()).toLocaleDateString(
+        "en-GB",
+        { day: "numeric", month: "long", year: "numeric" }
+      ),
+      icon: Clock1,
+    },
+  ];
+  return (
+    <InfoCard
+      title={position.title}
+      subtitle={position.unit_id?.name}
+      badgeText={position.position_type}
+      badgeColor="bg-white"
+      descriptionItems={desc}
+      onAction={() => onViewDetails(position)}
+      onActionText="View Details"
+      onActionColor="bg-[#BAFFB4]"
+      onActionDisabled={false}
+      onEdit={() => onEdit(position)}
+      onDelete={() => onDelete(position)}
+      onActionProps={position}
+    />
+  );
+};
+
+export const PositionHolderCard = ({
+  holder,
+  onViewDetails,
+  onEdit,
+  onDelete,
+}) => {
+  const getStatusColor = (status) => {
+    const colors = {
+      active: "bg-green-100 text-green-800",
+      completed: "bg-[#EAE0D5] text-[#856A5D]",
+      terminated: "bg-red-100 text-red-800",
+    };
+    return colors[status] || "bg-[#F5F1EC] text-black";
+  };
+
+  const getStatusIcon = (status) => {
+    const icons = {
+      active: UserCheck,
+      completed: Award,
+      terminated: Clock,
+    };
+    return icons[status] || UserCheck;
+  };
+  const desc = [
+    {
+      key: "ID",
+      value: holder.user_id?.user_id || "N/A",
+      icon: IdCard,
+    },
+    {
+      key: "Status",
+      value: holder.status?.charAt(0).toUpperCase() + holder.status?.slice(1),
+      icon: getStatusIcon(holder.status),
+    },
+    {
+      key: "Tenure",
+      value: holder.tenure_year,
+      icon: Calendar,
+    },
+  ];
+  return (
+    <InfoCard
+      title={holder.user_id?.personal_info?.name || "N/A"}
+      subtitle={holder.position_id?.unit_id?.name || "Unknown Dept"}
+      badgeText={holder.position_id?.title || "Unknown Position"}
+      badgeColor={getStatusColor(holder.status)}
+      descriptionItems={desc}
+      onAction={() => onViewDetails(holder)}
+      onActionText="View Details"
+      onActionColor="bg-[#BAFFB4]"
+      onActionDisabled={false}
+      onEdit={() => onEdit(holder)}
+      onDelete={() => onDelete(holder)}
+      onActionProps={holder}
+    />
+  );
+};

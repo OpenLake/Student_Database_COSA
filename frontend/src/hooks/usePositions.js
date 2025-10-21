@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import { AdminContext } from "../context/AdminContext";
+import { useProfile } from "./useProfile";
 
 export const usePositionForm = (currentUser) => {
   const navigate = useNavigate();
@@ -146,6 +148,7 @@ export const usePositionForm = (currentUser) => {
 
 // Hook for viewing positions
 export const usePositions = () => {
+  const { profile } = useProfile();
   const [positions, setPositions] = useState([]);
   const [filteredPositions, setFilteredPositions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -169,6 +172,9 @@ export const usePositions = () => {
 
   useEffect(() => {
     let filtered = positions;
+    filtered = filtered.filter(
+      (position) => position.unit_id?.name === profile?.personal_info.name
+    );
 
     if (searchTerm) {
       filtered = filtered.filter(

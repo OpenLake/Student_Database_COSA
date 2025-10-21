@@ -18,6 +18,13 @@ const AddPositionForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleRequirementChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      requirements: { ...prev.requirements, [field]: value },
+    }));
+  };
+
   const handleArrayChange = (arrayName, index, value) => {
     setFormData((prev) => {
       const updatedArray = [...prev[arrayName]];
@@ -26,10 +33,32 @@ const AddPositionForm = () => {
     });
   };
 
+  const handleRequirementArrayChange = (arrayName, index, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      requirements: {
+        ...prev.requirements,
+        [arrayName]: prev.requirements[arrayName].map((item, i) =>
+          i === index ? value : item
+        ),
+      },
+    }));
+  };
+
   const addToArray = (arrayName) => {
     setFormData((prev) => ({
       ...prev,
       [arrayName]: [...prev[arrayName], ""],
+    }));
+  };
+
+  const addToRequirementArray = (arrayName) => {
+    setFormData((prev) => ({
+      ...prev,
+      requirements: {
+        ...prev.requirements,
+        [arrayName]: [...prev.requirements[arrayName], ""],
+      },
     }));
   };
 
@@ -40,12 +69,23 @@ const AddPositionForm = () => {
     }));
   };
 
+  const removeFromRequirementArray = (arrayName, index) => {
+    setFormData((prev) => ({
+      ...prev,
+      requirements: {
+        ...prev.requirements,
+        [arrayName]: prev.requirements[arrayName].filter((_, i) => i !== index),
+      },
+    }));
+  };
+
   return (
     <div className="w-full bg-white flex items-center justify-center p-4">
       <form
         onSubmit={handleSubmit}
         className="w-full px-8 bg-white/80 backdrop-blur-sm rounded-2xl"
       >
+        {/* Basic Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormInput
             label="Position Title"
@@ -55,6 +95,23 @@ const AddPositionForm = () => {
             onChange={(e) => handleInputChange("title", e.target.value)}
             placeholder="e.g., Core Member"
             error={errors.title}
+          />
+
+          {/* ADDED: Organizational Unit field */}
+          <FormSelect
+            label="Organizational Unit"
+            required
+            value={formData.unit_id}
+            onChange={(e) => handleInputChange("unit_id", e.target.value)}
+            error={errors.unit_id}
+            options={[
+              { value: "", label: "Select unit" },
+              ...scopedUnits.map((unit) => ({
+                value: unit._id,
+                label: unit.name,
+              })),
+            ]}
+            disabled={isCoordinator}
           />
 
           <FormSelect
@@ -75,6 +132,21 @@ const AddPositionForm = () => {
             ]}
           />
 
+          {/* ADDED: Custom position type field (shown when "Other" is selected) */}
+          {formData.position_type === "Other" && (
+            <FormInput
+              label="Custom Position Type"
+              required
+              type="text"
+              value={formData.custom_position_type}
+              onChange={(e) =>
+                handleInputChange("custom_position_type", e.target.value)
+              }
+              placeholder="Specify position type"
+              error={errors.custom_position_type}
+            />
+          )}
+
           <FormInput
             label="Number of Positions"
             required
@@ -88,7 +160,65 @@ const AddPositionForm = () => {
           />
         </div>
 
-        <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 border-t border-stone-200">
+        {/* ADDED: Description field */}
+        <div className="pt-4 border-t border-stone-200">
+          <label className="block text-sm font-medium text-stone-700 mb-2">
+            Description
+          </label>
+          <textarea
+            value={formData.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+            placeholder="Describe the position..."
+            rows="4"
+            className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
+          />
+        </div>
+
+        {/* ADDED: Requirements section */}
+        <div className="pt-4 border-t border-stone-200">
+          <h3 className="text-lg font-semibold text-stone-800 mb-4">
+            Requirements
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <FormInput
+              label="Minimum CGPA"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              value={formData.requirements.min_cgpa}
+              onChange={(e) =>
+                handleRequirementChange("min_cgpa", Number(e.target.value))
+              }
+            />
+
+            <FormInput
+              label="Minimum Year"
+              type="number"
+              min="1"
+              max="5"
+              value={formData.requirements.min_year}
+              onChange={(e) =>
+                handleRequirementChange("min_year", Number(e.target.value))
+              }
+            />
+          </div>
+
+          <DynamicFieldArray
+            label="Skills Required"
+            array={formData.requirements.skills_required}
+            onUpdate={(index, value) =>
+              handleRequirementArrayChange("skills_required", index, value)
+            }
+            onRemove={(index) =>
+              removeFromRequirementArray("skills_required", index)
+            }
+            onAdd={() => addToRequirementArray("skills_required")}
+          />
+        </div>
+
+        {/* Responsibilities */}
+        <div className="pt-4 grid grid-cols-1 gap-y-6 border-t border-stone-200">
           <DynamicFieldArray
             label="Responsibilities"
             array={formData.responsibilities}
