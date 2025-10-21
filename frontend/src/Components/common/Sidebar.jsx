@@ -104,7 +104,8 @@ const Sidebar = () => {
           </button>
         ) : (
           <div className={isCollapsed ? "hidden" : "block"}>
-            <div className="text-white text-sm p-4">Logout Component Here</div>
+            <Logout />
+            {/* <div className="text-white text-sm p-4">Logout Component Here</div> */}
           </div>
         )}
       </div>
