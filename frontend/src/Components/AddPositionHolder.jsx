@@ -136,14 +136,14 @@ const AddPositionHolder = ({ onClose }) => {
   const selectedAppointedBy = appointingUsers.find((u) => u._id === formData.appointment_details.appointed_by);
 
   return (
-    <div className="bg-[#FDFAE2] max-h-[90vh] overflow-y-auto px-5 py-6 rounded-xl shadow-md border border-[#E4D8C3]">
-      <div className="bg-white rounded-xl shadow-sm border border-[#EADCCB]">
+    <div className="bg-white max-h-[90vh] overflow-y-auto px-5 py-6 rounded-xl shadow-md border border-[#E4D8C3]">
+      <div className="bg-white rounded-xl [#EADCCB]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-[#EADCCB] bg-[#FAF6EF] flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#A98B74] rounded-lg flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center shadow-sm">
             <UserCheck className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-lg font-semibold text-[#5E4B3D]">Add New Position</h1>
+          <h1 className="text-lg font-semibold text-black">Add New Position</h1>
         </div>
 
         <div className="p-6 space-y-8">
@@ -255,7 +255,7 @@ const AddPositionHolder = ({ onClose }) => {
               onChange={(e) => handleNestedChange("performance_metrics", "feedback", e.target.value)}
               placeholder="Provide performance feedback..."
               rows={4}
-              className="w-full px-3 py-2 border border-[#E4D8C3] rounded-lg bg-[#FDF9F3] text-[#5E4B3D] focus:ring-2 focus:ring-[#A98B74] outline-none"
+              className="w-full px-3 py-2 border border-[#E4D8C3] rounded-lg bg-[#FDF9F3] text-black focus:ring-2 focus:ring-black outline-none"
             />
           </div>
 
@@ -263,7 +263,7 @@ const AddPositionHolder = ({ onClose }) => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full bg-[#A98B74] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#856A5D] focus:ring-2 focus:ring-[#A98B74] focus:ring-offset-2 outline-none transition-all"
+              className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium hover:bg-[#856A5D] focus:ring-2 focus:ring-black focus:ring-offset-2 outline-none transition-all"
             >
               Create Position Holder
             </button>
@@ -277,16 +277,16 @@ const AddPositionHolder = ({ onClose }) => {
 /* ---------- Reusable Components ---------- */
 const SectionHeader = ({ icon: Icon, title, subtitle }) => (
   <div className="flex items-start gap-2">
-    <Icon className="w-5 h-5 text-[#7D6B5F] mt-1" />
+    <Icon className="w-5 h-5 text-black mt-1" />
     <div>
-      <h2 className="text-base font-semibold text-[#5E4B3D]">{title}</h2>
-      {subtitle && <p className="text-sm text-[#7D6B5F]">{subtitle}</p>}
+      <h2 className="text-base font-semibold text-black">{title}</h2>
+      {subtitle && <p className="text-sm text-black">{subtitle}</p>}
     </div>
   </div>
 );
 
 const InputLabel = ({ text, required }) => (
-  <label className="block text-sm font-medium text-[#5E4B3D] mb-1">
+  <label className="block text-sm font-medium text-black mb-1">
     {text} {required && <span className="text-red-500">*</span>}
   </label>
 );
@@ -296,7 +296,7 @@ const InputField = ({ label, error, ...props }) => (
     {label && <InputLabel text={label} />}
     <input
       {...props}
-      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-[#5E4B3D] focus:ring-2 focus:ring-[#A98B74] outline-none ${
+      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-black focus:ring-2 focus:ring-black outline-none ${
         error ? "border-red-300" : "border-[#E4D8C3]"
       }`}
     />
@@ -310,7 +310,7 @@ const SelectField = ({ label, options, values, value, onChange, error }) => (
     <select
       value={value}
       onChange={onChange}
-      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-[#5E4B3D] focus:ring-2 focus:ring-[#A98B74] outline-none ${
+      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-black focus:ring-2 focus:ring-black outline-none ${
         error ? "border-red-300" : "border-[#E4D8C3]"
       }`}
     >
@@ -344,7 +344,7 @@ const SearchDropdown = ({
       onChange={onChange}
       onFocus={() => setIsOpen(true)}
       placeholder="Search..."
-      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-[#5E4B3D] focus:ring-2 focus:ring-[#A98B74] outline-none ${
+      className={`w-full px-3 py-2 border rounded-lg bg-[#FDF9F3] text-black focus:ring-2 focus:ring-black outline-none ${
         error ? "border-red-300" : "border-[#E4D8C3]"
       }`}
     />
@@ -354,7 +354,7 @@ const SearchDropdown = ({
           <div
             key={item._id}
             onClick={() => onSelect(item)}
-            className="px-3 py-2 hover:bg-[#FAF6EF] cursor-pointer text-[#5E4B3D]"
+            className="px-3 py-2 hover:bg-[#FAF6EF] cursor-pointer text-black"
           >
             {displayFn(item)}
           </div>

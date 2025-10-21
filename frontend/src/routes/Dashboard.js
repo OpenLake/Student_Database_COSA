@@ -3,7 +3,7 @@ import { ProtectedRoute } from "../Components/common/ProtectedRoute";
 import Dashboard from "../Components/Dashboard/Dashboard";
 
 export const getDashboardRoutes = (isUserLoggedIn, isOnboardingComplete) => [
-<Route
+  <Route
     key="dashboard"
     path="/dashboard"
     element={
@@ -11,7 +11,7 @@ export const getDashboardRoutes = (isUserLoggedIn, isOnboardingComplete) => [
         isAuthenticated={isUserLoggedIn}
         isOnboardingComplete={isOnboardingComplete}
       >
-        <Dashboard/>
+        <Dashboard />
       </ProtectedRoute>
     }
   />,

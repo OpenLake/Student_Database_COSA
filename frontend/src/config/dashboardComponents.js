@@ -1,33 +1,46 @@
 //import Dashboard from "../Components/Dashboard";
-import Home from "../Components/Dashboard/Home"
-import { CreateTenure, ViewTenure } from "../Components/Positions/TenureRecords";
+import Home, { DashboardContent } from "../Components/Dashboard/Home";
+import {
+  CreateTenure,
+  ViewTenure,
+} from "../Components/Positions/TenureRecords";
 import ViewFeedback from "../Components/Feedback/ViewFeedback";
-import EventList from "../Components/Events/EventList";
 import EventForm from "../Components/Events/EventForm";
-import CreateOrgUnit from "../Components/CreateOrgUnit";
+import CreateOrgUnit from "../Components/organization/CreateOrgUnit";
 import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
-import StudentProfile from "../Components/Student/ProfilePage";
+import StudentProfile from "../Components/Profile/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
-import AchievementForm from "../Components/Student/AddUserAchievements";
-import ViewAchievements from "../Components/Student/ViewUserAchievements";
-import UserSkillManagement from "../Components/Student/UserSkillManagement";
-import ManagePositions from "../Components/ManagePosition";
+import AchievementForm from "../Components/Achievements/AchievementForm";
+import ViewAchievements from "../Components/Achievements/ViewAchievements";
+import EventsPage from "../pages/eventsPage";
+import PORsPage from "../pages/porsPage";
+import FeedbackPage from "../pages/feedbackPage";
+import OrganizationPage from "../pages/organizationsPage";
+import AchievementsPage from "../pages/achievementsPage";
+import SkillsPage from "../pages/skillsPage";
+import EndorsementPage from "../pages/endorsementPage";
+import { HomePage } from "../pages/homePage";
+import ProfilePage from "../pages/profilePage";
 
 export const DashboardComponents = {
-  dashboard: Home,
+  dashboard: HomePage,
+  events: EventsPage,
+  skills: SkillsPage,
+  por: PORsPage,
+  feedback: FeedbackPage,
+  organization: OrganizationPage,
+  achievements: AchievementsPage,
+  endorsement: EndorsementPage,
+  profile: ProfilePage,
   cosa: ViewTenure,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
-  events: EventList,
   "add-event": EventForm,
   "add-org-unit": CreateOrgUnit,
   "gensec-endorse": GenSecEndorse,
   "endorse-achievements": AchievementsEndorsementTab,
-  profile: StudentProfile,
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
-  skills: UserSkillManagement,
-  por: ManagePositions,
 };
