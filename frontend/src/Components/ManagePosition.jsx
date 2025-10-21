@@ -57,7 +57,7 @@ const ManagePositions = () => {
           position.position_id?.unit_id?.name
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase())
+          position.tenure_year.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -118,151 +118,19 @@ const ManagePositions = () => {
   }
 
   return (
-    <div className="px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className=" pt-6 pb-2 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center justify-between">
-            <div className="">
-              <div className="text-2xl font-bold tracking-tight text-gray-900">
-                Your PORs
-              </div>
+    <div className="px-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className=" pt-6 pb-2 flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center justify-between">
+          <div className="">
+            <div className="text-2xl font-bold tracking-tight text-gray-900">
+              Your PORs
             </div>
-          </div>
-          <div className="w-full h-[2px] bg-gray-300"></div>
-        </div>
-        <ViewPositionHolder />
-{/* 
-        <div className="">
-          <div className="flex flex lg:flex-row gap-4 pb-2">
-            <div className="flex-1 relative round-xl">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search by title, department, or year..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-8 pr-10 py-2 border-2 border-black rounded-md bg-white text-black focus:outline-none"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border-2 border-black rounded-md bg-white text-black focus:outline-none"
-              >
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-                <option value="terminated">Terminated</option>
-              </select>
-
-              <select
-                value={tenureFilter}
-                onChange={(e) => setTenureFilter(e.target.value)}
-                className="px-3 py-2  border-2 border-black rounded-md bg-white text-black focus:outline-none"
-              >
-                <option value="all">All Tenures</option>
-                {uniqueTenureYears.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="text-sm text-black">
-            Showing {filteredPositions.length} of {positions.length} positions
           </div>
         </div>
-
-        {filteredPositions.length === 0 ? (
-          <div className="bg-white rounded-lg p-12 text-center">
-            <UserCheck className="w-12 h-12 text-black mx-auto mb-4" />
-            <div className="text-lg font-medium text-black mb-2">
-              No positions found
-            </div>
-            <p className="text-black">
-              You currently have no assigned positions.
-            </p>
-          </div>
-        ) : (
-          <div className="py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredPositions.map((position) => (
-              <div
-                key={position._id}
-                className="bg-white rounded-lg shadow-sm border-2 border-black hover:shadow-md transition-shadow flex flex-col"
-              >
-                <div className="px-4 py-2  flex-grow">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="font-semibold text-black text-xl">
-                        {position.position_id?.title || "Unknown Position"}
-                      </div>
-                      <div className="text-sm text-black">
-                        {position.position_id?.unit_id?.name ||
-                          "Unknown Department"}
-                      </div>
-                    </div>
-                    <span
-                      className={`px-2 py-2 ml-2 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(
-                        position.status
-                      )}`}
-                    >
-                      {position.status?.charAt(0).toUpperCase() +
-                        position.status?.slice(1)}
-                    </span>
-                  </div>
-
-                  <div className="text-sm text-black">
-                    <p>
-                      <span className="font-medium">Tenure:</span>{" "}
-                      {position.tenure_year}
-                    </p>
-                    {position.appointment_details?.appointed_by && (
-                      <p>
-                        <span className="font-medium">Appointed By:</span>{" "}
-                        {position.appointment_details.appointed_by
-                          ?.personal_info?.name || "Unknown"}
-                      </p>
-                    )}
-                    {position.appointment_details?.appointment_date && (
-                      <p>
-                        <span className="font-medium">Date:</span>{" "}
-                        {formatDate(
-                          position.appointment_details.appointment_date
-                        )}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="px-4 py-2 border-t border-black text-xs text-black flex justify-between">
-                  <span>Created: {formatDate(position.created_at)}</span>
-                  {position.updated_at !== position.created_at && (
-                    <span>Updated: {formatDate(position.updated_at)}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )} */}
+        <div className="w-full h-[2px] bg-gray-300"></div>
       </div>
-
-      {/* {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-lg p-6">
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="absolute top-3 right-3 text-black hover:text-black"
-            >
-              ✕
-            </button>
-            <AddPositionHolder onClose={() => setShowAddModal(false)} />
-          </div>
-        </div>
-      )} */}
+      <ViewPositionHolder />
     </div>
   );
 };
