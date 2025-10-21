@@ -9,14 +9,14 @@ const LoadingSpinner = ({ size = "lg", text, fullscreen = true }) => {
 
   const spinner = (
     <div
-      className={`${sizeClasses[size]} border-blacky/90 border-t-transparent border-l-transparent rounded-full animate-spin`}
+      className={`${sizeClasses[size]} border-amber-300/70 border-t-transparent border-l-transparent rounded-full animate-spin`}
     ></div>
   );
 
   if (fullscreen) {
     // Fullscreen loader
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-sm bg-black/25 z-50">
+      <div className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-sm bg-black/5 z-50">
         {spinner}
         {text && (
           <p className="mt-3 text-gray-700 text-base font-medium tracking-wide">
