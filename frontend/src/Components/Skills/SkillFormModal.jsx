@@ -3,7 +3,6 @@ import { X, ChevronDown, Trophy } from "lucide-react";
 import { useSkillForm, useSkills } from "../../hooks/useSkills";
 import FilterDropdown from "./FilterDropdown";
 import { usePositionHolders } from "../../hooks/usePositionHolders";
-import { useProfile } from "../../hooks/useProfile";
 import { AdminContext } from "../../context/AdminContext";
 
 const SkillFormModal = ({ showForm, setShowForm }) => {
