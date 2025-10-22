@@ -1,191 +1,93 @@
-import React from "react";
-import { X, ChevronDown } from "lucide-react";
+import React, { useContext, useEffect, useMemo } from "react";
+import { X, ChevronDown, Trophy } from "lucide-react";
+import { useSkillForm, useSkills } from "../../hooks/useSkills";
+import FilterDropdown from "./FilterDropdown";
+import { usePositionHolders } from "../../hooks/usePositionHolders";
+import { AdminContext } from "../../context/AdminContext";
 
-const SkillFormModal = ({
-  showForm,
-  formData,
-  newSkillData,
-  showNewSkillForm,
-  skills,
-  positions,
-  loading,
-  onSkillChange,
-  onFormDataChange,
-  onNewSkillDataChange,
-  onSubmit,
-  onClose,
-}) => {
-  if (!showForm) return null;
+const SkillFormModal = ({ showForm, setShowForm }) => {
+  // if (!showForm) return null;
+  const { isUserLoggedIn } = useContext(AdminContext);
+
+  const { skills, positions, refreshUserSkills } = useSkills();
+  const { positionHolders } = usePositionHolders();
+  const {
+    formData,
+    newSkillData,
+    loading,
+    showNewSkillForm,
+    handleSkillChange,
+    updateFormData,
+    updateNewSkillData,
+    resetForm,
+    submitSkill,
+  } = useSkillForm(refreshUserSkills);
+
+  const userPositions = useMemo(() => {
+    if (!isUserLoggedIn?._id || !positionHolders.length || !positions.length) {
+      return [];
+    }
+
+    // Get position IDs held by current user
+    const userPositionIds = positionHolders
+      .filter(
+        (holder) =>
+          holder.user_id?._id === isUserLoggedIn._id ||
+          holder.user_id === isUserLoggedIn._id
+      )
+      .map((holder) => holder.position_id?._id || holder.position_id);
+
+    // Filter positions to only include user's positions
+    return positions.filter((pos) => userPositionIds.includes(pos._id));
+  }, [isUserLoggedIn, positionHolders, positions]);
+
+  const onSubmit = async () => {
+    const result = await submitSkill();
+    alert(result.message);
+    if (result.success) {
+      setShowForm(false);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-[#DCD3C9]">
-        <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#DCD3C9]">
-          <h2 className="text-xl font-bold text-black">Add New Skill</h2>
-          <button
-            onClick={onClose}
-            className="text-black hover:text-black p-1"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="space-y-5">
+    <div className="bg-white px-6 py-2 w-full mx-auto rounded-lg">
+      <div className="bg-white rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 bg-white rounded-lg">
           {/* Skill Selection */}
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-black">
-              Select Skill
-            </label>
-            <div className="relative">
-              <select
-                value={formData.skill_id}
-                onChange={(e) => onSkillChange(e.target.value)}
-                className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black appearance-none bg-white text-black"
-              >
-                <option value="">Choose a skill...</option>
-                {skills.map((skill) => (
-                  <option key={skill._id} value={skill._id}>
-                    {skill.name} ({skill.category})
-                  </option>
-                ))}
-                <option value="other">+ Add new skill</option>
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 pointer-events-none" />
-            </div>
-          </div>
+          <FilterDropdown
+            label="Select Skill"
+            value={formData.skill_id}
+            onChange={handleSkillChange}
+            options={skills.map((skill) => skill.name + " - " + skill.category)}
+          />
 
-          {/* New Skill Form */}
-          {showNewSkillForm && (
-            <div className="p-4 bg-[#F5F1EC] border border-[#DCD3C9] rounded-lg space-y-4">
-              <h3 className="font-semibold text-black text-sm">
-                Create New Skill
-              </h3>
+          <FilterDropdown
+            label="Proficiency Level"
+            value={formData.proficiency_level}
+            onChange={updateFormData}
+            options={["Beginner", "Intermediate", "Advanced", "Expert"]}
+          />
 
-              <div>
-                <label className="block text-sm mb-2 font-medium text-black">
-                  Skill Name *
-                </label>
-                <input
-                  type="text"
-                  value={newSkillData.name}
-                  onChange={(e) =>
-                    onNewSkillDataChange({ name: e.target.value })
-                  }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-                  placeholder="Enter skill name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm mb-2 font-medium text-black">
-                  Category *
-                </label>
-                <input
-                  type="text"
-                  value={newSkillData.category}
-                  onChange={(e) =>
-                    onNewSkillDataChange({ category: e.target.value })
-                  }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-                  placeholder="e.g., Programming, Design"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm mb-2 font-medium text-black">
-                  Type *
-                </label>
-                <select
-                  value={newSkillData.type}
-                  onChange={(e) =>
-                    onNewSkillDataChange({ type: e.target.value })
-                  }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-                  required
-                >
-                  <option value="technical">Technical</option>
-                  <option value="cultural">Cultural</option>
-                  <option value="sports">Sports</option>
-                  <option value="academic">Academic</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm mb-2 font-medium text-black">
-                  Description
-                </label>
-                <textarea
-                  value={newSkillData.description}
-                  onChange={(e) =>
-                    onNewSkillDataChange({ description: e.target.value })
-                  }
-                  className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-                  rows={3}
-                  placeholder="Optional: A brief description"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Proficiency Level */}
-          <div>
-            <label className="block text-sm mb-2 font-semibold text-black">
-              Proficiency Level *
-            </label>
-            <select
-              value={formData.proficiency_level}
-              onChange={(e) =>
-                onFormDataChange({ proficiency_level: e.target.value })
-              }
-              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-            >
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
-              <option value="expert">Expert</option>
-            </select>
-          </div>
-
-          {/* Associated Position */}
-          <div>
-            <label className="block text-sm mb-2 font-semibold text-black">
-              Associated Position (Optional)
-            </label>
-            <select
-              value={formData.position_id}
-              onChange={(e) =>
-                onFormDataChange({ position_id: e.target.value })
-              }
-              className="w-full p-3 border border-[#DCD3C9] rounded-lg focus:ring-2 focus:ring-black focus:border-black text-black"
-            >
-              <option value="">No specific position</option>
-              {positions.map((pos) => (
-                <option key={pos._id} value={pos._id}>
-                  {pos.title} - {pos.unit_id?.name || "No Unit"}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-6 border-t border-[#DCD3C9]">
-            <button
-              onClick={onClose}
-              className="flex-1 bg-white border border-[#DCD3C9] text-black py-3 rounded-lg hover:bg-[#F5F1EC] transition-colors font-medium"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onSubmit}
-              disabled={loading}
-              className="flex-1 bg-black text-white py-3 rounded-lg hover:bg-[#856A5D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              {loading ? "Adding..." : "Add Skill"}
-            </button>
-          </div>
+          <FilterDropdown
+            label="Associated Position (Optional)"
+            value={formData.position_id}
+            onChange={updateFormData}
+            options={userPositions.map(
+              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`
+            )}
+          />
+        </div>
+        <div className="pt-4">
+          <button
+            onClick={onSubmit}
+            disabled={loading}
+            className={`w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            <Trophy className="w-5 h-5" />
+            <span>{loading ? "Submitting..." : "Submit Skill"}</span>
+          </button>
         </div>
       </div>
     </div>

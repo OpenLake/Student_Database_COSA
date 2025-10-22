@@ -1,5 +1,6 @@
 import React from "react";
-import { Calendar, CheckCircle2, CircleOff } from "lucide-react";
+import { Calendar, CheckCircle2, CircleOff, Star } from "lucide-react";
+import DisplayCard from "../common/DisplayCard";
 
 const getProficiencyColor = (level) => {
   const colors = {
@@ -13,45 +14,13 @@ const getProficiencyColor = (level) => {
 
 const SkillCard = ({ userSkill }) => {
   return (
-    <div className="bg-white border border-[#DCD3C9] p-4 rounded-lg shadow-sm hover:shadow-md hover:border-black transition-all">
-      <div className="grid grid-cols-2 gap-4 items-center">
-        {/* Left Side */}
-        <div className="flex flex-col gap-1">
-          <h5 className="font-bold text-base text-black truncate">
-            {userSkill.skill_id?.name || "Unnamed Skill"}
-          </h5>
-          <div className="flex items-center gap-2 text-sm text-black">
-            <Calendar className="w-4 h-4" />
-            <span>
-              {new Date(userSkill.created_at).toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-
-        {/* Right Side */}
-        <div className="flex flex-col items-end gap-2">
-          <span
-            className={`px-3 py-1 text-xs font-semibold rounded-full ${getProficiencyColor(
-              userSkill.proficiency_level
-            )}`}
-          >
-            {userSkill.proficiency_level?.charAt(0).toUpperCase() +
-              userSkill.proficiency_level?.slice(1)}
-          </span>
-          {userSkill.is_endorsed ? (
-            <div className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Endorsed</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5 text-sm text-black font-medium">
-              <CircleOff className="w-4 h-4" />
-              <span>Not Endorsed</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    <DisplayCard
+      icon={Star}
+      backgroundColor={getProficiencyColor(userSkill.proficiency_level)}
+      title = {userSkill.skill_id?.name || "Unnamed Skill"}
+      subtitle = {userSkill.proficiency_level?.charAt(0).toUpperCase() + userSkill.proficiency_level?.slice(1)}
+      description = {userSkill.is_endorsed ? "Endorsed" : "Not Endorsed"}
+    />
   );
 };
 

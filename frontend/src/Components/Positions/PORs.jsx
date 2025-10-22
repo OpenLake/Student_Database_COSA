@@ -6,7 +6,6 @@ import ViewPositionHolder from "./ViewPositionHolder";
 
 const PORs = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
-  const username = isUserLoggedIn?.username || "";
   const userRole = isUserLoggedIn?.role || "STUDENT";
   return userRole === "STUDENT" ? <ManagePositions /> : <TenureRecords />;
 };

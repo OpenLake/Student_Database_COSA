@@ -208,6 +208,7 @@ export const usePositionHolders = () => {
   return {
     positionHolders,
     filteredHolders,
+    setFilteredHolders,
     searchTerm,
     setSearchTerm,
     selectedStatus,
