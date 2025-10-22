@@ -19,7 +19,6 @@ const SkillsPage = () => {
         rowStart: 0,
         rowEnd: 16,
       },
-      // props: { add: add, setAdd: setAdd },
     },
     {
       id: "main",

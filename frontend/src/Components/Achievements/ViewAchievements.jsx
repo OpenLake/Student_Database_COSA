@@ -24,7 +24,7 @@ const ViewAchievements = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="bg-gray-50 py-8 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">Loading your achievements...</div>
@@ -36,7 +36,7 @@ const ViewAchievements = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className=" bg-gray-50 py-8 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="text-red-800">{error}</div>
@@ -48,7 +48,6 @@ const ViewAchievements = () => {
 
   return (
     <div className="bg-white px-6 py-2 w-full mx-auto rounded-lg">
-      {/* Header */}
       <div className="bg-white rounded-lg">
         <div className="flex-1 relative mb-2">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
