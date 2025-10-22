@@ -90,8 +90,8 @@ userSchema.index(
   {
     unique: true,
     partialFilterExpression: { user_id: { $exists: true, $type: "string" } },
-    name: "user_id_partial_unique"
-  }
+    name: "user_id_partial_unique",
+  },
 );
 
 userSchema.plugin(passportLocalMongoose);
@@ -352,6 +352,10 @@ const eventSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  participants_count: {
+    type: Number,
+    default: 0,
+  },
   winners: [
     {
       user: {
@@ -603,7 +607,8 @@ const PositionHolder = mongoose.model("Position_Holder", positionHolderSchema);
 const Position = mongoose.model("Position", positionSchema);
 const OrganizationalUnit = mongoose.model(
   "Organizational_Unit",
-  organizationalUnitSchema,);
+  organizationalUnitSchema,
+);
 
 module.exports = {
   User,

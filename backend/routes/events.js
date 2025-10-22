@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { Event, User, OrganizationalUnit } = require("../models/schema");
@@ -7,7 +8,6 @@ const isEventContact = require("../middlewares/isEventContact");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS, ROLES } = require("../utils/roles");
 const eventsController = require("../controllers/eventControllers");
-
 
 router.get("/latest", eventsController.getLatestEvents);
 
@@ -189,6 +189,135 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching event." });
+  }
+});
+
+// POST /:eventId/register
+router.post("/:eventId/register", isAuthenticated, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const userId = req.user && req.user._id;
+    if (!userId) {
+      return res.status(401).json({ message: "Authentication required." });
+    }
+
+    // ✅ Validate eventId format
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      return res.status(400).json({ message: "Invalid event ID." });
+    }
+
+    const now = new Date();
+
+    // ✅ Build atomic filter
+    const filter = {
+      _id: mongoose.Types.ObjectId(eventId),
+      participants: { $ne: mongoose.Types.ObjectId(userId) },
+      $and: [
+        {
+          $or: [
+            { "registration.start": { $exists: false } },
+            { "registration.start": { $lte: now } },
+          ],
+        },
+        {
+          $or: [
+            { "registration.end": { $exists: false } },
+            { "registration.end": { $gte: now } },
+          ],
+        },
+        {
+          $or: [
+            { "registration.max_participants": { $exists: false } },
+            {
+              $expr: {
+                $lt: ["$participants_count", "$registration.max_participants"],
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    // ✅ Safe atomic update
+    const update = {
+      $addToSet: { participants: mongoose.Types.ObjectId(userId) },
+      $inc: { participants_count: 1 },
+    };
+
+    // ✅ Perform atomic update
+    const updatedEvent = await Event.findOneAndUpdate(filter, update, {
+      new: true,
+    })
+      .select("title participants_count participants")
+      .lean();
+
+    if (updatedEvent) {
+      return res.status(200).json({
+        message: "Successfully registered!",
+        eventId,
+        title: updatedEvent.title,
+        participants_count: updatedEvent.participants_count || 0,
+      });
+    }
+
+    // --- No update; diagnose reason ---
+    const fresh = await Event.findById(eventId)
+      .select("registration participants participants_count")
+      .lean();
+
+    if (!fresh) {
+      return res.status(404).json({ message: "Event not found." });
+    }
+
+    if (fresh.registration && fresh.registration.required === false) {
+      return res
+        .status(400)
+        .json({ message: "Registration is not required for this event." });
+    }
+
+    if (
+      Array.isArray(fresh.participants) &&
+      fresh.participants.some(function (id) {
+        return String(id) === String(userId);
+      })
+    ) {
+      return res
+        .status(409)
+        .json({ message: "You are already registered for this event." });
+    }
+
+    if (
+      fresh.registration &&
+      fresh.registration.start &&
+      fresh.registration.end
+    ) {
+      const s = new Date(fresh.registration.start);
+      const e = new Date(fresh.registration.end);
+      if (!(s <= now && now <= e)) {
+        return res.status(400).json({ message: "Registration is closed." });
+      }
+    }
+
+    if (
+      fresh.registration &&
+      typeof fresh.registration.max_participants === "number" &&
+      Number.isFinite(fresh.registration.max_participants) &&
+      (fresh.participants_count || 0) >= fresh.registration.max_participants
+    ) {
+      return res.status(409).json({ message: "Registration is full." });
+    }
+
+    return res
+      .status(400)
+      .json({ message: "Unable to register. Please try again." });
+  } catch (err) {
+    console.error("Error during registration:", err);
+    if (err.name === "CastError") {
+      return res.status(400).json({ message: "Invalid event ID format." });
+    }
+    return res
+      .status(500)
+      .json({ message: "Server error while registering for event." });
   }
 });
 
