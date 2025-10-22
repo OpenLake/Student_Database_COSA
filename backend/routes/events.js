@@ -201,17 +201,17 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
       return res.status(401).json({ message: "Authentication required." });
     }
 
-    // ✅ Validate eventId format
+    // Validate eventId format
     if (!mongoose.Types.ObjectId.isValid(eventId)) {
       return res.status(400).json({ message: "Invalid event ID." });
     }
 
     const now = new Date();
 
-    // ✅ Build atomic filter
+    // Atomic filter
     const filter = {
-      _id: mongoose.Types.ObjectId(eventId),
-      participants: { $ne: mongoose.Types.ObjectId(userId) },
+      _id: new mongoose.Types.ObjectId(eventId),
+      participants: { $ne: new mongoose.Types.ObjectId(userId) },
       $and: [
         {
           $or: [
@@ -228,23 +228,18 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
         {
           $or: [
             { "registration.max_participants": { $exists: false } },
-            {
-              $expr: {
-                $lt: ["$participants_count", "$registration.max_participants"],
-              },
-            },
+            { $expr: { $lt: ["$participants_count", "$registration.max_participants"] } },
           ],
         },
       ],
     };
 
-    // ✅ Safe atomic update
+    // Update
     const update = {
-      $addToSet: { participants: mongoose.Types.ObjectId(userId) },
+      $addToSet: { participants: new mongoose.Types.ObjectId(userId) },
       $inc: { participants_count: 1 },
     };
 
-    // ✅ Perform atomic update
     const updatedEvent = await Event.findOneAndUpdate(filter, update, {
       new: true,
     })
@@ -260,37 +255,23 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
       });
     }
 
-    // --- No update; diagnose reason ---
+    // If atomic update failed, fetch fresh
     const fresh = await Event.findById(eventId)
       .select("registration participants participants_count")
       .lean();
 
-    if (!fresh) {
-      return res.status(404).json({ message: "Event not found." });
-    }
+    if (!fresh) return res.status(404).json({ message: "Event not found." });
 
     if (fresh.registration && fresh.registration.required === false) {
-      return res
-        .status(400)
-        .json({ message: "Registration is not required for this event." });
+      return res.status(400).json({ message: "Registration not required." });
     }
 
-    if (
-      Array.isArray(fresh.participants) &&
-      fresh.participants.some(function (id) {
-        return String(id) === String(userId);
-      })
-    ) {
-      return res
-        .status(409)
-        .json({ message: "You are already registered for this event." });
+    if (Array.isArray(fresh.participants) &&
+        fresh.participants.some(id => String(id) === String(userId))) {
+      return res.status(409).json({ message: "Already registered." });
     }
 
-    if (
-      fresh.registration &&
-      fresh.registration.start &&
-      fresh.registration.end
-    ) {
+    if (fresh.registration?.start && fresh.registration?.end) {
       const s = new Date(fresh.registration.start);
       const e = new Date(fresh.registration.end);
       if (!(s <= now && now <= e)) {
@@ -298,28 +279,22 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
       }
     }
 
-    if (
-      fresh.registration &&
-      typeof fresh.registration.max_participants === "number" &&
-      Number.isFinite(fresh.registration.max_participants) &&
-      (fresh.participants_count || 0) >= fresh.registration.max_participants
-    ) {
+    if (typeof fresh.registration?.max_participants === "number" &&
+        (fresh.participants_count || 0) >= fresh.registration.max_participants) {
       return res.status(409).json({ message: "Registration is full." });
     }
 
-    return res
-      .status(400)
-      .json({ message: "Unable to register. Please try again." });
+    return res.status(400).json({ message: "Unable to register. Try again." });
+
   } catch (err) {
     console.error("Error during registration:", err);
     if (err.name === "CastError") {
       return res.status(400).json({ message: "Invalid event ID format." });
     }
-    return res
-      .status(500)
-      .json({ message: "Server error while registering for event." });
+    return res.status(500).json({ message: "Server error while registering." });
   }
 });
+
 
 router.get("/by-role/:userRole", isAuthenticated, async (req, res) => {
   const userRole = req.params.userRole;
