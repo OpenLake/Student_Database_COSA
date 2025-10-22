@@ -50,9 +50,7 @@ export const useSkills = () => {
   // Memoized lists for filter dropdowns
   const { types, proficiencies, endorsementStatuses } = useMemo(() => {
     const uniqueTypes = [
-      ...new Set(
-        userSkills.map((us) => us.skill_id?.type).filter(Boolean)
-      ),
+      ...new Set(userSkills.map((us) => us.skill_id?.type).filter(Boolean)),
     ];
     const profs = ["Beginner", "Intermediate", "Advanced", "Expert"];
     const endorsements = ["Endorsed", "Not Endorsed"];
@@ -164,6 +162,26 @@ export const useSkillForm = (onSuccess) => {
     setShowNewSkillForm(false);
   };
 
+  const submitNewSkill = async () => {
+    try {
+      const newSkillResponse = await api.post(
+        `/api/skills/create-skill`,
+        newSkillData
+      );
+      resetForm();
+      if (onSuccess) onSuccess();
+      return { success: true, message: "Skill added successfully!" };
+    } catch (error) {
+      console.error("Error adding skill:", error);
+      return {
+        success: false,
+        message: "Error adding skill. It might already exist in your profile.",
+      };
+    } finally {
+      setLoading(false);
+    }
+    // skillIdToUse = newSkillResponse.data._id;
+  };
   const submitSkill = async () => {
     if (!formData.skill_id) {
       return { success: false, message: "Please select a skill." };
@@ -224,5 +242,6 @@ export const useSkillForm = (onSuccess) => {
     updateNewSkillData,
     resetForm,
     submitSkill,
+    submitNewSkill,
   };
 };
