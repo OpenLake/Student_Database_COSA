@@ -228,7 +228,11 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
         {
           $or: [
             { "registration.max_participants": { $exists: false } },
-            { $expr: { $lt: ["$participants_count", "$registration.max_participants"] } },
+            {
+              $expr: {
+                $lt: ["$participants_count", "$registration.max_participants"],
+              },
+            },
           ],
         },
       ],
@@ -266,12 +270,18 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
       return res.status(400).json({ message: "Registration not required." });
     }
 
-    if (Array.isArray(fresh.participants) &&
-        fresh.participants.some(id => String(id) === String(userId))) {
+    if (
+      Array.isArray(fresh.participants) &&
+      fresh.participants.some((id) => String(id) === String(userId))
+    ) {
       return res.status(409).json({ message: "Already registered." });
     }
 
-    if (fresh.registration?.start && fresh.registration?.end) {
+    if (
+      fresh.registration &&
+      fresh.registration.start &&
+      fresh.registration.end
+    ) {
       const s = new Date(fresh.registration.start);
       const e = new Date(fresh.registration.end);
       if (!(s <= now && now <= e)) {
@@ -279,13 +289,15 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
       }
     }
 
-    if (typeof fresh.registration?.max_participants === "number" &&
-        (fresh.participants_count || 0) >= fresh.registration.max_participants) {
+    if (
+      fresh.registration &&
+      typeof fresh.registration.max_participants === "number" &&
+      (fresh.participants_count || 0) >= fresh.registration.max_participants
+    ) {
       return res.status(409).json({ message: "Registration is full." });
     }
 
     return res.status(400).json({ message: "Unable to register. Try again." });
-
   } catch (err) {
     console.error("Error during registration:", err);
     if (err.name === "CastError") {
@@ -294,7 +306,6 @@ router.post("/:eventId/register", isAuthenticated, async (req, res) => {
     return res.status(500).json({ message: "Server error while registering." });
   }
 });
-
 
 router.get("/by-role/:userRole", isAuthenticated, async (req, res) => {
   const userRole = req.params.userRole;
