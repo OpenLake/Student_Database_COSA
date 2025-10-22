@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { X, ChevronDown, Trophy } from "lucide-react";
 import { useSkillForm, useSkills } from "../../hooks/useSkills";
 import FilterDropdown from "./FilterDropdown";
+import { usePositionHolders } from "../../hooks/usePositionHolders";
+import { useProfile } from "../../hooks/useProfile";
+import { AdminContext } from "../../context/AdminContext";
 
 const SkillFormModal = ({ showForm, setShowForm }) => {
   // if (!showForm) return null;
+  const { isUserLoggedIn } = useContext(AdminContext);
 
   const { skills, positions, refreshUserSkills } = useSkills();
-
+  const { positionHolders } = usePositionHolders();
   const {
     formData,
     newSkillData,
@@ -20,6 +24,24 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
     submitSkill,
   } = useSkillForm(refreshUserSkills);
 
+  const userPositions = useMemo(() => {
+    if (!isUserLoggedIn?._id || !positionHolders.length || !positions.length) {
+      return [];
+    }
+
+    // Get position IDs held by current user
+    const userPositionIds = positionHolders
+      .filter(
+        (holder) =>
+          holder.user_id?._id === isUserLoggedIn._id ||
+          holder.user_id === isUserLoggedIn._id
+      )
+      .map((holder) => holder.position_id?._id || holder.position_id);
+
+    // Filter positions to only include user's positions
+    return positions.filter((pos) => userPositionIds.includes(pos._id));
+  }, [isUserLoggedIn, positionHolders, positions]);
+
   const onSubmit = async () => {
     const result = await submitSkill();
     alert(result.message);
@@ -28,10 +50,6 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
     }
   };
 
-  const onClose = () => {
-    resetForm();
-    setShowForm(false);
-  };
   return (
     <div className="bg-white px-6 py-2 w-full mx-auto rounded-lg">
       <div className="bg-white rounded-lg">
@@ -55,8 +73,8 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
             label="Associated Position (Optional)"
             value={formData.position_id}
             onChange={updateFormData}
-            options={positions.map(
-              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`,
+            options={userPositions.map(
+              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`
             )}
           />
         </div>
