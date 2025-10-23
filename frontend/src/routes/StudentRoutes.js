@@ -10,8 +10,6 @@ import SkillManagement from "../Components/Student/UserSkillManagement";
 import Logout from "../Components/Logout";
 import Home from "../Components/Student/Home";
 import StudentProfile from "../Components/Student/ProfilePage";
-import AnnouncementPage from "../Components/Announcements/AnnouncementPage";
-import CreateAnnouncement from "../Components/Announcements/Create-Announcement/CreateAnnouncement";
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route
@@ -107,30 +105,6 @@ export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
         isOnboardingComplete={isOnboardingComplete}
       >
         <StudentProfile />
-      </ProtectedRoute>
-    }
-  />,
-  <Route
-    key="announcement"
-    path="/announcements"
-    element={
-      <ProtectedRoute
-        isAuthenticated={isUserLoggedIn}
-        isOnboardingComplete={isOnboardingComplete}
-      >
-        <AnnouncementPage />
-      </ProtectedRoute>
-    }
-  />,
-  <Route
-    key="create-announcement"
-    path="/announcements/create-announcement"
-    element={
-      <ProtectedRoute
-        isAuthenticated={isUserLoggedIn}
-        isOnboardingComplete={isOnboardingComplete}
-      >
-        <CreateAnnouncement />
       </ProtectedRoute>
     }
   />,
