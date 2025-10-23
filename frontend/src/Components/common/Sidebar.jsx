@@ -58,7 +58,7 @@ const Sidebar = () => {
                   isCollapsed ? "px-2 justify-center" : "px-4"
                 } ${
                   selected === item.key
-                    ? "bg-white text-black font-medium rounded-xl"
+                    ? "bg-white text-black font-medium !rounded-3xl"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
                 }`}
                 title={isCollapsed ? item.label : ""}
