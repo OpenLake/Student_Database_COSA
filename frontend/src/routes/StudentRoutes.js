@@ -8,8 +8,8 @@ import ViewAchievements from "../Components/Achievements/ViewAchievements";
 import ManagePositions from "../Components/ManagePosition";
 import SkillManagement from "../Components/Skills/SkillManagement";
 import Logout from "../Components/Logout";
-import Home from "../Components/OldComponents/Home";
-import StudentProfile from "../Components/Profile/ProfilePage";
+import Home from "../Components/Student/Home";
+import StudentProfile from "../Components/Student/ProfilePage";
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route

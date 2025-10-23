@@ -80,12 +80,6 @@ const StudentDashboard = () => {
   }, [isUserLoggedIn?._id]);
 
   const navigationItems = [
-    {
-      id: "announcements",
-      label: "Announcements",
-      icon: Bell,
-      to: "/announcements",
-    },
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
     { id: "cosa-view", label: "COSA View", icon: Eye, to: "/cosa" },
     {
