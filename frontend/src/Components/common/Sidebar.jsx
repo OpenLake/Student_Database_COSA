@@ -68,7 +68,7 @@ const Sidebar = () => {
                   <span className="text-[15px]">{item.label}</span>
                 )}
               </button>
-            ),
+            )
         )}
       </nav>
 
