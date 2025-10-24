@@ -18,6 +18,7 @@ const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
+
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -37,9 +38,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-    secure: process.env.NODE_ENV === "production",          // HTTPS only in prod
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  // cross-origin in prod
-  },
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+    },
   }),
 );
 
@@ -63,6 +64,7 @@ app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
