@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const {
   Announcement,
   Event,
@@ -8,37 +9,38 @@ const {
 } = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
+const findTargetId = async (type, identifier) => {
+  let target = null;
+  
+  if (type === "Event") {
+    target = await Event.findOne({
+      $or: [{ _id: identifier }, { event_id: identifier }],
+    });
+  } else if (type === "OrganizationalUnit") {
+    target = await OrganizationalUnit.findOne({
+      $or: [{ _id: identifier }, { unit_id: identifier }], // FIXED
+    });
+  } else if (type === "Position") {
+    target = await Position.findOne({
+      $or: [{ _id: identifier }, { position_id: identifier }], // FIXED
+    });
+  }
+  
+  return target ? target._id : null;
+};
+
 router.post("/", isAuthenticated, async (req, res) => {
   try {
-    const { title, content, type, isPinned, targetEventId } = req.body;
+    const { title, content, type="General", isPinned, targetIdentifier } = req.body;
     let targetId = null;
 
-    if (type === "Event") {
-      const event = await Event.findOne({
-        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
-      });
-      if (!event) {
-        return res.status(404).send("No event found");
+    if(type!="General" && targetIdentifier){
+      targetId = await findTargetId(type,targetIdentifier);
+      if(!targetId) {
+        return res.status(404).json({ error: `No ${type} found with that identifier` });
       }
-      targetId = event.id;
-    } else if (type === "OrganizationalUnit") {
-      const orgUnit = await OrganizationalUnit.findOne({
-        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
-      });
-      if (!orgUnit) {
-        return res.status(404).send("No Organizational Unit found");
-      }
-      targetId = orgUnit.id;
-    } else if (type === "Position") {
-      const pos = await Position.findOne({
-        $or: [{ _id: targetEventId }, { event_id: targetEventId }],
-      });
-      if (!pos) {
-        return res.status(404).send("No Position found");
-      }
-      targetId = pos.id;
     }
-
+    
     const newAnnouncement = new Announcement({
       author: req.user._id,
       content,
@@ -73,7 +75,7 @@ router.get("/", async (req, res) => {
 
     if (type) filter.type = type;
     if (author) filter.author = author;
-    if (typeof isPinned !== "undefined") {
+    if (isPinned !== "undefined") {
       // accept true/false or 1/0
       const val = `${isPinned}`.toLowerCase();
       filter.is_pinned = val === "true" || val === "1";
@@ -95,7 +97,8 @@ router.get("/", async (req, res) => {
       .sort(sort)
       .skip((pageNum - 1) * limNum)
       .limit(limNum)
-      .populate("author", "username personal_info.email");
+      .populate("author", "username personal_info.email")
+      .populate("target_id");
 
     res.json({
       total,
@@ -114,15 +117,15 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!id || typeof id !== "string" || id.length !== 24) {
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid announcement id" });
     }
-
+    
     const announcement = await Announcement.findById(id).populate(
       "author",
       "username personal_info.email",
-    );
+    ) .populate("target_id");
 
     if (!announcement) {
       return res.status(404).json({ error: "Announcement not found" });
@@ -145,7 +148,7 @@ router.put(
     try {
       const { id } = req.params;
 
-      if (!id || typeof id !== "string" || id.length !== 24) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ error: "Invalid announcement id" });
       }
 
@@ -154,12 +157,11 @@ router.put(
         return res.status(404).json({ error: "Announcement not found" });
       }
 
-      // Only the author or privileged roles can update
+      // Only the author
       const isAuthor =
         announcement.author &&
         announcement.author.toString() === req.user._id.toString();
-      const allowedRoles = ["admin", "gen_sec", "president", "gensec"];
-      if (!isAuthor && !allowedRoles.includes(req.user.role)) {
+      if (!isAuthor) {
         return res
           .status(403)
           .json({ error: "Forbidden: cannot edit this announcement" });
@@ -168,17 +170,35 @@ router.put(
       const { title, content, type, target_id, isPinned } = req.body;
       if (title !== undefined) announcement.title = title;
       if (content !== undefined) announcement.content = content;
-      if (type !== undefined) announcement.type = type;
-      if (target_id !== undefined) announcement.target_id = target_id;
-      if (typeof isPinned !== "undefined") announcement.is_pinned = !!isPinned;
+      if (isPinned !== "undefined") announcement.is_pinned = !!isPinned;
 
+      if (type || targetIdentifier) {
+        const newType = type || announcement.type;
+        const newIdentifier = targetIdentifier || (announcement.target_id ? announcement.target_id.toString() : null);
+
+        if (newType === "General") {
+          announcement.type = "General";
+          announcement.target_id = null;
+        } else {
+          if (!newIdentifier) {
+             return res.status(400).json({ error: "targetIdentifier is required when setting a non-General type" });
+          }
+          const newTargetId = await findTargetId(newType, newIdentifier);
+          if (!newTargetId) {
+            return res.status(404).json({ error: `Target ${newType} not found with identifier ${newIdentifier}` });
+          }
+          announcement.target_id = newTargetId;
+          announcement.type = newType;
+        }
+      }
+      
       announcement.updatedAt = Date.now();
       await announcement.save();
 
-      const populated = await Announcement.findById(announcement._id).populate(
-        "author",
-        "username personal_info.email",
-      );
+      const populated = await announcement.populate([
+        { path: "author", select: "username personal_info.email" },
+        { path: "target_id" }
+      ]);
 
       res.json(populated);
     } catch (error) {
@@ -193,21 +213,20 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id || typeof id !== "string" || id.length !== 24) {
-      return res.status(400).json({ error: "Invalid announcement id" });
-    }
+   if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid announcement id" });
+      }
 
     const announcement = await Announcement.findById(id);
     if (!announcement) {
       return res.status(404).json({ error: "Announcement not found" });
     }
 
-    // Only the author or privileged roles can delete
+    // Only the author
     const isAuthor =
       announcement.author &&
       announcement.author.toString() === req.user._id.toString();
-    const allowedRoles = ["admin", "gen_sec", "president", "gensec"];
-    if (!isAuthor && !allowedRoles.includes(req.user.role)) {
+    if (!isAuthor) {
       return res
         .status(403)
         .json({ error: "Forbidden: cannot delete this announcement" });
