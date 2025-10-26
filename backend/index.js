@@ -17,6 +17,7 @@ const achievementsRoutes = require("./routes/achievements.js");
 const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const dashboardRoutes = require("./routes/dashboard.js");
+const analyticsRoutes = require("./routes/analytics.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -61,6 +62,7 @@ app.use("/api/achievements", achievementsRoutes);
 app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
