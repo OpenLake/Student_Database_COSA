@@ -16,7 +16,9 @@ const skillsRoutes = require("./routes/skillsRoutes.js");
 const achievementsRoutes = require("./routes/achievements.js");
 const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
+const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
+
 const analyticsRoutes = require("./routes/analytics.js");
 const app = express();
 
@@ -37,9 +39,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-    secure: process.env.NODE_ENV === "production",          // HTTPS only in prod
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  // cross-origin in prod
-  },
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+    },
   }),
 );
 
@@ -61,7 +63,9 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/achievements", achievementsRoutes);
 app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
+app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 // Start the server
