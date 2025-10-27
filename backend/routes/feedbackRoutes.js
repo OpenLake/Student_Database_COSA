@@ -52,7 +52,7 @@ router.post("/add",isAuthenticated, async (req, res) => {
 
 router.get("/get-targetid",isAuthenticated, async (req, res) => {
   try {
-    const users = await User.find({}, "_id user_id personal_info.name");
+    const users = await User.find({role: "STUDENT"}, "_id user_id personal_info.name");
     const events = await Event.find({}, "_id title");
     const organizational_units = await OrganizationalUnit.find({}, "_id name");
     const positions = await Position.find({})
