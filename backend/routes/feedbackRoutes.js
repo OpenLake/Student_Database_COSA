@@ -28,6 +28,19 @@ router.post("/add",isAuthenticated, async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    const targetModels={
+      User,
+      Event,
+      "Club/Organization": OrganizationalUnit,
+      POR: Position,
+    };
+
+    const TargetModel=targetModels[target_type];
+
+    if(!TargetModel){
+      return res.status(400).json({message:"Invalid target type"});
+    }
+    
     const feedback = new Feedback({
       feedback_id: uuidv4(),
       type,
@@ -52,7 +65,7 @@ router.post("/add",isAuthenticated, async (req, res) => {
 
 router.get("/get-targetid",isAuthenticated, async (req, res) => {
   try {
-    const users = await User.find({}, "_id user_id personal_info.name");
+    const users = await User.find({role: "STUDENT"}, "_id user_id personal_info.name");
     const events = await Event.find({}, "_id title");
     const organizational_units = await OrganizationalUnit.find({}, "_id name");
     const positions = await Position.find({})

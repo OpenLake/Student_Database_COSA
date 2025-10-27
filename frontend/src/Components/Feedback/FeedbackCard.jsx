@@ -54,7 +54,17 @@ export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
             </span>
             <span className="text-gray-600">
               <span className="font-medium">Target:</span>{" "}
-              <span className="text-green-600">{feedback.target_id}</span>
+              <span className="text-green-600">
+                {feedback.target_type === "User" && feedback.target_data
+                   ? `${feedback.target_data.personal_info?.name} (${feedback.target_data.username})`  || feedback.target_data.username
+                   : feedback.target_type === "Event" && feedback.target_data
+                   ? `${feedback.target_data.title} (${feedback.target_data.organizing_unit})`
+                   : feedback.target_type === "Club/Organization" && feedback.target_data
+                   ? `${feedback.target_data.name} (${feedback.target_data.parent})`
+                   : feedback.target_type === "POR" && feedback.target_data
+                   ? `${feedback.target_data.title} (${feedback.target_data.unit})`
+                   : "N/A"}
+              </span>
             </span>
           </div>
         </div>
