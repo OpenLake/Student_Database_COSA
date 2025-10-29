@@ -6,13 +6,9 @@ import SkillCard from "./SkillCard";
 import SkillFormModal from "./SkillFormModal";
 import { EmptyStateNoSkills, EmptyStateNoResults } from "./EmptyState";
 
-const SkillManagement = ({showForm, setShowForm}) => {
-  // const [showForm, setShowForm] = useState(false);
-
+const SkillManagement = ({ showForm, setShowForm }) => {
   const {
-    skills,
     userSkills,
-    positions,
     filteredSkills,
     selectedType,
     setSelectedType,
@@ -23,38 +19,11 @@ const SkillManagement = ({showForm, setShowForm}) => {
     types,
     proficiencies,
     endorsementStatuses,
-    refreshUserSkills,
   } = useSkills();
 
-  const {
-    formData,
-    newSkillData,
-    loading,
-    showNewSkillForm,
-    handleSkillChange,
-    updateFormData,
-    updateNewSkillData,
-    resetForm,
-    submitSkill,
-  } = useSkillForm(refreshUserSkills);
-
-  const handleSubmit = async () => {
-    const result = await submitSkill();
-    alert(result.message);
-    if (result.success) {
-      setShowForm(false);
-    }
-  };
-
-  const handleClose = () => {
-    resetForm();
-    setShowForm(false);
-  };
-
   return (
-    <div className="">
-      <div className="max-w-6xl mx-auto">
-
+    <div className="bg-white px-6 py-2 w-full mx-auto rounded-lg">
+      <div className="bg-white rounded-lg">
         {/* Filters */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 bg-white rounded-lg">
           <FilterDropdown
@@ -77,31 +46,18 @@ const SkillManagement = ({showForm, setShowForm}) => {
           />
         </div>
 
-        {/* Form Modal */}
-        <SkillFormModal
-          showForm={showForm}
-          formData={formData}
-          newSkillData={newSkillData}
-          showNewSkillForm={showNewSkillForm}
-          skills={skills}
-          positions={positions}
-          loading={loading}
-          onSkillChange={handleSkillChange}
-          onFormDataChange={updateFormData}
-          onNewSkillDataChange={updateNewSkillData}
-          onSubmit={handleSubmit}
-          onClose={handleClose}
-        />
-
         {/* Skills Grid */}
         {userSkills.length === 0 ? (
           <EmptyStateNoSkills />
         ) : filteredSkills.length === 0 ? (
           <EmptyStateNoResults />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {filteredSkills.map((userSkill) => (
-              <SkillCard key={userSkill._id} userSkill={userSkill} />
+              <>
+                <SkillCard key={userSkill._id} userSkill={userSkill} />
+                {/* <SkillCard key={userSkill._id} userSkill={userSkill} /> */}
+              </>
             ))}
           </div>
         )}

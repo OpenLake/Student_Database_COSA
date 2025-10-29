@@ -1,10 +1,5 @@
-// Updated FeedbackForm with toast notifications
-import React, { useEffect, useState, useContext } from "react";
 import Select from "react-select";
-import axios from "axios";
-import { AdminContext } from "../../context/AdminContext";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../../utils/api";
 import { StarRating } from "./StarRating";
 import { useFeedbackForm } from "../../hooks/useFeedback";
 
@@ -27,6 +22,10 @@ const FeedbackForm = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     updateFormData({ [name]: type === "checkbox" ? checked : value });
+
+    if (name === "target_type") {
+      updateFormData({ target_id: "" }); // Reset target_id when target_type changes
+    }
   };
 
   const handleTargetChange = (selectedOption) => {
@@ -117,6 +116,11 @@ const FeedbackForm = () => {
               </label>
               <Select
                 options={filteredTargets}
+                value={
+                  filteredTargets.find(
+                    (option) => option.value === formData.target_id,
+                  ) || null
+                }
                 onChange={handleTargetChange}
                 isClearable
                 placeholder="Select target"

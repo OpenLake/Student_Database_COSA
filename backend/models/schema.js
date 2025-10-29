@@ -597,6 +597,44 @@ const feedbackSchema = new mongoose.Schema({
   },
 });
 
+//announcement collection
+const announcementSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["General", "Event", "OrganizationalUnit", "Position"],
+    required: true,
+  },
+  target_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: "type",
+  },
+  is_pinned: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = mongoose.model("User", userSchema);
 const Feedback = mongoose.model("Feedback", feedbackSchema);
 const Achievement = mongoose.model("Achievement", achievementSchema);
@@ -609,6 +647,7 @@ const OrganizationalUnit = mongoose.model(
   "Organizational_Unit",
   organizationalUnitSchema,
 );
+const Announcement = mongoose.model("Announcement", announcementSchema);
 
 module.exports = {
   User,
@@ -620,4 +659,5 @@ module.exports = {
   PositionHolder,
   Position,
   OrganizationalUnit,
+  Announcement,
 };

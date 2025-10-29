@@ -11,7 +11,10 @@ import { useAchievementForm } from "../../hooks/useAchievements";
 
 const FormField = ({ label, icon: Icon, children, required = false }) => (
   <div>
-    <label className="flex items-center gap-2 text-sm font-medium text-black mb-2">
+    <label
+      className="flex items-center gap-2 text-sm font-medium text-black mb-2"
+      style={{ display: "inline-flex", alignItems: "center" }}
+    >
       {Icon && <Icon className="w-4 h-4 shrink-0" />}
       <span>
         {label}
@@ -21,7 +24,6 @@ const FormField = ({ label, icon: Icon, children, required = false }) => (
     {children}
   </div>
 );
-
 
 const Input = ({
   name,

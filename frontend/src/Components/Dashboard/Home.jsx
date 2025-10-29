@@ -1,35 +1,88 @@
 import React, { useEffect, useState } from "react";
-import { PieChart, AreaChart, Users } from "lucide-react";
 import api from "../../utils/api";
 import LeftColumn from "./QuickStats";
 import UpdatesCard from "../common/LatestUpdatesCard";
 import Layout from "../common/Layout";
+import PresidentAnalytics from "../Analytics/presidentAnalytics";
+import StudentAnalytics from "../Analytics/studentAnalytics";
+import GensecAnalytics from "../Analytics/gensecAnalytics";
+import ClubCoordinatorAnalytics from "../Analytics/coordinatorAnalytics";
+import { AdminContext } from "../../context/AdminContext";
+import { useAnalyticsData } from "../../hooks/useAnalyticsData";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 export const Home = () => {
-  return (
-    // <div className="p-6 bg-gray-50 min-h-screen">
-    // <header className="mb-8">
-    //   <h1 className="text-3xl font-bold text-slate-800">Dashboard Home</h1>
-    //   <p className="text-slate-500 mt-1">
-    //     Welcome! A high-level overview of all activity will be displayed here soon.
-    //   </p>
-    // </header>
+  const { isUserLoggedIn } = React.useContext(AdminContext);
+  const role = isUserLoggedIn?.role;
 
-    <div className="text-center rounded-xl p-12 bg-white">
-      <div className="flex justify-center items-center gap-4 text-gray-400 mb-4">
-        <PieChart size={48} strokeWidth={1.5} />
-        <AreaChart size={48} strokeWidth={1.5} />
-        <Users size={48} strokeWidth={1.5} />
+  const { data, loading, error } = useAnalyticsData();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-600 text-lg">
+        Loading analytics data...
       </div>
-      <h2 className="text-xl font-semibold text-slate-700">
-        Analytics Coming Soon
-      </h2>
-      <p className="text-slate-500 mt-2">
-        Detailed analytics of the dashboard will be shown here.
-      </p>
-    </div>
-    // </div>
-  );
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full text-red-600 text-lg">
+        {error}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-600 text-lg">
+        No analytics data available for your role.
+      </div>
+    );
+  }
+  const renderAnalyticsComponent = () => {
+    if (!role)
+      return (
+        <div className="flex items-center justify-center h-full text-gray-600 text-lg">
+          Loading user data...
+        </div>
+      );
+    if (role == "PRESIDENT") return <PresidentAnalytics data={data} />;
+    if (role.startsWith("GENSEC_")) return <GensecAnalytics data={data} />;
+    if (role == "CLUB_COORDINATOR")
+      return <ClubCoordinatorAnalytics data={data} />;
+    if (role == "STUDENT") return <StudentAnalytics data={data} />;
+    return (
+      <div className="flex items-center justify-center h-full text-red-600 text-lg">
+        Unknown role: {role}
+      </div>
+    );
+  };
+  return renderAnalyticsComponent();
 };
 
 export default Home;

@@ -151,7 +151,8 @@ export const usePositionHolders = () => {
       (holder) =>
         (userRole !== "STUDENT"
           ? holder.position_id?.unit_id?.name
-          : holder.user_id?.personal_info?.name) === profile?.personal_info.name
+          : holder.user_id?.personal_info?.name) ===
+        profile?.personal_info.name,
     );
 
     if (searchTerm) {
@@ -168,7 +169,7 @@ export const usePositionHolders = () => {
             .includes(searchTerm.toLowerCase()) ||
           holder.position_id?.title
             ?.toLowerCase()
-            .includes(searchTerm.toLowerCase())
+            .includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -177,12 +178,12 @@ export const usePositionHolders = () => {
     }
     if (selectedTenure) {
       filtered = filtered.filter(
-        (holder) => holder.tenure_year === selectedTenure
+        (holder) => holder.tenure_year === selectedTenure,
       );
     }
     if (selectedDepartment) {
       filtered = filtered.filter(
-        (holder) => holder.position_id?.unit_id?.name === selectedDepartment
+        (holder) => holder.position_id?.unit_id?.name === selectedDepartment,
       );
     }
 
@@ -201,13 +202,14 @@ export const usePositionHolders = () => {
   ].sort();
   const departments = [
     ...new Set(
-      positionHolders.map((h) => h.position_id?.unit_id?.name).filter(Boolean)
+      positionHolders.map((h) => h.position_id?.unit_id?.name).filter(Boolean),
     ),
   ];
 
   return {
     positionHolders,
     filteredHolders,
+    setFilteredHolders,
     searchTerm,
     setSearchTerm,
     selectedStatus,

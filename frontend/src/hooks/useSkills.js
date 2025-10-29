@@ -37,7 +37,7 @@ export const useSkills = () => {
       if (!isUserLoggedIn?._id) return;
       try {
         const userSkillsRes = await api.get(
-          `/api/skills/user-skills/${isUserLoggedIn._id}`
+          `/api/skills/user-skills/${isUserLoggedIn._id}`,
         );
         setUserSkills(userSkillsRes.data);
       } catch (error) {
@@ -50,9 +50,7 @@ export const useSkills = () => {
   // Memoized lists for filter dropdowns
   const { types, proficiencies, endorsementStatuses } = useMemo(() => {
     const uniqueTypes = [
-      ...new Set(
-        userSkills.map((us) => us.skill_id?.type).filter(Boolean)
-      ),
+      ...new Set(userSkills.map((us) => us.skill_id?.type).filter(Boolean)),
     ];
     const profs = ["Beginner", "Intermediate", "Advanced", "Expert"];
     const endorsements = ["Endorsed", "Not Endorsed"];
@@ -74,7 +72,7 @@ export const useSkills = () => {
       filtered = filtered.filter(
         (us) =>
           us.proficiency_level?.toLowerCase() ===
-          selectedProficiency.toLowerCase()
+          selectedProficiency.toLowerCase(),
       );
     }
     if (selectedEndorsement !== "All") {
@@ -90,7 +88,7 @@ export const useSkills = () => {
     if (!isUserLoggedIn?._id) return;
     try {
       const userSkillsRes = await api.get(
-        `/api/skills/user-skills/${isUserLoggedIn._id}`
+        `/api/skills/user-skills/${isUserLoggedIn._id}`,
       );
       setUserSkills(userSkillsRes.data);
     } catch (error) {
@@ -164,6 +162,26 @@ export const useSkillForm = (onSuccess) => {
     setShowNewSkillForm(false);
   };
 
+  const submitNewSkill = async () => {
+    try {
+      const newSkillResponse = await api.post(
+        `/api/skills/create-skill`,
+        newSkillData,
+      );
+      resetForm();
+      if (onSuccess) onSuccess();
+      return { success: true, message: "Skill added successfully!" };
+    } catch (error) {
+      console.error("Error adding skill:", error);
+      return {
+        success: false,
+        message: "Error adding skill. It might already exist in your profile.",
+      };
+    } finally {
+      setLoading(false);
+    }
+    // skillIdToUse = newSkillResponse.data._id;
+  };
   const submitSkill = async () => {
     if (!formData.skill_id) {
       return { success: false, message: "Please select a skill." };
@@ -187,7 +205,7 @@ export const useSkillForm = (onSuccess) => {
       if (showNewSkillForm) {
         const newSkillResponse = await api.post(
           `/api/skills/create-skill`,
-          newSkillData
+          newSkillData,
         );
         skillIdToUse = newSkillResponse.data._id;
       }
@@ -224,5 +242,6 @@ export const useSkillForm = (onSuccess) => {
     updateNewSkillData,
     resetForm,
     submitSkill,
+    submitNewSkill,
   };
 };

@@ -4,6 +4,7 @@ import { Eye, Plus } from "lucide-react";
 import SkillsEndorsementTab from "../GenSec/SkillsEndorsementTab";
 import SkillManagement from "./SkillManagement";
 import UserSkillsEndorsementTab from "../GenSec/UserSkillsEndorsementTab";
+import SkillFormModal from "./SkillFormModal";
 
 const Skills = () => {
   const [add, setAdd] = useState(false);
@@ -15,24 +16,35 @@ const Skills = () => {
     <div>
       {" "}
       <div className="px-6 pt-6 pb-2 flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center justify-between">
-          <div className="">
-            <div className="text-2xl font-bold tracking-tight text-gray-900">
-              Skills
-            </div>
-            <div className="text-gray-600 mt-2">
-              The skills that you've proved to have gained
-            </div>
+        <div>
+          <div className="text-2xl font-bold tracking-tight text-gray-900">
+            Skills
+          </div>
+          <div className="text-gray-600 mt-2">
+            The skills that you've proved to have gained
           </div>
         </div>
         <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-lg hover:bg-opacity-90 transition-colors font-medium shadow"
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 text-black px-4 py-2 rounded-lg"
         >
-          <Plus className="w-4 h-4" />
-          Add Skill
+          {showForm ? (
+            <>
+              <Eye className="w-5 h-5" />
+              <span>View Skills</span>
+            </>
+          ) : (
+            <>
+              <Plus className="w-5 h-5" />
+              <span>Add Skills</span>
+            </>
+          )}
         </button>
-        <SkillManagement showForm={showForm} setShowForm={setShowForm} />
+        {showForm ? (
+          <SkillFormModal showForm={showForm} setShowForm={setShowForm} />
+        ) : (
+          <SkillManagement showForm={showForm} setShowForm={setShowForm} />
+        )}
       </div>
     </div>
   );
