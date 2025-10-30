@@ -134,7 +134,7 @@ router.get("/units", isAuthenticated, async (req, res) => {
 
 router.get("/users", isAuthenticated, async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({role: "STUDENT"});
     res.json(users);
   } catch (err) {
     console.error(err);
