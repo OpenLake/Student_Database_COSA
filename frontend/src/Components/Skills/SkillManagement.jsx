@@ -55,8 +55,8 @@ const SkillManagement = ({ showForm, setShowForm }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {filteredSkills.map((userSkill) => (
               <>
-              <SkillCard key={userSkill._id} userSkill={userSkill} />
-              {/* <SkillCard key={userSkill._id} userSkill={userSkill} /> */}
+                <SkillCard key={userSkill._id} userSkill={userSkill} />
+                {/* <SkillCard key={userSkill._id} userSkill={userSkill} /> */}
               </>
             ))}
           </div>

@@ -53,13 +53,14 @@ export const useEvents = (userRole, username) => {
   const updateEvent = (updatedEvent) => {
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
-        event._id === updatedEvent._id ? updatedEvent : event
-      )
+        event._id === updatedEvent._id ? updatedEvent : event,
+      ),
     );
   };
 
   return {
     events,
+    setEvents, // expose for local optimistic updates
     loading,
     error,
     updateEvent,

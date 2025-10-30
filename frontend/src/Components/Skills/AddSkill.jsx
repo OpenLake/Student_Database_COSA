@@ -69,7 +69,8 @@ const Select = ({
   </select>
 );
 const AddSkill = () => {
-  const { newSkillData, updateNewSkillData, submitSkill, loading } = useSkillForm();
+  const { newSkillData, updateNewSkillData, submitSkill, loading } =
+    useSkillForm();
   return (
     <div className="px-6 pt-6 pb-2 flex flex-col items-start justify-between flex-wrap gap-3">
       <div>

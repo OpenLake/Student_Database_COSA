@@ -37,7 +37,7 @@ export const useSkills = () => {
       if (!isUserLoggedIn?._id) return;
       try {
         const userSkillsRes = await api.get(
-          `/api/skills/user-skills/${isUserLoggedIn._id}`
+          `/api/skills/user-skills/${isUserLoggedIn._id}`,
         );
         setUserSkills(userSkillsRes.data);
       } catch (error) {
@@ -72,7 +72,7 @@ export const useSkills = () => {
       filtered = filtered.filter(
         (us) =>
           us.proficiency_level?.toLowerCase() ===
-          selectedProficiency.toLowerCase()
+          selectedProficiency.toLowerCase(),
       );
     }
     if (selectedEndorsement !== "All") {
@@ -88,7 +88,7 @@ export const useSkills = () => {
     if (!isUserLoggedIn?._id) return;
     try {
       const userSkillsRes = await api.get(
-        `/api/skills/user-skills/${isUserLoggedIn._id}`
+        `/api/skills/user-skills/${isUserLoggedIn._id}`,
       );
       setUserSkills(userSkillsRes.data);
     } catch (error) {
@@ -166,7 +166,7 @@ export const useSkillForm = (onSuccess) => {
     try {
       const newSkillResponse = await api.post(
         `/api/skills/create-skill`,
-        newSkillData
+        newSkillData,
       );
       resetForm();
       if (onSuccess) onSuccess();
@@ -205,7 +205,7 @@ export const useSkillForm = (onSuccess) => {
       if (showNewSkillForm) {
         const newSkillResponse = await api.post(
           `/api/skills/create-skill`,
-          newSkillData
+          newSkillData,
         );
         skillIdToUse = newSkillResponse.data._id;
       }

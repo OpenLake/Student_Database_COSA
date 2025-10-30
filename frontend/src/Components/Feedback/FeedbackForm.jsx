@@ -117,8 +117,10 @@ const FeedbackForm = () => {
               <Select
                 options={filteredTargets}
                 value={
-                 filteredTargets.find((option) => option.value === formData.target_id) || null
-                  }
+                  filteredTargets.find(
+                    (option) => option.value === formData.target_id,
+                  ) || null
+                }
                 onChange={handleTargetChange}
                 isClearable
                 placeholder="Select target"

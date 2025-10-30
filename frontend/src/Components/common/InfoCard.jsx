@@ -13,7 +13,7 @@ export const InfoCard = ({
   onEdit,
   onDelete,
   onActionProps,
-  bgColor = "bg-[#FDFAE2]"
+  bgColor = "bg-[#FDFAE2]",
 }) => (
   <div className={`${bgColor} rounded-xl px-6 py-6 overflow-hidden`}>
     <div className="mb-2">

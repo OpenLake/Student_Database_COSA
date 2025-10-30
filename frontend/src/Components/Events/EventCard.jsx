@@ -1,70 +1,73 @@
 import React from "react";
-import { Calendar, Clock, Edit2, MapPin, Trash2 } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import {
   formatDate,
   formatTime,
   getStatusColor,
 } from "../../utils/eventHelpers";
-import RoomRequestsList from "./RoomRequestsList";
+import EventRoomRequests from "./EventRoomRequests";
 import EventActions from "./EventActions";
 
-const EventCard = ({ event, userRole, onEdit, onRequestRoom, onManage }) => {
+const EventCard = ({
+  event,
+  userRole,
+  registering,
+  isRegistered,
+  onRegisterClick,
+  onManageClick,
+  onRequestRoomClick,
+}) => {
   return (
-    <div className="bg-[#FFFBF0] rounded-2xl hover:shadow-xl transition-all duration-200 flex flex-col p-6">
-      <div className="text-2xl font-bold text-gray-900 truncate">
-        {event.title}
-      </div>
-
-      <div className="flex items-center justify-between my-2">
-        {/* Status badge */}
-        <div
-          className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
-            event.status,
-          )}`}
-        >
-          {event.status}
+    <div className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg flex flex-col">
+      <div className="p-6 flex-grow">
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">
+            {event.title}
+          </h3>
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+              event.status,
+            )}`}
+          >
+            {event.status}
+          </span>
         </div>
-      </div>
 
-      <div className="space-y-3 mb-2 text-sm text-gray-700">
-        {event.schedule?.start && (
-          <div className="flex items-start">
-            <Calendar className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Date : </span>
+        <p className="text-gray-600 mb-4 line-clamp-3">{event.description}</p>
+
+        <div className="space-y-2 mb-4">
+          {event.schedule?.start && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Calendar className="w-4 h-4 mr-2" />
               <span>{formatDate(event.schedule.start)}</span>
             </div>
-          </div>
-        )}
-        {event.schedule?.start && (
-          <div className="flex items-start">
-            <Clock className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Time : </span>
+          )}
+          {event.schedule?.start && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Clock className="w-4 h-4 mr-2" />
               <span>{formatTime(event.schedule.start)}</span>
             </div>
-          </div>
-        )}
-        {event.schedule?.venue && (
-          <div className="flex items-start">
-            <MapPin className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Location : </span>
+          )}
+          {event.schedule?.venue && (
+            <div className="flex items-center text-sm text-gray-600">
+              <MapPin className="w-4 h-4 mr-2" />
               <span>{event.schedule.venue}</span>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        <EventRoomRequests event={event} userRole={userRole} />
       </div>
 
-      <RoomRequestsList event={event} userRole={userRole} />
-
-      <div className="mt-auto pt-4">
+      <div className="p-6 pt-4 border-t border-gray-200 bg-gray-50">
         <EventActions
-          event={event}
           userRole={userRole}
-          onEdit={onEdit}
-          onRequestRoom={onRequestRoom}
-          onManage={onManage}
+          event={event}
+          registering={registering}
+          isRegistered={isRegistered}
+          onRegisterClick={onRegisterClick}
+          onManageClick={onManageClick}
+          onRequestRoomClick={onRequestRoomClick}
         />
       </div>
     </div>

@@ -183,9 +183,11 @@ const QuickStats = () => {
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-800">
                 {item.label}
-              {item.subtitle && (
-                <span className="text-xs text-gray-600 ml-2">({item.subtitle})</span>
-              )}
+                {item.subtitle && (
+                  <span className="text-xs text-gray-600 ml-2">
+                    ({item.subtitle})
+                  </span>
+                )}
               </p>
             </div>
             <div className="text-right">

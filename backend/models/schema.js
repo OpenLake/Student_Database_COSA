@@ -352,6 +352,10 @@ const eventSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  participants_count: {
+    type: Number,
+    default: 0,
+  },
   winners: [
     {
       user: {

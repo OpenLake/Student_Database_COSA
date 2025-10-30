@@ -17,9 +17,12 @@ const SkillCard = ({ userSkill }) => {
     <DisplayCard
       icon={Star}
       backgroundColor={getProficiencyColor(userSkill.proficiency_level)}
-      title = {userSkill.skill_id?.name || "Unnamed Skill"}
-      subtitle = {userSkill.proficiency_level?.charAt(0).toUpperCase() + userSkill.proficiency_level?.slice(1)}
-      description = {userSkill.is_endorsed ? "Endorsed" : "Not Endorsed"}
+      title={userSkill.skill_id?.name || "Unnamed Skill"}
+      subtitle={
+        userSkill.proficiency_level?.charAt(0).toUpperCase() +
+        userSkill.proficiency_level?.slice(1)
+      }
+      description={userSkill.is_endorsed ? "Endorsed" : "Not Endorsed"}
     />
   );
 };

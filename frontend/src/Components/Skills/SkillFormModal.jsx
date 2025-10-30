@@ -33,7 +33,7 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
       .filter(
         (holder) =>
           holder.user_id?._id === isUserLoggedIn._id ||
-          holder.user_id === isUserLoggedIn._id
+          holder.user_id === isUserLoggedIn._id,
       )
       .map((holder) => holder.position_id?._id || holder.position_id);
 
@@ -73,7 +73,7 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
             value={formData.position_id}
             onChange={updateFormData}
             options={userPositions.map(
-              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`
+              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`,
             )}
           />
         </div>

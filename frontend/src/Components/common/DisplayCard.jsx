@@ -13,13 +13,13 @@ const DisplayCard = ({
   return (
     <div
       className={`rounded-2xl p-2 flex flex-col items-center justify-center text-center ${backgroundColor}`}
-    //   style={{ backgroundColor }}
+      //   style={{ backgroundColor }}
     >
       {/* Medal/Icon Container */}
       <div className="mb-2">
         <div
           className="rounded-full p-2"
-        //   style={{ backgroundColor: "black" }}
+          //   style={{ backgroundColor: "black" }}
         >
           <IconComponent
             size={iconSize}
