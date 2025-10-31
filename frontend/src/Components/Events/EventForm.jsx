@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import api from "../../utils/api";
 
+// --- All your sub-components (DateTimeFields, ScheduleFields, BudgetFields) remain unchanged ---
 const DateTimeFields = ({ section, data, handler, styles }) => (
   <>
     <div>
@@ -156,6 +157,7 @@ const BudgetFields = ({
   </div>
 );
 
+// --- All your state and logic (initialFormState, etc.) remain unchanged ---
 const initialFormState = {
   title: "",
   description: "",
@@ -377,162 +379,207 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
   const customSelectStyles = {};
 
   return (
-    <div className="bg-white px-8 py-2">
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4">
-        <div className="grid grid-cols-1 gap-2">
-          <label className={labelStyles}>Event Title</label>
-          <input
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className={inputStyles}
-          />
-          <label className={labelStyles}>Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={2}
-            className={inputStyles}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelStyles}>Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className={inputStyles}
-              required
+    <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-auto max-h-[75vh] flex flex-col">
+      <div className="flex justify-between items-center p-6 border-b border-stone-200">
+        <h2 className="text-xl font-semibold text-stone-800">
+          {event ? "Edit Event Details" : "Create New Event"}
+        </h2>
+
+        {(onClose || setAddEvent) && (
+          <button
+            type="button"
+            onClick={() => {
+              if (onClose) {
+                onClose();
+              } else if (setAddEvent) {
+                setAddEvent(false);
+              }
+            }}
+            className="p-2 text-stone-400 hover:text-stone-600 rounded-full hover:bg-stone-100 transition-colors"
+            title="Close"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
             >
-              <option value="">Select Category</option>
-              {["cultural", "technical", "sports", "academic", "other"].map(
-                (c) => (
-                  <option key={c} value={c} className="capitalize">
-                    {c}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* 2. FORM FLEX LAYOUT */}
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+        <div className="flex-grow overflow-y-auto p-6 space-y-4">
+          <div className="grid grid-cols-1 gap-2">
+            <label className={labelStyles}>Event Title</label>
+            <input
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className={inputStyles}
+            />
+            <label className={labelStyles}>Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={2}
+              className={inputStyles}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelStyles}>Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className={inputStyles}
+                required
+              >
+                <option value="">Select Category</option>
+                {["cultural", "technical", "sports", "academic", "other"].map(
+                  (c) => (
+                    <option key={c} value={c} className="capitalize">
+                      {c}
+                    </option>
+                  ),
+                )}
+              </select>
+            </div>
+            <div>
+              <label className={labelStyles}>Type</label>
+              <input
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                className={inputStyles}
+                placeholder="e.g. Competition, Workshop"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelStyles}>Organizing Unit</label>
+              <select
+                name="organizing_unit_id"
+                value={formData.organizing_unit_id}
+                onChange={handleChange}
+                className={inputStyles}
+                required
+              >
+                <option value="">Select Unit</option>
+                {units.map((u) => (
+                  <option key={u._id} value={u._id}>
+                    {u.name}
                   </option>
-                ),
-              )}
-            </select>
-          </div>
-          <div>
-            <label className={labelStyles}>Type</label>
-            <input
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              className={inputStyles}
-              placeholder="e.g. Competition, Workshop"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelStyles}>Organizing Unit</label>
-            <select
-              name="organizing_unit_id"
-              value={formData.organizing_unit_id}
-              onChange={handleChange}
-              className={inputStyles}
-              required
-            >
-              <option value="">Select Unit</option>
-              {units.map((u) => (
-                <option key={u._id} value={u._id}>
-                  {u.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className={labelStyles}>Organizers</label>
-            <Select
-              isMulti
-              options={organizerOptions}
-              value={organizerOptions.filter((opt) =>
-                formData.organizers.includes(opt.value),
-              )}
-              onChange={(selected) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  organizers: selected.map((s) => s.value),
-                }))
-              }
-              className="mt-1 text-sm"
-              styles={customSelectStyles}
-            />
-          </div>
-        </div>
-        <ScheduleFields
-          data={formData.schedule}
-          handleDateTimeChange={handleDateTimeChange}
-          handleNestedChange={handleNestedChange}
-          inputStyles={inputStyles}
-          labelStyles={labelStyles}
-        />
-        <div>
-          <h3 className="text-base font-semibold text-stone-700 border-b border-stone-200 pb-1 mb-3">
-            Registration
-          </h3>
-          <label className="flex items-center space-x-3 text-sm text-stone-700">
-            <input
-              type="checkbox"
-              checked={formData.registration.required}
-              onChange={(e) =>
-                handleNestedChange(
-                  "registration",
-                  "required",
-                  e.target.checked,
-                )
-              }
-              className="h-4 w-4 rounded border-stone-300 text-stone-700 focus:ring-stone-600"
-            />
-            <span>Registration Required</span>
-          </label>
-          {formData.registration.required && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
-              <DateTimeFields
-                section="registration"
-                data={formData.registration}
-                handler={handleDateTimeChange}
-                styles={inputStyles}
-              />
-              <input
-                type="number"
-                placeholder="Fees"
-                value={formData.registration.fees}
-                onChange={(e) =>
-                  handleNestedChange("registration", "fees", e.target.value)
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelStyles}>Organizers</label>
+              <Select
+                isMulti
+                options={organizerOptions}
+                value={organizerOptions.filter((opt) =>
+                  formData.organizers.includes(opt.value),
+                )}
+                onChange={(selected) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    organizers: selected.map((s) => s.value),
+                  }))
                 }
-                className={`${inputStyles} col-span-2`}
+                className="mt-1 text-sm"
+                styles={customSelectStyles}
               />
+            </div>
+          </div>
+
+          <ScheduleFields
+            data={formData.schedule}
+            handleDateTimeChange={handleDateTimeChange}
+            handleNestedChange={handleNestedChange}
+            inputStyles={inputStyles}
+            labelStyles={labelStyles}
+          />
+
+          <div>
+            <h3 className="text-base font-semibold text-stone-700 border-b border-stone-200 pb-1 mb-3">
+              Registration
+            </h3>
+            <label className="flex items-center space-x-3 text-sm text-stone-700">
               <input
-                type="number"
-                placeholder="Max Participants"
-                value={formData.registration.max_participants}
+                type="checkbox"
+                checked={formData.registration.required}
                 onChange={(e) =>
                   handleNestedChange(
                     "registration",
-                    "max_participants",
-                    e.target.value,
+                    "required",
+                    e.target.checked,
                   )
                 }
-                className={`${inputStyles} col-span-2`}
+                className="h-4 w-4 rounded border-stone-300 text-stone-700 focus:ring-stone-600"
               />
-            </div>
-          )}
+              <span>Registration Required</span>
+            </label>
+            {formData.registration.required && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+                <DateTimeFields
+                  section="registration"
+                  data={formData.registration}
+                  handler={handleDateTimeChange}
+                  styles={inputStyles}
+                />
+                <input
+                  type="number"
+                  placeholder="Fees"
+                  value={formData.registration.fees}
+                  onChange={(e) =>
+                    handleNestedChange("registration", "fees", e.target.value)
+                  }
+                  className={`${inputStyles} col-span-2`}
+                />
+                <input
+                  type="number"
+                  placeholder="Max Participants"
+                  value={formData.registration.max_participants}
+                  onChange={(e) =>
+                    handleNestedChange(
+                      "registration",
+                      "max_participants",
+                      e.target.value,
+                    )
+                  }
+                  className={`${inputStyles} col-span-2`}
+                />
+              </div>
+            )}
+          </div>
+
+          <BudgetFields
+            data={formData.budget}
+            setFormData={setFormData}
+            handleSponsorChange={handleSponsorChange}
+            handleRemoveSponsor={handleRemoveSponsor}
+            addSponsor={addSponsor}
+            inputStyles={inputStyles}
+          />
         </div>
-        <BudgetFields
-          data={formData.budget}
-          setFormData={setFormData}
-          handleSponsorChange={handleSponsorChange}
-          handleRemoveSponsor={handleRemoveSponsor}
-          addSponsor={addSponsor}
-          inputStyles={inputStyles}
-        />
-        <div className="pt-2 flex gap-4">
+
+        <div className="p-6 border-t border-stone-200 flex gap-4">
           <button
             type="submit"
             className="flex-1 bg-stone-800 text-white py-2.5 px-4 rounded-lg hover:bg-stone-700 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500"
