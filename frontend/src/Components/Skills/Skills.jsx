@@ -1,15 +1,10 @@
 import React, { useContext, useState } from "react";
 import { AdminContext } from "../../context/AdminContext";
 import { Eye, Plus } from "lucide-react";
-import SkillsEndorsementTab from "../GenSec/SkillsEndorsementTab";
 import SkillManagement from "./SkillManagement";
-import UserSkillsEndorsementTab from "../GenSec/UserSkillsEndorsementTab";
 import SkillFormModal from "./SkillFormModal";
 
 const Skills = () => {
-  const [add, setAdd] = useState(false);
-  const { isUserLoggedIn } = useContext(AdminContext);
-  const userRole = isUserLoggedIn?.role || "STUDENT";
   const [showForm, setShowForm] = useState(false);
 
   return (

@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { Plus } from "lucide-react";
 import { useSkills, useSkillForm } from "../../hooks/useSkills";
 import FilterDropdown from "./FilterDropdown";
 import SkillCard from "./SkillCard";
-import SkillFormModal from "./SkillFormModal";
 import { EmptyStateNoSkills, EmptyStateNoResults } from "./EmptyState";
 
 const SkillManagement = ({ showForm, setShowForm }) => {
@@ -56,7 +53,6 @@ const SkillManagement = ({ showForm, setShowForm }) => {
             {filteredSkills.map((userSkill) => (
               <>
               <SkillCard key={userSkill._id} userSkill={userSkill} />
-              {/* <SkillCard key={userSkill._id} userSkill={userSkill} /> */}
               </>
             ))}
           </div>

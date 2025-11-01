@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useMemo } from "react";
-import { X, ChevronDown, Trophy } from "lucide-react";
+import React, { useContext, useMemo } from "react";
+import { Trophy } from "lucide-react";
 import { useSkillForm, useSkills } from "../../hooks/useSkills";
 import FilterDropdown from "./FilterDropdown";
 import { usePositionHolders } from "../../hooks/usePositionHolders";
@@ -13,13 +13,9 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
   const { positionHolders } = usePositionHolders();
   const {
     formData,
-    newSkillData,
     loading,
-    showNewSkillForm,
     handleSkillChange,
     updateFormData,
-    updateNewSkillData,
-    resetForm,
     submitSkill,
   } = useSkillForm(refreshUserSkills);
 
@@ -57,25 +53,35 @@ const SkillFormModal = ({ showForm, setShowForm }) => {
           <FilterDropdown
             label="Select Skill"
             value={formData.skill_id}
-            onChange={handleSkillChange}
-            options={skills.map((skill) => skill.name + " - " + skill.category)}
+            onChange={(id) => handleSkillChange(id)}
+            options={skills.map((skill) => ({
+               label: `${skill.name} - ${skill.category}`,
+               value: skill._id,
+             }))}
           />
 
           <FilterDropdown
-            label="Proficiency Level"
-            value={formData.proficiency_level}
-            onChange={updateFormData}
-            options={["Beginner", "Intermediate", "Advanced", "Expert"]}
-          />
+             label="Proficiency Level"
+             value={formData.proficiency_level}
+             onChange={(val) => updateFormData({ proficiency_level: val })}
+             options={[
+               { label: "Beginner", value: "beginner" },
+               { label: "Intermediate", value: "intermediate" },
+               { label: "Advanced", value: "advanced" },
+               { label: "Expert", value: "expert" },
+             ]}
+           />
+           
+           <FilterDropdown
+             label="Associated Position (Optional)"
+             value={formData.position_id}
+             onChange={(val) => updateFormData({ position_id: val })}
+             options={userPositions.map((pos) => ({
+               label: `${pos.title} - ${pos.unit_id?.name || "No Unit"}`,
+               value: pos._id,
+             }))}
+           />
 
-          <FilterDropdown
-            label="Associated Position (Optional)"
-            value={formData.position_id}
-            onChange={updateFormData}
-            options={userPositions.map(
-              (pos) => `${pos.title} - ${pos.unit_id?.name || "No Unit"}`
-            )}
-          />
         </div>
         <div className="pt-4">
           <button
