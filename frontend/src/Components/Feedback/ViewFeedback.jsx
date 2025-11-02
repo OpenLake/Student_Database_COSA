@@ -85,7 +85,19 @@ const ViewFeedback = ({ onSelectFeedback }) => {
         <div className="space-y-4 mt-4 border-2 border-black rounded-md">
           <div className="font-bold px-4 pt-2 text-xl">Recent Feedbacks</div>
           {filteredFeedbacks.map((fb, index) => (
-            <div onClick={() => onSelectFeedback(fb)}>
+            <div
+              key={fb._id}
+              onClick={() => onSelectFeedback(fb)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectFeedback(fb);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className="cursor-pointer"
+            >
               <FeedbackCard
                 key={fb._id}
                 index={index}

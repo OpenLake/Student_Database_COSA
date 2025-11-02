@@ -3,14 +3,14 @@ import React from "react";
 const FeedbackPreview = ({ fb }) => {
   if (!fb)
     return (
-      <div className="p-2.5 flex align-middle justify-center">
+      <div className="p-3 flex items-center justify-center">
         <p className="font-semibold text-xl">Select Feedback to preview</p>
       </div>
     );
 
   return (
     <div className="p-2.5 flex flex-col justify-center">
-      <p className="font-semibold text-blue-900 ">{fb.comments}</p>
+      <p className="font-bold text-blue-600 text-balance">{fb.comments}</p>
       <p>
         <span className="font-semibold">Type: </span>
         {fb.type}
@@ -48,8 +48,9 @@ const FeedbackPreview = ({ fb }) => {
         <span className="font-semibold">Target: </span>
         <span className="text-green-600">
           {fb.target_type === "User" && fb.target_data
-            ? `${fb.target_data.personal_info?.name} (${fb.target_data.username})` ||
-              fb.target_data.username
+            ? fb.target_data.personal_info?.name
+              ? `${fb.target_data.personal_info?.name} (${fb.target_data.username})`
+              : fb.target_data.username
             : fb.target_type === "Event" && fb.target_data
               ? `${fb.target_data.title} (${fb.target_data.organizing_unit})`
               : fb.target_type === "Club/Organization" && fb.target_data

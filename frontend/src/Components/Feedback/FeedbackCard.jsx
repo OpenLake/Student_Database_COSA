@@ -56,8 +56,9 @@ export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
               <span className="font-medium">Target:</span>{" "}
               <span className="text-green-600">
                 {feedback.target_type === "User" && feedback.target_data
-                  ? `${feedback.target_data.personal_info?.name} (${feedback.target_data.username})` ||
-                    feedback.target_data.username
+                  ? feedback.target_data.personal_info?.name
+                    ? `${feedback.target_data.personal_info}(${feedback.target_data.username})`
+                    : feedback.target_data.username
                   : feedback.target_type === "Event" && feedback.target_data
                     ? `${feedback.target_data.title} (${feedback.target_data.organizing_unit})`
                     : feedback.target_type === "Club/Organization" &&
@@ -76,7 +77,10 @@ export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
           {!feedback.is_resolved && !isStudent && (
             <button
               className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-200"
-              onClick={() => onResolve(feedback._id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onResolve(feedback._id);
+              }}
             >
               Update
             </button>
