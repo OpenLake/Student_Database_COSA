@@ -12,21 +12,22 @@ export const useFeedback = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const { isUserLoggedIn } = useContext(AdminContext);
 
+  const fetchFeedback = async () => {
+    try {
+      const res = await api.get(`/api/feedback/view-feedback`);
+      const sorted = res.data.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
+      setFeedbacks(sorted);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch feedbacks
   useEffect(() => {
-    const fetchFeedback = async () => {
-      try {
-        const res = await api.get(`/api/feedback/view-feedback`);
-        const sorted = res.data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at),
-        );
-        setFeedbacks(sorted);
-      } catch (error) {
-        console.error("Error fetching feedbacks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchFeedback();
   }, []);
 
