@@ -182,6 +182,12 @@ const initialFormState = {
   },
 };
 
+const getDateFromISO = (iso) =>
+  iso ? new Date(iso).toISOString().slice(0, 10) : "";
+
+const getTimeFromISO = (iso) =>
+  iso ? new Date(iso).toISOString().slice(11, 16) : "";
+
 const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
   const [units, setUnits] = useState([]);
   const [users, setUsers] = useState([]);
@@ -195,20 +201,12 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
     organizers: event?.organizers?.map((o) => o._id) || [],
     schedule: {
       date: {
-        start: event
-          ? new Date(event.schedule.start).toISOString().slice(0, 10)
-          : "",
-        end: event
-          ? new Date(event.schedule.end).toISOString().slice(0, 10)
-          : "",
+        start: event ? getDateFromISO(event.schedule.start) : "",
+        end: event ? getDateFromISO(event.schedule.end) : "",
       },
       time: {
-        start: event
-          ? new Date(event.schedule.start).toTimeString().slice(0, 5)
-          : "",
-        end: event
-          ? new Date(event.schedule.end).toTimeString().slice(0, 5)
-          : "",
+        start: event ? getTimeFromISO(event.schedule.start) : "",
+        end: event ? getTimeFromISO(event.schedule.end) : "",
       },
       venue: event?.schedule?.venue || "",
       mode: event?.schedule?.mode || "",
@@ -217,18 +215,18 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
       required: event?.registration?.required || false,
       date: {
         start: event?.registration?.start
-          ? new Date(event.registration.start).toISOString().slice(0, 10)
+          ? getDateFromISO(event.registration.start)
           : "",
         end: event?.registration?.end
-          ? new Date(event.registration.end).toISOString().slice(0, 10)
+          ? getDateFromISO(event.registration.end)
           : "",
       },
       time: {
         start: event?.registration?.start
-          ? new Date(event.registration.start).toTimeString().slice(0, 5)
+          ? getTimeFromISO(event.registration.start)
           : "",
         end: event?.registration?.end
-          ? new Date(event.registration.end).toTimeString().slice(0, 5)
+          ? getTimeFromISO(event.registration.end)
           : "",
       },
       fees: event?.registration?.fees || "",
@@ -320,10 +318,15 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
     }));
   };
 
+  const combineDateTime = (dateStr, timeStr, isEnd = false) => {
+    if (!dateStr) return null;
+    const defaultTime = isEnd ? "23:59" : "00:00";
+    const time = timeStr && timeStr !== "" ? timeStr : defaultTime;
+    return new Date(`${dateStr}T${time}:00`).toISOString();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const combineDateTime = (dateStr, timeStr) =>
-      new Date(`${dateStr}T${timeStr}`);
     const finalPayload = {
       ...formData,
       schedule: {
@@ -335,6 +338,7 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
         end: combineDateTime(
           formData.schedule.date.end,
           formData.schedule.time.end,
+          true,
         ),
       },
       registration: formData.registration.required
@@ -347,6 +351,7 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
             end: combineDateTime(
               formData.registration.date.end,
               formData.registration.time.end,
+              true,
             ),
           }
         : { required: false },
@@ -481,11 +486,7 @@ const EventForm = ({ addEvent, setAddEvent, event = null, onClose }) => {
               type="checkbox"
               checked={formData.registration.required}
               onChange={(e) =>
-                handleNestedChange(
-                  "registration",
-                  "required",
-                  e.target.checked,
-                )
+                handleNestedChange("registration", "required", e.target.checked)
               }
               className="h-4 w-4 rounded border-stone-300 text-stone-700 focus:ring-stone-600"
             />
