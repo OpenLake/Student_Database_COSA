@@ -4,7 +4,7 @@ import { Eye, Plus } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import ViewFeedback from "./ViewFeedback";
 
-const Feedback = () => {
+const Feedback = ({ setSelectedFeedback }) => {
   const { isUserLoggedIn } = useContext(AdminContext);
   const [add, setAdd] = useState(false);
   const userRole = isUserLoggedIn?.role || "STUDENT";
@@ -44,10 +44,10 @@ const Feedback = () => {
         add ? (
           <FeedbackForm />
         ) : (
-          <ViewFeedback />
+          <ViewFeedback onSelectFeedback={setSelectedFeedback} />
         )
       ) : (
-        <ViewFeedback />
+        <ViewFeedback onSelectFeedback={setSelectedFeedback} />
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import ExpandableText from "./ExpandableText";
 
 export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
   return (
-    <div className="bg-gray-200 rounded-lg px-2 hover:shadow-md transition-shadow duration-200 m-2">
+    <div className="bg-gray-200 rounded-lg px-2 hover:shadow-md hover:border-2 transition-shadow duration-200 m-2">
       <div className="flex items-start gap-4">
         {/* Icon/Index */}
         <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center">
@@ -56,14 +56,16 @@ export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
               <span className="font-medium">Target:</span>{" "}
               <span className="text-green-600">
                 {feedback.target_type === "User" && feedback.target_data
-                   ? `${feedback.target_data.personal_info?.name} (${feedback.target_data.username})`  || feedback.target_data.username
-                   : feedback.target_type === "Event" && feedback.target_data
-                   ? `${feedback.target_data.title} (${feedback.target_data.organizing_unit})`
-                   : feedback.target_type === "Club/Organization" && feedback.target_data
-                   ? `${feedback.target_data.name} (${feedback.target_data.parent})`
-                   : feedback.target_type === "POR" && feedback.target_data
-                   ? `${feedback.target_data.title} (${feedback.target_data.unit})`
-                   : "N/A"}
+                  ? `${feedback.target_data.personal_info?.name} (${feedback.target_data.username})` ||
+                    feedback.target_data.username
+                  : feedback.target_type === "Event" && feedback.target_data
+                    ? `${feedback.target_data.title} (${feedback.target_data.organizing_unit})`
+                    : feedback.target_type === "Club/Organization" &&
+                        feedback.target_data
+                      ? `${feedback.target_data.name} (${feedback.target_data.parent})`
+                      : feedback.target_type === "POR" && feedback.target_data
+                        ? `${feedback.target_data.title} (${feedback.target_data.unit})`
+                        : "N/A"}
               </span>
             </span>
           </div>
