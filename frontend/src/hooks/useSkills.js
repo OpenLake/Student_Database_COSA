@@ -186,30 +186,9 @@ export const useSkillForm = (onSuccess) => {
     if (!formData.skill_id) {
       return { success: false, message: "Please select a skill." };
     }
-
-    if (
-      showNewSkillForm &&
-      (!newSkillData.name.trim() || !newSkillData.category.trim())
-    ) {
-      return {
-        success: false,
-        message: "Please fill all required fields for the new skill.",
-      };
-    }
-
     setLoading(true);
     try {
       let skillIdToUse = formData.skill_id;
-
-      // Create new skill if needed
-      if (showNewSkillForm) {
-        const newSkillResponse = await api.post(
-          `/api/skills/create-skill`,
-          newSkillData
-        );
-        skillIdToUse = newSkillResponse.data._id;
-      }
-
       // Create user skill
       await api.post(`/api/skills/create-user-skill`, {
         user_id: isUserLoggedIn._id,
