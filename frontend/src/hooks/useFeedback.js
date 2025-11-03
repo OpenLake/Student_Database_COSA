@@ -49,6 +49,7 @@ export const useFeedback = () => {
       await api.put(`/api/feedback/mark-resolved/${feedbackId}`, {
         actions_taken: actionTaken,
         resolved_by: isUserLoggedIn._id,
+        resolved_at: new Date().toISOString(),
       });
       setFeedbacks((prev) =>
         prev.map((fb) =>

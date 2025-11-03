@@ -6,6 +6,7 @@ import FeedbackStats from "../Components/Feedback/FeedbackStats";
 
 const FeedbackPage = () => {
   const [add, setAdd] = useState(true);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
 
   const components = {
     Feedback: Feedback,
@@ -22,7 +23,7 @@ const FeedbackPage = () => {
         rowStart: 0,
         rowEnd: 16,
       },
-      props: { add: add, setAdd: setAdd },
+      props: { add: add, setAdd: setAdd, setSelectedFeedback },
     },
     {
       id: "main",
@@ -33,6 +34,7 @@ const FeedbackPage = () => {
         rowStart: 0,
         rowEnd: 8,
       },
+      props: { fb: selectedFeedback },
     },
     {
       id: "main",
