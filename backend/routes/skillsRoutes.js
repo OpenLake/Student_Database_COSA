@@ -165,6 +165,7 @@ router.post("/create-user-skill", isAuthenticated, async (req, res) => {
 router.get("/top-skills", isAuthenticated, async (req, res) => {
   try {
     const topSkills = await UserSkill.aggregate([
+      {$match:{is_endorsed: true}},
       { $group: { _id: "$skill_id", totalUsers: { $sum: 1 } } },
       { $sort: { totalUsers: -1 } },
       { $limit: 5 },
