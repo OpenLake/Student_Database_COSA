@@ -1,73 +1,104 @@
 import React from "react";
-import { Calendar, Clock, Edit2, MapPin, Trash2 } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  MapPin,
+  XCircleIcon,
+} from "lucide-react";
 import {
   formatDate,
   formatTime,
   getStatusColor,
+  canRequestRoom,
 } from "../../utils/eventHelpers";
-import RoomRequestsList from "./RoomRequestsList";
-import EventActions from "./EventActions";
+import { InfoCard } from "../common/InfoCard";
 
 const EventCard = ({ event, userRole, onEdit, onRequestRoom, onManage }) => {
+  // Prepare description items
+  const descriptionItems = [];
+
+  if (event.schedule?.start) {
+    descriptionItems.push({
+      key: "Date",
+      value: formatDate(event.schedule.start),
+      icon: Calendar,
+    });
+  }
+
+  if (event.schedule?.start) {
+    descriptionItems.push({
+      key: "Time",
+      value: formatTime(event.schedule.start),
+      icon: Clock,
+    });
+  }
+
+  if (event.schedule?.venue) {
+    descriptionItems.push({
+      key: "Location",
+      value: event.schedule.venue,
+      icon: MapPin,
+    });
+  }
+
+  // Add room requests to description if user can view them
+  const canViewRequests = [
+    "PRESIDENT",
+    "CLUB_COORDINATOR",
+    "GENSEC_SCITECH",
+    "GENSEC_ACADEMIC",
+    "GENSEC_CULTURAL",
+    "GENSEC_SPORTS",
+  ].includes(userRole);
+
+  if (canViewRequests && event.room_requests?.length > 0) {
+    event.room_requests.forEach((request) => {
+      descriptionItems.push({
+        key: `${request.room} (${request.status.slice(0, 3)})`,
+        value: `${formatDate(request.date)} at ${request.time}`,
+        icon: request.status === "Approved" ? CheckCircle2 : XCircleIcon,
+      });
+    });
+  }
+
+  // Determine action button
+  let actionConfig = null;
+
+  if (
+    userRole === "STUDENT" ||
+    (canRequestRoom(userRole) && userRole !== "PRESIDENT")
+  ) {
+    actionConfig = {
+      onAction: onRequestRoom,
+      onActionText: "+ Request",
+      onActionColor: "bg-[#BDF5FF] font-bold",
+      onActionDisabled: false,
+      onActionProps: event._id,
+    };
+  } else if (userRole === "PRESIDENT") {
+    actionConfig = {
+      onAction: onManage,
+      onActionText: "Manage Requests",
+      onActionColor: "bg-green-600 text-white",
+      onActionDisabled: false,
+      onActionProps: event,
+    };
+  }
+
   return (
-    <div className="bg-[#FFFBF0] rounded-2xl hover:shadow-xl transition-all duration-200 flex flex-col p-6">
-      <div className="text-2xl font-bold text-gray-900 truncate">
-        {event.title}
-      </div>
-
-      <div className="flex items-center justify-between my-2">
-        {/* Status badge */}
-        <div
-          className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
-            event.status,
-          )}`}
-        >
-          {event.status}
-        </div>
-      </div>
-
-      <div className="space-y-3 mb-2 text-sm text-gray-700">
-        {event.schedule?.start && (
-          <div className="flex items-start">
-            <Calendar className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Date : </span>
-              <span>{formatDate(event.schedule.start)}</span>
-            </div>
-          </div>
-        )}
-        {event.schedule?.start && (
-          <div className="flex items-start">
-            <Clock className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Time : </span>
-              <span>{formatTime(event.schedule.start)}</span>
-            </div>
-          </div>
-        )}
-        {event.schedule?.venue && (
-          <div className="flex items-start">
-            <MapPin className="w-4 h-4 text-gray-600 mr-2" />
-            <div>
-              <span className="font-semibold">Location : </span>
-              <span>{event.schedule.venue}</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <RoomRequestsList event={event} userRole={userRole} />
-
-      <div className="mt-auto pt-4">
-        <EventActions
-          event={event}
-          userRole={userRole}
-          onEdit={onEdit}
-          onRequestRoom={onRequestRoom}
-          onManage={onManage}
-        />
-      </div>
-    </div>
+    <InfoCard
+      title={event.title}
+      subtitle=""
+      badgeText={event.status}
+      badgeColor={getStatusColor(event.status)}
+      descriptionItems={descriptionItems}
+      onEdit={onEdit}
+      onDelete={() => {}}
+      onActionProps={actionConfig?.onActionProps}
+      {...actionConfig}
+      // bgColor="bg-[#FFFBF0]"
+    />
   );
 };
 

@@ -13,7 +13,7 @@ export const InfoCard = ({
   onEdit,
   onDelete,
   onActionProps,
-  bgColor = "bg-[#FDFAE2]"
+  bgColor = "bg-[#FDFAE2]",
 }) => (
   <div className={`${bgColor} rounded-xl px-6 py-6 overflow-hidden`}>
     <div className="mb-2">
@@ -25,11 +25,12 @@ export const InfoCard = ({
           {badgeText}
         </span>
       </div>
-
-      <div className={`text-sm font-semibold text-black mb-8 text-gray-600`}>
-        {subtitle}
-      </div>
-      <div className="space-y-1 text-xs">
+      {subtitle && (
+        <div className={`text-sm font-semibold text-black mb-6 text-gray-600`}>
+          {subtitle}
+        </div>
+      )}
+      <div className="space-y-1 mt-2 text-xs">
         {descriptionItems.map(({ key, value, icon: Icon }, index) => (
           <div key={index} className="flex items-center gap-2">
             {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
