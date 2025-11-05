@@ -72,15 +72,15 @@ const EventCard = ({ event, userRole, onEdit, onRequestRoom, onManage }) => {
     actionConfig = {
       onAction: onRequestRoom,
       onActionText: "+ Request",
-      onActionColor: "bg-[#BDF5FF] font-bold",
+      onActionColor: "bg-[#BDF5FF] !font-[550]",
       onActionDisabled: false,
       onActionProps: event._id,
     };
   } else if (userRole === "PRESIDENT") {
     actionConfig = {
       onAction: onManage,
-      onActionText: "Manage Requests",
-      onActionColor: "bg-green-600 text-white",
+      onActionText: "Requests",
+      onActionColor: "bg-[#C0FFBD] !font-[550]",
       onActionDisabled: false,
       onActionProps: event,
     };
