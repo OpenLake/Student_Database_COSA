@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { getEventsForDate, getHolidayForDate } from "../utils/calendarUtils";
 
-export const useCalendarHover = (events, holidays) => {
+export const useCalendarHover = (events, holidays, academics) => {
   const [hoveredEvent, setHoveredEvent] = useState(null);
   const [isHoveringCard, setIsHoveringCard] = useState(false);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
@@ -15,12 +15,13 @@ export const useCalendarHover = (events, holidays) => {
 
     const evs = Array.isArray(events) ? getEventsForDate(date, events) : [];
     const holiday = getHolidayForDate(date, holidays);
+    const academic = getHolidayForDate(date, academics);
 
-    if (evs.length > 0 || holiday) {
+    if (evs.length > 0 || holiday || academic) {
       const rect = e.currentTarget.getBoundingClientRect();
       hoverTimeout.current = setTimeout(() => {
         setHoverPosition({ x: rect.left + rect.width / 2, y: rect.top });
-        setHoveredEvent({ date, events: evs, holiday });
+        setHoveredEvent({ date, events: evs, holiday, academic: academic });
       }, 120);
     }
   };
