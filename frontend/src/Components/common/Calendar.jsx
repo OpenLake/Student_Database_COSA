@@ -3,7 +3,10 @@ import ReactDOM from "react-dom";
 import { Calendar1 } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import { useEvents } from "../../hooks/useEvents";
-import { holidays2025 } from "../../config/calendarConfig";
+import {
+  academicsMonsoon2025,
+  holidays2025,
+} from "../../config/calendarConfig";
 import {
   buildCalendarGrid,
   getEventsForDate,
@@ -28,22 +31,24 @@ const DashboardCalendar = () => {
     handleMouseLeave,
     handlePopupEnter,
     handlePopupLeave,
-  } = useCalendarHover(events, holidays2025);
+  } = useCalendarHover(events, holidays2025, academicsMonsoon2025);
 
   const days = buildCalendarGrid(year, month);
 
   const getTileColor = (d) => {
     if (!d) return "bg-transparent";
-    const date = new Date(year, month, d);
+    const date = new Date(year, month, d, 12, 0, 0, 0);
     const dayMid = new Date(date).setHours(0, 0, 0, 0);
     const todayMid = new Date(today).setHours(0, 0, 0, 0);
     const hasEvent = getEventsForDate(date, events).length > 0;
     const holiday = getHolidayForDate(date, holidays2025);
+    const hasAcademicEvent = getHolidayForDate(date, academicsMonsoon2025);
 
     if (holiday) return "bg-green-300 text-green-900 font-semibold";
-    if (dayMid < todayMid) return "bg-red-300 text-white font-semibold";
+    if (dayMid < todayMid) return "bg-gray-300 text-white font-semibold";
     if (dayMid === todayMid) return "bg-sky-400 text-white font-semibold";
     if (hasEvent) return "bg-yellow-300 text-yellow-900 font-semibold";
+    if (hasAcademicEvent) return "bg-red-300 text-red-900 font-semibold";
     return "bg-gray-100 text-gray-700";
   };
 
@@ -63,7 +68,7 @@ const DashboardCalendar = () => {
 
   return (
     <div className="w-full h-full bg-white rounded-xl flex flex-col items-center justify-start py-2 overflow-visible mb-1">
-      <div className="items-center justify-between w-[90%] mb-1">
+      <div className="items-center justify-between w-[90%]">
         <div>
           <div className="flex jusify-between text-2xl font-bold tracking-tight text-gray-900">
             <div className="flex items-center">
@@ -99,7 +104,7 @@ const DashboardCalendar = () => {
               <Legend color="bg-sky-400" label="Today" />
               <Legend color="bg-yellow-300" label="Event" />
               <Legend color="bg-green-300" label="Holiday" />
-              <Legend color="bg-red-300" label="Past" />
+              <Legend color="bg-red-300" label="Academic" />
             </div>
           </div>
           {/* </div> */}
@@ -135,7 +140,7 @@ const DashboardCalendar = () => {
             handlePopupEnter={handlePopupEnter}
             handlePopupLeave={handlePopupLeave}
           />,
-          document.body,
+          document.body
         )}
     </div>
   );
@@ -164,31 +169,32 @@ const HoverPopup = ({
     onMouseEnter={handlePopupEnter}
     onMouseLeave={handlePopupLeave}
   >
-    <h4 className="font-semibold text-slate-800 mb-1 text-[11px]">
+    <div className="font-semibold text-slate-800 mb-1 text-base">
       {hoveredEvent.date.toDateString()}
-    </h4>
+    </div>
 
     {hoveredEvent.holiday && (
-      <div className="mb-1 border-b border-gray-200 pb-1">
-        <p className="text-[11px] font-semibold text-green-700">
+      <div className="mb-1 pb-1">
+        <div className="text-xs font-semibold text-green-700">
           🟩 {hoveredEvent.holiday.name}
-        </p>
+        </div>
+      </div>
+    )}
+
+    {hoveredEvent.academic && (
+      <div className="mb-1 pb-1">
+        <div className="text-xs font-semibold text-red-700">
+          🟥 {hoveredEvent.academic.name}
+        </div>
       </div>
     )}
 
     {hoveredEvent.events.map((ev) => (
       <div
         key={ev._id}
-        className="mb-1 last:mb-0 border-b last:border-none pb-1"
+        className="mb-1 pb-1 text-xs font-semibold text-blue-700 truncate"
       >
-        <p className="text-[11px] font-semibold text-blue-700 truncate">
-          {ev.title}
-        </p>
-        <p className="text-[10px] text-gray-500 truncate">{ev.description}</p>
-        <p className="text-[9px] text-gray-400">
-          {new Date(ev.schedule.start).toLocaleDateString()} →{" "}
-          {new Date(ev.schedule.end).toLocaleDateString()}
-        </p>
+        🟦 {ev.title}
       </div>
     ))}
   </div>
