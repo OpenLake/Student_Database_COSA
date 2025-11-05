@@ -3,7 +3,6 @@
 @tailwind utilities; */
 @import "tailwindcss";
 
-
 .App {
   text-align: center;
 }
@@ -41,4 +40,30 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* no container */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b3b3b3; /* gray */
+  border-radius: 4px;
+}
+
+/* remove end buttons */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b3b3b3 transparent;
 }
