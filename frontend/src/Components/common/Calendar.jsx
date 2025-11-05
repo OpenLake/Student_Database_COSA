@@ -35,7 +35,7 @@ const DashboardCalendar = () => {
   const getTileColor = (d) => {
     if (!d) return "bg-transparent";
     const date = new Date(year, month, d);
-    const dayMid = new Date(date).setHours(0, 0, 0, 0); 
+    const dayMid = new Date(date).setHours(0, 0, 0, 0);
     const todayMid = new Date(today).setHours(0, 0, 0, 0);
     const hasEvent = getEventsForDate(date, events).length > 0;
     const holiday = getHolidayForDate(date, holidays2025);
@@ -62,39 +62,47 @@ const DashboardCalendar = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col items-center justify-start py-2 overflow-visible">
-      <div className="flex items-center justify-between w-[90%] mb-1">
-        <div className="flex items-center gap-1">
-          <Calendar1 size={16} className="text-gray-600" />
-          <p className="text-[12px] font-semibold text-gray-800">
-            {new Date(year, month).toLocaleString("default", {
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
-        </div>
+    <div className="w-full h-full bg-white rounded-xl flex flex-col items-center justify-start py-2 overflow-visible mb-1">
+      <div className="items-center justify-between w-[90%] mb-1">
+        <div>
+          <div className="flex jusify-between text-2xl font-bold tracking-tight text-gray-900">
+            <div className="flex items-center">
+              <Calendar1 size={24} className="text-gray-600 mt-1" />
+              <span className="mx-2">Monthly Schedule</span>
+            </div>
+            <div className="flex-1"></div>
+            <div className="flex items-center gap-2 mx-2 text-gray-500 text-3xl font-bold">
+              <button
+                onClick={() => changeMonth(-1)}
+                className="hover:text-gray-700"
+              >
+                ‹
+              </button>
+              <button
+                onClick={() => changeMonth(1)}
+                className="hover:text-gray-700"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+          <div className="flex text-gray-600 justify-between">
+            <p className="text-base font-semibold text-gray-800">
+              {new Date(year, month).toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 text-[9px] text-gray-500">
-            <Legend color="bg-sky-400" label="Today" />
-            <Legend color="bg-yellow-300" label="Event" />
-            <Legend color="bg-green-300" label="Holiday" />
-            <Legend color="bg-red-300" label="Past" />
+            {/* <div className="flex content-center gap-3 "> */}
+            <div className="flex items-start gap-1 text-[9px] text-gray-500 ml-5 mr-2 mt-1">
+              <Legend color="bg-sky-400" label="Today" />
+              <Legend color="bg-yellow-300" label="Event" />
+              <Legend color="bg-green-300" label="Holiday" />
+              <Legend color="bg-red-300" label="Past" />
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-gray-500 text-sm font-bold">
-            <button
-              onClick={() => changeMonth(-1)}
-              className="hover:text-gray-700"
-            >
-              ‹
-            </button>
-            <button
-              onClick={() => changeMonth(1)}
-              className="hover:text-gray-700"
-            >
-              ›
-            </button>
-          </div>
+          {/* </div> */}
         </div>
       </div>
 
@@ -104,11 +112,11 @@ const DashboardCalendar = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-[3px] w-[90%]">
+      <div className="grid grid-cols-7 gap-[5px] w-[90%] place-items-stretch">
         {days.map((day, idx) => (
           <div
             key={idx}
-            className={`flex items-center justify-center h-7 w-7 rounded-md text-[10px] ${getTileColor(day)} transition-all duration-150`}
+            className={`flex items-center justify-center aspect-square rounded-md text-sm ${getTileColor(day)} transition-all duration-150`}
             onMouseEnter={(e) =>
               day && handleMouseEnter(e, new Date(year, month, day))
             }

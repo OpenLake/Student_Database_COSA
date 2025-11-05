@@ -43,7 +43,7 @@ export const HomePage = () => {
       position: {
         colStart: isCollapsed ? 18 : 14,
         colEnd: isCollapsed ? 25 : 20,
-        rowStart: 7,
+        rowStart: 8,
         rowEnd: 16,
       },
     },
@@ -54,7 +54,7 @@ export const HomePage = () => {
         colStart: isCollapsed ? 18 : 14,
         colEnd: isCollapsed ? 25 : 20,
         rowStart: 0,
-        rowEnd: 7,
+        rowEnd: 8,
       },
     },
   ];
