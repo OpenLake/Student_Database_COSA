@@ -1,6 +1,7 @@
 import React from "react";
 import { useEvents } from "../../hooks/useEvents";
 import EventTile from "../Events/EventTile";
+import { BellRing } from "lucide-react";
 
 // A small component to visually represent event status
 const StatusIndicator = ({ status }) => {
@@ -34,7 +35,10 @@ const UpdatesCard = () => {
       <div className="flex items-center justify-between mb-2">
         <div>
           <div className="text-2xl font-bold tracking-tight text-gray-900">
-            Latest Updates
+            <div className="flex items-center">
+              <BellRing size={24} className="text-gray-600 mt-1" />
+              <span className="mx-2">Latest Updates</span>
+            </div>
           </div>
           {/* <div className="text-gray-600 mt-2">
             Your feedback helps us improve our services and overall COSA.

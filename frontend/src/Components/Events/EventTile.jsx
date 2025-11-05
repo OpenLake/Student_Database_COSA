@@ -11,10 +11,6 @@ const EventTile = ({
   event,
   index,
   compact = false,
-  //   userRole,
-  //   onEdit,
-  //   onRequestRoom,
-  //   onManage,
 }) => {
   const { setSelected } = useSidebar();
   const [month, day] = formatDate(event.schedule?.start).split(" ");
