@@ -13,14 +13,15 @@ export const InfoCard = ({
   onEdit,
   onDelete,
   onActionProps,
+  titleClass = "",
   bgColor = "bg-[#FDFAE2]",
 }) => (
   <div className={`${bgColor} rounded-xl px-6 py-6 overflow-hidden`}>
     <div className="mb-2">
       <div className="flex justify-between items-start gap-4">
-        <div className="text-xl font-bold text-black truncate">{title}</div>
+        <div className={`text-xl font-bold text-black ${titleClass}`}>{title}</div>
         <span
-          className={`p-2 ${badgeColor} text-xs rounded-full font-medium shadow-sm truncate`}
+          className={`p-2 ${badgeColor} text-xs rounded-full font-medium shadow-sm`}
         >
           {badgeText}
         </span>

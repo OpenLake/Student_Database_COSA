@@ -1,6 +1,27 @@
-import React from "react";
+import { Calendar, CheckCircle, XCircle, Target } from "lucide-react";
+import { InfoCard } from "../common/InfoCard";
+import { useContext, useState } from "react";
+import { ResolutionModal } from "./ResolutionModel";
+import { useFeedback } from "../../hooks/useFeedback";
+import { AdminContext } from "../../context/AdminContext";
 
 const FeedbackPreview = ({ fb }) => {
+  const { isUserLoggedIn } = useContext(AdminContext);
+  const isStudent = isUserLoggedIn?.role === "STUDENT";
+
+  const { markAsResolved } = useFeedback();
+  const [showModal, setShowModal] = useState(false);
+  const [modalFeedbackId, setModalFeedbackId] = useState(null);
+  const [resolving, setResolving] = useState(false);
+
+  const handleResolve = async (actionTaken) => {
+    setResolving(true);
+    const result = await markAsResolved(modalFeedbackId, actionTaken);
+    setResolving(false);
+    if (result.success) {
+      setShowModal(false);
+    }
+  };
   if (!fb)
     return (
       <div className="p-3 flex items-center justify-center">
@@ -8,59 +29,95 @@ const FeedbackPreview = ({ fb }) => {
       </div>
     );
 
-  return (
-    <div className="p-2.5 flex flex-col justify-center">
-      <p className="font-bold text-blue-600 text-balance">{fb.comments}</p>
-      <p>
-        <span className="font-semibold">Type: </span>
-        {fb.type}
-      </p>
-      <p>
-        <span className="font-semibold">Status: </span>{" "}
-        <span className={fb.is_resolved ? "text-green-600" : "text-red-600"}>
-          {fb.is_resolved ? "Resolved" : "Pending"}
-        </span>
-      </p>
-      <p>
-        <span className="font-semibold">Created At: </span>
-        <span>
-          {new Date(fb.created_at).toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </span>
-      </p>
-      {fb.is_resolved && (
-        <p>
-          <span className="font-semibold">Resolved At: </span>
-          <span>
-            {new Date(fb.resolved_at).toLocaleDateString("en-US", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })}
-          </span>
-        </p>
-      )}
+  // Format target display
+  const getTargetDisplay = () => {
+    if (fb.target_type === "User" && fb.target_data) {
+      return fb.target_data.personal_info?.name
+        ? `${fb.target_data.personal_info?.name} (${fb.target_data.username})`
+        : fb.target_data.username;
+    } else if (fb.target_type === "Event" && fb.target_data) {
+      return `${fb.target_data.title} (${fb.target_data.organizing_unit})`;
+    } else if (fb.target_type === "Club/Organization" && fb.target_data) {
+      return `${fb.target_data.name} (${fb.target_data.parent})`;
+    } else if (fb.target_type === "POR" && fb.target_data) {
+      return `${fb.target_data.title} (${fb.target_data.unit})`;
+    }
+    return "N/A";
+  };
 
-      <p>
-        <span className="font-semibold">Target: </span>
-        <span className="text-green-600">
-          {fb.target_type === "User" && fb.target_data
-            ? fb.target_data.personal_info?.name
-              ? `${fb.target_data.personal_info?.name} (${fb.target_data.username})`
-              : fb.target_data.username
-            : fb.target_type === "Event" && fb.target_data
-              ? `${fb.target_data.title} (${fb.target_data.organizing_unit})`
-              : fb.target_type === "Club/Organization" && fb.target_data
-                ? `${fb.target_data.name} (${fb.target_data.parent})`
-                : fb.target_type === "POR" && fb.target_data
-                  ? `${fb.target_data.title} (${fb.target_data.unit})`
-                  : "N/A"}
-        </span>
-      </p>
-    </div>
+  // Prepare description items
+  const descriptionItems = [
+    {
+      key: "Type",
+      value: fb.type,
+    },
+    {
+      key: "Created At",
+      value: new Date(fb.created_at).toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      icon: Calendar,
+    },
+    {
+      key: "Status",
+      value: fb.is_resolved ? "Resolved" : "Not Resolved",
+      icon: fb.is_resolved ? CheckCircle : XCircle,
+    },
+  ];
+
+  if (fb.is_resolved) {
+    descriptionItems.push({
+      key: "Resolved At",
+      value: new Date(fb.resolved_at).toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      icon: CheckCircle,
+    });
+  }
+
+  descriptionItems.push({
+    key: "Target",
+    value: getTargetDisplay(),
+    icon: Target,
+  });
+
+  const onResolve = (id) => {
+    setModalFeedbackId(id);
+    setShowModal(true);
+  };
+
+  return (
+    <>
+      <InfoCard
+        title={fb.comments}
+        titleClass="!text-lg"
+        subtitle=""
+        // badgeText={fb.is_resolved ? "Resolved" : "Pending"}
+        // badgeColor={
+        //   fb.is_resolved
+        //     ? "bg-green-100 text-green-800"
+        //     : "bg-red-100 text-red-800"
+        // }
+        descriptionItems={descriptionItems}
+        onAction={!fb.is_resolved && !isStudent && onResolve}
+        onActionText={!fb.is_resolved && !isStudent && `Mark as Resolved`}
+        onActionColor="bg-[#C0FFBD]"
+        onActionProps={fb._id}
+        // onEdit={onEdit}
+        // onDelete={onDelete}
+        bgColor="bg-white"
+      />
+      <ResolutionModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleResolve}
+        loading={resolving}
+      />
+    </>
   );
 };
 

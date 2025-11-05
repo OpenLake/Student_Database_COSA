@@ -35,7 +35,7 @@ const GridLayout = ({ config, components }) => {
               gridRowStart: rowStart,
               gridRowEnd: rowEnd,
             }}
-            className="bg-white rounded-2xl shadow-sm overflow-auto"
+            className="bg-white rounded-2xl shadow-sm overflow-auto border-2 border-black"
           >
             <Component {...item.props} />
           </div>
