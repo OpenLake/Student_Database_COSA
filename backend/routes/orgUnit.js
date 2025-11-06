@@ -16,17 +16,19 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
 
-
-router.get("/clubData/:email",isAuthenticated, async (req, res) => {
+router.get("/clubData/:email", isAuthenticated, async (req, res) => {
   try {
     const email = req.params.email;
-    if (!email) { return res.status(400).json({ error: "Missing email" }); }
+    if (!email) {
+      return res.status(400).json({ error: "Missing email" });
+    }
 
     const unit = await OrganizationalUnit.findOne({
       "contact_info.email": email,
     }).populate("parent_unit_id");
-    if (!unit)
-     { return res.status(404).json({ error: "Organizational Unit not found" }); }
+    if (!unit) {
+      return res.status(404).json({ error: "Organizational Unit not found" });
+    }
 
     const events = await Event.find({ organizing_unit_id: unit._id })
       .populate("participants")
@@ -75,119 +77,133 @@ router.get("/clubData/:email",isAuthenticated, async (req, res) => {
 });
 
 // Fetches all units, or filters by category if provided in the query.
-router.get("/organizational-units", isAuthenticated,async (req, res) => {
+router.get("/organizational-units", isAuthenticated, async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, type } = req.query;
 
     const filter = {};
 
     if (category) {
       filter.category = category;
     }
+    if (type) {
+      filter.type = type;
+    }
     const units = await OrganizationalUnit.find(filter, "_id name type").sort({
       name: 1,
     });
     res.status(200).json(units);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Server error while fetching organizational units",
-        error,
-      });
+    res.status(500).json({
+      message: "Server error while fetching organizational units",
+      error,
+    });
   }
 });
 
 // Create a new organizational unit
-router.post("/create",isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS,"PRESIDENT"]), async (req, res) => {
+router.post(
+  "/create",
+  isAuthenticated,
+  authorizeRole([...ROLE_GROUPS.GENSECS, "PRESIDENT"]),
+  async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-  const session=await mongoose.startSession();
-  session.startTransaction();
+    try {
+      const {
+        name,
+        type,
+        description,
+        parent_unit_id,
+        hierarchy_level,
+        category,
+        is_active,
+        contact_info,
+        budget_info,
+      } = req.body;
 
-  try {
-    const {
-      name,
-      type,
-      description,
-      parent_unit_id,
-      hierarchy_level,
-      category,
-      is_active,
-      contact_info,
-      budget_info,
-    } = req.body;
-
-    if (!name || !type || !category || !hierarchy_level ||!contact_info.email) {
-      return res.status(400).json({
-        message:
-          "Validation failed: name, type, category, and hierarchy_level are required.",
-      });
-    }
-
-    const newUnitData = {
-      unit_id: `org-${uuidv4()}`,
-      name,
-      type,
-      description,
-      parent_unit_id: parent_unit_id || null,
-      hierarchy_level,
-      category,
-      is_active,
-      contact_info,
-      budget_info,
-    };
-
-    const newUnit = new OrganizationalUnit(newUnitData);
-    await newUnit.save(session);
-
-    const existingUser = await User.findOne({ username: contact_info.email }).session(session);
-        if (existingUser) {
-            // If user exists, we must abort the transaction to avoid an inconsistent state
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(409).json({ message: "A user with this email already exists. The organizational unit was not created." });
-        }
-    
-    const newUser = new User({
-            username: contact_info.email,
-            role: "CLUB_COORDINATOR", // Assign the specified role
-            strategy: "google",        // Set strategy to google
-            onboardingComplete: true,  // Set onboarding to true
-            personal_info: {
-                name: name, // Use the organization's name for the user's name
-                email: contact_info.email,
-            },
+      if (
+        !name ||
+        !type ||
+        !category ||
+        !hierarchy_level ||
+        !contact_info.email
+      ) {
+        return res.status(400).json({
+          message:
+            "Validation failed: name, type, category, and hierarchy_level are required.",
         });
-        await newUser.save({ session }); // Pass the session to the save command
+      }
 
-        // --- 5. If both operations were successful, commit the transaction ---
-        await session.commitTransaction();
+      const newUnitData = {
+        unit_id: `org-${uuidv4()}`,
+        name,
+        type,
+        description,
+        parent_unit_id: parent_unit_id || null,
+        hierarchy_level,
+        category,
+        is_active,
+        contact_info,
+        budget_info,
+      };
+
+      const newUnit = new OrganizationalUnit(newUnitData);
+      await newUnit.save(session);
+
+      const existingUser = await User.findOne({
+        username: contact_info.email,
+      }).session(session);
+      if (existingUser) {
+        // If user exists, we must abort the transaction to avoid an inconsistent state
+        await session.abortTransaction();
         session.endSession();
+        return res.status(409).json({
+          message:
+            "A user with this email already exists. The organizational unit was not created.",
+        });
+      }
 
-       res.status(201).json(newUnit);
-  } catch (error) {
+      const newUser = new User({
+        username: contact_info.email,
+        role: "CLUB_COORDINATOR", // Assign the specified role
+        strategy: "google", // Set strategy to google
+        onboardingComplete: true, // Set onboarding to true
+        personal_info: {
+          name: name, // Use the organization's name for the user's name
+          email: contact_info.email,
+        },
+      });
+      await newUser.save({ session }); // Pass the session to the save command
+
+      // --- 5. If both operations were successful, commit the transaction ---
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).json(newUnit);
+    } catch (error) {
       await session.abortTransaction();
       session.endSession();
       console.error("Error creating organizational unit and user: ", error);
 
-    if (error.name === "ValidationError" || error.name === "CastError") {
-      return res
-        .status(400)
-        .json({ message: `Invalid data provided: ${error.message}` });
-    }
+      if (error.name === "ValidationError" || error.name === "CastError") {
+        return res
+          .status(400)
+          .json({ message: `Invalid data provided: ${error.message}` });
+      }
 
-    if (error.code === 11000) {
-      return res
-        .status(409)
-        .json({
+      if (error.code === 11000) {
+        return res.status(409).json({
           message:
             "Conflict: An organizational unit with this name or ID already exists.",
         });
-    }
+      }
 
-    res
-      .status(500)
-      .json({ message: "Server error while creating organizational unit." });
-  }
-});
+      res
+        .status(500)
+        .json({ message: "Server error while creating organizational unit." });
+    }
+  },
+);
 module.exports = router;
