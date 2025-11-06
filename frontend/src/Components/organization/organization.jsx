@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
+import { Eye, Plus } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import CreateOrgUnit from "./CreateOrgUnit";
+import ViewClubs from "./ViewClubs";
 
 const Organization = () => {
   const [add, setAdd] = useState(false);
@@ -21,8 +23,24 @@ const Organization = () => {
             </div>
           </div>
         </div>
-        <CreateOrgUnit />
+
+        <button
+          onClick={() => setAdd(!add)}
+          className="flex items-center gap-2 text-black text-sm transition-colors"
+        >
+          {add ? (
+            <div className="flex gap-2">
+              <Eye className="w-6 h-6" /> <span>View All Clubs</span>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Plus className="w-6 h-6" />
+              <span>Add Organizational units</span>
+            </div>
+          )}
+        </button>
       </div>
+      {add ? <CreateOrgUnit /> : <ViewClubs />}
     </div>
   );
 };
