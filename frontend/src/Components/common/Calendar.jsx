@@ -35,8 +35,8 @@ const DashboardCalendar = () => {
   const getTileColor = (d) => {
     if (!d) return "bg-transparent";
     const date = new Date(year, month, d);
-    const dayMid = date.setHours(0, 0, 0, 0);
-    const todayMid = today.setHours(0, 0, 0, 0);
+    const dayMid = new Date(date).setHours(0, 0, 0, 0); 
+    const todayMid = new Date(today).setHours(0, 0, 0, 0);
     const hasEvent = getEventsForDate(date, events).length > 0;
     const holiday = getHolidayForDate(date, holidays2025);
 
