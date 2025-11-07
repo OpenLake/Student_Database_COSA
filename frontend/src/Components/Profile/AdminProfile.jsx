@@ -277,7 +277,7 @@ const AdminProfile = () => {
                   );
                 }
 
-                return <Component {...fieldProps} />;
+                return <Component key={field.name} {...fieldProps} />;
               })}
             </div>
           ))}
