@@ -1,30 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSidebar } from "../../hooks/useSidebar";
 import api from "../../utils/api";
+import { useStats } from "../../hooks/useStats";
 
 const QuickStats = () => {
   const { role } = useSidebar();
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get("/api/dashboard/stats");
-        setStats(response.data);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch stats:", err);
-        setError("Failed to load statistics");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [role]);
+  const { stats, loading, error } = useStats();
 
   if (loading) {
     return (
@@ -183,9 +165,11 @@ const QuickStats = () => {
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-800">
                 {item.label}
-              {item.subtitle && (
-                <span className="text-xs text-gray-600 ml-2">({item.subtitle})</span>
-              )}
+                {item.subtitle && (
+                  <span className="text-xs text-gray-600 ml-2">
+                    ({item.subtitle})
+                  </span>
+                )}
               </p>
             </div>
             <div className="text-right">
