@@ -89,7 +89,7 @@ router.get("/organizational-units", isAuthenticated, async (req, res) => {
     if (type) {
       filter.type = type;
     }
-    const units = await OrganizationalUnit.find(filter, "_id name type").sort({
+    const units = await OrganizationalUnit.find(filter).sort({
       name: 1,
     });
     res.status(200).json(units);

@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import api from "../../utils/api";
 import { AdminContext } from "../../context/AdminContext";
 import OrgList from "./OrgList";
+import OrgView from "./OrgView";
 const ViewClubs = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
   const userRole = isUserLoggedIn?.role || "STUDENT";
-  const [clubs, setClubs] = useState(null);
-  const [selectedClub, setSelectedClub] = useState(null);
+  const [orgs, setOrgs] = useState(null);
+  const [selectedOrg, setSelectedOrg] = useState(null);
   const [currId, setCurrId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(null);
   const getRoleCategory = (role) => {
     switch (role) {
       case "GENSEC_SCITECH":
@@ -38,6 +40,22 @@ const ViewClubs = () => {
         return "";
     }
   };
+  const handleSearch = () => {
+    if (searchTerm == null || !searchTerm.trim() || !orgs) {
+      alert("Enter an organization name");
+      return;
+    }
+    const match = orgs.find(
+      (unit) => unit.name.toLowerCase() === searchTerm.trim().toLowerCase(),
+    );
+    if (match) {
+      setSelectedOrg(match);
+      setSearchTerm(""); // optional — clear search after opening
+    } else {
+      alert("No organization found with that name");
+    }
+  };
+
   useEffect(() => {
     const fetchUnits = async () => {
       let url = `/api/orgUnit/organizational-units`;
@@ -47,26 +65,63 @@ const ViewClubs = () => {
       }
       try {
         const { data } = await api.get(url);
-        setClubs(data);
+        setOrgs(data);
       } catch (error) {
         console.error("Error fetching organizational units:", error);
       }
     };
     fetchUnits();
   }, [userRole]);
-  if (clubs) {
-    clubs.find((unit) => {
-      if (unit.unit_id == getId(userRole)) {
-        setCurrId(unit._id);
-      }
-    });
+  useEffect(() => {
+    if (orgs) {
+      orgs.find((unit) => {
+        if (unit.unit_id == getId(userRole)) {
+          setCurrId(unit._id);
+        }
+      });
+    }
+  }, [orgs, userRole]);
+  if (selectedOrg) {
+    return (
+      <div className="min-h-screen p-8 rounded-3xl">
+        <OrgView
+          orgUnit={selectedOrg}
+          units={orgs}
+          onBack={() => setSelectedOrg(null)}
+          showDetails={true} // Show details from second layer onwards
+        />
+      </div>
+    );
   }
   return (
-    <div className="min-h-screen p-8 rounded-3xl">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-        Clubs under {userRole.replace(/_/g, " ")}
+    <div className="min-h-screen pt-2 pr-8 pl-8 pb-8 rounded-3xl">
+      <h2 className="font-semibold mb-6 text-gray-800">
+        Organizations under {userRole.replace(/_/g, " ")}
       </h2>
-      <OrgList units={clubs} parent_unit_id={currId} />
+      <div className="flex items-center gap-2 mb-6">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
+          placeholder="Search organization..."
+          className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3faf84]"
+        />
+        <button
+          onClick={handleSearch}
+          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+        >
+          Search
+        </button>
+      </div>
+
+      <OrgList
+        units={orgs}
+        parent_unit_id={currId}
+        selectedOrg={setSelectedOrg}
+      />
     </div>
   );
 };
