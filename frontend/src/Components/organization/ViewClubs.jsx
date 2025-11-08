@@ -29,7 +29,7 @@ const ViewClubs = () => {
       case "GENSEC_SCITECH":
         return "COUNCIL_SCITECH";
       case "GENSEC_ACADEMIC":
-        return "COUNCIL_CULTURAL";
+        return "COUNCIL_ACADEMIC";
       case "GENSEC_CULTURAL":
         return "COUNCIL_CULTURAL";
       case "GENSEC_SPORTS":
