@@ -4,8 +4,6 @@ import { ArrowLeft } from "lucide-react";
 
 const OrgView = ({ orgUnit, units, onBack }) => {
   const [selectedChildOrg, setSelectedChildOrg] = useState(null);
-  console.log("Viewing org: ", orgUnit);
-
   if (selectedChildOrg) {
     return (
       <OrgView
@@ -29,7 +27,7 @@ const OrgView = ({ orgUnit, units, onBack }) => {
       </button>
 
       {/* Parent org details */}
-      <div className="parent-org-info bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-6">
+      <div className="parent-org-info bg-white p-6 rounded-2xl shadow-2xl border border-gray-100 mb-6">
         <h2 className="text-2xl font-bold mb-3 text-gray-800">
           {orgUnit.name}
         </h2>
