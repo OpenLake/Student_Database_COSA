@@ -19,7 +19,7 @@ const { ROLE_GROUPS } = require("../utils/roles");
 router.get("/clubData/:email", isAuthenticated, async (req, res) => {
   try {
     const email = req.params.email;
-    if (!email) {
+    if (!email || email.trim() === "") {
       return res.status(400).json({ error: "Missing email" });
     }
 
