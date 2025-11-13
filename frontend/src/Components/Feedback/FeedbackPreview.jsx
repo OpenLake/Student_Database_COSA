@@ -1,4 +1,4 @@
-import { Calendar, CheckCircle, XCircle, Target } from "lucide-react";
+import { Calendar, CheckCircle, XCircle, Target, Gavel } from "lucide-react";
 import { InfoCard } from "../common/InfoCard";
 import { useContext, useState } from "react";
 import { ResolutionModal } from "./ResolutionModel";
@@ -76,6 +76,11 @@ const FeedbackPreview = ({ fb }) => {
         year: "numeric",
       }),
       icon: CheckCircle,
+    });
+    descriptionItems.push({
+      key: fb.type === "Complaint" ? "Action Taken" : "Admin Response",
+      value: fb.actions_taken,
+      icon: Gavel,
     });
   }
 
