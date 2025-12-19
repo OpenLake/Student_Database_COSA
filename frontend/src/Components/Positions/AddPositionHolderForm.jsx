@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
@@ -8,6 +8,7 @@ import { ErrorMessage } from "./PositionCard";
 const AddPositionHolderForm = () => {
   const navigate = useNavigate();
   const { isUserLoggedIn } = useContext(AdminContext);
+  const userRole = isUserLoggedIn?.role || null;
 
   const {
     formData,
@@ -18,6 +19,33 @@ const AddPositionHolderForm = () => {
     isSubmitting,
     handleSubmit,
   } = usePositionHolderForm(isUserLoggedIn);
+  const categoryByRole = {
+    GENSEC_CULTURAL: "cultural",
+    GENSEC_SCITECH: "scitech",
+    GENSEC_ACADEMIC: "academic",
+    GENSEC_SPORTS: "sports",
+  };
+
+  const filteredPositions = () => {
+    if (!positions?.length || !isUserLoggedIn) return [];
+
+    if (userRole === "PRESIDENT") return positions;
+
+    if (userRole === "CLUB_COORDINATOR") {
+      const userEmail = isUserLoggedIn.personal_info.email;
+
+      const coordinatorUnitId = positions.find(
+        (pos) => pos.unit_id?.contact_info?.email === userEmail,
+      )?.unit_id?._id;
+
+      return positions.filter((pos) => pos.unit_id?._id === coordinatorUnitId);
+    }
+
+    const category = categoryByRole[userRole];
+    if (!category) return [];
+
+    return positions.filter((pos) => pos.unit_id?.category === category);
+  };
 
   const statusOptions = [
     { value: "active", label: "Active" },
@@ -28,7 +56,7 @@ const AddPositionHolderForm = () => {
   const currentYear = new Date().getFullYear();
   const tenureYearOptions = Array.from(
     { length: currentYear - 2015 },
-    (_, i) => `${2016 + i}-${2017 + i}`
+    (_, i) => `${2016 + i}-${2017 + i}`,
   ).reverse();
 
   const handleInputChange = (field, value) => {
@@ -83,7 +111,7 @@ const AddPositionHolderForm = () => {
               className={inputStyles}
             >
               <option value="">Select position</option>
-              {positions.map((pos) => (
+              {filteredPositions().map((pos) => (
                 <option key={pos._id} value={pos._id}>
                   {pos.title} ({pos.unit_id?.name})
                 </option>
@@ -143,7 +171,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "appointment_details",
                     "appointed_by",
-                    e.target.value
+                    e.target.value,
                   )
                 }
                 className={inputStyles}
@@ -166,7 +194,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "appointment_details",
                     "appointment_date",
-                    e.target.value
+                    e.target.value,
                   )
                 }
                 className={inputStyles}
@@ -191,7 +219,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "events_organized",
-                    e.target.value
+                    e.target.value,
                   )
                 }
                 className={inputStyles}
@@ -208,7 +236,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "budget_utilized",
-                    e.target.value
+                    e.target.value,
                   )
                 }
                 className={inputStyles}
@@ -222,7 +250,7 @@ const AddPositionHolderForm = () => {
                   handleNestedChange(
                     "performance_metrics",
                     "feedback",
-                    e.target.value
+                    e.target.value,
                   )
                 }
                 placeholder="Provide feedback or notes..."
