@@ -105,62 +105,72 @@ const AchievementsEndorsementTab = ({ skillType }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {achievements.map((ach) => (
-        <div
-          key={ach._id}
-          className="bg-white border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md"
-        >
-          <div className="flex-grow">
-            <h3 className="text-lg font-bold text-gray-800">{ach.title}</h3>
-            <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-              "{ach.description}"
-            </p>
+    <div className="space-y-6 w-full">
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-red-800">{error}</p>
+        </div>
+      )}
 
-            <div className="space-y-2 text-sm text-gray-700 border-t border-yellow-200 pt-3 mt-3">
-              {ach.user_id && (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {achievements.map((ach) => (
+          <div
+            key={ach._id}
+            className="bg-white border border-yellow-200 rounded-xl p-4 flex flex-col h-full shadow-sm transition-shadow hover:shadow-md"
+          >
+            <div className="flex-grow">
+              <h3 className="text-lg font-bold text-gray-800">{ach.title}</h3>
+              <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                "{ach.description}"
+              </p>
+
+              <div className="space-y-2 text-sm text-gray-700 border-t border-yellow-200 pt-3 mt-3">
+                {ach.user_id && (
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <span>{ach.user_id.personal_info?.name}</span>
+                  </div>
+                )}
+                {ach.event_id && (
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <span>Event: {ach.event_id.title}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                  <span>{ach.user_id.personal_info?.name}</span>
+                  <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span>
+                    {format(new Date(ach.date_achieved), "dd MMM yyyy")}
+                  </span>
                 </div>
-              )}
-              {ach.event_id && (
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                  <span>Event: {ach.event_id.title}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                <span>{format(new Date(ach.date_achieved), "dd MMM yyyy")}</span>
+                {ach.certificate_url && (
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <a
+                      href={ach.certificate_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Certificate
+                    </a>
+                  </div>
+                )}
               </div>
-              {ach.certificate_url && (
-                <div className="flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                  <a
-                    href={ach.certificate_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    View Certificate
-                  </a>
-                </div>
-              )}
+            </div>
+
+            <div className="mt-4">
+              <button
+                onClick={() => handleVerify(ach._id)}
+                disabled={verifying.has(ach._id)}
+                className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {verifying.has(ach._id) ? "Endorsing..." : "Endorse"}
+              </button>
             </div>
           </div>
-
-          <div className="mt-4">
-            <button
-              onClick={() => handleVerify(ach._id)}
-              disabled={verifying.has(ach._id)}
-              className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {verifying.has(ach._id) ? "Endorsing..." : "Endorse"}
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
