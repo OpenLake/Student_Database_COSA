@@ -53,6 +53,35 @@ router.post(
   },
 );
 
+// REJECT (delete) a user skill
+router.post(
+  "/user-skills/reject/:id",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const skillId = req.params.id;
+
+    try {
+      const deletedSkill = await UserSkill.findByIdAndDelete(skillId);
+
+      if (!deletedSkill) {
+        return res.status(404).json({
+          message: "User skill not found",
+        });
+      }
+
+      res.json({
+        message: "User skill rejected and deleted successfully",
+      });
+    } catch (err) {
+      console.error("Error rejecting user skill:", err);
+      res.status(500).json({
+        message: "Error rejecting user skill",
+      });
+    }
+  },
+);
+
 // GET all unendorsed skills by type
 router.get("/unendorsed/:type", isAuthenticated, async (req, res) => {
   const skillType = req.params.type;
@@ -88,6 +117,35 @@ router.post(
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Failed to endorse skill." });
+    }
+  },
+);
+
+// REJECT (delete) a skill
+router.post(
+  "/reject/:id",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const skillId = req.params.id;
+
+    try {
+      const deletedSkill = await Skill.findByIdAndDelete(skillId);
+
+      if (!deletedSkill) {
+        return res.status(404).json({
+          message: "Skill not found",
+        });
+      }
+
+      res.json({
+        message: "Skill rejected and deleted successfully",
+      });
+    } catch (err) {
+      console.error("Error rejecting skill:", err);
+      res.status(500).json({
+        message: "Failed to reject skill",
+      });
     }
   },
 );
@@ -165,7 +223,7 @@ router.post("/create-user-skill", isAuthenticated, async (req, res) => {
 router.get("/top-skills", isAuthenticated, async (req, res) => {
   try {
     const topSkills = await UserSkill.aggregate([
-      {$match:{is_endorsed: true}},
+      { $match: { is_endorsed: true } },
       { $group: { _id: "$skill_id", totalUsers: { $sum: 1 } } },
       { $sort: { totalUsers: -1 } },
       { $limit: 5 },
