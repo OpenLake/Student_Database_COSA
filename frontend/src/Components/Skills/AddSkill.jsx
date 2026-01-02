@@ -69,7 +69,13 @@ const Select = ({
   </select>
 );
 const AddSkill = () => {
-  const { newSkillData, updateNewSkillData, submitSkill, loading } = useSkillForm();
+  const {
+    newSkillData,
+    updateNewSkillData,
+    submitSkill,
+    loading,
+    submitNewSkill,
+  } = useSkillForm();
   return (
     <div className="px-6 pt-6 pb-2 flex flex-col items-start justify-between flex-wrap gap-3">
       <div>
@@ -122,7 +128,7 @@ const AddSkill = () => {
       </FormField>
       <div className="pt-4">
         <button
-          onClick={submitSkill}
+          onClick={submitNewSkill}
           disabled={loading}
           className={`w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
