@@ -10,6 +10,7 @@ import {
   UserPlus,
   Plus,
   Award,
+  Megaphone,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -62,5 +63,6 @@ export const NavbarConfig = {
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
 };

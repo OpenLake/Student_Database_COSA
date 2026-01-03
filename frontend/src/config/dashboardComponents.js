@@ -13,6 +13,7 @@ import StudentProfile from "../Components/Profile/ProfilePage";
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Achievements/AchievementForm";
 import ViewAchievements from "../Components/Achievements/ViewAchievements";
+import Announcements from "../Components/Announcements/Announcements";
 import EventsPage from "../pages/eventsPage";
 import PORsPage from "../pages/porsPage";
 import FeedbackPage from "../pages/feedbackPage";
@@ -22,6 +23,7 @@ import SkillsPage from "../pages/skillsPage";
 import EndorsementPage from "../pages/endorsementPage";
 import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
+import AnnouncementsPage from "../pages/announcementsPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -34,6 +36,7 @@ export const DashboardComponents = {
   endorsement: EndorsementPage,
   profile: ProfilePage,
   cosa: ViewTenure,
+  announcements: AnnouncementsPage,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
   "add-event": EventForm,
