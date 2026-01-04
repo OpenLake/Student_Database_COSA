@@ -25,7 +25,24 @@ const endorseSkill = async (skillId) => {
   }
 };
 
-const SkillCard = ({ skill, onEndorse, isEndorsing }) => {
+// API call to reject a skill
+const rejectSkill = async (skillId) => {
+  try {
+    const res = await api.post(`/api/skills/reject/${skillId}`);
+    return res.data;
+  } catch (error) {
+    const message = error.response?.data?.message || "Failed to reject skill";
+    throw new Error(message);
+  }
+};
+
+const SkillCard = ({
+  skill,
+  onEndorse,
+  onReject,
+  isEndorsing,
+  isRejecting,
+}) => {
   const formatDate = (dateString) =>
     new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -55,13 +72,21 @@ const SkillCard = ({ skill, onEndorse, isEndorsing }) => {
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex gap-2">
         <button
           onClick={() => onEndorse(skill._id)}
-          disabled={isEndorsing}
+          disabled={isEndorsing || isRejecting}
           className="w-full py-2 text-sm font-bold text-sky-800 bg-sky-100 rounded-lg hover:bg-sky-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isEndorsing ? "Endorsing..." : "Endorse"}
+        </button>
+
+        <button
+          onClick={() => onReject(skill._id)}
+          disabled={isEndorsing || isRejecting}
+          className="w-full py-2 text-sm font-bold text-red-800 bg-red-100 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isRejecting ? "Rejecting..." : "Reject"}
         </button>
       </div>
     </div>
@@ -72,6 +97,7 @@ const SkillsEndorsementTab = ({ skillType }) => {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [endorsingSkills, setEndorsingSkills] = useState(new Set());
+  const [rejectingSkills, setRejectingSkills] = useState(new Set()); // 👉 NEW
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -108,7 +134,30 @@ const SkillsEndorsementTab = ({ skillType }) => {
       });
     }
   };
-  
+
+  const handleReject = async (skillId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to reject this skill?\n\nThis action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setRejectingSkills((prev) => new Set([...prev, skillId]));
+      await rejectSkill(skillId);
+      setSkills((prev) => prev.filter((s) => s._id !== skillId));
+    } catch (err) {
+      console.error("Error rejecting skill:", err);
+      setError("Failed to reject skill. Please try again.");
+    } finally {
+      setRejectingSkills((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(skillId);
+        return newSet;
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -164,7 +213,9 @@ const SkillsEndorsementTab = ({ skillType }) => {
             key={skill._id}
             skill={skill}
             onEndorse={handleEndorse}
+            onReject={handleReject}
             isEndorsing={endorsingSkills.has(skill._id)}
+            isRejecting={rejectingSkills.has(skill._id)}
           />
         ))}
       </div>

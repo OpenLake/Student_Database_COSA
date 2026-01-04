@@ -4,50 +4,89 @@ const { Achievement } = require("../models/schema"); // Update path as needed
 const { v4: uuidv4 } = require("uuid");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
-const {ROLE_GROUPS} = require("../utils/roles");
+const { ROLE_GROUPS } = require("../utils/roles");
 
 // GET unverified achievements by type (achievements which are pending to verify fetched by admins only)
-router.get("/unendorsed/:type",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
-  const { type } = req.params;
+router.get(
+  "/unendorsed/:type",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const { type } = req.params;
 
-  try {
-    const unverifiedAchievements = await Achievement.find({
-      type,
-      verified: false,
-    })
-      .populate("user_id", "personal_info.name username user_id")
-      .populate("event_id", "title description ");
+    try {
+      const unverifiedAchievements = await Achievement.find({
+        type,
+        verified: false,
+      })
+        .populate("user_id", "personal_info.name username user_id")
+        .populate("event_id", "title description ");
 
-    res.json(unverifiedAchievements);
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch unverified achievements." });
-  }
-});
+      res.json(unverifiedAchievements);
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ message: "Failed to fetch unverified achievements." });
+    }
+  },
+);
 
 // PATCH verify achievement by ID (achievements can be verified by admins only)
-router.patch("/verify/:id",isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
-  const { id } = req.params;
-  const { verified_by } = req.body; // Assuming you send the verifier's ID in the request body
-  try {
-    const achievement = await Achievement.findById(id);
+router.patch(
+  "/verify/:id",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const { id } = req.params;
+    const { verified_by } = req.body; // Assuming you send the verifier's ID in the request body
+    try {
+      const achievement = await Achievement.findById(id);
 
-    if (!achievement) {
-      return res.status(404).json({ message: "Achievement not found." });
+      if (!achievement) {
+        return res.status(404).json({ message: "Achievement not found." });
+      }
+
+      achievement.verified = true;
+      achievement.verified_by = verified_by;
+      await achievement.save();
+
+      res.json({ message: "Achievement verified successfully.", achievement });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to verify achievement." });
     }
+  },
+);
 
-    achievement.verified = true;
-    achievement.verified_by = verified_by;
-    await achievement.save();
+// REJECT (delete) achievement by ID
+router.post(
+  "/reject/:id",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const { id } = req.params;
 
-    res.json({ message: "Achievement verified successfully.", achievement });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to verify achievement." });
-  }
-});
+    try {
+      const deletedAchievement = await Achievement.findByIdAndDelete(id);
+
+      if (!deletedAchievement) {
+        return res.status(404).json({
+          message: "Achievement not found.",
+        });
+      }
+
+      res.json({
+        message: "Achievement rejected and deleted successfully.",
+      });
+    } catch (err) {
+      console.error("Failed to reject achievement:", err);
+      res.status(500).json({
+        message: "Failed to reject achievement.",
+      });
+    }
+  },
+);
 
 //add achievement (achievements can be added by all the users (students -> their own ahieve, admins -> council achieve + student achieve))
 router.post("/add", isAuthenticated, async (req, res) => {
