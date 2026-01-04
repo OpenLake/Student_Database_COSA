@@ -163,6 +163,7 @@ export const useSkillForm = (onSuccess) => {
   };
 
   const submitNewSkill = async () => {
+    setLoading(true);
     try {
       const newSkillResponse = await api.post(
         `/api/skills/create-skill`,
