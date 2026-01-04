@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useProfile } from "../../hooks/useProfile";
+import api from "../../utils/api"
 
 const PORProfile = () => {
   const [position, setPosition] = useState(null);
@@ -24,13 +25,8 @@ const PORProfile = () => {
     const fetchData = async () => {
       try {
         const [positionsRes, holdersRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/positions/get-all", {
-            withCredentials: true,
-          }),
-          axios.get(
-            "http://localhost:5000/api/positions/get-all-position-holder",
-            { withCredentials: true },
-          ),
+            api.get("/api/positions/get-all"),
+            api.get("/api/positions/get-all-position-holder"),
         ]);
 
         const positions = positionsRes.data;
@@ -91,20 +87,20 @@ const PORProfile = () => {
         />
         <div>
           <h2 className="text-2xl font-semibold text-gray-900">
-            {student.personal_info.name}
+            {student.personal_info.name || "-"}
           </h2>
-          <p className="text-gray-500">{student.username}</p>
+          <p className="text-gray-500">{student.username || ""}</p>
           <span className="inline-block mt-2 text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-            {position.title}
+            {position.title || "N/A"}
           </span>
         </div>
       </div>
 
       {/* Analytics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-        <StatCard label="Position Type" value={position.position_type} />
-        <StatCard label="Tenure Year" value={holder.tenure_year} />
-        <StatCard label="Unit / Club" value={position.unit_id.name} />
+        <StatCard label="Position Type" value={position.position_type || "N/A"} />
+        <StatCard label="Tenure Year" value={holder.tenure_year || "N/A"} />
+        <StatCard label="Unit / Club" value={position.unit_id.name || "N/A"} />
       </div>
 
       {/* Info Sections */}
