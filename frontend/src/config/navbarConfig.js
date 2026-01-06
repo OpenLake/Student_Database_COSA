@@ -23,6 +23,7 @@ const GENSEC_COMMON_NAV = [
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
+  { key: "announcements", label: "Announcements", icon: Megaphone },
 ];
 
 export const NavbarConfig = {
@@ -35,6 +36,7 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
   GENSEC_ACADEMIC: GENSEC_COMMON_NAV,
@@ -50,6 +52,7 @@ export const NavbarConfig = {
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
     { key: "endorsement", label: "Endorsements", icon: Award },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
 
   STUDENT: [
