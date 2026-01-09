@@ -17,9 +17,9 @@ const EventTile = ({
   const { setSelected } = useSidebar();
   const [month, day] = formatDate(event.schedule?.start).split(" ");
 
-  const isRegistered = event.participants?.some(
-    (p) => String(p?._id || p) === String(currentUserId),
-  );
++  const isRegistered =
++    !!currentUserId &&
++    event.participants?.some((p) => String(p?._id || p) === String(currentUserId));
 
   return (
     <div
