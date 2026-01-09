@@ -55,6 +55,8 @@ const EventList = () => {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+
 
   const handleOpenModal = (eventId) => {
     setSelectedEventId(eventId);
@@ -75,20 +77,26 @@ const EventList = () => {
   /* confirm registration */
   const confirmRegistration = async () => {
     try {
-      const response = await api.post(
-        `/api/events/${selectedEvent._id}/register`,
-      );
+        if (!selectedEvent?._id || !currentUserId || isRegistering) return;
+      setIsRegistering(true);
+
+      await api.post(`/api/events/${selectedEvent._id}/register`);
 
       // update local state so UI updates immediately
-      updateEvent({
-        ...selectedEvent,
-        participants: [...(selectedEvent.participants || []), currentUserId],
-      });
+      updateEvent((() => {
+        const prev = selectedEvent.participants || [];
+        const already = prev.some((p) => String(p?._id || p) === String(currentUserId));
+        if (already) return selectedEvent;
+        // keep shape compatible with "populated participants" usage
+        return { ...selectedEvent, participants: [...prev, { _id: currentUserId }] };
+      })());
 
       setShowConfirm(false);
     } catch (err) {
       const message = err.response?.data?.message || "Registration failed";
       alert(message);
+    } finally {
+      setIsRegistering(false);
     }
   };
 
