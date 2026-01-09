@@ -221,11 +221,26 @@ router.post(
           return res.status(400).json({ message: "Registration has ended." });
         }
 
-        if (
-          event.registration.max_participants &&
-          event.participants.length >= event.registration.max_participants
-        ) {
-          return res.status(400).json({ message: "Registration is full." });
+
+        const maxParticipants = event.registration.max_participants;
+        if (maxParticipants) {
+          const updatedEvent = await Event.findOneAndUpdate(
+            {
+              _id: eventId,
+              $expr: { $lt: [{ $size: "$participants" }, maxParticipants] },
+            },
+            { $addToSet: { participants: userId } },
+            { new: true },
+          );
+
+          if (!updatedEvent) {
+            return res.status(400).json({ message: "Registration is full." });
+          }
+
+          return res.status(200).json({
+            message: "Successfully registered for the event.",
+            event: updatedEvent,
+          });
         }
       }
 
