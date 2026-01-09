@@ -8,7 +8,6 @@ const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS, ROLES } = require("../utils/roles");
 const eventsController = require("../controllers/eventControllers");
 
-
 router.get("/latest", eventsController.getLatestEvents);
 
 // Create a new event (new events can be created by admins only)
@@ -134,7 +133,7 @@ router.get("/units", isAuthenticated, async (req, res) => {
 
 router.get("/users", isAuthenticated, async (req, res) => {
   try {
-    const users = await User.find({role: "STUDENT"});
+    const users = await User.find({ role: "STUDENT" });
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -178,6 +177,75 @@ router.get("/:eventId/is-contact", isAuthenticated, async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+// Register student for an event
+router.post(
+  "/:eventId/register",
+  isAuthenticated,
+  authorizeRole(ROLES.STUDENT),
+  async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const userId = req.user._id;
+
+      const event = await Event.findById(eventId);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found." });
+      }
+
+      if (event.status === "completed") {
+        return res
+          .status(400)
+          .json({ message: "Registration is closed for this event." });
+      }
+
+      if (event.participants.includes(userId)) {
+        return res
+          .status(409)
+          .json({ message: "You are already registered for this event." });
+      }
+
+      if (event.registration && event.registration.required) {
+        const now = new Date();
+
+        if (
+          event.registration.start &&
+          now < new Date(event.registration.start)
+        ) {
+          return res
+            .status(400)
+            .json({ message: "Registration has not started yet." });
+        }
+
+        if (event.registration.end && now > new Date(event.registration.end)) {
+          return res.status(400).json({ message: "Registration has ended." });
+        }
+
+        if (
+          event.registration.max_participants &&
+          event.participants.length >= event.registration.max_participants
+        ) {
+          return res.status(400).json({ message: "Registration is full." });
+        }
+      }
+
+      await Event.findByIdAndUpdate(
+        eventId,
+        { $addToSet: { participants: userId } },
+        { new: true },
+      );
+
+      return res.status(200).json({
+        message: "Successfully registered for the event.",
+      });
+    } catch (error) {
+      console.error("Event registration error:", error);
+      return res
+        .status(500)
+        .json({ message: "Server error during registration." });
+    }
+  },
+);
 
 // GET event by ID
 router.get("/:id", async (req, res) => {
