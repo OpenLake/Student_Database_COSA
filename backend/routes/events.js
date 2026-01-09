@@ -199,7 +199,7 @@ router.post(
           .json({ message: "Registration is closed for this event." });
       }
 
-      if (event.participants.includes(userId)) {
+      if (event.participants.some((p) => p.equals(userId))) {
         return res
           .status(409)
           .json({ message: "You are already registered for this event." });
@@ -229,7 +229,7 @@ router.post(
         }
       }
 
-      await Event.findByIdAndUpdate(
+      const updatedEvent = await Event.findByIdAndUpdate(
         eventId,
         { $addToSet: { participants: userId } },
         { new: true },
@@ -237,8 +237,12 @@ router.post(
 
       return res.status(200).json({
         message: "Successfully registered for the event.",
+        event: updatedEvent,
       });
     } catch (error) {
+      if (error?.name === "CastError") {
+       return res.status(400).json({ message: "Invalid event ID format." });
+      }
       console.error("Event registration error:", error);
       return res
         .status(500)
