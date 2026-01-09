@@ -7,6 +7,7 @@ import EventForm from "./EventForm";
 import { AlertCircle, Calendar } from "lucide-react";
 import EventTile from "./EventTile";
 import EventCard from "./EventCard";
+import api from "../../utils/api";
 
 const LoadingState = () => {
   return (
@@ -43,6 +44,7 @@ const EventList = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
   const username = isUserLoggedIn?.username || "";
   const userRole = isUserLoggedIn?.role || "STUDENT";
+  const currentUserId = isUserLoggedIn?._id;
 
   const { events, loading, error, updateEvent } = useEvents(userRole, username);
 
@@ -50,6 +52,9 @@ const EventList = () => {
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedEventForManage, setSelectedEventForManage] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleOpenModal = (eventId) => {
     setSelectedEventId(eventId);
@@ -59,6 +64,32 @@ const EventList = () => {
   const handleCloseModal = () => {
     setSelectedEventId(null);
     setIsModalOpen(false);
+  };
+
+  /* register button click */
+  const handleRegister = (event) => {
+    setSelectedEvent(event);
+    setShowConfirm(true);
+  };
+
+  /* confirm registration */
+  const confirmRegistration = async () => {
+    try {
+      const response = await api.post(
+        `/api/events/${selectedEvent._id}/register`,
+      );
+
+      // update local state so UI updates immediately
+      updateEvent({
+        ...selectedEvent,
+        participants: [...(selectedEvent.participants || []), currentUserId],
+      });
+
+      setShowConfirm(false);
+    } catch (err) {
+      const message = err.response?.data?.message || "Registration failed";
+      alert(message);
+    }
   };
 
   if (loading) return <LoadingState />;
@@ -76,7 +107,13 @@ const EventList = () => {
           ) : userRole === "STUDENT" ? (
             <div className="flex flex-col gap-2">
               {events.map((event, i) => (
-                <EventTile key={i} index={i + 1} event={event} />
+                <EventTile
+                  key={i}
+                  index={i + 1}
+                  event={event}
+                  currentUserId={currentUserId}
+                  onRegister={handleRegister}
+                />
               ))}
             </div>
           ) : (
@@ -96,7 +133,34 @@ const EventList = () => {
         </div>
       </div>
 
-      {/* EventForm Modal */}
+      {/* Registration confirmation modal */}
+      {showConfirm && selectedEvent && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <h3 className="text-lg font-semibold mb-2">Confirm Registration</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to register for <b>{selectedEvent.title}</b>
+              ?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-100 rounded"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={confirmRegistration}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Existing modals untouched */}
       {editingEvent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-10 z-50 overflow-y-auto">
           <div className="bg-white rounded-xl w-full max-w-4xl p-4 relative my-8 shadow-lg">

@@ -11,9 +11,16 @@ const EventTile = ({
   event,
   index,
   compact = false,
+  currentUserId,
+  onRegister,
 }) => {
   const { setSelected } = useSidebar();
   const [month, day] = formatDate(event.schedule?.start).split(" ");
+
+  const isRegistered = event.participants?.some(
+    (p) => String(p?._id || p) === String(currentUserId),
+  );
+
   return (
     <div
       className={`bg-yellow-${((index % 2) + 1) * 100} rounded-lg p-1 hover:shadow-md transition-shadow duration-200`}
@@ -41,10 +48,24 @@ const EventTile = ({
                   {event.description || "Event Overview"}
                 </p>
               </div>
+
+              {/* Register Button */}
               {!compact && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Form Link
-                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRegister(event);
+                  }}
+                  disabled={isRegistered}
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition
+                    ${
+                      isRegistered
+                        ? "bg-green-100 text-green-800 cursor-default"
+                        : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                    }`}
+                >
+                  {isRegistered ? "Registered" : "Register"}
+                </button>
               )}
             </div>
             {!compact && (
