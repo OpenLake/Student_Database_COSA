@@ -8,7 +8,7 @@ const Announcements = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
   const userRole = isUserLoggedIn?.role || "STUDENT";
   const [filters, setFilters] = useState({
-    type: "General",
+    type: "All",
     isPinned: undefined,
     page: 1,
     limit: 10,
@@ -40,23 +40,22 @@ const Announcements = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Filters */}
-      <div className="flex items-center py-2 justify-around ">
-        {/* Type Filter */}
+      {/* Filters Toolbar */}
+      <div className="flex flex-wrap justify-around items-center gap-3 bg-white border rounded-lg p-3 shadow-sm">
         <select
           value={filters.type}
           onChange={(e) =>
             setFilters((f) => ({ ...f, type: e.target.value, page: 1 }))
           }
-          className="border rounded px-2 py-1"
+          className="border rounded-md px-3 py-2 text-sm"
         >
+          <option value="All">All Types</option>
           <option value="General">General</option>
           <option value="Event">Event</option>
-          <option value="OrganizationalUnit">Organization</option>
+          <option value="Organizational_Unit">Organization</option>
           <option value="Position">Position</option>
         </select>
 
-        {/* Search */}
         <input
           type="text"
           placeholder="Search announcements..."
@@ -64,19 +63,10 @@ const Announcements = () => {
           onChange={(e) =>
             setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))
           }
-          className="border rounded px-3 py-1 w-64"
+          className="border rounded-md px-3 py-2 text-sm w-64"
         />
-        {access && (
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            + Add Announcement
-          </button>
-        )}
 
-        {/* Pinned */}
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-gray-600">
           <input
             type="checkbox"
             checked={filters.isPinned}
@@ -84,27 +74,31 @@ const Announcements = () => {
               setFilters((f) => ({ ...f, isPinned: e.target.checked, page: 1 }))
             }
           />
-          Pinned only
+          Pinned
         </label>
-      </div>
-      {/* Announcements List */}
-      <div className="flex flex-wrap gap-2 px-4">
-        {/*
-       {loading && <div>Loading...</div>}
 
-     {!loading && announcements.length === 0 && (
-          <div>No announcements found.</div>
+        {access && (
+          <button
+            onClick={openCreate}
+            className="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
+          >
+            + Add Announcement
+          </button>
         )}
-*/}
+      </div>
+
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 px-2">
         {announcements.map((a) => (
           <AnnouncementsCard
             key={a._id}
             announcement={a}
-            onDelete={() => deleteAnnouncement(a._id)}
             onEdit={() => openEdit(a)}
+            onDelete={() => deleteAnnouncement(a._id)}
           />
         ))}
       </div>
+
       <CreateAnnouncementModal
         open={open}
         onClose={() => setOpen(false)}

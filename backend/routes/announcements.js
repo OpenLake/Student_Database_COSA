@@ -12,17 +12,28 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const findTargetId = async (type, identifier) => {
   let target = null;
 
+  const isObjectId = mongoose.Types.ObjectId.isValid(identifier);
+  const objectId = isObjectId ? new mongoose.Types.ObjectId(identifier) : null;
   if (type === "Event") {
     target = await Event.findOne({
-      $or: [{ _id: identifier }, { event_id: identifier }],
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { event_id: identifier },
+      ],
     });
-  } else if (type === "OrganizationalUnit") {
+  } else if (type === "Organizational_Unit") {
     target = await OrganizationalUnit.findOne({
-      $or: [{ _id: identifier }, { unit_id: identifier }], // FIXED
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { unit_id: identifier },
+      ], // FIXED
     });
   } else if (type === "Position") {
     target = await Position.findOne({
-      $or: [{ _id: identifier }, { position_id: identifier }], // FIXED
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { position_id: identifier },
+      ], // FIXED
     });
   }
 
@@ -81,9 +92,9 @@ router.get("/", async (req, res) => {
 
     const filter = {};
 
-    if (type) filter.type = type;
+    if (type && type != "All") filter.type = type;
     if (author) filter.author = author;
-    if (isPinned !== "undefined") {
+    if (typeof isPinned !== "undefined") {
       // accept true/false or 1/0
       const val = `${isPinned}`.toLowerCase();
       filter.is_pinned = val === "true" || val === "1";
@@ -101,15 +112,16 @@ router.get("/", async (req, res) => {
     const sort = { [sortBy]: sortDirection };
 
     const total = await Announcement.countDocuments(filter);
-    const announcements = await Announcement.find(filter)
+    const query = Announcement.find(filter)
       .sort(sort)
       .skip((pageNum - 1) * limNum)
       .limit(limNum)
       .populate("author", "username personal_info.email personal_info.name");
 
     if (filter.type && filter.type !== "General") {
-      announcements.populate("target_id");
+      query.populate("target_id");
     }
+    const announcements = await query;
 
     res.json({
       total,
@@ -118,7 +130,7 @@ router.get("/", async (req, res) => {
       totalPages: Math.ceil(total / limNum) || 0,
       announcements,
     });
-    console.log(announcements);
+    //  console.log(announcements);
   } catch (error) {
     console.error("Error fetching announcements:", error);
     res.status(500).json({ error: "Failed to fetch announcements" });

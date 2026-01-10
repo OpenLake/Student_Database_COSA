@@ -59,14 +59,14 @@ const CreateAnnouncementModal = ({ open, onClose, initialData, onSaved }) => {
         >
           <option value="General">General</option>
           <option value="Event">Event</option>
-          <option value="OrganizationalUnit">Organization</option>
+          <option value="Organizational_Unit">Organization</option>
           <option value="Position">Position</option>
         </select>
 
         {formData.type !== "General" && (
           <input
             className="border w-full p-2 mb-2"
-            placeholder="Target ID"
+            placeholder="Target ID Ex:CLUB_SWARA"
             value={formData.targetIdentifier}
             onChange={(e) => updateField("targetIdentifier", e.target.value)}
           />

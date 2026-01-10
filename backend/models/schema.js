@@ -610,7 +610,7 @@ const announcementSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["General", "Event", "OrganizationalUnit", "Position"],
+    enum: ["General", "Event", "Organizational_Unit", "Position"],
     required: true,
   },
   target_id: {

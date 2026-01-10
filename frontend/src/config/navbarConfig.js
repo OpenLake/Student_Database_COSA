@@ -16,6 +16,7 @@ import {
 const GENSEC_COMMON_NAV = [
   { key: "dashboard", label: "Home", icon: Home },
   // { key: "cosa", label: "CoSA", icon: Users },
+  { key: "announcements", label: "Announcements", icon: Megaphone },
   { key: "events", label: "Events", icon: Calendar },
   { key: "endorsement", label: "Endorsements", icon: Award },
   { key: "feedback", label: "Feedback", icon: ClipboardList },
@@ -23,20 +24,20 @@ const GENSEC_COMMON_NAV = [
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
-  { key: "announcements", label: "Announcements", icon: Megaphone },
 ];
 
 export const NavbarConfig = {
   PRESIDENT: [
     { key: "dashboard", label: "Home", icon: Home },
     // { key: "cosa", label: "CoSA", icon: Users },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
-    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
   GENSEC_ACADEMIC: GENSEC_COMMON_NAV,
@@ -45,18 +46,22 @@ export const NavbarConfig = {
 
   CLUB_COORDINATOR: [
     { key: "dashboard", label: "Home", icon: Home },
+
     // { key: "cosa", label: "CoSA", icon: Users },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
     { key: "endorsement", label: "Endorsements", icon: Award },
-    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
 
   STUDENT: [
     { key: "dashboard", label: "Home", icon: Home },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "profile", label: "Profile", icon: User },
     // { key: "cosa", label: "CoSA", icon: Users },
     { key: "events", label: "Events", icon: Calendar },
@@ -66,6 +71,5 @@ export const NavbarConfig = {
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
-    { key: "announcements", label: "Announcements", icon: Megaphone },
   ],
 };
