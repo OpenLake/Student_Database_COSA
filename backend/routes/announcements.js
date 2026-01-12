@@ -233,7 +233,7 @@ router.put(
         },
       ]);
       if (announcement.type !== "General") {
-        populated.populate("target_id");
+        await populated.populate("target_id");
       }
       res.json(populated);
     } catch (error) {
