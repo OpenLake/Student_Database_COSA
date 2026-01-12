@@ -16,10 +16,23 @@ const CreateAnnouncementModal = ({ open, onClose, initialData, onSaved }) => {
         content: initialData.content,
         type: initialData.type,
         isPinned: initialData.is_pinned,
-        targetIdentifier: "",
+        targetIdentifier: initialData.target_id || "",
       });
     }
-  }, [initialData]);
+  }, [initialData, setFormData]);
+  
+  useEffect(() => {
+  if (open && !initialData) {
+    setFormData({
+      title: "",
+      content: "",
+      type: "General",
+      isPinned: false,
+      targetIdentifier: "",
+    });
+  }
+}, [open, initialData, setFormData]);
+
   if (!open) return null;
 
   const submit = async () => {
@@ -38,7 +51,10 @@ const CreateAnnouncementModal = ({ open, onClose, initialData, onSaved }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white p-4 rounded w-full max-w-lg">
-        <h2 className="text-lg font-semibold mb-3">Create Announcement</h2>
+       <h2 className="text-lg font-semibold mb-3">
+        {initialData ? "Edit Announcement" : "Create Announcement"}
+      </h2>
+
 
         <input
           className="border w-full p-2 mb-2"
