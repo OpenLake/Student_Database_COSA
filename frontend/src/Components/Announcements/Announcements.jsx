@@ -9,7 +9,7 @@ const Announcements = () => {
   const userRole = isUserLoggedIn?.role || "STUDENT";
   const [filters, setFilters] = useState({
     type: "All",
-    isPinned: undefined,
+    isPinned: false,
     page: 1,
     limit: 10,
     search: "",
@@ -17,13 +17,14 @@ const Announcements = () => {
   const announcementTypes = [
     "General",
     "Event",
-    "OrganizationalUnit",
+    "Organizational_Unit",
     "Position",
   ];
   const { announcements, refetch, deleteAnnouncement } =
     useFetchAnnouncements(filters);
 
-  const access = userRole != "STUDENT";
+  const access = ["PRESIDENT", "GENSEC_SCITECH", "GENSEC_ACADEMIC", "GENSEC_CULTURAL", "GENSEC_SPORTS", "CLUB_COORDINATOR"].includes(userRole);
+
 
   const [open, setOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
@@ -87,17 +88,24 @@ const Announcements = () => {
         )}
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 px-2">
-        {announcements.map((a) => (
-          <AnnouncementsCard
-            key={a._id}
-            announcement={a}
-            onEdit={() => openEdit(a)}
-            onDelete={() => deleteAnnouncement(a._id)}
-          />
-        ))}
-      </div>
+     {/* Cards Grid */}
+   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 px-2">
+  {announcements?.length === 0 ? (
+    <p className="col-span-full text-center text-gray-500">
+      No announcements found
+    </p>
+  ) : (
+    announcements?.map((a) => (
+      <AnnouncementsCard
+        key={a._id}
+        announcement={a}
+        onEdit={() => openEdit(a)}
+        onDelete={() => deleteAnnouncement(a._id)}
+      />
+    ))
+  )}
+</div>
+
 
       <CreateAnnouncementModal
         open={open}
