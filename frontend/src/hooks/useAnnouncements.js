@@ -27,7 +27,7 @@ export const useFetchAnnouncements = (filters = {}) => {
 
   useEffect(() => {
     fetchAnnouncements();
-  }, [filters]);
+  }, [JSON.stringify(filters)]);
   return {
     announcements,
     refetch: fetchAnnouncements,
@@ -96,7 +96,7 @@ export const useAnnouncementsForm = () => {
         isPinned: formData.isPinned,
       };
       await api.put(`/api/announcements/${id}`, payload);
-      toast.success("Announcement created successfully");
+      toast.success("Announcement updated successfully");
       resetForm();
 
       return { success: true };
