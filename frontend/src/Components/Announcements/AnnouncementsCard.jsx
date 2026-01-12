@@ -14,7 +14,7 @@ const AnnouncementsCard = ({ announcement, onDelete, onEdit }) => {
     updatedAt,
   } = announcement;
   const { isUserLoggedIn } = useContext(AdminContext);
-  const isOwner = String(isUserLoggedIn?._id) === String(author?._id);
+  const isOwner = isUserLoggedIn?._id && author?._id && String(isUserLoggedIn._id) === String(author._id);
 
   return (
     <div className="bg-white border rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col justify-between">
