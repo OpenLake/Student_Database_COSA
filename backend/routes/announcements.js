@@ -238,7 +238,7 @@ router.put(
       res.json(populated);
     } catch (error) {
       console.error("Error updating announcement:", error);
-      res.status(500).json({ error: error.message, stack: error.stack });
+      res.status(500).json({ error: "Failed to update announcement" });
     }
   },
 );
