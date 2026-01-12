@@ -29,6 +29,9 @@ const CreateAnnouncementModal = ({ open, onClose, initialData, onSaved }) => {
     if (res.success) {
       onSaved();
       onClose();
+    } else {
+      // Show error notification to user
+      alert(res.message || "Failed to save announcement");
     }
   };
 
