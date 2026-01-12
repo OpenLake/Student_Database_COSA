@@ -11,36 +11,55 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const findTargetId = async (type, identifier) => {
   let target = null;
-  
+
+  const isObjectId = mongoose.Types.ObjectId.isValid(identifier);
+  const objectId = isObjectId ? new mongoose.Types.ObjectId(identifier) : null;
   if (type === "Event") {
     target = await Event.findOne({
-      $or: [{ _id: identifier }, { event_id: identifier }],
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { event_id: identifier },
+      ],
     });
-  } else if (type === "OrganizationalUnit") {
+  } else if (type === "Organizational_Unit") {
     target = await OrganizationalUnit.findOne({
-      $or: [{ _id: identifier }, { unit_id: identifier }], // FIXED
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { unit_id: identifier },
+      ], // FIXED
     });
   } else if (type === "Position") {
     target = await Position.findOne({
-      $or: [{ _id: identifier }, { position_id: identifier }], // FIXED
+      $or: [
+        ...(objectId ? [{ _id: identifier }] : []),
+        { position_id: identifier },
+      ], // FIXED
     });
   }
-  
+
   return target ? target._id : null;
 };
 
 router.post("/", isAuthenticated, async (req, res) => {
   try {
-    const { title, content, type="General", isPinned, targetIdentifier } = req.body;
+    const {
+      title,
+      content,
+      type = "General",
+      isPinned,
+      targetIdentifier,
+    } = req.body;
     let targetId = null;
 
-    if(type!="General" && targetIdentifier){
-      targetId = await findTargetId(type,targetIdentifier);
-      if(!targetId) {
-        return res.status(404).json({ error: `No ${type} found with that identifier` });
+    if (type != "General" && targetIdentifier) {
+      targetId = await findTargetId(type, targetIdentifier);
+      if (!targetId) {
+        return res
+          .status(404)
+          .json({ error: `No ${type} found with that identifier` });
       }
     }
-    
+
     const newAnnouncement = new Announcement({
       author: req.user._id,
       content,
@@ -73,9 +92,9 @@ router.get("/", async (req, res) => {
 
     const filter = {};
 
-    if (type) filter.type = type;
+    if (type && type != "All") filter.type = type;
     if (author) filter.author = author;
-    if (isPinned !== "undefined") {
+    if (typeof isPinned !== "undefined") {
       // accept true/false or 1/0
       const val = `${isPinned}`.toLowerCase();
       filter.is_pinned = val === "true" || val === "1";
@@ -93,12 +112,16 @@ router.get("/", async (req, res) => {
     const sort = { [sortBy]: sortDirection };
 
     const total = await Announcement.countDocuments(filter);
-    const announcements = await Announcement.find(filter)
+    const query = Announcement.find(filter)
       .sort(sort)
       .skip((pageNum - 1) * limNum)
       .limit(limNum)
-      .populate("author", "username personal_info.email")
-      .populate("target_id");
+      .populate("author", "username personal_info.email personal_info.name");
+
+    if (filter.type && filter.type !== "General") {
+      query.populate("target_id");
+    }
+    const announcements = await query;
 
     res.json({
       total,
@@ -107,6 +130,7 @@ router.get("/", async (req, res) => {
       totalPages: Math.ceil(total / limNum) || 0,
       announcements,
     });
+    //  console.log(announcements);
   } catch (error) {
     console.error("Error fetching announcements:", error);
     res.status(500).json({ error: "Failed to fetch announcements" });
@@ -117,15 +141,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid announcement id" });
     }
-    
-    const announcement = await Announcement.findById(id).populate(
-      "author",
-      "username personal_info.email",
-    ) .populate("target_id");
+
+    const announcement = await Announcement.findById(id)
+      .populate("author", "username personal_info.email personal_info.name")
+      .populate("target_id");
 
     if (!announcement) {
       return res.status(404).json({ error: "Announcement not found" });
@@ -167,39 +190,51 @@ router.put(
           .json({ error: "Forbidden: cannot edit this announcement" });
       }
 
-      const { title, content, type, target_id, isPinned } = req.body;
+      const { title, content, type, targetIdentifier, isPinned } = req.body;
       if (title !== undefined) announcement.title = title;
       if (content !== undefined) announcement.content = content;
-      if (isPinned !== "undefined") announcement.is_pinned = !!isPinned;
+      if (isPinned !== undefined) announcement.is_pinned = Boolean(isPinned);
 
       if (type || targetIdentifier) {
         const newType = type || announcement.type;
-        const newIdentifier = targetIdentifier || (announcement.target_id ? announcement.target_id.toString() : null);
+
+        const newIdentifier =
+          targetIdentifier ||
+          (announcement.target_id ? announcement.target_id.toString() : null);
 
         if (newType === "General") {
           announcement.type = "General";
           announcement.target_id = null;
         } else {
           if (!newIdentifier) {
-             return res.status(400).json({ error: "targetIdentifier is required when setting a non-General type" });
+            return res.status(400).json({
+              error:
+                "targetIdentifier is required when setting a non-General type",
+            });
           }
           const newTargetId = await findTargetId(newType, newIdentifier);
           if (!newTargetId) {
-            return res.status(404).json({ error: `Target ${newType} not found with identifier ${newIdentifier}` });
+            return res.status(404).json({
+              error: `Target ${newType} not found with identifier ${newIdentifier}`,
+            });
           }
           announcement.target_id = newTargetId;
           announcement.type = newType;
         }
       }
-      
+
       announcement.updatedAt = Date.now();
       await announcement.save();
 
       const populated = await announcement.populate([
-        { path: "author", select: "username personal_info.email" },
-        { path: "target_id" }
+        {
+          path: "author",
+          select: "username personal_info.email personal_info.name",
+        },
       ]);
-
+      if (announcement.type !== "General") {
+        await populated.populate("target_id");
+      }
       res.json(populated);
     } catch (error) {
       console.error("Error updating announcement:", error);
@@ -213,9 +248,9 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
 
-   if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: "Invalid announcement id" });
-      }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid announcement id" });
+    }
 
     const announcement = await Announcement.findById(id);
     if (!announcement) {

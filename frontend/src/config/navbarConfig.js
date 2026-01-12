@@ -10,11 +10,13 @@ import {
   UserPlus,
   Plus,
   Award,
+  Megaphone,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
   { key: "dashboard", label: "Home", icon: Home },
   // { key: "cosa", label: "CoSA", icon: Users },
+  { key: "announcements", label: "Announcements", icon: Megaphone },
   { key: "events", label: "Events", icon: Calendar },
   { key: "endorsement", label: "Endorsements", icon: Award },
   { key: "feedback", label: "Feedback", icon: ClipboardList },
@@ -28,6 +30,8 @@ export const NavbarConfig = {
   PRESIDENT: [
     { key: "dashboard", label: "Home", icon: Home },
     // { key: "cosa", label: "CoSA", icon: Users },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "events", label: "Events", icon: Calendar },
@@ -42,7 +46,10 @@ export const NavbarConfig = {
 
   CLUB_COORDINATOR: [
     { key: "dashboard", label: "Home", icon: Home },
+
     // { key: "cosa", label: "CoSA", icon: Users },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "events", label: "Events", icon: Calendar },
     // { key: "add-event", label: "Add Event", icon: Plus },
@@ -53,6 +60,8 @@ export const NavbarConfig = {
 
   STUDENT: [
     { key: "dashboard", label: "Home", icon: Home },
+    { key: "announcements", label: "Announcements", icon: Megaphone },
+
     { key: "profile", label: "Profile", icon: User },
     // { key: "cosa", label: "CoSA", icon: Users },
     { key: "events", label: "Events", icon: Calendar },
