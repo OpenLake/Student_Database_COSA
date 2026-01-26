@@ -10,6 +10,7 @@ import SkillManagement from "../Components/Skills/SkillManagement";
 import Logout from "../Components/Logout";
 import Home from "../Components/OldComponents/Home";
 import StudentProfile from "../Components/Profile/ProfilePage";
+import TenurePage from "../pages/TenurePage";
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route
@@ -105,6 +106,18 @@ export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
         isOnboardingComplete={isOnboardingComplete}
       >
         <StudentProfile />
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="tenure"
+    path="/tenure"
+    element={
+      <ProtectedRoute
+        isAuthenticated={isUserLoggedIn}
+        isOnboardingComplete={isOnboardingComplete}
+      >
+        <TenurePage />
       </ProtectedRoute>
     }
   />,

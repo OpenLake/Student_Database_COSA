@@ -24,6 +24,7 @@ import EndorsementPage from "../pages/endorsementPage";
 import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
+import TenurePage from "../pages/TenurePage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -46,4 +47,5 @@ export const DashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
+  tenure: TenurePage,
 };
