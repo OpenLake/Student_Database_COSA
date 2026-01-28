@@ -127,7 +127,7 @@ export default function Login() {
 
           {/* Google Login */}
           <a
-            href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}
+            href={`${import.meta.env.VITE_BACKEND_URL}/auth/google`}
             className="block"
           >
             <button

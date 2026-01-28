@@ -16,4 +16,5 @@ const getCurrentTenureRange = () => {
   return { startDate, endDate, tenureYearString };
 };
 
-module.exports = getCurrentTenureRange;
+export { getCurrentTenureRange };
+export default getCurrentTenureRange;
