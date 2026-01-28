@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { navItems } from "../../config/presidentConfig.js";
+import { navItems } from "../../config/presidentConfig";
 const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 const PresidentDashboard = () => {
   // States for various dashboard metrics

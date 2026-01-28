@@ -29,7 +29,6 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.4.0",
     "react-router-dom": "^6.17.0",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.10.2",
     "react-tabs": "^6.1.0",
     "react-toastify": "^11.0.5",
@@ -38,10 +37,9 @@
   },
   "scripts": {
     "tailwind": "tailwindcss",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -69,6 +67,7 @@
   },
   "devDependencies": {
     "@types/eslint__js": "^8.42.3",
+    "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
@@ -76,6 +75,7 @@
     "postcss": "^8.5.1",
     "postcss-cli": "^11.0.0",
     "prettier": "^3.1.1",
-    "tailwindcss": "^4.0.3"
+    "tailwindcss": "^4.0.3",
+    "vite": "^7.3.1"
   }
 }

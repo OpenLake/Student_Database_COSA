@@ -20,8 +20,6 @@ import { SidebarProvider } from "./hooks/useSidebar";
 function App() {
   const authData = useAuth();
   const { isUserLoggedIn, isOnboardingComplete, isLoading } = authData;
-  // const role = isUserLoggedIn?.role || "STUDENT";
-  // const navItems = NavbarConfig[role] || [];
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -31,8 +29,7 @@ function App() {
   return (
     <>
       <AdminContext.Provider value={authData}>
-        {/* <SidebarProvider role={role} navItems={navItems}> */}
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             {/* Public Routes */}
             {getPublicRoutes(isUserLoggedIn)}
@@ -60,7 +57,6 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-        {/* </SidebarProvider> */}
       </AdminContext.Provider>
       <ToastContainer
         position="top-right"
@@ -72,8 +68,8 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        style={{ zIndex: 9999 }} // Add this
-        toastStyle={{ zIndex: 9999 }} // And this
+        style={{ zIndex: 9999 }}
+        toastStyle={{ zIndex: 9999 }}
       />
     </>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext } from "react";
 import { AdminContext } from "../../context/AdminContext";
 import { useFeedback } from "../../hooks/useFeedback";
-import getCurrentTenureRange from "../../utils/getCurrentTenureRange";
+import { getCurrentTenureRange } from '../../utils/getCurrentTenureRange';
 const FeedbackStats = () => {
   const {
     loading,
