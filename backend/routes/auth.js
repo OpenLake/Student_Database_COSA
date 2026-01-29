@@ -1,14 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-//const secretKey = process.env.JWT_SECRET_TOKEN;
-const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const passport = require("../models/passportConfig");
+
+//const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
+
+const { loginValidate, registerValidate } = require("../utils/validate");
+const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
 const { User } = require("../models/schema");
-const isAuthenticated= require("../middlewares/isAuthenticated");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
+const bcrypt = require("bcrypt");
+
+const secretKey = process.env.JWT_SECRET_TOKEN;
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -17,7 +22,7 @@ const forgotPasswordLimiter = rateLimit({
 });
 // Session Status
 
-router.get("/fetchAuth",isAuthenticated, function (req, res) {
+router.get("/fetchAuth", isAuthenticated, function (req, res) {
   if (req.isAuthenticated()) {
     res.json(req.user);
   } else {
@@ -25,59 +30,83 @@ router.get("/fetchAuth",isAuthenticated, function (req, res) {
   }
 });
 
-// Local Authentication
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  // If authentication is successful, this function will be called
-  const email = req.user.username;
-  if (!isIITBhilaiEmail(email)) {
-    console.log("Access denied. Please use your IIT Bhilai email.");
-    return res.status(403).json({
-      message: "Access denied. Please use your IIT Bhilai email.",
-    });
+router.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const result = loginValidate.safeParse({ username, password });
+
+    if (!result.success) {
+      return res
+        .status(400)
+        .json({ message: result.error.message || "Invalid data sent" });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json(401).json({ message: "Invalid user credentials" });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.json(401).json({ message: "Invalid user credentials" });
+    }
+
+    const payload = {
+      _id: user._id.toString(),
+      user_id: user.user_id,
+      onboardingComplete: user.onboardingComplete,
+      status: user.status,
+    };
+
+    const token = jwt.sign(payload, secretKey, { expiresIn: "5m" });
+    res.json({ message: "Login Successful", token: token });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  res.status(200).json({ message: "Login successful", user: req.user });
 });
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, ID, email, password } = req.body;
-    if (!isIITBhilaiEmail(email)) {
-      return res.status(400).json({
-        message: "Invalid email address. Please use an IIT Bhilai email.",
-      });
-    }
-    const existingUser = await User.findOne({ username: email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists." });
+    const { username, password, user_id, name, role } = req.body;
+    const result = registerValidate.safeParse({
+      username,
+      password,
+      user_id,
+      name,
+      role,
+    });
+
+    if (!result.success) {
+      return res.status(400).json({ message: result.error.message });
     }
 
-    const newUser = await User.register(
-      new User({
-        user_id: ID,
-        role: "STUDENT",
-        strategy: "local",
-        username: email,
-        personal_info: {
-          name: name,
-          email: email,
-        },
-        onboardingComplete: false,
-      }),
+    const user = await User.findOne({ username });
+    if (user) {
+      return res
+        .json(401)
+        .json({ message: "Account with username already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(
       password,
+      Number(process.env.SALT),
     );
 
-    req.login(newUser, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(400).json({ message: "Bad request." });
-      }
-      return res
-        .status(200)
-        .json({ message: "Registration successful", user: newUser });
+    const newUser = await User.create({
+      user_id,
+      role,
+      strategy: "local",
+      username,
+      password: hashedPassword,
+      personal_info: {
+        name,
+        email: username,
+      },
     });
-  } catch (error) {
-    console.error("Registration error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+
+    return res.json({ message: "Registered Successfully", user: newUser });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 });
 
