@@ -1,89 +1,90 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-var findOrCreate = require("mongoose-findorcreate");
-//user collection
 
-const userSchema = new mongoose.Schema({
-  user_id: {
-    type: String,
-  },
-  role: {
-    type: String,
-    required: true,
-  },
-  strategy: {
-    type: String,
-    enum: ["local", "google"],
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  onboardingComplete: {
-    type: Boolean,
-    default: false,
-  },
-  personal_info: {
-    name: {
+const userSchema = new mongoose.Schema(
+  {
+    user_id: {
+      type: String,
+    },
+    role: {
       type: String,
       required: true,
     },
-    email: {
+    strategy: {
       type: String,
+      enum: ["local", "google"],
+      required: true,
     },
-    phone: String,
-    date_of_birth: Date,
-    gender: String,
-
-    profilePic: {
+    username: {
       type: String,
-      default: "https://www.gravatar.com/avatar/?d=mp",
+      required: true,
+      unique: true,
     },
-
-    cloudinaryUrl: {
+    password: {
       type: String,
-      default: "",
+      required: function () {
+        return this.strategy === "local";
+      },
+      minLength: 8,
     },
-  },
+    onboardingComplete: {
+      type: Boolean,
+      default: false,
+    },
+    personal_info: {
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+      },
+      phone: String,
+      date_of_birth: Date,
+      gender: String,
 
-  academic_info: {
-    program: {
+      profilePic: {
+        type: String,
+        default: "https://www.gravatar.com/avatar/?d=mp",
+      },
+
+      cloudinaryUrl: {
+        type: String,
+        default: "",
+      },
+    },
+
+    academic_info: {
+      program: {
+        type: String,
+        //enum: ["B.Tech", "M.Tech", "PhD", "Msc","other"],
+      },
+      branch: String,
+      batch_year: String,
+      current_year: String,
+      cgpa: Number,
+    },
+
+    contact_info: {
+      hostel: String,
+      room_number: String,
+      socialLinks: {
+        github: { type: String, default: "" },
+        linkedin: { type: String, default: "" },
+        instagram: { type: String, default: "" },
+        other: { type: String, default: "" },
+      },
+    },
+
+    status: {
       type: String,
-      //enum: ["B.Tech", "M.Tech", "PhD", "Msc","other"],
-    },
-    branch: String,
-    batch_year: String,
-    current_year: String,
-    cgpa: Number,
-  },
-
-  contact_info: {
-    hostel: String,
-    room_number: String,
-    socialLinks: {
-      github: { type: String, default: "" },
-      linkedin: { type: String, default: "" },
-      instagram: { type: String, default: "" },
-      other: { type: String, default: "" },
+      enum: ["active", "inactive", "graduated"],
+      default: "active",
     },
   },
-
-  status: {
-    type: String,
-    enum: ["active", "inactive", "graduated"],
-    default: "active",
+  {
+    timestamps: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 userSchema.index(
   { user_id: 1 },
@@ -93,9 +94,6 @@ userSchema.index(
     name: "user_id_partial_unique",
   },
 );
-
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
 
 //organizational unit
 const organizationalUnitSchema = new mongoose.Schema({

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const {
   User,
   Feedback,
@@ -12,7 +12,7 @@ const { v4: uuidv4 } = require("uuid");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
 
-router.post("/add",isAuthenticated, async (req, res) => {
+router.post("/add", isAuthenticated, async (req, res) => {
   try {
     const {
       type,
@@ -28,19 +28,19 @@ router.post("/add",isAuthenticated, async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const targetModels={
+    const targetModels = {
       User,
       Event,
       "Club/Organization": OrganizationalUnit,
       POR: Position,
     };
 
-    const TargetModel=targetModels[target_type];
+    const TargetModel = targetModels[target_type];
 
-    if(!TargetModel){
-      return res.status(400).json({message:"Invalid target type"});
+    if (!TargetModel) {
+      return res.status(400).json({ message: "Invalid target type" });
     }
-    
+
     const feedback = new Feedback({
       feedback_id: uuidv4(),
       type,
@@ -63,9 +63,12 @@ router.post("/add",isAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/get-targetid",isAuthenticated, async (req, res) => {
+router.get("/get-targetid", isAuthenticated, async (req, res) => {
   try {
-    const users = await User.find({role: "STUDENT"}, "_id user_id personal_info.name");
+    const users = await User.find(
+      { role: "STUDENT" },
+      "_id user_id personal_info.name",
+    );
     const events = await Event.find({}, "_id title");
     const organizational_units = await OrganizationalUnit.find({}, "_id name");
     const positions = await Position.find({})
@@ -178,42 +181,47 @@ router.get("/view-feedback", async (req, res) => {
 });
 
 // requires user middleware that attaches user info to req.user
-router.put("/mark-resolved/:id",isAuthenticated,authorizeRole(ROLE_GROUPS.ADMIN), async (req, res) => {
-  const feedbackId = req.params.id;
-  const { actions_taken, resolved_by } = req.body;
-  console.log(req.body);
-  console.log("User resolving feedback:", resolved_by);
+router.put(
+  "/mark-resolved/:id",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  async (req, res) => {
+    const feedbackId = req.params.id;
+    const { actions_taken, resolved_by } = req.body;
+    console.log(req.body);
+    console.log("User resolving feedback:", resolved_by);
 
-  if (!actions_taken || actions_taken.trim() === "") {
-    return res.status(400).json({ error: "Resolution comment is required." });
-  }
-
-  try {
-    const feedback = await Feedback.findById(feedbackId);
-    if (!feedback) {
-      return res.status(404).json({ error: "Feedback not found" });
+    if (!actions_taken || actions_taken.trim() === "") {
+      return res.status(400).json({ error: "Resolution comment is required." });
     }
 
-    if (feedback.is_resolved) {
-      return res.status(400).json({ error: "Feedback is already resolved." });
+    try {
+      const feedback = await Feedback.findById(feedbackId);
+      if (!feedback) {
+        return res.status(404).json({ error: "Feedback not found" });
+      }
+
+      if (feedback.is_resolved) {
+        return res.status(400).json({ error: "Feedback is already resolved." });
+      }
+
+      feedback.is_resolved = true;
+      feedback.resolved_at = new Date();
+      feedback.actions_taken = actions_taken;
+      feedback.resolved_by = resolved_by;
+
+      await feedback.save();
+
+      res.json({ success: true, message: "Feedback marked as resolved." });
+    } catch (err) {
+      console.error("Error updating feedback:", err);
+      res.status(500).json({ error: "Server error" });
     }
-
-    feedback.is_resolved = true;
-    feedback.resolved_at = new Date();
-    feedback.actions_taken = actions_taken;
-    feedback.resolved_by = resolved_by;
-
-    await feedback.save();
-
-    res.json({ success: true, message: "Feedback marked as resolved." });
-  } catch (err) {
-    console.error("Error updating feedback:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+  },
+);
 
 //get all user given feedbacks
-router.get("/:userId",isAuthenticated, async (req, res) => {
+router.get("/:userId", isAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   try {
     const userFeedbacks = await Feedback.find({ feedback_by: userId }).populate(

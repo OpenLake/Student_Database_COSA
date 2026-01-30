@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Position, PositionHolder } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 // POST for adding a new position
 router.post("/add-position", isAuthenticated, async (req, res) => {
