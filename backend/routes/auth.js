@@ -4,16 +4,15 @@ const jwt = require("jsonwebtoken");
 
 //const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
 
-const { loginValidate, registerValidate } = require("../utils/validate");
+const { loginValidate, registerValidate } = require("../utils/authValidate");
 const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
 const { User } = require("../models/schema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const bcrypt = require("bcrypt");
 
-const secretKey = process.env.JWT_SECRET_TOKEN;
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -52,13 +51,19 @@ router.post("/login", async (req, res) => {
     }
 
     const payload = {
-      _id: user._id.toString(),
-      user_id: user.user_id,
-      onboardingComplete: user.onboardingComplete,
-      status: user.status,
+      id: user._id.toString(),
     };
 
-    const token = jwt.sign(payload, secretKey, { expiresIn: "5m" });
+    //console.log(payload);
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET_TOKEN, {
+      expiresIn: "1h",
+    });
+
+    res.cookie("token", token, {
+      maxAge: 5 * 60 * 1000,
+    });
+
     res.json({ message: "Login Successful", token: token });
   } catch (err) {
     return res.status(500).json({ message: err.message });
