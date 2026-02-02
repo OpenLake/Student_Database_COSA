@@ -129,7 +129,7 @@ const GenSecEndorse = () => {
     <div className="min-h-screen bg-[#FEFDF7]">
       {/* Tab Navigation */}
       <div className="sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full mx-auto">
           <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       </div>
@@ -144,8 +144,8 @@ const GenSecEndorse = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {renderTabContent()}
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {renderTabContent()}
       </div>
     </div>
   );
