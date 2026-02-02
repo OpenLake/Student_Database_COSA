@@ -71,7 +71,7 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
             {gridConfig && components ? (
               <GridLayout config={gridConfig} components={components} />
             ) : (
-              <div className="bg-white/50 rounded-3xl p-4 h-full overflow-auto">
+              <div className="bg-white/50 rounded-3xl p-4 h-full w-full overflow-auto">
                 {children}
               </div>
             )}
