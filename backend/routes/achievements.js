@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Achievement } = require("../models/schema"); // Update path as needed
+const Achievement = require("../models/achievementSchema"); // Update path as needed
 const { v4: uuidv4 } = require("uuid");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");

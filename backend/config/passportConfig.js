@@ -1,7 +1,7 @@
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const { User } = require("../models/schema");
+const User = require("../models/userSchema");
 
 // Google OAuth Strategy
 passport.use(

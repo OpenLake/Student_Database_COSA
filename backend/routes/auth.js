@@ -8,7 +8,7 @@ const { loginValidate, registerValidate } = require("../utils/validate");
 const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
-const { User } = require("../models/schema");
+const User = require("../models/userSchema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const bcrypt = require("bcrypt");
@@ -36,19 +36,22 @@ router.post("/login", async (req, res) => {
     const result = loginValidate.safeParse({ username, password });
 
     if (!result.success) {
-      return res
-        .status(400)
-        .json({ message: result.error.message || "Invalid data sent" });
+      let errors = result.error.issues.map((issue) => issue.message);
+      return res.status(400).json({ message: errors });
     }
 
     const user = await User.findOne({ username });
     if (!user) {
-      return res.json(401).json({ message: "Invalid user credentials" });
+      return res.status(401).json({ message: "Invalid user credentials" });
+    }
+
+    if (user.strategy !== "local" || !user.password) {
+      res.status(401).json({ message: "Use Google sign-in for this acount." });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return res.json(401).json({ message: "Invalid user credentials" });
+      return res.status(401).json({ message: "Invalid user credentials" });
     }
 
     const payload = {
@@ -59,7 +62,14 @@ router.post("/login", async (req, res) => {
     };
 
     const token = jwt.sign(payload, secretKey, { expiresIn: "5m" });
-    res.json({ message: "Login Successful", token: token });
+
+    res.cookie("token", token, {
+      maxAge: 5 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    res.json({ message: "Login Successful" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -67,7 +77,8 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, password, user_id, name, role } = req.body;
+    const { username, password, user_id, name } = req.body;
+    const role = "STUDENT";
     const result = registerValidate.safeParse({
       username,
       password,
@@ -83,28 +94,33 @@ router.post("/register", async (req, res) => {
     const user = await User.findOne({ username });
     if (user) {
       return res
-        .json(401)
+        .status(401)
         .json({ message: "Account with username already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(
+    /**
+     * This logic is now embedded in the pre save hook
+     * const hashedPassword = await bcrypt.hash(
       password,
       Number(process.env.SALT),
     );
+     */
 
     const newUser = await User.create({
       user_id,
-      role,
       strategy: "local",
       username,
-      password: hashedPassword,
+      password,
       personal_info: {
         name,
         email: username,
       },
+      role,
     });
+    console.log(newUser);
 
-    return res.json({ message: "Registered Successfully", user: newUser });
+    //return res.json({ message: "Registered Successfully", user: newUser });
+    return res.json({ message: "Registered Successfully" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
