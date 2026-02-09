@@ -4,16 +4,16 @@ const jwt = require("jsonwebtoken");
 
 //const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
 
-const { loginValidate, registerValidate } = require("../utils/validate");
+const { loginValidate, registerValidate } = require("../utils/authValidate");
 const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
+
 const User = require("../models/userSchema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const bcrypt = require("bcrypt");
 
-const secretKey = process.env.JWT_SECRET_TOKEN;
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (user.strategy !== "local" || !user.password) {
-      res.status(401).json({ message: "Use Google sign-in for this acount." });
+      return res.status(401).json({ message: "Use Google sign-in for this account." });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
@@ -61,10 +61,10 @@ router.post("/login", async (req, res) => {
       status: user.status,
     };
 
-    const token = jwt.sign(payload, secretKey, { expiresIn: "5m" });
+    const token = jwt.sign(payload, secretKey, { expiresIn: "30m" });
 
     res.cookie("token", token, {
-      maxAge: 5 * 60 * 1000,
+      maxAge: 30 * 60 * 1000,
       httpOnly: true,
       sameSite: "lax",
     });

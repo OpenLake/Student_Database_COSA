@@ -67,15 +67,7 @@ const organizationalUnitSchema = new mongoose.Schema({
       default: 0,
     },
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, {timestamps: true});
 
 const OrganizationalUnit = mongoose.model(
   "Organizational_Unit",

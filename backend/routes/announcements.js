@@ -7,7 +7,7 @@ const {
   OrganizationalUnit,
   Position,
 } = require("../models/schema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const findTargetId = async (type, identifier) => {
   let target = null;

@@ -100,15 +100,8 @@ const announcementSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+
+}, { timestamps: true});
 
 const UserSkill = mongoose.model("User_Skill", userSkillSchema);
 const Skill = mongoose.model("Skill", skillSchema);

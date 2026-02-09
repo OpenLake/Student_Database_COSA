@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { UserSkill, Skill } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
 // GET unendorsed user skills for a particular skill type

@@ -104,15 +104,8 @@ const eventSchema = new mongoose.Schema({
       },
     },
   ],
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+
+}, { timestamps: true});
 
 const Event = mongoose.model("Event", eventSchema);
 module.exports = Event;

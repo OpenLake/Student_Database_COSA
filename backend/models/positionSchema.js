@@ -46,11 +46,8 @@ const positionSchema = new mongoose.Schema({
   position_count: {
     type: Number,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+
+}, {timestamps: true});
 
 const Position = mongoose.model("Position", positionSchema);
 module.exports = Position;

@@ -48,11 +48,7 @@ const achievementSchema = new mongoose.Schema({
     ref: "User",
     default: null,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, { timestamps: true});
 
 const Achievement = mongoose.model("Achievement", achievementSchema);
 module.exports = Achievement;

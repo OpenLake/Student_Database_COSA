@@ -31,9 +31,13 @@
   "dependencies": {
     "axios": "^1.5.1",
     "bcrypt": "^6.0.0",
+<<<<<<< HEAD
     "body-parser": "^1.20.2",
+=======
+>>>>>>> bde7d5ed1c2658cdb5dd85fbd9fb1af5bc24137a
     "cloudinary": "^2.6.1",
     "connect-mongodb-session": "^3.1.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
     "eslint-plugin-react": "^7.33.2",
@@ -46,7 +50,6 @@
     "moment": "^2.30.1",
     "mongodb": "^6.1.0",
     "mongoose": "^7.6.8",
-    "mongoose-findorcreate": "^4.0.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "nodemailer": "^7.0.3",
@@ -54,20 +57,16 @@
     "npm": "^10.2.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^8.0.0",
     "streamifier": "^0.1.1",
     "uuid": "^11.1.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "cookie": "^0.5.0",
-    "cookie-parser": "^1.4.6",
     "eslint": "^8.56.0",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "parser": "^0.1.4",
     "prettier": "^3.1.1"
   }
 }

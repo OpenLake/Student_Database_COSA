@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema(
       enum: ["local", "google"],
       required: true,
     },
+    role: {
+      type: String,
+      default: "STUDENT"
+    },
     username: {
       type: String,
       required: true,
@@ -35,6 +39,7 @@ const userSchema = new mongoose.Schema(
       },
       email: {
         type: String,
+        unique: true,
         required: true,
       },
       phone: String,
@@ -96,7 +101,8 @@ userSchema.index(
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
-  this.password = await bcrypt.hash(this.password, Number(process.env.SALT));
+  const SALT_ROUNDS = Number(process.env.SALT) || 12
+  this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
 });
 const User = mongoose.model("User", userSchema);
 module.exports = User;
