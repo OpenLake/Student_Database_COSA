@@ -5,7 +5,7 @@ const certificateBatchSchema = new mongoose.Schema(
     title: { type: String, required: true },
     unit_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Oraganizational_Unit",
+      ref: "Organizational_Unit",
     },
     commonData: { type: Map, of: String, required: true },
     templateId: { type: String, required: true },
@@ -14,15 +14,21 @@ const certificateBatchSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    approverIds: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    ],
+    approverIds: {
+      type: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      ],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["PendingL1", "PendingL2", "Processed", "Rejected", "Processing"],
       default: "PendingL1",
     },
-    users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    users: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -39,6 +45,11 @@ const certificateSchema = new mongoose.Schema(
     batchId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CertificateBatch",
+      required: true,
+    },
+    orgId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organizational_Unit",
       required: true,
     },
     status: {
@@ -61,7 +72,7 @@ const certificateSchema = new mongoose.Schema(
     },
     certificateId: {
       type: String,
-      unique: true,
+      //unique: true,
       required: function () {
         return this.status === "Approved";
       },
@@ -69,6 +80,20 @@ const certificateSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  },
+);
+
+/**
+ * certificateId unique constraint will reject multiple non-approved docs.
+ * With unique: true, multiple pending records without certificateId can trigger duplicate-key errors.
+ * Use a partial unique index instead and remove unique: true from the field.
+ */
+
+certificateSchema.index(
+  { certificateId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { certificateId: { $exists: true } },
   },
 );
 
