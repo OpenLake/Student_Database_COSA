@@ -1,6 +1,6 @@
 const zod = require("zod");
 
-const zodObjectId = zod.string().regex(/^[0-9a-zA-Z]{24}$/, "Invalid ObjectId");
+const zodObjectId = zod.string().regex(/^[a-f0-9]{24}$/, "Invalid ObjectId");
 
 const validateBatchSchema = zod.object({
   title: zod.string().min(5, "Title is required"),
