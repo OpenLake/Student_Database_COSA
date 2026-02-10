@@ -71,19 +71,6 @@ const seedOrganizationalUnits = async () => {
     await presidentUnit.save();
     console.log("Created President Unit.");
 
-    const testPresidentUnit = new OrganizationalUnit({
-        unit_id: "PRESIDENT_GYMKHANA_TEST",
-        name: "Test President, Student Gymkhana",
-        type: "independent_position",
-        description: "The test president for the Student Gymkhana.",
-        parent_unit_id: null,
-        hierarchy_level: 0,
-        category: "independent",
-        contact_info: { email: "test_president_gymkhana@iitbhilai.ac.in", social_media: [] },
-    });
-    await testPresidentUnit.save();
-    console.log("Created Test President Unit.");
-
     // 2. Create the main councils (Gensecs) and link them to the President
     const mainCouncilsData = [
         { unit_id: "COUNCIL_CULTURAL", name: "Cultural Council", type: "Council", description: "Council for all cultural activities.", hierarchy_level: 1, category: "cultural", contact_info: { email: "gensec_cultural_gymkhana@iitbhilai.ac.in", social_media: [] }, parent_unit_id: presidentUnit._id },
@@ -109,7 +96,8 @@ const seedOrganizationalUnits = async () => {
     await OrganizationalUnit.insertMany(linkedUnitsData);
     console.log("Seeded and linked initial clubs and committees.");
 
-    // 4. Create and link the test councils and clubs
+    /**
+     * // 4. Create and link the test councils and clubs
     const testCouncilsData = [
         { unit_id: "COUNCIL_CULTURAL_TEST", name: "Test Cultural Council", type: "Council", description: "Test council for cultural activities.", hierarchy_level: 1, category: "cultural", contact_info: { email: "test_gensec_cult@iitbhilai.ac.in", social_media: [] }, parent_unit_id: presidentUnit._id },
         { unit_id: "COUNCIL_SCITECH_TEST", name: "Test SciTech Council", type: "Council", description: "Test council for scitech activities.", hierarchy_level: 1, category: "scitech", contact_info: { email: "test_gensec_scitech@iitbhilai.ac.in", social_media: [] }, parent_unit_id: presidentUnit._id },
@@ -135,7 +123,8 @@ const seedOrganizationalUnits = async () => {
     console.log("Seeded and linked Test Clubs.");
 
     console.log("Organizational Units seeded successfully!");
-};
+    */
+}
 
 /**
  * Seeds the User collection based on Organizational Units and adds test students.
@@ -166,7 +155,7 @@ const seedUsers = async () => {
             role = "STUDENT";
         }
 
-        const userData = {
+        let userData = {
             username: unit.contact_info.email,
             role: role,
             onboardingComplete: true,
@@ -174,15 +163,10 @@ const seedUsers = async () => {
                 name: unit.name,
                 email: unit.contact_info.email,
             },
+            strategy: "google"
         };
 
-        if (unit.unit_id.includes("_TEST") || unit.name.includes("Test")) {
-            userData.strategy = "local";
-            localAuthUsers.push(userData);
-        } else {
-            userData.strategy = "google";
-            googleAuthUsers.push(userData);
-        }
+        googleAuthUsers.push(userData);
     }
 
     // Add 10 dummy student users with local auth and correct email domain
@@ -207,6 +191,7 @@ const seedUsers = async () => {
         
         localAuthUsers.push({
             username: userEmail,
+            password: password,
             role: "STUDENT",
             strategy: "local",
             onboardingComplete: true,
