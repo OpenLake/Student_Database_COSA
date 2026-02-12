@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/schema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 // Onboarding route - to be called when user logs in for the first time
-router.post("/",isAuthenticated, async (req, res) => {
+router.post("/", isAuthenticated, async (req, res) => {
   const { ID_No, add_year, Program, discipline, mobile_no } = req.body;
 
   try {

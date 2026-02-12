@@ -1,89 +1,90 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-var findOrCreate = require("mongoose-findorcreate");
-//user collection
 
-const userSchema = new mongoose.Schema({
-  user_id: {
-    type: String,
-  },
-  role: {
-    type: String,
-    required: true,
-  },
-  strategy: {
-    type: String,
-    enum: ["local", "google"],
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  onboardingComplete: {
-    type: Boolean,
-    default: false,
-  },
-  personal_info: {
-    name: {
+const userSchema = new mongoose.Schema(
+  {
+    user_id: {
+      type: String,
+    },
+    role: {
       type: String,
       required: true,
     },
-    email: {
+    strategy: {
       type: String,
+      enum: ["local", "google"],
+      required: true,
     },
-    phone: String,
-    date_of_birth: Date,
-    gender: String,
-
-    profilePic: {
+    username: {
       type: String,
-      default: "https://www.gravatar.com/avatar/?d=mp",
+      required: true,
+      unique: true,
     },
-
-    cloudinaryUrl: {
+    password: {
       type: String,
-      default: "",
+      required: function () {
+        return this.strategy === "local";
+      },
+      minLength: 8,
     },
-  },
+    onboardingComplete: {
+      type: Boolean,
+      default: false,
+    },
+    personal_info: {
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+      },
+      phone: String,
+      date_of_birth: Date,
+      gender: String,
 
-  academic_info: {
-    program: {
+      profilePic: {
+        type: String,
+        default: "https://www.gravatar.com/avatar/?d=mp",
+      },
+
+      cloudinaryUrl: {
+        type: String,
+        default: "",
+      },
+    },
+
+    academic_info: {
+      program: {
+        type: String,
+        //enum: ["B.Tech", "M.Tech", "PhD", "Msc","other"],
+      },
+      branch: String,
+      batch_year: String,
+      current_year: String,
+      cgpa: Number,
+    },
+
+    contact_info: {
+      hostel: String,
+      room_number: String,
+      socialLinks: {
+        github: { type: String, default: "" },
+        linkedin: { type: String, default: "" },
+        instagram: { type: String, default: "" },
+        other: { type: String, default: "" },
+      },
+    },
+
+    status: {
       type: String,
-      //enum: ["B.Tech", "M.Tech", "PhD", "Msc","other"],
-    },
-    branch: String,
-    batch_year: String,
-    current_year: String,
-    cgpa: Number,
-  },
-
-  contact_info: {
-    hostel: String,
-    room_number: String,
-    socialLinks: {
-      github: { type: String, default: "" },
-      linkedin: { type: String, default: "" },
-      instagram: { type: String, default: "" },
-      other: { type: String, default: "" },
+      enum: ["active", "inactive", "graduated"],
+      default: "active",
     },
   },
-
-  status: {
-    type: String,
-    enum: ["active", "inactive", "graduated"],
-    default: "active",
+  {
+    timestamps: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 userSchema.index(
   { user_id: 1 },
@@ -94,138 +95,129 @@ userSchema.index(
   },
 );
 
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
-
 //organizational unit
-const organizationalUnitSchema = new mongoose.Schema({
-  unit_id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  type: {
-    type: String,
-    enum: ["Council", "Club", "Committee", "independent_position"],
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  parent_unit_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Organizational_Unit",
-    default: null,
-  },
-  hierarchy_level: {
-    type: Number,
-    required: true,
-  },
-  category: {
-    type: String,
-    enum: ["cultural", "scitech", "sports", "academic", "independent"],
-    required: true,
-  },
-  is_active: {
-    type: Boolean,
-    default: true,
-  },
-  contact_info: {
-    email: {
+const organizationalUnitSchema = new mongoose.Schema(
+  {
+    unit_id: {
       type: String,
       required: true,
       unique: true,
     },
-    social_media: [
-      {
-        platform: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    type: {
+      type: String,
+      enum: ["Council", "Club", "Committee", "independent_position"],
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    parent_unit_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organizational_Unit",
+      default: null,
+    },
+    hierarchy_level: {
+      type: Number,
+      required: true,
+    },
+    category: {
+      type: String,
+      enum: ["cultural", "scitech", "sports", "academic", "independent"],
+      required: true,
+    },
+    is_active: {
+      type: Boolean,
+      default: true,
+    },
+    contact_info: {
+      email: {
+        type: String,
+        required: true,
+        unique: true,
       },
-    ],
-  },
-  budget_info: {
-    allocated_budget: {
-      type: Number,
-      default: 0,
+      social_media: [
+        {
+          platform: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     },
-    spent_amount: {
-      type: Number,
-      default: 0,
+    budget_info: {
+      allocated_budget: {
+        type: Number,
+        default: 0,
+      },
+      spent_amount: {
+        type: Number,
+        default: 0,
+      },
     },
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true },
+);
 
 //position
 
-const positionSchema = new mongoose.Schema({
-  position_id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  unit_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Organizational_Unit",
-    required: true,
-  },
-  position_type: {
-    type: String,
-    required: true,
-  },
-  responsibilities: [
-    {
+const positionSchema = new mongoose.Schema(
+  {
+    position_id: {
       type: String,
+      required: true,
+      unique: true,
     },
-  ],
-  requirements: {
-    min_cgpa: {
-      type: Number,
-      default: 0,
+    title: {
+      type: String,
+      required: true,
     },
-    min_year: {
-      type: Number,
-      default: 1,
+    unit_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organizational_Unit",
+      required: true,
     },
-    skills_required: [
+    position_type: {
+      type: String,
+      required: true,
+    },
+    responsibilities: [
       {
         type: String,
       },
     ],
+    requirements: {
+      min_cgpa: {
+        type: Number,
+        default: 0,
+      },
+      min_year: {
+        type: Number,
+        default: 1,
+      },
+      skills_required: [
+        {
+          type: String,
+        },
+      ],
+    },
+    description: {
+      type: String,
+    },
+    position_count: {
+      type: Number,
+    },
   },
-  description: {
-    type: String,
-  },
-  position_count: {
-    type: Number,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true },
+);
 
 //position holder collection;
 const positionHolderSchema = new mongoose.Schema({
