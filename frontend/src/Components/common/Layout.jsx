@@ -1,6 +1,5 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import { useProfile } from "../../hooks/useProfile";
 import UserIcon from "./userIcon";
 import { useSidebar } from "../../hooks/useSidebar";
 
@@ -55,7 +54,17 @@ const Layout = ({ headerText, gridConfig, components, children = null }) => {
       <div
         className={`h-screen p-6 transition-all duration-300 ${isCollapsed ? "ml-20" : "ml-56"}`}
       >
-        <div className="bg-[#FDFAE2] rounded-[3rem] h-full flex flex-col p-6">
+        <div
+          className="bg-[#FDFAE2] rounded-[3rem] h-full flex flex-col p-6"
+          style={{
+            boxShadow: `
+          inset 0 8px 12px rgba(0,0,0,0.18),
+          inset 0 -8px 12px rgba(0,0,0,0.18),
+          inset 8px 0 12px rgba(0,0,0,0.18),
+          inset -8px 0 12px rgba(0,0,0,0.18)
+          `,
+          }}
+        >
           {/* Header Section */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <h1 className="text-3xl text-black">
