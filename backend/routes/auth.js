@@ -63,10 +63,10 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "lax",
     });
 
-    res.json({ message: "Login Successful"});
+    res.json({ message: "Login Successful" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -97,7 +97,7 @@ router.post("/register", async (req, res) => {
     const salt = Number(process.env.SALT) || 12;
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = await User.create({
+    await User.create({
       user_id,
       role,
       strategy: "local",
@@ -108,8 +108,7 @@ router.post("/register", async (req, res) => {
         email: username,
       },
     });
-    
-    //console.log(newUser);
+
     return res.json({ message: "Registered Successfully" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
