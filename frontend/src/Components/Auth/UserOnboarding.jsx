@@ -57,7 +57,7 @@ export default function OnboardingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    console.log("Validation errors: ",validationErrors);
+    console.log("Validation errors: ", validationErrors);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -202,7 +202,7 @@ export default function OnboardingForm() {
             <button
               type="submit"
               className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200"
-            >   
+            >
               Complete Registration
             </button>
           </form>

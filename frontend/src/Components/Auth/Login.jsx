@@ -23,9 +23,8 @@ export default function Login() {
       //console.log(response);
       if (response.success) {
         handleLogin(response.data);
-        toast.success("Login successful ");  
+        toast.success("Login successful ");
         navigate("/onboarding", { replace: true });
-        
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
@@ -43,7 +42,7 @@ export default function Login() {
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center"
+        backgroundPosition: "center",
       }}
     >
       {/* Blur Overlay */}
@@ -63,7 +62,6 @@ export default function Login() {
         className="flex flex-wrap flex-col-reverse lg:flex-row items-center justify-center gap-12 lg:gap-16 w-full max-w-7xl relative"
         style={{ zIndex: 2 }}
       >
-        
         <form
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-xl shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl"
