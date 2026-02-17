@@ -2,7 +2,7 @@
 import api from "../utils/api";
 
 export async function fetchCredentials() {
-  const response = await api.get("/auth/fetchAuth")
+  const response = await api.get("/auth/fetchAuth");
   return response.data;
 }
 
@@ -26,7 +26,6 @@ export async function registerUser(name, ID, email, password) {
 
 export async function loginUser(username, password) {
   try {
-    
     const res = await api.post("/auth/login", { username, password });
     //console.log("Response is: ", res);
     return res.data;
