@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Event, User, OrganizationalUnit } = require("../models/schema");
+const OrganizationalUnit = require("../models/organizationSchema"); 
+const Event = require("../models/eventSchema"); 
+const User = require("../models/userSchema"); 
 const { v4: uuidv4 } = require("uuid");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const isEventContact = require("../middlewares/isEventContact");

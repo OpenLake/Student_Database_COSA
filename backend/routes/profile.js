@@ -4,7 +4,7 @@ const router = express.Router();
 const upload = require("../middlewares/upload");
 const cloudinary = require("cloudinary").v2;
 //const { Student } = require("../models/student");
-const { User } = require("../models/schema");
+const { User } = require("../models/userSchema");
 const streamifier = require("streamifier");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 // Cloudinary config
@@ -84,7 +84,7 @@ router.delete("/photo-delete", isAuthenticated, async (req, res) => {
       return res.status(400).json({ error: "ID_No is required" });
     }
 
-    const user = await user.findOne({ user_id: ID_No });
+    const user = await User.findOne({ user_id: ID_No });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
