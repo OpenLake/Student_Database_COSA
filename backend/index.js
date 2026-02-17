@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 // eslint-disable-next-line node/no-unpublished-require
 const { connectDB } = require("./config/db.js");
+const MongoStore = require("connect-mongo");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const routes_auth = require("./routes/auth");
@@ -27,8 +28,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-// Connect to MongoDB
-connectDB();
+
 
 app.use(cookieParser());
 
@@ -37,16 +37,24 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+      maxAge: 60*60*1000
     },
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 60*60*1000,
+      collectionName: "sessions"
+    }),
+    name: "token"
   }),
 );
 
+//Needed to initialize passport and all helper methods to req object
 app.use(myPassport.initialize());
 app.use(myPassport.session());
 
@@ -72,6 +80,11 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/certificate-batches", certificateRoutes);
 
 // Start the server
-app.listen(process.env.PORT || 8000, () => {
-  console.log(`connected to port ${process.env.PORT || 8000}`);
-});
+
+(async function(){
+  // Connect to MongoDB
+  await connectDB();
+  app.listen(process.env.PORT || 5000, () => {
+    console.log(`connected to port ${process.env.PORT || 5000}`);
+  });
+})();

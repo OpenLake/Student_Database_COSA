@@ -1,18 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require("../models/schema");
+const User = require("../models/userSchema");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 // Onboarding route - to be called when user logs in for the first time
-router.post("/", isAuthenticated, async (req, res) => {
-  const { ID_No, add_year, Program, discipline, mobile_no } = req.body;
+router.put("/", isAuthenticated, async (req, res) => {
+  const { add_year, Program, discipline, mobile_no } = req.body;
 
   try {
-    console.log(req.user);
+    //console.log(req.user);
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
-        user_id: ID_No,
         onboardingComplete: true,
         personal_info: Object.assign({}, req.user.personal_info, {
           phone: mobile_no || "",
@@ -28,7 +27,7 @@ router.post("/", isAuthenticated, async (req, res) => {
       { new: true, runValidators: true },
     );
 
-    console.log("Onboarding completed for user:", updatedUser._id);
+    //console.log("Onboarding completed for user:", updatedUser._id);
     res.status(200).json({ message: "Onboarding completed successfully" });
   } catch (error) {
     console.error("Onboarding failed:", error);

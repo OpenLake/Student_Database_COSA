@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchCredentials, completeOnboarding } from "../../services/auth";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import logo from "../../assets/image.png";
 
 export default function OnboardingForm() {
   const navigate = useNavigate();
-  const { setIsOnboardingComplete } = useContext(AdminContext);
+  const { setIsOnboardingComplete } = useAdminContext();
 
   const [userData, setUserData] = useState({
     name: "",
@@ -23,11 +23,13 @@ export default function OnboardingForm() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await fetchCredentials();
+        const response = await fetchCredentials();
+        const user = response.message;
         setUserData((prev) => ({
           ...prev,
-          name: user.personal_info.name,
-          email: user.personal_info.email,
+          name: user.personal_info?.name,
+          email: user.personal_info?.email,
+          ID_No: user.user_id,
         }));
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -55,6 +57,7 @@ export default function OnboardingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
+    console.log("Validation errors: ",validationErrors);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -80,8 +83,8 @@ export default function OnboardingForm() {
               className="w-32 h-32 object-contain rounded-full"
             />
           </div>
-          <h1 className="text-3xl font-bold mt-6 mb-2 text-center">
-            Welcome to Our College
+          <h1 className="text-xl font-bold mt-6 mb-2 text-center">
+            Welcome to IIT Bhilai
           </h1>
           <p className="text-lg text-center">
             Complete your profile to access all campus services and tools.
@@ -123,11 +126,10 @@ export default function OnboardingForm() {
                   Student ID Number
                 </label>
                 <input
-                  type="number"
-                  name="ID_No"
+                  type="text"
                   value={userData.ID_No}
-                  onChange={handleChange}
-                  className="w-full border rounded-md px-3 py-2"
+                  readOnly
+                  className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600"
                 />
                 {errors.ID_No && (
                   <p className="text-red-500 text-sm">{errors.ID_No}</p>
@@ -200,7 +202,7 @@ export default function OnboardingForm() {
             <button
               type="submit"
               className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200"
-            >
+            >   
               Complete Registration
             </button>
           </form>

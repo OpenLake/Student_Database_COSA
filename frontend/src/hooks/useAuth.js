@@ -8,21 +8,23 @@ export const useAuth = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(null);
 
   const handleLogin = (userData) => {
+    if (!userData) return;
     setIsUserLoggedIn(userData);
-    setUserRole(userData.role);
-    setIsOnboardingComplete(userData.onboardingComplete);
+    if (userData?.role) setUserRole(userData.role);
+    // Always set onboarding flag based on the user's value (previous logic only set it when falsy)
+    setIsOnboardingComplete(Boolean(userData?.onboardingComplete));
   };
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const user = await fetchCredentials();
-        if (user) {
-          setIsUserLoggedIn(user);
-          setUserRole(user.role);
-          setIsOnboardingComplete(user.onboardingComplete);
-          console.log("User role:", user.role);
-          console.log("Onboarding complete:", user.onboardingComplete);
+        const response = await fetchCredentials();
+        const user = response.message;
+        console.log("User is:", user);
+        if (response?.success) {
+          handleLogin(user);
+          //console.log("User role:", user.role);
+          //console.log("Onboarding complete:", user.onboardingComplete);
         } else {
           setIsUserLoggedIn(false);
         }

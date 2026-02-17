@@ -3,7 +3,7 @@ import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
 import api from "../../utils/api";
 import LeftColumn from "./QuickStats";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import Layout from "../common/Layout";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";
 import Home from "./Home";
@@ -16,9 +16,10 @@ function Content() {
 }
 // Main component that provides the sidebar context
 export default function RoleBasedDashboard() {
-  const { isUserLoggedIn } = React.useContext(AdminContext);
+  const { isUserLoggedIn, isOnboardingComplete } = useAdminContext();
 
-  if (!isUserLoggedIn) {
+  // Show loading until we have a logged-in user object and onboarding is complete.
+  if (!isUserLoggedIn || isOnboardingComplete !== true) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

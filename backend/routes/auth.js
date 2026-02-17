@@ -2,17 +2,15 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
-//const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-
-const { loginValidate, registerValidate } = require("../utils/authValidate");
+const { registerValidate } = require("../utils/authValidate");
 const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
 
 const User = require("../models/userSchema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const {isAuthenticated}= require("../middlewares/isAuthenticated");
 
-const bcrypt = require("bcrypt");
+//const bcrypt = require("bcrypt");
 
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
@@ -23,53 +21,46 @@ const forgotPasswordLimiter = rateLimit({
 // Session Status
 
 router.get("/fetchAuth", isAuthenticated, function (req, res) {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.json(null);
-  }
+  const {personal_info, role, onboardingComplete, user_id, ...restData} = req.user;
+  res.json({message: {personal_info, role, onboardingComplete, user_id}, success: true});
 });
 
+/**
+ * User POST /auth/login
+        ↓
+    passport.authenticate("local")
+            ↓
+    LocalStrategy (validate credentials)
+            ↓
+    done(null, user)
+            ↓
+    req.login(user) called
+            ↓
+    serializeUser(user) → store ID in session
+            ↓
+    Session saved → session cookie sent
+ */
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const result = loginValidate.safeParse({ username, password });
+   
+    passport.authenticate("local", (err, user, info) => {
+      
+      if(err){
+        console.error(err);
+        return res.status(500).json({message: "Internal server error"});
+      }
+      
+      if(!user) return res.status(401).json({message: info?.message || "Login failed"});
 
-    if (!result.success) {
-      let errors = result.error.issues.map((issue) => issue.message);
-      return res.status(400).json({ message: errors });
-    }
+      // if using a custom callback like this u have to manually call req.login() else not needed
+      //this will seralize user, store id in session, save session and send cookie
+      req.login(user, (err)=>{
+        if(err) return res.status(500).json({message: "Internal server error"});
+        const {personal_info, role, onboardingComplete, ...restData} = user;
+        return res.json({message: "Login Successful", success: true, data: {personal_info, role, onboardingComplete}});
+      })
+    })(req,res);
 
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid user credentials" });
-    }
-
-    if (user.strategy !== "local" || !user.password) {
-      return res.status(401).json({ message: "Use Google sign-in for this account." });
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return res.status(401).json({ message: "Invalid user credentials" });
-    }
-
-    const payload = {
-      _id: user._id.toString(),
-      user_id: user.user_id,
-      onboardingComplete: user.onboardingComplete,
-      status: user.status,
-    };
-
-    const token = jwt.sign(payload, secretKey, { expiresIn: "30m" });
-
-    res.cookie("token", token, {
-      maxAge: 30 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "lax",
-    });
-
-    res.json({ message: "Login Successful" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -88,14 +79,13 @@ router.post("/register", async (req, res) => {
     });
 
     if (!result.success) {
-      return res.status(400).json({ message: result.error.message });
+      const errors = result.error.issues.map(issue => issue.message);
+      return res.status(400).json({ message: errors });
     }
 
     const user = await User.findOne({ username });
     if (user) {
-      return res
-        .status(401)
-        .json({ message: "Account with username already exists" });
+      return res.status(409).json({ message: "Account with username already exists" });
     }
 
     /**
@@ -115,9 +105,9 @@ router.post("/register", async (req, res) => {
         name,
         email: username,
       },
-      role,
+      role
     });
-    console.log(newUser);
+    //console.log(newUser);
 
     //return res.json({ message: "Registered Successfully", user: newUser });
     return res.json({ message: "Registered Successfully" });

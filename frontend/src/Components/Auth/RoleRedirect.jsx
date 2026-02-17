@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 
 const RoleRedirect = () => {
-  const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } =
-    useContext(AdminContext);
-
+  const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } = useAdminContext();
   if (isLoading) return <div>Loading...</div>;
 
   if (!isUserLoggedIn) {

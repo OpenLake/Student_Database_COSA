@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import { loginUser } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -8,7 +8,7 @@ import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
 
 export default function Login() {
-  const { handleLogin } = useContext(AdminContext);
+  const { handleLogin } = useAdminContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,11 +19,13 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const userObject = await loginUser(email, password);
-      if (userObject) {
-        handleLogin(userObject);
-        toast.success("Login successful! 🎉");
-        navigate("/", { replace: true });
+      const response = await loginUser(email, password);
+      //console.log(response);
+      if (response.success) {
+        handleLogin(response.data);
+        toast.success("Login successful ");  
+        navigate("/onboarding", { replace: true });
+        
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
