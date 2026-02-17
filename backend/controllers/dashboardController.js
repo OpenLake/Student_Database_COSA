@@ -1,14 +1,11 @@
 // controllers/dashboardController.js
-const {
-    Feedback,
-    Achievement,
-    UserSkill,
-    Skill,
-    Event,
-    PositionHolder,
-    Position,
-    OrganizationalUnit,
-} = require("../models/schema"); 
+const Feedback = require("../models/feedbackSchema"); 
+const Achievement = require("../models/achievementSchema"); 
+const Position = require("../models/positionSchema"); 
+const PositionHolder = require("../models/positionHolderSchema"); 
+const OrganizationalUnit = require("../models/organizationSchema"); 
+const Event = require("../models/eventSchema"); 
+const { UserSkill, Skill } = require("../models/schema");
 
 const ROLES = {
     PRESIDENT: "PRESIDENT",
