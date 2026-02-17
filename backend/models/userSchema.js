@@ -102,7 +102,7 @@ userSchema.index(
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const SALT_ROUNDS = Number(process.env.SALT) || 12
-  this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
+  this.password = await bcrypt.hash(this.password, SALT_ROUNDS);  
 });
 const User = mongoose.model("User", userSchema);
 module.exports = User;

@@ -31,11 +31,8 @@
   "dependencies": {
     "axios": "^1.5.1",
     "bcrypt": "^6.0.0",
-<<<<<<< HEAD
-    "body-parser": "^1.20.2",
-=======
->>>>>>> bde7d5ed1c2658cdb5dd85fbd9fb1af5bc24137a
     "cloudinary": "^2.6.1",
+    "connect-mongo": "^5.1.0",
     "connect-mongodb-session": "^3.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -57,6 +54,7 @@
     "npm": "^10.2.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
     "streamifier": "^0.1.1",
     "uuid": "^11.1.0",
     "zod": "^4.3.6"
