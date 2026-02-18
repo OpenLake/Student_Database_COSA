@@ -6,7 +6,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
-
+import {Link} from "react-router-dom"
 export default function Login() {
   const { handleLogin } = useAdminContext();
   const [email, setEmail] = useState("");
@@ -126,27 +126,24 @@ export default function Login() {
           </div>
 
           {/* Google Login */}
-          <a
-            href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}
-            className="block"
+          <button
+            type="button"
+            className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium transition-all"
+            onClick= {()=>{
+              window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
+            }}
           >
-            <button
-              type="button"
-              className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium"
-            >
-              <span>Sign in with Google</span>
+              <span>Sign up with Google</span>
               <GoogleIcon />
-            </button>
-          </a>
+          </button>
 
           <p className="text-center text-sm mt-4">
             Don’t have an account?{" "}
-            <a
-              href="/register"
+            <Link to="/register"
               className="text-[#23659C] hover:underline font-medium"
             >
               Sign Up
-            </a>
+            </Link>
           </p>
         </form>
 

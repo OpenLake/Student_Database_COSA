@@ -17,19 +17,23 @@ passport.use(
       // Check if the user already exists in your database
       const email = profile.emails?.[0]?.value;  
       if (!email) {  
+        //console.log("No email found in Google profile");
         return done(null, false, { message: "Email not available from Google." });  
       }  
+      
       if (!isIITBhilaiEmail(profile.emails[0].value)) {
         console.log("Google OAuth blocked for: ", profile.emails[0].value);
         return done(null, false, {
           message: "Only @iitbhilai.ac.in emails are allowed.",
         });
-      }
+      }  
       try {
         const user = await User.findOne({ username: email });
+        //console.log("Looking for existing user with email:", email, "Found:", !!user);
 
         if (user) {
           // If user exists, return the user
+          //console.log("Returning existing user:", user.username);
           return done(null, user);
         }
         // If user doesn't exist, create a new user in your database
@@ -47,9 +51,10 @@ passport.use(
           },
           onboardingComplete: false,
         });
-
+        //console.log("User is",newUser);
         return done(null, newUser);
       } catch (error) {
+        console.error("Error in Google strategy:", error);
         return done(error);
       }
     },
@@ -82,8 +87,6 @@ passport.use(new LocalStrategy(async (username, password, done) => {
       if (!isValid) {
         return done(null, false, { message: "Invalid user credentials" });
       }
-      
-
       return done(null, user);
   }catch(err){
     return done(err);

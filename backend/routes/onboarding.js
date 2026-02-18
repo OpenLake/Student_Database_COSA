@@ -30,8 +30,8 @@ router.put("/", isAuthenticated, async (req, res) => {
     //console.log("Onboarding completed for user:", updatedUser._id);
     res.status(200).json({ message: "Onboarding completed successfully" });
   } catch (error) {
-    console.error("Onboarding failed:", error);
-    res.status(500).json({ message: "Onboarding failed", error });
+    console.error("Onboarding failed:", error.message);
+    res.status(500).json({ message: error.message || "Onboarding failed"  });
   }
 });
 

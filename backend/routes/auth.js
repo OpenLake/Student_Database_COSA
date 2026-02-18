@@ -68,24 +68,23 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, password, user_id, name } = req.body;
+    const { username, password, name } = req.body;
     const role = "STUDENT";
     const result = registerValidate.safeParse({
       username,
       password,
-      user_id,
       name,
       role,
     });
 
     if (!result.success) {
       const errors = result.error.issues.map(issue => issue.message);
-      return res.status(400).json({ message: errors });
+      return res.status(400).json({ message: errors, success: false});
     }
 
     const user = await User.findOne({ username });
     if (user) {
-      return res.status(409).json({ message: "Account with username already exists" });
+      return res.status(409).json({ message: "Account with username already exists", success: false});
     }
 
     /**
@@ -97,7 +96,6 @@ router.post("/register", async (req, res) => {
      */
 
     const newUser = await User.create({
-      user_id,
       strategy: "local",
       username,
       password,
@@ -110,7 +108,7 @@ router.post("/register", async (req, res) => {
     //console.log(newUser);
 
     //return res.json({ message: "Registered Successfully", user: newUser });
-    return res.json({ message: "Registered Successfully" });
+    return res.json({ message: "Registered Successfully", success: true });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -122,17 +120,42 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
-router.get(
-  "/google/verify",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    if (req.user.onboardingComplete) {
-      res.redirect(`${process.env.FRONTEND_URL}/`);
-    } else {
-      res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
+router.get("/google/verify", function(req, res){
+  //console.log("in verify");
+  passport.authenticate("google",(err, user, info)=>{
+    if(err){
+      console.error(err);
+      return res.status(500).json({message: "Internal server error"});
     }
-  },
-);
+      
+    if(!user) return res.status(401).json({message: info?.message || "Google Authentication failed"});
+
+    /**
+     * if(!user.onboardingComplete){
+      return res.redirect(`${process.env.FRONTEND_URL}/onboarding`)
+    }
+     */
+    //return res.redirect(`${process.env.FRONTEND_URL}`);
+    
+    req.login(user, (loginErr) => {
+      if(loginErr) {
+        console.error("Login error:", loginErr);
+        return res.status(500).json({message: "Error establishing session"});
+      }
+      
+      /*console.log("User logged in successfully:", user.username);
+      console.log("OnboardingComplete:", user.onboardingComplete);
+      */
+      if(!user.onboardingComplete){
+        //console.log("Redirecting to onboarding");
+        return res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
+      }
+      
+      //console.log("Redirecting to home");
+      return res.redirect(`${process.env.FRONTEND_URL}`);
+    })
+  })(req, res)
+});
 
 router.post("/logout", (req, res, next) => {
   req.logout(function (err) {
@@ -186,7 +209,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
           .json({ message: "Password reset link sent to your email" });
       }
     });
-    console.log(link);
+    //console.log(link);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -195,14 +218,14 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
 
 //route for password reset
 router.get("/reset-password/:id/:token", async (req, res) => {
-  const { id, token } = req.params;
-  console.log(req.params);
-  const user = await User.findOne({ _id: id });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  const secret = user._id + process.env.JWT_SECRET_TOKEN;
-  try {
+  try{
+    const { id, token } = req.params;
+    console.log(req.params);
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const secret = user._id + process.env.JWT_SECRET_TOKEN;
     jwt.verify(token, secret);
     return res.status(200).json({ message: "Token verified successfully" });
   } catch (error) {

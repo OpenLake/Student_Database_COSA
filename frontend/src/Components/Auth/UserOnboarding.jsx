@@ -7,7 +7,6 @@ import logo from "../../assets/image.png";
 export default function OnboardingForm() {
   const navigate = useNavigate();
   const { setIsOnboardingComplete } = useAdminContext();
-
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -29,7 +28,6 @@ export default function OnboardingForm() {
           ...prev,
           name: user.personal_info?.name,
           email: user.personal_info?.email,
-          ID_No: user.user_id,
         }));
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -43,7 +41,7 @@ export default function OnboardingForm() {
     if (!userData.ID_No) newErrors.ID_No = "ID Number is required";
     if (!/^\d{10}$/.test(userData.mobile_no))
       newErrors.mobile_no = "Mobile number must be 10 digits";
-    if (!userData.add_year || userData.add_year < 2016)
+    if (!userData.add_year || userData.add_year < 2016 || userData.add_year > new Date().getFullYear())
       newErrors.add_year = "Invalid admission year";
     if (!userData.Program) newErrors.Program = "Program is required";
     if (!userData.discipline) newErrors.discipline = "Discipline is required";
@@ -57,8 +55,9 @@ export default function OnboardingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    console.log("Validation errors: ", validationErrors);
+    
     if (Object.keys(validationErrors).length > 0) {
+      //console.log("Validation errors: ", validationErrors);
       setErrors(validationErrors);
       return;
     }
@@ -127,9 +126,10 @@ export default function OnboardingForm() {
                 </label>
                 <input
                   type="text"
+                  name="ID_No"
                   value={userData.ID_No}
-                  readOnly
-                  className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600"
+                  onChange={handleChange}
+                  className="w-full border rounded-md px-3 py-2"
                 />
                 {errors.ID_No && (
                   <p className="text-red-500 text-sm">{errors.ID_No}</p>

@@ -7,20 +7,27 @@ export async function fetchCredentials() {
 }
 
 export async function completeOnboarding(userData) {
-  const response = await api.put(`/onboarding`, userData);
-  return response.data;
+  try{
+    const response = await api.put(`/onboarding`, userData);
+    return response.data;
+  }catch (error) {
+    //console.error("Error obj is:",error.response);
+    return error.response;
+  }
 }
-export async function registerUser(name, ID, email, password) {
+
+export async function registerUser(username, password, name) {
+  
   try {
     const response = await api.post(`/auth/register`, {
       name,
-      ID,
-      email,
+      username,
       password,
     });
-    return response.data.user || null;
+    return response; 
   } catch (error) {
-    return null;
+    //console.error("Error obj is:",error.response);
+    return error.response;
   }
 }
 
@@ -50,6 +57,7 @@ export async function registerStudentId(id, ID_No) {
     return null;
   }
 }
+
 export async function logoutUser() {
   try {
     await api.post("/auth/logout");
