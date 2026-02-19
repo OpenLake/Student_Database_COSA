@@ -1,7 +1,7 @@
 import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
-import {Link, useNavigate} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { registerUser } from "../../services/auth";
 import { toast } from "react-toastify";
@@ -10,57 +10,65 @@ export default function Register() {
   const [form, setForm] = useState({
     username: "",
     password: "",
-    name: ""
-  })
+    name: "",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate("/");
-  function handleChange(e){
-    const {name, value} = e.target;
-    setForm((prev)=> ({
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((prev) => ({
       ...prev,
-      [name]: value
-    }))
+      [name]: value,
+    }));
   }
 
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     try {
-          const response = await registerUser(form.username, form.password, form.name);
-          // success response is the full axios response
-          if (response && response.status === 200 && response.data && response.data.success) {
-            toast.success(response.data.message || "Registration successful");
-            setTimeout(()=>{
-              navigate("/login", { replace: true });
-            },1500)
-            return;
-          }
+      const response = await registerUser(
+        form.username,
+        form.password,
+        form.name,
+      );
+      // success response is the full axios response
+      if (
+        response &&
+        response.status === 200 &&
+        response.data &&
+        response.data.success
+      ) {
+        toast.success(response.data.message || "Registration successful");
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 1500);
+        return;
+      }
 
-          // handle errors returned from server
-          let errorMessage = "";
-          const respData = response && response.data;
-          if (respData) {
-            const msg = respData.message;
-            if (Array.isArray(msg)) {
-              errorMessage = msg.join(". ");
-            } else if (typeof msg === "string") {
-              errorMessage = msg;
-            } else if (msg && msg.message) {
-              errorMessage = msg.message;
-            }
-          } else if (response && response.status) {
-            errorMessage = response.statusText;
-          }
-          toast.error(errorMessage);
+      // handle errors returned from server
+      let errorMessage = "";
+      const respData = response && response.data;
+      if (respData) {
+        const msg = respData.message;
+        if (Array.isArray(msg)) {
+          errorMessage = msg.join(". ");
+        } else if (typeof msg === "string") {
+          errorMessage = msg;
+        } else if (msg && msg.message) {
+          errorMessage = msg.message;
+        }
+      } else if (response && response.status) {
+        errorMessage = response.statusText;
+      }
+      toast.error(errorMessage);
     } catch (error) {
-          console.error("Registration failed:", error);
-           toast.error("Registration failed. Please try again.");
-    }finally {
-          setLoading(false);
+      console.error("Registration failed:", error);
+      toast.error("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
-  
-  
+
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center p-4 relative"
@@ -134,7 +142,7 @@ export default function Register() {
             className="w-full border border-gray-300 rounded-md p-2 mb-2 focus:outline-none focus:ring-2 focus:ring-black"
             required
           />
-          
+
           {/* Register Button */}
           <button
             type="submit"
@@ -172,15 +180,13 @@ export default function Register() {
           <button
             type="button"
             className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium transition-all"
-            onClick= {()=>{
+            onClick={() => {
               window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
             }}
           >
-              <span>Sign up with Google</span>
-              <GoogleIcon />
+            <span>Sign up with Google</span>
+            <GoogleIcon />
           </button>
-          
-
 
           <p className="text-center text-sm mt-6 p-2">
             Already have an account?{" "}

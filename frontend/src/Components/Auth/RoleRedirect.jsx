@@ -7,7 +7,7 @@ const RoleRedirect = () => {
     useAdminContext();
   if (isLoading) return <div>Loading...</div>;
 
-  if (Object.keys(isUserLoggedIn).length === 0) {  
+  if (!isUserLoggedIn || Object.keys(isUserLoggedIn).length === 0) {
     return <Navigate to="/login" replace />;
   }
 

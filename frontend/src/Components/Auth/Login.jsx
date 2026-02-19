@@ -6,7 +6,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 export default function Login() {
   const { handleLogin } = useAdminContext();
   const [email, setEmail] = useState("");
@@ -21,10 +21,11 @@ export default function Login() {
     try {
       const response = await loginUser(email, password);
       //console.log(response);
-      if (response.success) {
+      if (response?.success) {
         handleLogin(response.data);
         toast.success("Login successful ");
-        navigate("/onboarding", { replace: true });
+        //console.log("Onboarding now is:", isOnboardingComplete);
+        navigate("/", { replace: true });
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
@@ -129,17 +130,18 @@ export default function Login() {
           <button
             type="button"
             className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium transition-all"
-            onClick= {()=>{
+            onClick={() => {
               window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
             }}
           >
-              <span>Sign up with Google</span>
-              <GoogleIcon />
+            <span>Sign up with Google</span>
+            <GoogleIcon />
           </button>
 
           <p className="text-center text-sm mt-4">
             Don’t have an account?{" "}
-            <Link to="/register"
+            <Link
+              to="/register"
               className="text-[#23659C] hover:underline font-medium"
             >
               Sign Up
