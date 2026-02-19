@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
-const {
-  User,
-  Feedback,
-  Event,
-  Position,
-  OrganizationalUnit,
-} = require("./../models/schema");
+const OrganizationalUnit = require("../models/organizationSchema");
+const Event = require("../models/eventSchema");
+const User = require("../models/userSchema");
+const Feedback = require("../models/feedbackSchema");
+const Position = require("../models/positionSchema");
 const { v4: uuidv4 } = require("uuid");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
