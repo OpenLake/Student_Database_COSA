@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { fetchCredentials, completeOnboarding } from "../../services/auth";
 import { useAdminContext } from "../../context/AdminContext";
 import logo from "../../assets/image.png";
 
 export default function OnboardingForm() {
   const navigate = useNavigate();
-  const { setIsOnboardingComplete } = useAdminContext();
+  const { setIsOnboardingComplete, isOnboardingComplete } = useAdminContext();
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -24,6 +24,7 @@ export default function OnboardingForm() {
       try {
         const response = await fetchCredentials();
         const user = response.message;
+        if (!user) return;
         setUserData((prev) => ({
           ...prev,
           name: user.personal_info?.name,
@@ -41,7 +42,11 @@ export default function OnboardingForm() {
     if (!userData.ID_No) newErrors.ID_No = "ID Number is required";
     if (!/^\d{10}$/.test(userData.mobile_no))
       newErrors.mobile_no = "Mobile number must be 10 digits";
-    if (!userData.add_year || userData.add_year < 2016 || userData.add_year > new Date().getFullYear())
+    if (
+      !userData.add_year ||
+      userData.add_year < 2016 ||
+      userData.add_year > new Date().getFullYear()
+    )
       newErrors.add_year = "Invalid admission year";
     if (!userData.Program) newErrors.Program = "Program is required";
     if (!userData.discipline) newErrors.discipline = "Discipline is required";
@@ -55,7 +60,7 @@ export default function OnboardingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    
+
     if (Object.keys(validationErrors).length > 0) {
       //console.log("Validation errors: ", validationErrors);
       setErrors(validationErrors);
@@ -70,6 +75,9 @@ export default function OnboardingForm() {
     }
   };
 
+  if (isOnboardingComplete) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
       <div className="flex flex-col md:flex-row w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden">

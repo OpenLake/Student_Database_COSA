@@ -11,6 +11,7 @@ import {
   Plus,
   Award,
   Megaphone,
+  Dock,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -24,6 +25,7 @@ const GENSEC_COMMON_NAV = [
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
+  { key: "certificates", label: "Certificates", icon: Dock },
 ];
 
 export const NavbarConfig = {
@@ -38,6 +40,7 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
+    { key: "certificates", label: "Certificates", icon: Dock },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
   GENSEC_ACADEMIC: GENSEC_COMMON_NAV,
@@ -56,6 +59,7 @@ export const NavbarConfig = {
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
     { key: "endorsement", label: "Endorsements", icon: Award },
+    { key: "certificates", label: "Certificates", icon: Dock },
   ],
 
   STUDENT: [
@@ -71,5 +75,6 @@ export const NavbarConfig = {
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
+    { key: "certificates", label: "Certificates", icon: Dock },
   ],
 };

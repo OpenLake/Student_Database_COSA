@@ -24,6 +24,7 @@ import EndorsementPage from "../pages/endorsementPage";
 import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
+import CertificatesPage from "../pages/certificatesPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -37,6 +38,7 @@ export const DashboardComponents = {
   profile: ProfilePage,
   cosa: ViewTenure,
   announcements: AnnouncementsPage,
+  certificates: CertificatesPage,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
   "add-event": EventForm,

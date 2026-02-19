@@ -10,6 +10,7 @@ import Home from "./Home";
 
 function Content() {
   const { selected: selectedRoute } = useSidebar();
+  console.log("Selected Route is: ", selectedRoute);
   const ActiveComponent =
     DashboardComponents[selectedRoute] || (() => <div>Home</div>);
   return <ActiveComponent />;
@@ -19,7 +20,7 @@ export default function RoleBasedDashboard() {
   const { isUserLoggedIn, isOnboardingComplete } = useAdminContext();
 
   // Show loading until we have a logged-in user object and onboarding is complete.
-  if (!isUserLoggedIn || isOnboardingComplete !== true) {
+  if (!isUserLoggedIn || !isOnboardingComplete) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
