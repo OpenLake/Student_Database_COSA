@@ -12,7 +12,7 @@ function Content() {
   const { selected: selectedRoute } = useSidebar();
   console.log("Selected Route is: ", selectedRoute);
   const ActiveComponent =
-    DashboardComponents[selectedRoute] || (() => <div>Home</div>);
+    DashboardComponents[selectedRoute] || (() => <div>Kaushik</div>);
   return <ActiveComponent />;
 }
 // Main component that provides the sidebar context

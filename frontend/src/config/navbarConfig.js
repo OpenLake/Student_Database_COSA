@@ -12,6 +12,8 @@ import {
   Award,
   Megaphone,
   Dock,
+  LayoutTemplate,
+  ClipboardPaste,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -40,6 +42,8 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
+    { key: "requests", label: "Requests", icon: ClipboardPaste },
+    { key: "templates", label: "Templates", icon: LayoutTemplate },
     { key: "certificates", label: "Certificates", icon: Dock },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
