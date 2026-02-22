@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  User,
   GraduationCap,
   Calendar,
   Users,
   ClipboardList,
   Briefcase,
 } from "lucide-react";
-import axios from "axios";
 import { useProfile } from "../../hooks/useProfile";
 import api from "../../utils/api"
 

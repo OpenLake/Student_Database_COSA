@@ -1,4 +1,3 @@
-import axios from "axios";
 import api from "../utils/api";
 export async function fetchCredentials() {
   const response = await api.get(`/auth/fetchAuth`);

@@ -102,6 +102,7 @@ const SkillsEndorsementTab = ({ skillType }) => {
 
   useEffect(() => {
     loadSkills();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillType]);
 
   const loadSkills = async () => {

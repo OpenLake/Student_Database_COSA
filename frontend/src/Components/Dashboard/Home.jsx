@@ -71,11 +71,11 @@ export const Home = () => {
           Loading user data...
         </div>
       );
-    if (role == "PRESIDENT") return <PresidentAnalytics data={data} />;
+    if (role === "PRESIDENT") return <PresidentAnalytics data={data} />;
     if (role.startsWith("GENSEC_")) return <GensecAnalytics data={data} />;
-    if (role == "CLUB_COORDINATOR")
+    if (role === "CLUB_COORDINATOR")
       return <ClubCoordinatorAnalytics data={data} />;
-    if (role == "STUDENT") return <StudentAnalytics data={data} />;
+    if (role === "STUDENT") return <StudentAnalytics data={data} />;
     return (
       <div className="flex items-center justify-center h-full text-red-600 text-lg">
         Unknown role: {role}

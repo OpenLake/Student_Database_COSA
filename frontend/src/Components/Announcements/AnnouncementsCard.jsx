@@ -1,4 +1,4 @@
-import { Calendar, User, Tag, MapPin, Pencil, Trash2, Pin } from "lucide-react";
+import { Calendar, User, Tag, Pencil, Trash2, Pin } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import { useContext } from "react";
 
@@ -8,10 +8,8 @@ const AnnouncementsCard = ({ announcement, onDelete, onEdit }) => {
     content,
     author,
     type,
-    target_id,
     is_pinned,
     createdAt,
-    updatedAt,
   } = announcement;
   const { isUserLoggedIn } = useContext(AdminContext);
   const isOwner = isUserLoggedIn?._id && author?._id && String(isUserLoggedIn._id) === String(author._id);

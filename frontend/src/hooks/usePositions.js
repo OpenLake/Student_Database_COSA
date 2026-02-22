@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import api from "../utils/api";
-import { AdminContext } from "../context/AdminContext";
 import { useProfile } from "./useProfile";
 
 export const usePositionForm = (currentUser) => {
-  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     title: "",
     unit_id: "",
@@ -102,7 +100,7 @@ export const usePositionForm = (currentUser) => {
       position_type:
         formData.position_type === "Other"
           ? formData.custom_position_type
-          : formData.position_type,
+          : formData.position_type, // Reverted to original logic for position_type
       responsibilities: formData.responsibilities.filter((r) => r.trim()),
       requirements: {
         ...formData.requirements,
@@ -203,7 +201,7 @@ export const usePositions = () => {
     }
 
     setFilteredPositions(filtered);
-  }, [searchTerm, selectedUnit, selectedType, positions]);
+  }, [searchTerm, selectedUnit, selectedType, positions, profile?.personal_info.name]);
 
   const units = [
     ...new Set(positions.map((pos) => pos.unit_id?.name).filter(Boolean)),

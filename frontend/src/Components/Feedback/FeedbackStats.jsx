@@ -1,25 +1,13 @@
-import React from "react";
-import { useState, useContext } from "react";
-import { AdminContext } from "../../context/AdminContext";
 import { useFeedback } from "../../hooks/useFeedback";
 import getCurrentTenureRange from "../../utils/getCurrentTenureRange";
 const FeedbackStats = () => {
-  const {
-    loading,
-    activeTab,
-    setActiveTab,
-    statusFilter,
-    setStatusFilter,
-    filteredFeedbacks,
-    markAsResolved,
-  } = useFeedback();
-  const { startDate, endDate, tenureYearString } = getCurrentTenureRange();
+  const { filteredFeedbacks } = useFeedback();
+  const { startDate, endDate } = getCurrentTenureRange();
   const tenureFeedback = filteredFeedbacks.filter((fb) => {
     const createdAt = new Date(fb.created_at);
     return createdAt >= startDate && createdAt <= endDate;
   });
-  const { isUserLoggedIn } = useContext(AdminContext);
-  const isStudent = isUserLoggedIn?.role === "STUDENT";
+
 
   return (
     <div className="p-2 flex flex-col items-center justify-center">

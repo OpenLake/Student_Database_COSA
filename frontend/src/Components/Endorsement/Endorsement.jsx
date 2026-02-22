@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { AdminContext } from "../../context/AdminContext";
-import { Eye, Plus } from "lucide-react";
+
 import GenSecEndorse from "../GenSec/GenSecEndorse";
 
 const Endorsement = () => {
-  const [add, setAdd] = useState(false);
+
   const { isUserLoggedIn } = useContext(AdminContext);
   const userRole = isUserLoggedIn?.role || "STUDENT";
 

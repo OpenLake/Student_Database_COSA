@@ -1,4 +1,4 @@
-import { Calendar1, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import React from "react";
 
 const NSCard = () => {

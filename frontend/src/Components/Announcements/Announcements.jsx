@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { AdminContext } from "../../context/AdminContext";
 import { useFetchAnnouncements } from "../../hooks/useAnnouncements";
 import AnnouncementsCard from "./AnnouncementsCard";
@@ -14,12 +14,6 @@ const Announcements = () => {
     limit: 10,
     search: "",
   });
-  const announcementTypes = [
-    "General",
-    "Event",
-    "Organizational_Unit",
-    "Position",
-  ];
   const { announcements, refetch, deleteAnnouncement } =
     useFetchAnnouncements(filters);
 

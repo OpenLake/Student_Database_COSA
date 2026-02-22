@@ -1,8 +1,5 @@
 import React, { useContext } from "react";
 import {
-  Eye,
-  Edit,
-  Trash2,
   UserCheck,
   Award,
   Clock,

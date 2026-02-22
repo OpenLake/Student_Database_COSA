@@ -1,13 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Eye, Plus } from "lucide-react";
-import { AdminContext } from "../../context/AdminContext";
 import CreateOrgUnit from "./CreateOrgUnit";
 import ViewClubs from "./ViewClubs";
 
 const Organization = () => {
   const [add, setAdd] = useState(false);
-  const { isUserLoggedIn } = useContext(AdminContext);
-  const userRole = isUserLoggedIn?.role || "STUDENT";
+
 
   return (
     <div>

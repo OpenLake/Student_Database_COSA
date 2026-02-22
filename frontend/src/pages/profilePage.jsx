@@ -1,6 +1,5 @@
-import { SidebarProvider } from "../hooks/useSidebar";
 import Layout from "../Components/common/Layout";
-import { useState } from "react";
+
 import Profile from "../Components/Profile/Profile";
 
 const ProfilePage = () => {

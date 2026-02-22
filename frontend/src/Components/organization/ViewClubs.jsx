@@ -41,7 +41,7 @@ const ViewClubs = () => {
     }
   };
   const handleSearch = () => {
-    if (searchTerm == null || !searchTerm.trim() || !orgs) {
+    if (searchTerm === null || !searchTerm.trim() || !orgs) {
       alert("Enter an organization name");
       return;
     }
@@ -74,11 +74,12 @@ const ViewClubs = () => {
   }, [userRole]);
   useEffect(() => {
     if (orgs) {
-      orgs.find((unit) => {
-        if (unit.unit_id == getId(userRole)) {
+      for (const unit of orgs) {
+        if (unit.unit_id === getId(userRole)) {
           setCurrId(unit._id);
+          break;
         }
-      });
+      }
     }
   }, [orgs, userRole]);
   if (selectedOrg) {

@@ -1,9 +1,7 @@
 import React from "react";
-import { Calendar, Clock, MapPin } from "lucide-react";
+
 import {
   formatDate,
-  formatTime,
-  getStatusColor,
 } from "../../utils/eventHelpers";
 import { useSidebar } from "../../hooks/useSidebar";
 

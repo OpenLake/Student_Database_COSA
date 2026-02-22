@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
 import api from "../../utils/api";
 import {
@@ -15,8 +15,6 @@ import {
   Target,
   TrendingUp,
   Users,
-  Bell,
-  Search,
   Menu,
   X,
   ChevronRight,
@@ -152,7 +150,7 @@ const StudentDashboard = () => {
     };
 
     fetchAllStats();
-  }, []);
+  }, [isUserLoggedIn?._id]);
 
   const statsCards = [
     {

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { useState, useEffect, useCallback } from "react";
+import toast from "react-hot-toast";
 import api from "../utils/api.js";
 export const useFetchAnnouncements = (filters = {}) => {
   const [announcements, setAnnouncements] = useState([]);
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = useCallback(async () => {
     try {
       const res = await api.get("/api/announcements/", { params: filters });
       setAnnouncements(res.data.announcements);
@@ -14,7 +14,7 @@ export const useFetchAnnouncements = (filters = {}) => {
         error,
       );
     }
-  };
+  }, [filters]);
 
   const deleteAnnouncement = async (id) => {
     try {
@@ -25,9 +25,10 @@ export const useFetchAnnouncements = (filters = {}) => {
     }
   };
 
+  const filtersString = JSON.stringify(filters);
   useEffect(() => {
     fetchAnnouncements();
-  }, [JSON.stringify(filters)]);
+  }, [fetchAnnouncements, filtersString]);
   return {
     announcements,
     refetch: fetchAnnouncements,
@@ -47,7 +48,7 @@ export const useAnnouncementsForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const [editingId, setEditingId] = useState(null);
+
 
   const resetForm = () => {
     setFormData({

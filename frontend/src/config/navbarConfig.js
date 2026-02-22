@@ -8,7 +8,6 @@ import {
   User,
   MessageSquare,
   UserPlus,
-  Plus,
   Award,
   Megaphone,
 } from "lucide-react";

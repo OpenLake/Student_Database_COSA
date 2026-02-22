@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import api from "../utils/api";
 import { useProfile } from "./useProfile";
 import { AdminContext } from "../context/AdminContext";
@@ -193,6 +192,8 @@ export const usePositionHolders = () => {
     selectedTenure,
     selectedDepartment,
     positionHolders,
+    profile?.personal_info.name,
+    userRole,
   ]);
 
   const statuses = ["active", "completed", "terminated"];

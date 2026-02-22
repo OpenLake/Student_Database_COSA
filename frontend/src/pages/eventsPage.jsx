@@ -1,15 +1,14 @@
-import { SidebarProvider } from "../hooks/useSidebar";
 import EventList from "../Components/Events/EventList";
 import Layout from "../Components/common/Layout";
 import EventForm from "../Components/Events/EventForm";
-import { useState } from "react";
+
 import Calendar from "../Components/common/Calendar";
 import LatestUpdates from "../Components/common/LatestUpdatesCard";
 import NSCard from "../Components/NsoNss/NSCard";
 import Events from "../Components/Events/Events";
 
 const EventsPage = () => {
-  const [addEvent, setAddEvent] = useState(false);
+
 
   const components = {
     EventList: EventList,

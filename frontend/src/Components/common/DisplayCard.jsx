@@ -1,5 +1,5 @@
 import React from "react";
-import { Award, Trophy, Medal, Star } from "lucide-react";
+import { Medal } from "lucide-react";
 
 const DisplayCard = ({
   icon: IconComponent = Medal,

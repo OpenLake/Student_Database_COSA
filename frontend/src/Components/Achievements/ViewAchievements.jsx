@@ -14,8 +14,6 @@ const ViewAchievements = () => {
     setCategoryFilter,
     searchTerm,
     setSearchTerm,
-    verificationFilter,
-    setVerificationFilter,
     levelFilter,
     setLevelFilter,
     uniqueCategories,
