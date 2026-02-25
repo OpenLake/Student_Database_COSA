@@ -2,16 +2,33 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 const {
-  User,
-  Feedback,
-  Achievement,
-  UserSkill,
-  Skill,
-  Event,
-  PositionHolder,
-  Position,
-  OrganizationalUnit,
+    User,
+    Feedback,
+    Achievement,
+    UserSkill,
+    Skill,
+    Event,
+    PositionHolder,
+    Position,
+    OrganizationalUnit,
+    Room,
 } = require("./models/schema");
+
+// Sample Rooms for Seeding 
+const sampleRooms = [
+    { name: "LH-101", capacity: 60, location: "Academic Block 1, Ground Floor", amenities: ["Projector", "AC", "Whiteboard"] },
+    { name: "LH-102", capacity: 60, location: "Academic Block 1, Ground Floor", amenities: ["Projector", "AC"] },
+    { name: "Seminar Hall", capacity: 120, location: "Admin Block, 1st Floor", amenities: ["Projector", "Sound System", "AC"] },
+];
+
+// Seeds sample rooms for testing room booking features.
+
+const seedRooms = async () => {
+    console.log("Seeding sample rooms...");
+    await Room.deleteMany({});
+    await Room.insertMany(sampleRooms);
+    console.log("Sample rooms seeded!");
+};
 
 // --- Data for Seeding ---
 
