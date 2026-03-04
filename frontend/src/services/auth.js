@@ -1,9 +1,14 @@
 //import axios from "axios";
 import api from "../utils/api";
+import { toast } from "react-toastify";
 
 export async function fetchCredentials() {
-  const response = await api.get("/auth/fetchAuth");
-  return response.data;
+  try {
+    const response = await api.get("/auth/fetchAuth");
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function completeOnboarding(userData) {

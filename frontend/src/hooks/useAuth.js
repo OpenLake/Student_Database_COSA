@@ -19,17 +19,17 @@ export const useAuth = () => {
     const initializeAuth = async () => {
       try {
         const response = await fetchCredentials();
+        if(!response){
+          setIsUserLoggedIn(false);
+          return;
+        }
+
         const user = response.message;
         console.log("User is:", user);
-        if (response?.success) {
-          handleLogin(user);
+        handleLogin(user);
           //console.log("User role:", user.role);
           //console.log("Onboarding complete:", user.onboardingComplete);
-        } else {
-          setIsUserLoggedIn(false);
-        }
       } catch (error) {
-        console.error("Auth initialization failed:", error);
         setIsUserLoggedIn(false);
       } finally {
         setIsLoading(false);
