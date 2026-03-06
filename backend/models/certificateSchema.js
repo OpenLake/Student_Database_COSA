@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const certificateBatchSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    unit_id: {
+    eventIid: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Oraganizational_Unit",
+      ref: "eventSchema",
     },
     commonData: { type: Map, of: String, required: true },
     templateId: { type: String, required: true },
@@ -61,7 +61,6 @@ const certificateSchema = new mongoose.Schema(
     },
     certificateId: {
       type: String,
-      unique: true,
       required: function () {
         return this.status === "Approved";
       },
@@ -101,7 +100,10 @@ certificateSchema.index({ batchId: 1, userId: 1 }, { unique: true });
 
 certificateSchema.index(
   { userId: 1, certificateId: 1 },
-  { partialFilterExpression: { certificateId: { $exists: true } } },
+  { 
+    unique: true,
+    partialFilterExpression: { certificateId: { $exists: true } } 
+  },
 );
 
 const CertificateBatch = mongoose.model(

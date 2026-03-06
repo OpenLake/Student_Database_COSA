@@ -1,19 +1,63 @@
-import { Search, OctagonAlert } from "lucide-react";
+import { Search, OctagonAlert, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRequest } from "../../context/RequestContext";
 import { useAdminContext } from "../../context/AdminContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import Card from "./Card";
+import RequestsTable from "./Card";
+import {ViewModal} from "./viewModal";
+import {EditModal} from "./editModal";
+
+
 export default function Requests() {
-  const { pending, approved, rejected, total, setPending } = useRequest();
+  const { requestStatus, setRequestStatus } = useRequest();
 
   const { isUserLoggedIn } = useAdminContext();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
-  const [search, setSearch] = useState(null);
+  const [viewing, setViewing] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const stats = [
+    { dot: "bg-yellow-400", label: "Pending", value: requestStatus.pending },
+    { dot: "bg-emerald-500", label: "Approved", value: requestStatus.approved },
+    { dot: "bg-red-500", label: "Rejected", value: requestStatus.rejected },
+  ];
+
+  // keep request stats in sync with current requests
+  useEffect(() => {
+    if (!requests || requests.length === 0) {
+      setRequestStatus({ pending: 0, approved: 0, rejected: 0, total: 0 });
+      return;
+    }
+
+    let pending = 0;
+    let approved = 0;
+    let rejected = 0;
+    let total = 0;
+
+    requests.forEach((req) => {
+      if (req.status === "Approved"){
+        approved++;
+        total = approved*req.students;
+      }
+      else if (req.status === "Rejected") rejected++;
+      else pending++;
+    });
+
+    setRequestStatus({
+      pending,
+      approved,
+      rejected,
+      total
+    });
+  }, [requests, setRequestStatus]);
+
+  const approve = (id) => setRequests(requests.map((req) => req.id === id? {...req, status: "Approved"} : req));
+  const reject = (id) => setRequests(requests.map((req) => req.id === id? {...req, status: "Rejected"} : req));
 
   useEffect(() => {
     async function fetchData() {
@@ -30,21 +74,23 @@ export default function Requests() {
             organization: "ABC University",
             event: "Tech Fest 2026",
             priority: "High",
-            count: 124,
-            submitted: "2026-02-12",
+            students: 124,
+            date: "2026-02-12",
             requestedBy: "John Matthews",
+            status: "Pending",
           },
           {
             id: 2,
             organization: "Global Institute of Science",
             event: "AI & Robotics Workshop",
             priority: "Medium",
-            count: 58,
-            submitted: "2026-02-15",
+            students: 58,
+            date: "2026-02-15",
             requestedBy: "Priya Sharma",
+            status: "Pending",
           },
+          
         ];
-        setPending(mockRequests.length);
         setRequests(mockRequests);
       } catch (err) {
         toast.error(err.message || "Requests could not be fetched");
@@ -57,6 +103,12 @@ export default function Requests() {
     fetchData();
   }, [isUserLoggedIn]);
 
+  function handleUpdateRequest(updatedRequest) {
+    setRequests((prev) =>
+      prev.map((req) => (req.id === updatedRequest.id ? updatedRequest : req))
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -65,108 +117,83 @@ export default function Requests() {
     );
   }
 
-  function statusColor(status) {
-    switch (status) {
-      case "Pending":
-        return "bg-yellow-200 text-yellow-800";
-      case "Approved":
-        return "bg-green-200 text-green-700";
-      case "Rejected":
-        return "bg-red-200 text-red-700";
-    }
-  }
-
   const filteredRequests = requests.filter((req) => {
-    const searchMatch =
-      !search ||
-      req.event.toLowerCase().includes(search.toLowerCase()) ||
-      req.organization.toLowerCase().includes(search.toLowerCase()) ||
-      req.requestedBy.toLowerCase().includes(search.toLowerCase());
+    if (!search || !search.trim()) return true;
 
-    return searchMatch;
+    const event = req.event.toLowerCase();
+    const organization = req.organization.toLowerCase();
+    const requestedBy = req.requestedBy.toLowerCase();
+
+    const searchWords = search.toLowerCase().split(" ").filter(Boolean);
+
+    return searchWords.every((word) =>
+      event.includes(word) ||
+      organization.includes(word) ||
+      requestedBy.includes(word)
+    );
   });
 
   return (
-    <div className="px-6 pt-6 pb-6 ">
-      {/* Top Section */}
-      <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
-        {/* Status Indicators */}
-        <div className="flex items-center gap-6 flex-wrap">
-          {/* Pending Status */}
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-yellow-300"></div>
-            <span className="text-gray-700 font-medium">
-              Pending: {pending}
-            </span>
+
+    <div className="min-h-screen bg-[#FEFCE8] px-6 pt-4 pb-6 font-sans">
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap'); * { font-family: 'DM Sans', sans-serif; }`}</style>
+    
+      {/* stats + search bar */}
+      <div className="flex items-center justify-between gap-10 mb-2">
+          {/* Stats Box */}
+          <div className="bg-white rounded-2xl shadow-md px-4 py-2.5 flex items-center gap-6">
+            {stats.map(({ dot, label, value }) => (
+              <div key={label} className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${dot}`} />
+                <span className="text-sm font-semibold text-gray-700">
+                  {label}: <span className="font-bold text-gray-900">{value}</span>
+                </span>
+              </div>
+            ))}
+
+            <div className="flex items-center gap-1 border-gray-100">
+              <FileText size={14} className="text-gray-400" />
+              <span className="text-sm font-semibold text-gray-700">
+                Certificates Generated: <span className="font-bold text-gray-900">{requestStatus.total}</span>
+              </span>
+            </div>
           </div>
 
-          {/* Approved Status */}
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-green-400"></div>
-            <span className="text-gray-700 font-medium">
-              Approved: {approved}
-            </span>
+          {/* Search Input */}
+          <div className="relative flex-1 max-w-md">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by event, organization or requester"
+              className="pl-9 pr-4 py-2 w-full text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-700 placeholder:text-gray-400 outline-none"
+            />
           </div>
-
-          {/* Rejected Status */}
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-red-400"></div>
-            <span className="text-gray-700 font-medium">
-              Rejected: {rejected}
-            </span>
-          </div>
-
-          {/* Total Status */}
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <span className="text-gray-700 font-medium">
-              Certificates Generated: {total}
-            </span>
-          </div>
-        </div>
-
-        {/* Filter Input */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by requester, event or organization"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent"
-          />
-        </div>
       </div>
+    
+      {/* Request Table */}
+      {filteredRequests.length === 0 
+      ? ( <div className="text-center py-16 text-gray-400 text-sm font-medium">No requests match your search.</div> ) 
+      : 
+        <RequestsTable
+          requests={filteredRequests}
+          onView={setViewing}
+          onEdit={setEditing}
+          onApprove={approve}
+          onReject={reject}
+        />
+      }
 
-      {/* Request Cards */}
-      <div className="space-y-4">
-        {filteredRequests.length !== 0 ? (
-          filteredRequests.map((req) => (
-            <Card req={req} statusColor={statusColor} />
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500">
-            <OctagonAlert size={48} className="mb-4 opacity-50" />
-            <p className="text-lg">
-              {search
-                ? `No requests found matching ${search}`
-                : `No requests found.`}
-            </p>
-          </div>
-        )}
-      </div>
+      {viewing && <ViewModal request={viewing} onClose={() => setViewing(null)} />}
+      {editing && (
+        <EditModal
+          request={editing}
+          onClose={() => setEditing(null)}
+          onSave={handleUpdateRequest}
+        />
+      )}
+      
+    
     </div>
   );
 }

@@ -20,7 +20,9 @@ const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
 const analyticsRoutes = require("./routes/analytics.js");
-const certificateRoutes = require("./routes/certificateRoutes.js");
+const certificateBatchRoutes = require("./routes/certificateBatch.js");
+const certificateRoutes = require("./routes/certificate.js");
+
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -43,11 +45,13 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
-      maxAge: 60*60*1000
+      maxAge: 60*60*1000,
+      httpOnly: true
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
-      ttl: 60*60*1000,
+      //ttl option expects seconds
+      ttl: 60*60, //1hr in sec
       collectionName: "sessions"
     }),
     name: "token"
@@ -76,7 +80,9 @@ app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/certificate-batches", certificateRoutes);
+app.use("/api/certificate-batches", certificateBatchRoutes);
+app.use("/api/certificates", certificateRoutes);
+
 
 // Start the server
 

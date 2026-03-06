@@ -25,7 +25,7 @@ export const useAuth = () => {
         }
 
         const user = response.message;
-        console.log("User is:", user);
+        //console.log("User is:", user);
         handleLogin(user);
           //console.log("User role:", user.role);
           //console.log("Onboarding complete:", user.onboardingComplete);

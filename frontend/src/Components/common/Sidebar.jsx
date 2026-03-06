@@ -79,15 +79,16 @@ const Sidebar = () => {
       <div className="mt-2">
         <button
           onClick={() => setLoggingOut(true)}
-          className={`flex items-center gap-2.5 py-2 w-full text-zinc-400 text-white rounded-xl ${
+          disabled={loggingOut}
+          className={`flex items-center gap-2.5 py-2 w-full text-white rounded-xl ${
             isCollapsed ? "justify-center px-2" : "px-3"
           }`}
           title={isCollapsed ? "Logout" : ""}
         >
           <LogOut size={20} />
           {!isCollapsed && <span className="text-[16px]">Logout</span>}
-          {loggingOut && <Logout />}
         </button>
+        {loggingOut && <Logout />}
       </div>
     </div>
   );

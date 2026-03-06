@@ -24,8 +24,8 @@ router.get(
 // Route to get analytics for club coordinators
 router.get(
   "/club-coordinator",
-  authorizeRole(["CLUB_COORDINATOR"]),
   isAuthenticated,
+  authorizeRole(["CLUB_COORDINATOR"]),
   controller.getClubCoordinatorAnalytics,
 );
 

@@ -3,10 +3,11 @@ import Requests from "../Components/Requests/Requests.jsx";
 import { RequestProvider } from "../context/RequestContext.js";
 import { useSidebar } from "../hooks/useSidebar";
 
-export default function CertificatesPage() {
+export default function RequestsPage() {
   const { isCollapsed } = useSidebar();
 
   const components = {
+    
     Requests: Requests,
   };
 

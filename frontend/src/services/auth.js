@@ -17,7 +17,7 @@ export async function completeOnboarding(userData) {
     return response.data;
   }catch (error) {
     //console.error("Error obj is:",error.response);
-    return error.response;
+    throw error;
   }
 }
 
@@ -32,7 +32,7 @@ export async function registerUser(username, password, name) {
     return response; 
   } catch (error) {
     //console.error("Error obj is:",error.response);
-    return error.response;
+    throw error
   }
 }
 
