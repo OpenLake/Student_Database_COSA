@@ -645,6 +645,94 @@ const OrganizationalUnit = mongoose.model(
 );
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
+const roomSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  capacity: {
+    type: Number,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  amenities: [
+    {
+      type: String,
+    },
+  ],
+  is_active: {
+    type: Boolean,
+    default: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Room = mongoose.model("Room", roomSchema);
+
+const roomBookingSchema = new mongoose.Schema({
+  room: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Room",
+    required: true,
+  },
+  event: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Event",
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  startTime: {
+    type: Date,
+    required: true,
+  },
+  endTime: {
+    type: Date,
+    required: true,
+  },
+  purpose: {
+    type: String,
+  },
+  bookedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected", "Cancelled"],
+    default: "Pending",
+  },
+  reviewedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+roomBookingSchema.index({ room: 1, date: 1, startTime: 1, endTime: 1 });
+
+const RoomBooking = mongoose.model("RoomBooking", roomBookingSchema);
+
 module.exports = {
   User,
   Feedback,
@@ -656,4 +744,6 @@ module.exports = {
   Position,
   OrganizationalUnit,
   Announcement,
+  Room,
+  RoomBooking,
 };
