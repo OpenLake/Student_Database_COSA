@@ -66,7 +66,6 @@ app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/por", porRoutes);
 
