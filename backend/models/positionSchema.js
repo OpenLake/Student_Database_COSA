@@ -9,6 +9,7 @@ const positionSchema = new mongoose.Schema({
   },
   title: {
     type: String,
+    enum: ["PRESIDENT", "GENSEC_SCITECH", "GENSEC_ACADEMIC", "GENSEC_CULTURAL", "GENSEC_SPORTS", "CLUB_COORDINATOR"],
     required: true,
   },
   unit_id: {

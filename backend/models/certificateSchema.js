@@ -3,26 +3,55 @@ const mongoose = require("mongoose");
 const certificateBatchSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    eventIid: {
+    eventId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "eventSchema",
+      ref: "Event",
     },
-    commonData: { type: Map, of: String, required: true },
-    templateId: { type: String, required: true },
+    templateId: { type: mongoose.Schema.Types.ObjectId, ref: "Template" },
     initiatedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    approverIds: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    ],
-    status: {
-      type: String,
-      enum: ["PendingL1", "PendingL2", "Processed", "Rejected", "Processing"],
-      default: "PendingL1",
+    approverIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      required: true,
     },
-    users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    approvalStatus: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      required: function () {
+        return this.lifecycleStatus !== "Draft";
+      },
+    },
+    lifecycleStatus: {
+      type: String,
+      enum: ["Draft", "Submitted", "Active", "Archived"],
+      default: "Draft",
+    },
+    currentApprovalLevel: {
+      type: Number,
+      default: 0,
+      max: 2,
+    },
+    users: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      required: function () {
+        return this.lifecycleStatus === "Draft" ? false : true;
+      },
+    },
+    signatoryDetails: {
+      type: [
+        {
+          name: { type: String, required: true },
+          signature: { type: String, required: true },
+          position: { type: String, required: true },
+        },
+      ],
+      required: function () {
+        return this.lifecycleStatus === "Draft" ? false : true;
+      },
+    },
   },
   {
     timestamps: true,
@@ -88,9 +117,21 @@ B	            2
 B	            4
 
 */
+// For "Get pending batches for logged-in approver"
+// Common filter: approverIds includes user, submitted batches, pending approval.
 certificateBatchSchema.index(
-  { approverIds: 1 },
-  { partialFilterExpression: { status: { $in: ["PendingL1", "PendingL2"] } } },
+  {
+    approverIds: 1,
+    approvalStatus: 1,
+    lifecycleStatus: 1,
+    currentApprovalLevel: 1,
+  },
+  {
+    partialFilterExpression: {
+      approvalStatus: "Pending",
+      lifecycleStatus: { $ne: "Draft" },
+    },
+  },
 );
 
 //This is done to ensure that within each batch only 1 certificate is issued per userId.
@@ -100,9 +141,9 @@ certificateSchema.index({ batchId: 1, userId: 1 }, { unique: true });
 
 certificateSchema.index(
   { userId: 1, certificateId: 1 },
-  { 
+  {
     unique: true,
-    partialFilterExpression: { certificateId: { $exists: true } } 
+    partialFilterExpression: { certificateId: { $exists: true } },
   },
 );
 
@@ -120,9 +161,9 @@ module.exports = {
 /*
 
 if i use partialFilter when querying i have to specify its filter condition so mongodb uses that index
-so here 
-certificateBatchSchema.index({approverIds: 1}, {partialFilterExpression: { status: {$in: ["PendingL1", "PendingL2"]}}} ) 
-i need to do 
+so here
+certificateBatchSchema.index({approverIds: 1}, {partialFilterExpression: { status: {$in: ["PendingL1", "PendingL2"]}}} )
+i need to do
 CertificateBatch.find({approverIds: id, status: {$in: ["PendingL1", "PendingL2"]} } )
 
 */
