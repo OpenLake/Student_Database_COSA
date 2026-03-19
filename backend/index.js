@@ -22,6 +22,7 @@ const dashboardRoutes = require("./routes/dashboard.js");
 const analyticsRoutes = require("./routes/analytics.js");
 const certificateBatchRoutes = require("./routes/certificateBatch.js");
 const certificateRoutes = require("./routes/certificate.js");
+const templateRoutes = require("./routes/template.js");
 
 const app = express();
 
@@ -30,7 +31,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-
 
 app.use(cookieParser());
 
@@ -45,16 +45,16 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
-      maxAge: 60*60*1000,
-      httpOnly: true
+      maxAge: 60 * 60 * 1000,
+      httpOnly: true,
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       //ttl option expects seconds
-      ttl: 60*60, //1hr in sec
-      collectionName: "sessions"
+      ttl: 60 * 60, //1hr in sec
+      collectionName: "sessions",
     }),
-    name: "token"
+    name: "token",
   }),
 );
 
@@ -80,16 +80,21 @@ app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/certificate-batches", certificateBatchRoutes);
+app.use("/api/batches", certificateBatchRoutes);
 app.use("/api/certificates", certificateRoutes);
-
+app.use("/api/templates", templateRoutes);
 
 // Start the server
 
-(async function(){
+(async function () {
   // Connect to MongoDB
-  await connectDB();
-  app.listen(process.env.PORT || 5000, () => {
-    console.log(`connected to port ${process.env.PORT || 5000}`);
-  });
+  try {
+    await connectDB();
+    app.listen(process.env.PORT || 5000, () => {
+      console.log(`connected to port ${process.env.PORT || 5000}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 })();
