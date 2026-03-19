@@ -4,23 +4,16 @@ import { createContext, useState } from "react";
 export const RequestContext = createContext();
 
 export function RequestProvider({ children }) {
-  const [pending, setPending] = useState(0);
-  const [approved, setApproved] = useState(0);
-  const [rejected, setRejected] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [requestStatus, setRequestStatus] = useState({
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    total: 0
+  })
 
   return (
     <RequestContext.Provider
-      value={{
-        pending,
-        setPending,
-        approved,
-        setApproved,
-        rejected,
-        setRejected,
-        total,
-        setTotal,
-      }}
+      value={{ requestStatus, setRequestStatus }}
     >
       {children}
     </RequestContext.Provider>
