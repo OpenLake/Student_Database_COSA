@@ -101,7 +101,7 @@ export default function RequestsTable({ requests, onApprove, onReject, onView, o
                       >
                         View
                       </button>
-                      {userRole === "PRESIDENT" || userRole.startsWith("GENSEC") 
+                      {userRole === "PRESIDENT" || userRole?.startsWith("GENSEC") 
                       ? (
                       <>
                         <button
