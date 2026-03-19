@@ -131,7 +131,7 @@ const CertificatesList = () => {
           <button
             key={btn.value}
             onClick={() => setCertificateFilter(btn.value)}
-            className={`px-4 h-[40px] rounded-xl font-semibold transition-all duration-200 ${
+            className={`px-4 h-[40px] !rounded-2xl font-semibold transition-all duration-200 ${
               certificateFilter === btn.value
                 ? "bg-black text-white shadow-md"
                 : "bg-white text-black border-2 border-black hover:bg-gray-50"
