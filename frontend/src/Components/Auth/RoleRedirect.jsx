@@ -3,8 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAdminContext } from "../../context/AdminContext";
 
 const RoleRedirect = () => {
-  const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } =
-    useAdminContext();
+  const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } = useAdminContext();
   if (isLoading) return <div>Loading...</div>;
 
   if (!isUserLoggedIn || Object.keys(isUserLoggedIn).length === 0) {
