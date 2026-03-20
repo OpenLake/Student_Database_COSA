@@ -1,35 +1,91 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const isAuthenticated = require('../middlewares/isAuthenticated');
-const authorizeRole = require('../middlewares/authorizeRole');
-const { ROLE_GROUPS, ROLES } = require('../utils/roles');
-const roomBookingController = require('../controllers/roomBookingController');
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const authorizeRole = require("../middlewares/authorizeRole");
+const { ROLE_GROUPS, ROLES } = require("../utils/roles");
+const roomBookingController = require("../controllers/roomBookingController");
 
-// Create a new room (admin only)
-router.post('/create-room', isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), roomBookingController.createRoom);
+// Canonical room endpoints
+router.post(
+  "/",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  roomBookingController.createRoom,
+);
+router.get("/", isAuthenticated, roomBookingController.getAllRooms);
+router.get(
+  "/availability",
+  isAuthenticated,
+  roomBookingController.getAvailability,
+);
+router.get("/bookings", isAuthenticated, roomBookingController.getBookings);
+router.post(
+  "/bookings",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  roomBookingController.bookRoom,
+);
 
-// Get all rooms
-router.get('/rooms', isAuthenticated, roomBookingController.getAllRooms);
+// Backward-compatible legacy endpoints
+router.post(
+  "/create-room",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  roomBookingController.createRoom,
+);
+router.get("/rooms", isAuthenticated, roomBookingController.getAllRooms);
+router.get(
+  "/rooms/:room_id",
+  isAuthenticated,
+  roomBookingController.getRoomById,
+);
+router.post(
+  "/book",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  roomBookingController.bookRoom,
+);
 
-// Book a room (admin only)
-router.post('/book', isAuthenticated, authorizeRole(ROLE_GROUPS.ADMIN), roomBookingController.bookRoom);
+router.get(
+  "/:room_id/availability",
+  isAuthenticated,
+  (req, res, next) => {
+    req.query.roomId = req.params.room_id;
+    next();
+  },
+  roomBookingController.getAvailability,
+);
+router.get("/:room_id", isAuthenticated, roomBookingController.getRoomById);
 
-// Get room availability
-router.get('/availability', isAuthenticated, roomBookingController.getAvailability);
-
-// Get bookings (filterable)
-router.get('/bookings', isAuthenticated, roomBookingController.getBookings);
-
-// Update booking status (approve/reject)
-router.put('/bookings/:id/status', isAuthenticated, authorizeRole([
-  ROLES.PRESIDENT,
-  ROLES.GENSEC_SCITECH,
-  ROLES.GENSEC_ACADEMIC,
-  ROLES.GENSEC_CULTURAL,
-  ROLES.GENSEC_SPORTS,
-]), roomBookingController.updateBookingStatus);
-
-// Cancel a booking
-router.delete('/bookings/:id', isAuthenticated, roomBookingController.cancelBooking);
+// Booking review and cancel endpoints
+router.patch(
+  "/bookings/:id/status",
+  isAuthenticated,
+  authorizeRole([
+    ROLES.PRESIDENT,
+    ROLES.GENSEC_SCITECH,
+    ROLES.GENSEC_ACADEMIC,
+    ROLES.GENSEC_CULTURAL,
+    ROLES.GENSEC_SPORTS,
+  ]),
+  roomBookingController.updateBookingStatus,
+);
+router.put(
+  "/bookings/:id/status",
+  isAuthenticated,
+  authorizeRole([
+    ROLES.PRESIDENT,
+    ROLES.GENSEC_SCITECH,
+    ROLES.GENSEC_ACADEMIC,
+    ROLES.GENSEC_CULTURAL,
+    ROLES.GENSEC_SPORTS,
+  ]),
+  roomBookingController.updateBookingStatus,
+);
+router.delete(
+  "/bookings/:id",
+  isAuthenticated,
+  roomBookingController.cancelBooking,
+);
 
 module.exports = router;

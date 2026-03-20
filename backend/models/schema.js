@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 var findOrCreate = require("mongoose-findorcreate");
+const { v4: uuidv4 } = require("uuid");
 //user collection
 
 const userSchema = new mongoose.Schema({
@@ -646,6 +647,12 @@ const OrganizationalUnit = mongoose.model(
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
 const roomSchema = new mongoose.Schema({
+  room_id: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => `ROOM_${uuidv4()}`,
+  },
   name: {
     type: String,
     required: true,
@@ -664,6 +671,30 @@ const roomSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  allowed_roles: {
+    type: [
+      {
+        type: String,
+        enum: [
+          "PRESIDENT",
+          "GENSEC_SCITECH",
+          "GENSEC_ACADEMIC",
+          "GENSEC_CULTURAL",
+          "GENSEC_SPORTS",
+          "CLUB_COORDINATOR",
+          "STUDENT",
+        ],
+      },
+    ],
+    default: [
+      "PRESIDENT",
+      "GENSEC_SCITECH",
+      "GENSEC_ACADEMIC",
+      "GENSEC_CULTURAL",
+      "GENSEC_SPORTS",
+      "CLUB_COORDINATOR",
+    ],
+  },
   is_active: {
     type: Boolean,
     default: true,
@@ -701,6 +732,15 @@ const roomBookingSchema = new mongoose.Schema({
   endTime: {
     type: Date,
     required: true,
+    validate: {
+      validator: function (value) {
+        if (!this.startTime || !value) {
+          return false;
+        }
+        return value > this.startTime;
+      },
+      message: "endTime must be after startTime",
+    },
   },
   purpose: {
     type: String,
