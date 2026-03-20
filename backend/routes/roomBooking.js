@@ -19,12 +19,7 @@ router.get(
   roomBookingController.getAvailability,
 );
 router.get("/bookings", isAuthenticated, roomBookingController.getBookings);
-router.post(
-  "/bookings",
-  isAuthenticated,
-  authorizeRole(ROLE_GROUPS.ADMIN),
-  roomBookingController.bookRoom,
-);
+router.post("/bookings", isAuthenticated, roomBookingController.bookRoom);
 
 // Backward-compatible legacy endpoints
 router.post(
@@ -39,12 +34,7 @@ router.get(
   isAuthenticated,
   roomBookingController.getRoomById,
 );
-router.post(
-  "/book",
-  isAuthenticated,
-  authorizeRole(ROLE_GROUPS.ADMIN),
-  roomBookingController.bookRoom,
-);
+router.post("/book", isAuthenticated, roomBookingController.bookRoom);
 
 router.get(
   "/:room_id/availability",

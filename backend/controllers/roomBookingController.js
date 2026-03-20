@@ -15,6 +15,7 @@ const SAFE_USER_SELECT = "_id username role personal_info.name";
 const SAFE_EVENT_SELECT = "_id title";
 const SAFE_ROOM_SELECT =
   "_id room_id name location capacity allowed_roles is_active";
+const SAFE_ROOM_DETAIL_SELECT = `${SAFE_ROOM_SELECT} amenities`;
 
 const getDayBounds = (dateInput) => {
   const parsedDate = new Date(dateInput);
@@ -60,6 +61,10 @@ const getRoomObjectId = async (roomIdentifier) => {
 };
 
 const buildRoomStatusMap = async (roomIds) => {
+  if (!roomIds || roomIds.length === 0) {
+    return new Map();
+  }
+
   const now = new Date();
 
   const activeBookings = await RoomBooking.find({
@@ -69,7 +74,7 @@ const buildRoomStatusMap = async (roomIds) => {
     endTime: { $gt: now },
   })
     .populate("event", SAFE_EVENT_SELECT)
-    .select("room event endTime")
+    .select("room event startTime endTime")
     .lean();
 
   const statusMap = new Map();
@@ -80,7 +85,50 @@ const buildRoomStatusMap = async (roomIds) => {
       statusMap.set(roomKey, {
         status: "occupied",
         current_event: booking.event || null,
+        occupied_from: booking.startTime,
         occupied_until: booking.endTime,
+      });
+    }
+  }
+
+  const rooms = await Room.find({ _id: { $in: roomIds } })
+    .select("_id room_id name")
+    .lean();
+
+  const venueToRoomId = new Map();
+  for (const room of rooms) {
+    if (room.name) {
+      venueToRoomId.set(room.name, String(room._id));
+    }
+    if (room.room_id) {
+      venueToRoomId.set(room.room_id, String(room._id));
+    }
+  }
+
+  const venueCandidates = Array.from(venueToRoomId.keys());
+  if (venueCandidates.length > 0) {
+    const activeEvents = await Event.find({
+      "schedule.start": { $lte: now },
+      "schedule.end": { $gt: now },
+      "schedule.venue": { $in: venueCandidates },
+    })
+      .select(`${SAFE_EVENT_SELECT} schedule.start schedule.end schedule.venue`)
+      .lean();
+
+    for (const event of activeEvents) {
+      const roomKey = venueToRoomId.get(event.schedule && event.schedule.venue);
+      if (!roomKey || statusMap.has(roomKey)) {
+        continue;
+      }
+
+      statusMap.set(roomKey, {
+        status: "occupied",
+        current_event: {
+          _id: event._id,
+          title: event.title,
+        },
+        occupied_from: event.schedule ? event.schedule.start : null,
+        occupied_until: event.schedule ? event.schedule.end : null,
       });
     }
   }
@@ -91,7 +139,7 @@ const buildRoomStatusMap = async (roomIds) => {
 const enrichRoom = (room, statusMap) => {
   const activeStatus = statusMap.get(String(room._id));
   return Object.assign({}, room, {
-    status: activeStatus ? activeStatus.status : "available",
+    status: activeStatus ? activeStatus.status : "vacant",
     current_event: activeStatus ? activeStatus.current_event : null,
     occupied_until: activeStatus ? activeStatus.occupied_until : null,
   });
@@ -147,7 +195,7 @@ exports.createRoom = async (req, res) => {
     res.status(201).json({
       message: "Room created",
       room: Object.assign({}, roomObject, {
-        status: "available",
+        status: "vacant",
         current_event: null,
         occupied_until: null,
       }),
@@ -188,14 +236,36 @@ exports.getRoomById = async (req, res) => {
     }
 
     const room = await Room.findById(roomObjectId)
-      .select(SAFE_ROOM_SELECT)
+      .select(SAFE_ROOM_DETAIL_SELECT)
       .lean();
     if (!room) {
       return res.status(404).json({ message: "Room not found" });
     }
 
     const statusMap = await buildRoomStatusMap([room._id]);
-    res.json(enrichRoom(room, statusMap));
+    const roomSummary = enrichRoom(room, statusMap);
+    const activeStatus = statusMap.get(String(room._id));
+
+    const detailPayload = {
+      room_id: room.room_id,
+      name: room.name,
+      location: room.location,
+      allowed_roles: room.allowed_roles,
+      is_active: room.is_active,
+      status: roomSummary.status,
+      current_event: roomSummary.current_event,
+      occupied_until: roomSummary.occupied_until,
+      schedule: {
+        start: activeStatus ? activeStatus.occupied_from || null : null,
+        end: activeStatus ? activeStatus.occupied_until || null : null,
+      },
+      metadata: {
+        capacity: room.capacity,
+        features: Array.isArray(room.amenities) ? room.amenities : [],
+      },
+    };
+
+    res.json(detailPayload);
   } catch (err) {
     res.status(500).json({ message: "Error fetching room details" });
   }
@@ -273,47 +343,74 @@ exports.bookRoom = async (req, res) => {
       }
     }
 
-    const clash = await RoomBooking.findOne({
-      room: roomObjectId,
-      status: { $in: ["Pending", "Approved"] },
-      date: { $gte: dayBounds.dayStart, $lt: dayBounds.dayEnd },
-      startTime: { $lt: parsedEndTime },
-      endTime: { $gt: parsedStartTime },
-    })
-      .select("_id room event startTime endTime status")
-      .lean();
+    const session = await mongoose.startSession();
+    let createdBookingId;
 
-    if (clash) {
-      return res.status(409).json({
-        message: "Room clash detected",
-        conflictingBooking: clash,
+    try {
+      await session.withTransaction(async () => {
+        await Room.updateOne(
+          { _id: roomObjectId },
+          { $set: { updated_at: new Date() } },
+          { session },
+        );
+
+        const clash = await RoomBooking.findOne({
+          room: roomObjectId,
+          status: { $in: ["Pending", "Approved"] },
+          date: { $gte: dayBounds.dayStart, $lt: dayBounds.dayEnd },
+          startTime: { $lt: parsedEndTime },
+          endTime: { $gt: parsedStartTime },
+        })
+          .session(session)
+          .select("_id room event startTime endTime status")
+          .lean();
+
+        if (clash) {
+          const conflictError = new Error("Room clash detected");
+          conflictError.statusCode = 409;
+          conflictError.conflictingBooking = clash;
+          throw conflictError;
+        }
+
+        const createdBookings = await RoomBooking.create(
+          [
+            {
+              room: roomObjectId,
+              event: eventId || undefined,
+              date: dayBounds.dayStart,
+              startTime: parsedStartTime,
+              endTime: parsedEndTime,
+              purpose,
+              bookedBy: req.user._id,
+            },
+          ],
+          { session },
+        );
+
+        createdBookingId = createdBookings[0]._id;
       });
+    } catch (error) {
+      if (error.statusCode === 409) {
+        return res.status(409).json({
+          message: error.message,
+          conflictingBooking: error.conflictingBooking,
+        });
+      }
+      throw error;
+    } finally {
+      await session.endSession();
     }
 
-    const booking = new RoomBooking({
-      room: roomObjectId,
-      event: eventId || undefined,
-      date: dayBounds.dayStart,
-      startTime: parsedStartTime,
-      endTime: parsedEndTime,
-      purpose,
-      bookedBy: req.user._id,
-    });
-
-    await booking.save();
-
-    const responseBooking = await RoomBooking.findById(booking._id)
+    const responseBooking = await RoomBooking.findById(createdBookingId)
       .populate("room", SAFE_ROOM_SELECT)
       .populate("event", SAFE_EVENT_SELECT)
       .populate("bookedBy", SAFE_USER_SELECT)
       .lean();
 
-    res
-      .status(201)
-      .json({
-        message: "Room booked (pending approval)",
-        booking: responseBooking,
-      });
+    res.status(201).json({
+      message: "Room booked (pending approval)",
+      booking: responseBooking,
+    });
   } catch (err) {
     res.status(500).json({ message: "Error booking room", error: err.message });
   }
@@ -368,45 +465,83 @@ exports.updateBookingStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const booking = await RoomBooking.findById(id);
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
+    const session = await mongoose.startSession();
+    let reviewedBookingId;
 
-    if (status === "Approved") {
-      if (!(booking.startTime < booking.endTime)) {
-        return res
-          .status(400)
-          .json({ message: "Invalid booking time range for approval." });
-      }
+    try {
+      await session.withTransaction(async () => {
+        const booking = await RoomBooking.findById(id).session(session);
+        if (!booking) {
+          const notFoundError = new Error("Booking not found");
+          notFoundError.statusCode = 404;
+          throw notFoundError;
+        }
 
-      const dayBounds = getDayBounds(booking.date);
-      const overlappingApprovedBooking = await RoomBooking.findOne({
-        _id: { $ne: booking._id },
-        room: booking.room,
-        status: "Approved",
-        date: { $gte: dayBounds.dayStart, $lt: dayBounds.dayEnd },
-        startTime: { $lt: booking.endTime },
-        endTime: { $gt: booking.startTime },
-      })
-        .select("_id room event startTime endTime")
-        .lean();
+        if (booking.status !== "Pending") {
+          const invalidStateError = new Error(
+            "Only pending bookings can be reviewed.",
+          );
+          invalidStateError.statusCode = 409;
+          throw invalidStateError;
+        }
 
-      if (overlappingApprovedBooking) {
-        return res.status(409).json({
-          message:
-            "Cannot approve booking due to overlap with another approved booking.",
-          conflictingBooking: overlappingApprovedBooking,
+        if (status === "Approved") {
+          if (!(booking.startTime < booking.endTime)) {
+            const invalidTimeError = new Error(
+              "Invalid booking time range for approval.",
+            );
+            invalidTimeError.statusCode = 400;
+            throw invalidTimeError;
+          }
+
+          await Room.updateOne(
+            { _id: booking.room },
+            { $set: { updated_at: new Date() } },
+            { session },
+          );
+
+          const dayBounds = getDayBounds(booking.date);
+          const overlappingApprovedBooking = await RoomBooking.findOne({
+            _id: { $ne: booking._id },
+            room: booking.room,
+            status: "Approved",
+            date: { $gte: dayBounds.dayStart, $lt: dayBounds.dayEnd },
+            startTime: { $lt: booking.endTime },
+            endTime: { $gt: booking.startTime },
+          })
+            .session(session)
+            .select("_id room event startTime endTime")
+            .lean();
+
+          if (overlappingApprovedBooking) {
+            const conflictError = new Error(
+              "Cannot approve booking due to overlap with another approved booking.",
+            );
+            conflictError.statusCode = 409;
+            conflictError.conflictingBooking = overlappingApprovedBooking;
+            throw conflictError;
+          }
+        }
+
+        booking.status = status;
+        booking.reviewedBy = req.user._id;
+        booking.updated_at = new Date();
+        await booking.save({ session });
+        reviewedBookingId = booking._id;
+      });
+    } catch (error) {
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({
+          message: error.message,
+          conflictingBooking: error.conflictingBooking,
         });
       }
+      throw error;
+    } finally {
+      await session.endSession();
     }
 
-    booking.status = status;
-    booking.reviewedBy = req.user._id;
-    booking.updated_at = new Date();
-    await booking.save();
-
-    const responseBooking = await RoomBooking.findById(booking._id)
+    const responseBooking = await RoomBooking.findById(reviewedBookingId)
       .populate("room", SAFE_ROOM_SELECT)
       .populate("event", SAFE_EVENT_SELECT)
       .populate("bookedBy", SAFE_USER_SELECT)

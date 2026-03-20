@@ -1144,7 +1144,6 @@ async function seedDB() {
     await seedEvents();
     await seedAchievements();
     await seedFeedbacks();
-    await seedRooms();
 
     console.log("\n✅ Seeding completed successfully!");
   } catch (error) {
