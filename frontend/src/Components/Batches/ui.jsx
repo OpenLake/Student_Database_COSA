@@ -168,84 +168,31 @@ export function CertThumb({ batch }) {
 
 export function Modal({ open, onClose, title, children }) {
   if (!open) return null;
+
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 100,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 16,
-      }}
-    >
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div
         onClick={onClose}
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(28,25,23,0.22)",
-          backdropFilter: "blur(4px)",
-        }}
+        className="absolute inset-0 bg-black/20 backdrop-blur-[4px]"
       />
-      <div
-        style={{
-          position: "relative",
-          background: "#fff",
-          borderRadius: 24,
-          width: "100%",
-          maxWidth: 500,
-          maxHeight: "90vh",
-          overflowY: "auto",
-          border: "1.5px solid #e7e5e0",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.1)",
-        }}
-      >
-        <div
-          style={{
-            position: "sticky",
-            top: 0,
-            background: "#fff",
-            borderBottom: "1px solid #f0ede8",
-            padding: "16px 22px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderRadius: "24px 24px 0 0",
-            zIndex: 1,
-          }}
-        >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 15,
-              fontWeight: 900,
-              color: "#1c1917",
-            }}
-          >
-            {title}
-          </h2>
+
+      {/* Modal container */}
+      <div className="relative w-full max-w-[500px] max-h-[90vh] overflow-y-auto bg-white rounded-3xl border-[1.5px] border-[#e7e5e0] shadow-[0_24px_80px_rgba(0,0,0,0.1)]">
+        {/* Header */}
+        <div className="sticky top-0 z-[1] flex items-center justify-between px-[22px] py-4 bg-white border-b border-[#f0ede8] rounded-t-3xl">
+          <h2 className="m-0 !text-lg font-black text-[#1c1917]">{title}</h2>
+
           <button
             onClick={onClose}
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              border: "1.5px solid #e7e5e0",
-              background: "#fafaf5",
-              cursor: "pointer",
-              fontSize: 16,
-              color: "#78716c",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            className="w-7 h-7 !rounded-full border-[1.5px] border-[#e7e5e0] bg-[#fafaf5] cursor-pointer text-base text-stone-500 flex items-center justify-center"
           >
             ×
           </button>
         </div>
-        <div style={{ padding: "18px 22px" }}>{children}</div>
+
+        {/* Content */}
+        <div className="px-[22px] py-[18px]">{children}</div>
       </div>
     </div>
   );

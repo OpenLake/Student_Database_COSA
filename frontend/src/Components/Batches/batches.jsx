@@ -17,7 +17,14 @@ import {
 import ModalDialog from "./modalDialog";
 import { BatchCard, BatchList } from "./batchCard";
 import { Select } from "./select";
-import { fetchBatches, createBatch } from "../../services/batch";
+import {
+  fetchBatches,
+  createBatch,
+  editBatch,
+  duplicateBatch,
+  deleteBatch,
+  archiveBatchApi,
+} from "../../services/batch";
 import { fetchEvents } from "../../services/events";
 import { fetchTemplates } from "../../services/templates";
 
@@ -36,6 +43,8 @@ export default function BatchesPage() {
   const [viewingBatch, setViewingBatch] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [toast, setToast] = useState(null);
   const [form, setForm] = useState({
     title: "", // batch.title
@@ -87,21 +96,25 @@ export default function BatchesPage() {
   const filter = useMemo(() => {
     const list = batches || [];
     return {
-      statuses: [...new Set(list.map((b) => b.status))],
+      statuses: [...new Set(list.map((b) => b.lifecycleStatus))],
       approvalStatuses: [...new Set(list.map((b) => b.approvalStatus))],
-      creators: [...new Set(list.map((b) => b.createdBy))],
-      organizations: [...new Set(list.map((b) => b.org))],
+      creators: [...new Set(list.map((b) => b.initiatedBy.personal_info.name))],
+      organizations: [
+        ...new Set(list.map((b) => b.eventId.organizing_unit_id.name)),
+      ],
     };
   }, [batches]);
 
   const filtered = (batches || []).filter((b) => {
+    const batchOrg = b.eventId.organizing_unit_id.name;
     const matchSearch =
-      !search || b.name.toLowerCase().includes(search?.toLowerCase());
-    const matchOrg = org === "ALL" || b.org === org;
-    const matchStatus = status === "ALL" || b.status === status;
+      !search || b.title.toLowerCase().includes(search?.toLowerCase());
+    const matchOrg = org === "ALL" || batchOrg === org;
+    const matchStatus = status === "ALL" || b.lifecycleStatus === status;
     const matchApprovalStatus =
       approvalStatus === "ALL" || b.approvalStatus === approvalStatus;
-    const matchCreator = creator === "ALL" || b.createdBy === creator;
+    const matchCreator =
+      creator === "ALL" || b.initiatedBy.personal_info.name === creator;
     return (
       matchSearch &&
       matchOrg &&
@@ -110,7 +123,6 @@ export default function BatchesPage() {
       matchCreator
     );
   });
-  console.log("Filtered is:", filtered[0]);
 
   const hasFilters =
     org !== "ALL" ||
@@ -204,12 +216,17 @@ export default function BatchesPage() {
           selected &&
           selected.organizing_unit_id &&
           (selected.organizing_unit_id.name || ""),
-        date:
+        startDate:
           selected && selected.schedule && selected.schedule.start
-            ? new Date(selected.schedule.start).toLocaleDateString()
+            ? new Date(selected.schedule.start).toLocaleDateString("en-GB")
+            : "",
+        endDate:
+          selected && selected.schedule && selected.schedule.end
+            ? new Date(selected.schedule.end).toLocaleDateString("en-GB")
             : "",
         description: selected && (selected.description || ""),
       }));
+      setSelectedEvent(selected);
     },
     [events],
   );
@@ -219,22 +236,64 @@ export default function BatchesPage() {
       const selected = templates.find((t) => t._id === templateId);
       setForm((f) => ({
         ...f,
-        templateId: selected && (selected._id || ""),
+        templateId: selected && (selected._id || "Unknown"),
       }));
     },
     [templates],
   );
 
+  const getDifference = (editing, form) => {
+    const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    for (let key in form) {
+      if (!isEqual(form[key], editing[key])) return true;
+    }
+    return false;
+  };
+
   const saveBatch = useCallback(
     async (action) => {
-      if (!form.title || !form.eventId || !form.templateId) return;
-      closeModal();
-      if (editing) {
-        fire("Editing batches is not wired yet");
+      if (
+        !form.title ||
+        !form.eventId ||
+        !form.templateId ||
+        form.signatoryDetails.length === 0 ||
+        form.students.length === 0
+      ) {
+        fire("Please fill in all fields");
         return;
       }
+      closeModal();
       try {
-        const response = await createBatch({ ...form, action: action });
+        let response;
+        if (editing) {
+          if (action === "Draft") {
+            if (!getDifference(editing, form)) return;
+            response = await editBatch({
+              ...form,
+              action: "Draft",
+              batchId: editing?._id,
+            });
+          } else if (action === "Submitted") {
+            response = await editBatch({
+              ...form,
+              action: "Submitted",
+              batchId: editing?._id,
+            });
+          }
+        } else {
+          if (action === "Draft") {
+            response = await createBatch({
+              ...form,
+              action: "Draft",
+            });
+          } else if (action === "Submitted") {
+            response = await createBatch({
+              ...form,
+              action: "Submitted",
+            });
+          }
+        }
+
         response && fire(response);
         const updated = await fetchBatches();
         if (updated) setBatches(updated);
@@ -243,42 +302,28 @@ export default function BatchesPage() {
         fire("Failed to " + action);
       }
     },
-    [form, editing, fetchBatches],
+    [form, fetchBatches],
   );
 
-  const deleteBatch = useCallback((id) => {
-    setBatches((bs) => bs.filter((b) => b.id !== id));
-    fire("Batch Deleted");
+  const delBatch = useCallback(async (batch) => {
+    const response = await deleteBatch(batch._id);
+    response && fire(response);
+    const updated = await fetchBatches();
+    if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 
-  const archiveBatch = useCallback((id) => {
-    setBatches((prev) =>
-      prev.map((batch) =>
-        batch.id === id
-          ? {
-              ...batch,
-              status: "Archived",
-            }
-          : batch,
-      ),
-    );
-
-    fire("Batch Archived");
+  const archiveBatch = useCallback(async (id) => {
+    const response = await archiveBatchApi(id);
+    response && fire(response);
+    const updated = await fetchBatches();
+    if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 
-  const dupBatch = useCallback((b) => {
-    setBatches((bs) => [
-      ...bs,
-      {
-        ...b,
-        id: Date.now(),
-        name: b.name + " (Copy)",
-        status: "Draft",
-        modified: new Date().toLocaleString(),
-      },
-    ]);
-
-    fire("Batch Duplicated");
+  const dupBatch = useCallback(async (b) => {
+    const response = await duplicateBatch(b?._id);
+    response && fire(response);
+    const updated = await fetchBatches();
+    if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 
   return (
@@ -454,7 +499,7 @@ export default function BatchesPage() {
               batch={b}
               onView={openView}
               onEdit={openEdit}
-              onDelete={deleteBatch}
+              onDelete={delBatch}
               onDuplicate={dupBatch}
               onArchive={archiveBatch}
             />
@@ -468,7 +513,7 @@ export default function BatchesPage() {
           filtered={filtered}
           onView={openView}
           onEdit={openEdit}
-          onDelete={deleteBatch}
+          onDelete={delBatch}
           onDuplicate={dupBatch}
           onArchive={archiveBatch}
         />
@@ -484,8 +529,10 @@ export default function BatchesPage() {
         saveDraft={() => saveBatch("Draft")}
         submitBatch={() => saveBatch("Submitted")}
         events={events}
+        templates={templates}
         handleEventChange={handleEventChange}
         handleTemplateChange={handleTemplateChange}
+        selectedEvent={selectedEvent}
       />
     </div>
   );

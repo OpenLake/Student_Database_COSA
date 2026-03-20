@@ -204,7 +204,7 @@ export function BatchCard({
               <ActionBtn
                 label="Delete"
                 danger
-                onClick={() => onDelete(batch.id)}
+                onClick={() => onDelete(batch)}
               />
             </>
           )}
@@ -212,7 +212,7 @@ export function BatchCard({
             <>
               <ActionBtn label="View" primary onClick={() => onView(batch)} />
               <ActionBtn label="Duplicate" onClick={() => onDuplicate(batch)} />
-              <ActionBtn label="Archive" onClick={() => onArchive(batch.id)} />
+              <ActionBtn label="Archive" onClick={() => onArchive(batch._id)} />
             </>
           )}
           {batch.lifecycleStatus === "Archived" && (
@@ -222,7 +222,7 @@ export function BatchCard({
               <ActionBtn
                 label="Delete"
                 danger
-                onClick={() => onDelete(batch.id)}
+                onClick={() => onDelete(batch)}
               />
             </>
           )}
@@ -230,7 +230,7 @@ export function BatchCard({
             <>
               <ActionBtn label="View" primary onClick={() => onView(batch)} />
               <ActionBtn label="Duplicate" onClick={() => onDuplicate(batch)} />
-              <ActionBtn label="Archive" onClick={() => onArchive(batch.id)} />
+              <ActionBtn label="Archive" onClick={() => onArchive(batch._id)} />
             </>
           )}
         </div>
