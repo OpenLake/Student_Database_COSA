@@ -62,15 +62,15 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user.id);
 });
 
-passport.deserializeUser(async (userKey, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
-    let user = await User.findById(userKey._id);
+    let user = await User.findById(id);
     done(null, user);
   } catch (err) {
-    done(err);
+    done(err, null);
   }
 });
 
