@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
-const { ROLE_GROUPS, ROLES } = require("../utils/roles");
+const { ROLE_GROUPS } = require("../utils/roles");
 const roomBookingController = require("../controllers/roomBookingController");
 
 // Canonical room endpoints
@@ -51,25 +51,13 @@ router.get("/:room_id", isAuthenticated, roomBookingController.getRoomById);
 router.patch(
   "/bookings/:id/status",
   isAuthenticated,
-  authorizeRole([
-    ROLES.PRESIDENT,
-    ROLES.GENSEC_SCITECH,
-    ROLES.GENSEC_ACADEMIC,
-    ROLES.GENSEC_CULTURAL,
-    ROLES.GENSEC_SPORTS,
-  ]),
+  authorizeRole(ROLE_GROUPS.REVIEW_ROLES),
   roomBookingController.updateBookingStatus,
 );
 router.put(
   "/bookings/:id/status",
   isAuthenticated,
-  authorizeRole([
-    ROLES.PRESIDENT,
-    ROLES.GENSEC_SCITECH,
-    ROLES.GENSEC_ACADEMIC,
-    ROLES.GENSEC_CULTURAL,
-    ROLES.GENSEC_SPORTS,
-  ]),
+  authorizeRole(ROLE_GROUPS.REVIEW_ROLES),
   roomBookingController.updateBookingStatus,
 );
 router.delete(

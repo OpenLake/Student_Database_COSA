@@ -17,6 +17,46 @@ const SAFE_ROOM_SELECT =
   "_id room_id name location capacity allowed_roles is_active";
 const SAFE_ROOM_DETAIL_SELECT = `${SAFE_ROOM_SELECT} amenities`;
 
+const getRoomVenueCandidates = (room) => {
+  const candidates = [
+    room && room.name,
+    room && room.room_id,
+    room && room.location,
+  ]
+    .map((value) => (value ? String(value).trim() : ""))
+    .filter(Boolean);
+  return Array.from(new Set(candidates));
+};
+
+const findOverlappingEvent = async ({
+  session,
+  venueCandidates,
+  start,
+  end,
+  excludeEventId,
+}) => {
+  if (!venueCandidates || venueCandidates.length === 0) {
+    return null;
+  }
+
+  const eventClashQuery = {
+    status: { $ne: "cancelled" },
+    "schedule.cancelled": { $ne: true },
+    "schedule.venue": { $in: venueCandidates },
+    "schedule.start": { $lt: end },
+    "schedule.end": { $gt: start },
+  };
+
+  if (excludeEventId && mongoose.isValidObjectId(excludeEventId)) {
+    eventClashQuery._id = { $ne: excludeEventId };
+  }
+
+  return Event.findOne(eventClashQuery)
+    .session(session)
+    .select(`${SAFE_EVENT_SELECT} schedule.start schedule.end schedule.venue`)
+    .lean();
+};
+
 const getDayBounds = (dateInput) => {
   const parsedDate = new Date(dateInput);
   if (Number.isNaN(parsedDate.getTime())) {
@@ -92,7 +132,7 @@ const buildRoomStatusMap = async (roomIds) => {
   }
 
   const rooms = await Room.find({ _id: { $in: roomIds } })
-    .select("_id room_id name")
+    .select("_id room_id name location")
     .lean();
 
   const venueToRoomId = new Map();
@@ -103,11 +143,16 @@ const buildRoomStatusMap = async (roomIds) => {
     if (room.room_id) {
       venueToRoomId.set(room.room_id, String(room._id));
     }
+    if (room.location) {
+      venueToRoomId.set(room.location, String(room._id));
+    }
   }
 
   const venueCandidates = Array.from(venueToRoomId.keys());
   if (venueCandidates.length > 0) {
     const activeEvents = await Event.find({
+      status: { $ne: "cancelled" },
+      "schedule.cancelled": { $ne: true },
       "schedule.start": { $lte: now },
       "schedule.end": { $gt: now },
       "schedule.venue": { $in: venueCandidates },
@@ -322,6 +367,8 @@ exports.bookRoom = async (req, res) => {
       return res.status(404).json({ message: "Room not found or inactive." });
     }
 
+    const venueCandidates = getRoomVenueCandidates(room);
+
     if (
       Array.isArray(room.allowed_roles) &&
       room.allowed_roles.length > 0 &&
@@ -372,6 +419,21 @@ exports.bookRoom = async (req, res) => {
           throw conflictError;
         }
 
+        const overlappingEvent = await findOverlappingEvent({
+          session,
+          venueCandidates,
+          start: parsedStartTime,
+          end: parsedEndTime,
+          excludeEventId: eventId,
+        });
+
+        if (overlappingEvent) {
+          const eventConflictError = new Error("Room clash detected");
+          eventConflictError.statusCode = 409;
+          eventConflictError.conflictingEvent = overlappingEvent;
+          throw eventConflictError;
+        }
+
         const createdBookings = await RoomBooking.create(
           [
             {
@@ -394,6 +456,7 @@ exports.bookRoom = async (req, res) => {
         return res.status(409).json({
           message: error.message,
           conflictingBooking: error.conflictingBooking,
+          conflictingEvent: error.conflictingEvent,
         });
       }
       throw error;
@@ -500,6 +563,19 @@ exports.updateBookingStatus = async (req, res) => {
             { session },
           );
 
+          const roomForBooking = await Room.findById(booking.room)
+            .session(session)
+            .select("name room_id location")
+            .lean();
+
+          if (!roomForBooking) {
+            const missingRoomError = new Error("Room not found or inactive.");
+            missingRoomError.statusCode = 404;
+            throw missingRoomError;
+          }
+
+          const venueCandidates = getRoomVenueCandidates(roomForBooking);
+
           const dayBounds = getDayBounds(booking.date);
           const overlappingApprovedBooking = await RoomBooking.findOne({
             _id: { $ne: booking._id },
@@ -521,6 +597,23 @@ exports.updateBookingStatus = async (req, res) => {
             conflictError.conflictingBooking = overlappingApprovedBooking;
             throw conflictError;
           }
+
+          const overlappingEvent = await findOverlappingEvent({
+            session,
+            venueCandidates,
+            start: booking.startTime,
+            end: booking.endTime,
+            excludeEventId: booking.event,
+          });
+
+          if (overlappingEvent) {
+            const eventConflictError = new Error(
+              "Cannot approve booking due to overlap with another event.",
+            );
+            eventConflictError.statusCode = 409;
+            eventConflictError.conflictingEvent = overlappingEvent;
+            throw eventConflictError;
+          }
         }
 
         booking.status = status;
@@ -534,6 +627,7 @@ exports.updateBookingStatus = async (req, res) => {
         return res.status(error.statusCode).json({
           message: error.message,
           conflictingBooking: error.conflictingBooking,
+          conflictingEvent: error.conflictingEvent,
         });
       }
       throw error;
