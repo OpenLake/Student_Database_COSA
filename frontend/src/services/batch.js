@@ -25,5 +25,50 @@ export async function createBatch(data) {
     return res.data.message;
   } catch (err) {
     console.error("createBatch error:", err);
+    return null;
+  }
+}
+
+export async function editBatch(data) {
+  try {
+    const res = await api.patch("/api/batches/edit-batch", data);
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while editing batch:", err);
+    return null;
+  }
+}
+
+export async function duplicateBatch(batchId) {
+  try {
+    const res = await api.post("/api/batches/duplicate-batch", { batchId });
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while duplicating batch:", err);
+    return err.response?.data.message;
+  }
+}
+
+export async function deleteBatch(batchId) {
+  try {
+    //console.log("Deleting batch:", batchId);
+    const res = await api.delete("/api/batches/delete-batch", {
+      data: { batchId },
+    });
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while deleting batch:", err);
+    return err.response?.data.message;
+  }
+}
+
+export async function archiveBatchApi(batchId) {
+  try {
+    //console.log("Deleting batch:", batchId);
+    const res = await api.patch("/api/batches/archive-batch", { batchId });
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while archiving batch:", err);
+    return err.response?.data.message;
   }
 }
