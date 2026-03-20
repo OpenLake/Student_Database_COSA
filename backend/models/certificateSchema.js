@@ -44,8 +44,8 @@ const certificateBatchSchema = new mongoose.Schema(
       type: [
         {
           name: { type: String, required: true },
-          signature: { type: String, required: true },
-          position: { type: String, required: true },
+          signature: { type: String, default: this.name },
+          role: { type: String, required: true },
         },
       ],
       required: function () {
