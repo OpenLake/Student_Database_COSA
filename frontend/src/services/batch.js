@@ -10,12 +10,13 @@ export async function fetchBatchUsers(userIds = []) {
   }
 }
 
-export async function fetchBatches() {
+export async function fetchBatches(userId) {
   try {
-    const res = await api.get("/api/batches");
+    const res = await api.get(`/api/batches/${userId}`);
     return res.data.message;
   } catch (err) {
     console.error("fetchBatches error:", err);
+    return err.response?.data.message;
   }
 }
 
@@ -35,7 +36,17 @@ export async function editBatch(data) {
     return res.data.message;
   } catch (err) {
     console.error("Error while editing batch:", err);
-    return null;
+    return err.response?.data.message;
+  }
+}
+
+export async function approverEditBatch(data) {
+  try {
+    const res = await api.patch("/api/batches/approver/edit-batch", data);
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while editing batch:", err);
+    return err.response?.data.message;
   }
 }
 
@@ -69,6 +80,27 @@ export async function archiveBatchApi(batchId) {
     return res.data.message;
   } catch (err) {
     console.error("Error while archiving batch:", err);
+    return err.response?.data.message;
+  }
+}
+
+export async function approveBatch(batch) {
+  try {
+    const res = await api.get(`/api/batches/${batch?._id}/approve`);
+    console.log(res);
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while approving batch: ", err);
+    return err.response?.data.message;
+  }
+}
+
+export async function rejectBatch(batch) {
+  try {
+    const res = await api.get(`/api/batches/${batch?._id}/reject`);
+    return res.data.message;
+  } catch (err) {
+    console.error("Error while rejecting batch: ", err);
     return err.response?.data.message;
   }
 }

@@ -1298,18 +1298,18 @@ const seedCertificateBatches = async () => {
         name: coordinator.personal_info.name,
         signature:
           "https://signatures.iitbhilai.ac.in/" + coordinator._id + ".png",
-        position: "Club Coordinator",
+        role: "Club Coordinator",
       },
       {
         name: gensec.personal_info.name,
         signature: "https://signatures.iitbhilai.ac.in/" + gensec._id + ".png",
-        position: "General Secretary, " + club.name,
+        role: "General Secretary, " + club.name,
       },
       {
         name: president.personal_info.name,
         signature:
           "https://signatures.iitbhilai.ac.in/" + president._id + ".png",
-        position: "President, Student Gymkhana",
+        role: "President, Student Gymkhana",
       },
     ];
 
@@ -1324,7 +1324,7 @@ const seedCertificateBatches = async () => {
         currentApprovalLevel,
       },
       approvalStatus ? { approvalStatus } : {},
-      !isDraft ? { users: eventParticipants, signatoryDetails } : {},
+      { users: eventParticipants, signatoryDetails },
     );
 
     batchesToCreate.push(batchDoc);
