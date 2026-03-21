@@ -26,6 +26,8 @@ import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
 import CertificatesPage from "../pages/certificatesPage";
 import RequestsPage from "../pages/requestsPage";
+import TemplatesPage from "../pages/templatesPage"
+import BatchesPage from "../pages/batchesPage"
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -41,6 +43,8 @@ export const DashboardComponents = {
   announcements: AnnouncementsPage,
   certificates: CertificatesPage,
   requests: RequestsPage,
+  templates: TemplatesPage,
+  batches: BatchesPage,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
   "add-event": EventForm,
@@ -50,4 +54,5 @@ export const DashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
+
 };

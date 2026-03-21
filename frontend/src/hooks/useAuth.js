@@ -19,7 +19,7 @@ export const useAuth = () => {
     const initializeAuth = async () => {
       try {
         const response = await fetchCredentials();
-        if(!response){
+        if (!response) {
           setIsUserLoggedIn(false);
           return;
         }
@@ -27,8 +27,8 @@ export const useAuth = () => {
         const user = response.message;
         //console.log("User is:", user);
         handleLogin(user);
-          //console.log("User role:", user.role);
-          //console.log("Onboarding complete:", user.onboardingComplete);
+        //console.log("User role:", user.role);
+        //console.log("Onboarding complete:", user.onboardingComplete);
       } catch (error) {
         setIsUserLoggedIn(false);
       } finally {

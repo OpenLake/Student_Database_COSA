@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const OrganizationalUnit = require("../models/organizationSchema"); 
-const Event = require("../models/eventSchema"); 
-const User = require("../models/userSchema"); 
+const OrganizationalUnit = require("../models/organizationSchema");
+const Event = require("../models/eventSchema");
+const User = require("../models/userSchema");
 const { v4: uuidv4 } = require("uuid");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const isEventContact = require("../middlewares/isEventContact");
@@ -75,7 +75,7 @@ router.post(
 );
 
 // GET all events (for all users: logged in or not logged in)
-router.get("/events", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const events = await Event.find().populate("organizing_unit_id", "name");
     res.json(events);
