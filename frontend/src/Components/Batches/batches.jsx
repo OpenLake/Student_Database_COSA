@@ -9,10 +9,7 @@ import {
   Plus,
   Building2,
   FolderOpen,
-  CircleFadingPlus,
-  Clock1,
   CircleFadingArrowUp,
-  Eraser,
 } from "lucide-react";
 import ModalDialog from "./modalDialog";
 import { BatchCard, BatchList } from "./batchCard";
@@ -27,8 +24,10 @@ import {
 } from "../../services/batch";
 import { fetchEvents } from "../../services/events";
 import { fetchTemplates } from "../../services/templates";
+import { useAdminContext } from "../../context/AdminContext";
 
 export default function BatchesPage() {
+  const { isUserLoggedIn } = useAdminContext();
   const [batches, setBatches] = useState([]);
   const [events, setEvents] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -69,7 +68,7 @@ export default function BatchesPage() {
     const fetchData = async () => {
       try {
         const [batches, events, templates] = await Promise.all([
-          fetchBatches(),
+          fetchBatches(isUserLoggedIn?._id),
           fetchEvents(),
           fetchTemplates(),
         ]);
@@ -79,12 +78,11 @@ export default function BatchesPage() {
           return;
         }
 
-        console.log("Batches is:", batches[0]);
-        console.log("Events is: ", events[0]);
-        console.log("Templates is: ", templates[0]);
-        setBatches(batches);
-        setEvents(events);
-        setTemplates(templates);
+        //console.log("Batches is:", batches[0]);
+
+        Array.isArray(batches) && setBatches(batches);
+        Array.isArray(events) && setEvents(events);
+        Array.isArray(templates) && setTemplates(templates);
       } catch (err) {
         fire("Failed to load data");
       }
@@ -295,34 +293,35 @@ export default function BatchesPage() {
         }
 
         response && fire(response);
-        const updated = await fetchBatches();
+        const updated = await fetchBatches(isUserLoggedIn?._id);
         if (updated) setBatches(updated);
       } catch (err) {
         console.error(err);
         fire("Failed to " + action);
       }
     },
-    [form, fetchBatches],
+    [form],
   );
 
   const delBatch = useCallback(async (batch) => {
     const response = await deleteBatch(batch._id);
     response && fire(response);
-    const updated = await fetchBatches();
+    const updated = await fetchBatches(isUserLoggedIn?._id);
     if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 
   const archiveBatch = useCallback(async (id) => {
     const response = await archiveBatchApi(id);
     response && fire(response);
-    const updated = await fetchBatches();
+    const updated = await fetchBatches(isUserLoggedIn?._id);
     if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 
   const dupBatch = useCallback(async (b) => {
     const response = await duplicateBatch(b?._id);
     response && fire(response);
-    const updated = await fetchBatches();
+    const updated = await fetchBatches(isUserLoggedIn?._id);
+
     if (updated && updated.length !== 0) setBatches(updated);
   }, []);
 

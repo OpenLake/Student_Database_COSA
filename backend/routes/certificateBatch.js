@@ -2,23 +2,27 @@ const router = require("express").Router();
 const {
   createBatch,
   editBatch,
-  getAllBatches,
   getBatchUsers,
   duplicateBatch,
   deleteBatch,
   archiveBatch,
+  getUserBatches,
+  approverEditBatch,
+  approveBatch,
+  rejectBatch,
 } = require("../controllers/certificateBatchController");
 
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
-const { ROLE_GROUPS } = require("../utils/roles");
+const { ROLE_GROUPS, ROLES } = require("../utils/roles");
 
 router.get(
-  "/",
+  "/:userId",
   isAuthenticated,
-  authorizeRole(ROLE_GROUPS.COORDINATORS),
-  getAllBatches,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  getUserBatches,
 );
+
 router.post(
   "/create-batch",
   isAuthenticated,
@@ -31,6 +35,13 @@ router.patch(
   isAuthenticated,
   authorizeRole(ROLE_GROUPS.COORDINATORS),
   editBatch,
+);
+
+router.patch(
+  "/approver/edit-batch",
+  isAuthenticated,
+  authorizeRole([...ROLE_GROUPS.GENSECS, ROLES.PRESIDENT]),
+  approverEditBatch,
 );
 
 router.post(
@@ -59,6 +70,20 @@ router.patch(
   isAuthenticated,
   authorizeRole(ROLE_GROUPS.COORDINATORS),
   archiveBatch,
+);
+
+router.get(
+  "/:batchId/approve",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  approveBatch,
+);
+
+router.get(
+  "/:batchId/reject",
+  isAuthenticated,
+  authorizeRole(ROLE_GROUPS.ADMIN),
+  rejectBatch,
 );
 
 module.exports = router;

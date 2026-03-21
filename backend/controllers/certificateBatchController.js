@@ -122,6 +122,7 @@ async function createBatch(req, res) {
 
 async function editBatch(req, res) {
   try {
+    const { id } = req.user;
     const {
       batchId,
       title,
@@ -132,20 +133,24 @@ async function editBatch(req, res) {
       action,
     } = req.body;
 
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     if (!["Submitted", "Draft"].includes(action)) {
       return res.status(400).json({ message: "Invalid action" });
     }
-
+    const userIds = users.map((user) => user._id);
     const validation = validateBatchSchema.safeParse({
       title,
-      eventId: eventId._id,
+      eventId: eventId._id || eventId,
       templateId,
       signatoryDetails,
-      users,
+      users: userIds,
     });
 
     const objectId = zodObjectId.safeParse(batchId);
-    console.log(validation);
     let errors = [];
     if (!validation.success) errors.push(...validation.error.issues);
     if (!objectId.success) errors.push(...objectId.error.issues);
@@ -153,53 +158,18 @@ async function editBatch(req, res) {
     errors = errors.map((issue) => issue.message);
     if (errors.length > 0) return res.status(400).json({ message: errors });
 
-    const batch = await CertificateBatch.findByIdAndUpdate(
-      batchId,
-      {
-        ...validation.data,
-        lifecycleStatus: action,
-      },
-      { new: true },
-    );
+    const batch = await CertificateBatch.findById(batchId);
+    Object.assign(batch, validation.data);
 
     if (!batch) {
       return res.status(404).json({ message: "Batch not found" });
     }
-    return res.json({ message: "Batch updated successfully" });
-  } catch (err) {
-    if (err instanceof HttpError) {
-      const payload = { message: err.message };
-      if (err.details) payload.details = err.details;
-      return res.status(err.statusCode).json(payload);
-    }
-    res.status(500).json({ message: err.message || "Internal server error" });
-  }
-}
 
-async function getAllBatches(req, res) {
-  try {
-    const batches = await CertificateBatch.find().populate([
-      {
-        path: "initiatedBy",
-        select: "personal_info.name",
-      },
-      {
-        path: "templateId",
-        select: "title ",
-      },
-      {
-        path: "eventId",
-        select: "title description organizing_unit_id schedule",
-        populate: {
-          path: "organizing_unit_id",
-          select: "name -_id",
-        },
-      },
-    ]);
-    if (!batches) {
-      return res.status(404).json({ messages: "No batches found" });
-    }
-    return res.json({ message: batches });
+    if (batchId && action === "Submitted") batch.approvalStatus = "Pending";
+    batch.lifecycleStatus = action;
+    await batch.save();
+
+    return res.json({ message: "Batch updated successfully" });
   } catch (err) {
     if (err instanceof HttpError) {
       const payload = { message: err.message };
@@ -212,7 +182,9 @@ async function getAllBatches(req, res) {
 
 async function getBatchUsers(req, res) {
   try {
-    const { userIds } = req.body;
+    let { userIds } = req.body;
+    userIds = userIds.map((user) => user._id);
+
     const validation = validateBatchUsersIds.safeParse(userIds);
     if (!validation.success) {
       let errors = validation.error.issues.map((issue) => issue.message);
@@ -348,12 +320,190 @@ async function archiveBatch(req, res) {
       .json({ message: err.message || "Internal server error" });
   }
 }
+
+async function getUserBatches(req, res) {
+  try {
+    const { id } = req.user;
+    const userId = req.params.userId;
+    let batches;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === "PRESIDENT" || user.role.startsWith("GENSEC")) {
+      batches = await CertificateBatch.find({
+        approverIds: id,
+        lifecycleStatus: { $ne: "Draft" },
+      });
+    } else {
+      if (id.toString() !== userId.toString()) {
+        return res.status(403).json({ message: "User is Unauthorized" });
+      }
+      batches = await CertificateBatch.find({
+        initiatedBy: id,
+      });
+    }
+
+    batches = await CertificateBatch.populate(batches, [
+      {
+        path: "eventId",
+        select: "title organizing_unit_id schedule",
+        populate: {
+          path: "organizing_unit_id",
+          select: "name",
+        },
+      },
+      {
+        path: "initiatedBy",
+        select: "personal_info",
+      },
+      {
+        path: "users",
+        select: "personal_info academic_info",
+      },
+    ]);
+    if (!batches || batches.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No batches found for this user" });
+    }
+
+    return res.json({ message: batches });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      const payload = { message: err.message };
+      if (err.details) payload.details = err.details;
+      return res.status(err.statusCode).json(payload);
+    }
+    return res
+      .status(500)
+      .json({ message: err.message || "Internal server error" });
+  }
+}
+
+async function approverEditBatch(req, res) {
+  const { id } = req.user;
+
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (user.role !== "PRESIDENT" && !user.role.startsWith("GENSEC")) {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  let { users } = req.body;
+  const validation = validateBatchUsersIds.safeParse(users);
+  if (!validation.success) {
+    let errors = validation.error.issues.map((issue) => issue.message);
+    return res.status(400).json({ message: errors });
+  }
+
+  const { _id } = req.body;
+  const batch = await CertificateBatch.findById(_id);
+  if (!batch) {
+    return res.status(404).json({ message: "Batch not found" });
+  }
+  batch.users = users;
+  await batch.save();
+  res.status(200).json({ message: "Batch updated successfully" });
+}
+
+async function approveBatch(req, res) {
+  try {
+    const batchId = req.params.batchId;
+    const { id } = req.user;
+
+    const validateId = zodObjectId.safeParse(batchId);
+    if (!validateId.success) {
+      return res.status(400).json({ message: "Invalid batch ID" });
+    }
+
+    const batch = await CertificateBatch.findOne({
+      _id: batchId,
+      approverIds: id,
+    });
+
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+
+    const level = batch.currentApprovalLevel;
+    if (level === 0) {
+      batch.currentApprovalLevel = 1;
+      batch.lifecycleStatus = "Submitted";
+      batch.approvalStatus = "Pending";
+    } else if (level === 1) {
+      batch.currentApprovalLevel = 2;
+      batch.lifecycleStatus = "Active";
+      batch.approvalStatus = "Approved";
+    }
+
+    await batch.save();
+    return res.status(200).json({ message: "Batch approved successfully" });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      const payload = { message: err.message };
+      if (err.details) payload.details = err.details;
+      return res.status(err.statusCode).json(payload);
+    }
+    return res
+      .status(500)
+      .json({ message: err.message || "Internal server error" });
+  }
+}
+
+async function rejectBatch(req, res) {
+  try {
+    const batchId = req.params.batchId;
+    const { id } = req.user;
+
+    const validateId = zodObjectId.safeParse(batchId);
+    if (!validateId.success) {
+      return res.status(400).json({ message: "Invalid batch ID" });
+    }
+
+    const batch = await CertificateBatch.findOne({
+      _id: batchId,
+      approverIds: id,
+    });
+
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+
+    const level = batch.currentApprovalLevel;
+    if (level === 0 || level === 1) {
+      batch.currentApprovalLevel += 1;
+      batch.lifecycleStatus = "Submitted";
+      batch.approvalStatus = "Rejected";
+    }
+
+    await batch.save();
+    return res.status(200).json({ message: "Batch rejected successfully" });
+  } catch (err) {
+    if (err instanceof HttpError) {
+      const payload = { message: err.message };
+      if (err.details) payload.details = err.details;
+      return res.status(err.statusCode).json(payload);
+    }
+    return res
+      .status(500)
+      .json({ message: err.message || "Internal server error" });
+  }
+}
+
 module.exports = {
   createBatch,
   editBatch,
-  getAllBatches,
   getBatchUsers,
   duplicateBatch,
   deleteBatch,
   archiveBatch,
+  getUserBatches,
+  approverEditBatch,
+  approveBatch,
+  rejectBatch,
 };
