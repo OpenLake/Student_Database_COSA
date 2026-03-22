@@ -21,6 +21,7 @@ const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
 const analyticsRoutes = require("./routes/analytics.js");
 const certificateRoutes = require("./routes/certificateRoutes.js");
+const taskRoutes = require("./routes/task.routes.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -28,7 +29,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-
 
 app.use(cookieParser());
 
@@ -43,14 +43,14 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
-      maxAge: 60*60*1000
+      maxAge: 60 * 60 * 1000,
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
-      ttl: 60*60*1000,
-      collectionName: "sessions"
+      ttl: 60 * 60 * 1000,
+      collectionName: "sessions",
     }),
-    name: "token"
+    name: "token",
   }),
 );
 
@@ -77,10 +77,10 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/certificate-batches", certificateRoutes);
-
+app.use("/api/tasks", taskRoutes);
 // Start the server
 
-(async function(){
+(async function () {
   // Connect to MongoDB
   await connectDB();
   app.listen(process.env.PORT || 5000, () => {

@@ -12,6 +12,7 @@ import {
   Award,
   Megaphone,
   Dock,
+  LayoutList,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -26,6 +27,7 @@ const GENSEC_COMMON_NAV = [
   { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
   { key: "certificates", label: "Certificates", icon: Dock },
+  { key: "tasks", label: "My Tasks", icon: LayoutList },
 ];
 
 export const NavbarConfig = {
@@ -60,6 +62,7 @@ export const NavbarConfig = {
     { key: "profile", label: "Profile", icon: User },
     { key: "endorsement", label: "Endorsements", icon: Award },
     { key: "certificates", label: "Certificates", icon: Dock },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
   ],
 
   STUDENT: [
@@ -76,5 +79,6 @@ export const NavbarConfig = {
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
     { key: "certificates", label: "Certificates", icon: Dock },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
   ],
 };

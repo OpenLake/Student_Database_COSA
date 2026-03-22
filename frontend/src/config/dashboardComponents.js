@@ -25,6 +25,7 @@ import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
 import CertificatesPage from "../pages/certificatesPage";
+import TasksPage from "../pages/tasksPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -48,4 +49,5 @@ export const DashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
+  tasks: TasksPage,
 };
