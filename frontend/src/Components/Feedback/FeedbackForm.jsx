@@ -1,5 +1,5 @@
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { StarRating } from "./StarRating";
 import { useFeedbackForm } from "../../hooks/useFeedback";
 

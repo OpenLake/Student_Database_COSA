@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useProfile } from "../../hooks/useProfile";
-import { User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { User, Settings, ChevronDown } from "lucide-react";
 import { useSidebar } from "../../hooks/useSidebar";
 
 const UserIcon = () => {

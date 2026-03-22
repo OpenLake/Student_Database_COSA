@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import { AdminContext } from "../../context/AdminContext";
+import React, { useState } from "react";
 import { Eye, Plus } from "lucide-react";
 import SkillManagement from "./SkillManagement";
 import SkillFormModal from "./SkillFormModal";

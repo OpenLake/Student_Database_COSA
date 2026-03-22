@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
 import api from "../../utils/api";
@@ -6,7 +6,6 @@ import LeftColumn from "./QuickStats";
 import { useAdminContext } from "../../context/AdminContext";
 import Layout from "../common/Layout";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";
-import Home from "./Home";
 
 function Content() {
   const { selected: selectedRoute } = useSidebar();

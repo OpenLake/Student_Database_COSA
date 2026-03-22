@@ -1,4 +1,3 @@
-import ExpandableText from "./ExpandableText";
 
 export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
   return (

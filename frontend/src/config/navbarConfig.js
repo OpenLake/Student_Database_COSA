@@ -8,7 +8,6 @@ import {
   User,
   MessageSquare,
   UserPlus,
-  Plus,
   Award,
   Megaphone,
   Dock,
@@ -32,6 +31,7 @@ const GENSEC_COMMON_NAV = [
   { key: "requests", label: "Requests", icon: ClipboardPaste },
   { key: "templates", label: "Templates", icon: LayoutTemplate },
   { key: "profile", label: "Profile", icon: User },
+  { key: "tenure", label: "Tenure", icon: Users },
 ];
 
 export const NavbarConfig = {
@@ -48,6 +48,7 @@ export const NavbarConfig = {
     { key: "templates", label: "Templates", icon: LayoutTemplate },
     { key: "profile", label: "Profile", icon: User },
     
+    { key: "tenure", label: "Tenure", icon: Users },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
   GENSEC_ACADEMIC: GENSEC_COMMON_NAV,
@@ -67,6 +68,7 @@ export const NavbarConfig = {
     { key: "requests", label: "Requests", icon: ClipboardPaste },
     { key: "templates", label: "Templates", icon: LayoutTemplate },
     { key: "profile", label: "Profile", icon: User },
+    { key: "tenure", label: "Tenure", icon: Users },
   ],
 
   STUDENT: [
@@ -82,5 +84,6 @@ export const NavbarConfig = {
     { key: "por", label: "PORs", icon: ClipboardList },
     { key: "skills", label: "Skills", icon: Star },
     { key: "profile", label: "Profile", icon: User },
+    { key: "tenure", label: "Tenure", icon: Users },
   ],
 };

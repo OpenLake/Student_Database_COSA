@@ -24,6 +24,7 @@ const certificateBatchRoutes = require("./routes/certificateBatch.js");
 const certificateRoutes = require("./routes/certificate.js");
 const templateRoutes = require("./routes/template.js");
 
+const porRoutes = require("./routes/por.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -83,6 +84,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/batches", certificateBatchRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/templates", templateRoutes);
+app.use("/api/por", porRoutes);
 
 // Start the server
 

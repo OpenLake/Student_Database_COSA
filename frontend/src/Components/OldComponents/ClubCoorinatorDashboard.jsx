@@ -16,15 +16,11 @@ import {
   Plus,
   MessageSquare,
   Award,
-  User,
   LogOut,
-  TrendingUp,
   DollarSign,
-  CheckSquare,
   FileText,
   Star,
 } from "lucide-react";
-import ViewPosition from "../Positions/ViewPosition";
 
 const ClubDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -39,7 +35,6 @@ const ClubDashboard = () => {
     const {
       unit,
       events,
-      positions,
       positionHolders,
       achievements,
       feedbacks,

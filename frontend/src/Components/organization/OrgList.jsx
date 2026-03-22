@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import OrgCard from "./OrgCard";
 const OrgList = ({ units, parent_unit_id, selectedOrg }) => {
   if (!units) {
     return <div>No org units;</div>;
   }
   const filtered_units = units.filter((unit) => {
-    return unit.parent_unit_id == parent_unit_id;
+    return unit.parent_unit_id === parent_unit_id;
   });
   return (
     <div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertCircle, Building2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { AdminContext } from "../../context/AdminContext";
 import api from "../../utils/api";
 
