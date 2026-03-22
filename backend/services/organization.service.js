@@ -8,6 +8,10 @@ async function getOrganization(id) {
 }
 
 async function getPresidentOrganization(club) {
+
+  if(club.type?.toLowerCase() !== "club"){
+    throw new HttpError(403, "Organization is not a club");
+  }
   const presidentOrg = await OrganizationalUnit.findOne({
     hierarchy_level: 0,
     parent_unit_id: null,
@@ -22,6 +26,10 @@ async function getPresidentOrganization(club) {
   if (!councilObj.parent_unit_id) {
     throw new HttpError(403, "Organization(Council) does not belong to a president organization");
   }
+
+  if (councilObj.type?.toLowerCase() !== "council") {  
+    throw new HttpError(403, "Organization does not belong to a council");  
+  } 
 
   const presidentObj = await getOrganization(councilObj.parent_unit_id);
   if (!presidentOrg._id.equals(presidentObj._id)) {

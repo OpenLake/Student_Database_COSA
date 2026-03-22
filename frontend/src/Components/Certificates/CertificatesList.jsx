@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Download, Eye, Calendar, User, Award, Search } from "lucide-react";
-import api from "../../utils/api";
 import { useAdminContext } from "../../context/AdminContext";
+import { fetchCertificates } from "../../services/certificate";
 
 const CertificatesList = () => {
   const { isUserLoggedIn } = useAdminContext();
@@ -15,13 +15,7 @@ const CertificatesList = () => {
     async function fetchCertificates() {
       try {
         setLoading(true);
-        // TODO: Replace with actual API endpoint when available
-        // const response = await api.get(`/api/certificates/${isUserLoggedIn._id}`);
-        // setCertificates(response.data);
-
-        // Mock data for now - remove when API is ready
-        const mockCertificates = [
-          {
+        /*{
             _id: "1",
             event: "Tech Fest 2024",
             issuedBy: "Computer Science Club",
@@ -29,27 +23,15 @@ const CertificatesList = () => {
             status: "Approved",
             certificateUrl: "#",
             rejectionReason: undefined,
-          },
-          {
-            _id: "2",
-            event: "Hackathon 2024",
-            issuedBy: "Coding Club",
-            date: "2024-02-20",
-            status: "Pending",
-            certificateUrl: "#",
-            rejectionReason: undefined,
-          },
-          {
-            _id: "3",
-            event: "Workshop Series",
-            issuedBy: "Technical Society",
-            date: "2024-03-10",
-            status: "Rejected",
-            certificateUrl: "#",
-            rejectionReason: "Incomplete participation",
-          },
-        ];
-        setCertificates(mockCertificates);
+          },*/
+
+        const response = await fetchCertificates();
+        if(Array.isArray(response)){
+          toast.success("Certificates fetched successfully");
+          setCertificates(response);
+          return ;
+        }
+
       } catch (err) {
         console.error("Error fetching certificates:", err);
         setError("Failed to fetch certificates");
@@ -99,6 +81,16 @@ const CertificatesList = () => {
       day: "numeric",
     });
   };
+
+  const isSafeCertificateUrl = (url) => {
+    try {
+      const parsed = new URL(url, window.location.origin);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+  
 
   const filterButtons = [
     { label: "ALL", value: "ALL" },
@@ -234,8 +226,8 @@ const CertificatesList = () => {
                     <>
                       <button
                         onClick={() => {
-                          if (certificate.certificateUrl) {
-                            window.open(certificate.certificateUrl, "_blank");
+                          if (isSafeCertificateUrl(certificate.certificateUrl)) {
+                            window.open(certificate.certificateUrl, "_blank", "noopener,noreferrer");
                           }
                         }}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm"
@@ -245,7 +237,7 @@ const CertificatesList = () => {
                       </button>
                       <button
                         onClick={() => {
-                          if (certificate.certificateUrl) {
+                          if (isSafeCertificateUrl(certificate.certificateUrl)) {
                             const link = document.createElement("a");
                             link.href = certificate.certificateUrl;
                             link.download = `${certificate.event}_certificate.pdf`;

@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const {
-  Announcement,
-  Event,
-  OrganizationalUnit,
-  Position,
-} = require("../models/schema");
+const {Announcement} = require("../models/schema");
+const Event = require("../models/eventSchema");
+const Position = require("../models/positionSchema");
+const OrganizationalUnit = require("../models/organizationSchema");
+
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const findTargetId = async (type, identifier) => {

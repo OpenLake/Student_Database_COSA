@@ -8,5 +8,6 @@ export async function fetchEvents() {
     return res.data;
   } catch (err) {
     console.error("fetchEvents error:", err);
+    return err.response?.data.message;
   }
 }

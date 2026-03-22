@@ -13,18 +13,18 @@ const InfoTile = ({ icon: Icon, label, value, wide }) => (
     className={`
       ${wide ? "col-span-full" : ""}
       rounded-[14px]
-      px-[20px] py-[16px]
       flex flex-col gap-[6px]
       border
-      bg-[${C.white}]
-      border-[${C.border}]
     `}
+    style={{
+      padding: "16px 20px",
+      background: C.white,
+      borderColor: C.border
+    }}
   >
     <div
-      className={`
-        flex items-center gap-[7px]
-        text-[${C.warmGray}]
-      `}
+      className="flex items-center gap-[7px]"
+      style={{ color: C.warmGray}}
     >
       <Icon size={15} strokeWidth={2} />
       <span className="text-[11px] font-semibold tracking-[0.08em] uppercase">
@@ -54,28 +54,23 @@ export const ViewModal = ({
 }) => (
   <Overlay onClose={onClose}>
     <div
-      className={`
-        w-[50vw]
-        rounded-[20px]
-        overflow-hidden
-        border-[1.5px]
-        shadow-[0_24px_60px_rgba(30,26,10,0.28)]
-        bg-[${C.cream}]
-        border-[${C.borderStrong}]
-    `}
+      className= "w-[50vw] rounded-[20px] overflow-hidden border-[1.5px] shadow-[0_24px_60px_rgba(30,26,10,0.28)]"
+
       style={{
+        background: C.cream,
+        borderColor: C.borderStrong,
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
       {/* header strip */}
       <div
-        className={`
+        className="
           bg-[linear-gradient(135deg,#F7F0A8_0%,#EDE090_100%)]
           w-full h-14
           border-b
-          relative
-          border-[${C.borderStrong}]
-        `}
+          relative"
+
+        style={{borderColor: C.borderStrong }}
       >
         <div className="flex items-start justify-between gap-3">
           {/* Left: title + org */}

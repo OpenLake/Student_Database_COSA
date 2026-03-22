@@ -16,7 +16,7 @@ export default function TemplatesPage() {
       component: "Templates",
       position: {
         colStart: 0,
-        colEnd: isCollapsed ? 26 : 20,
+        colEnd: isCollapsed ? 25 : 20,
         rowStart: 0,
         rowEnd: 16,
       },

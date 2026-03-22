@@ -20,7 +20,6 @@ import {
 
 import ThumbnailPreview from "./thumbnailPreview";
 import { Select } from "./select";
-import Create from "./createTemplate";
 import { useAdminContext } from "../../context/AdminContext";
 import { fetchTemplates } from "../../services/templates";
 import { toast } from "react-toastify";
@@ -207,7 +206,7 @@ export default function Templates() {
             style={{ background: "linear-gradient(135deg, #2A6040, #1E4A30)" }}
           >
             <Plus size={16} />
-            <Create />
+            <span>Create</span>
           </button>
         </div>
       </div>

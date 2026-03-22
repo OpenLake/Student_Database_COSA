@@ -34,6 +34,10 @@ async function createBatch(req, res) {
       users,
     });
 
+    if(!["Submitted", "Draft"].includes(action)){
+      return res.status(400).json({message: "Invalid action"});
+    }
+
     let lifecycleStatus, approvalStatus;
     if (action === "Submitted") {
       lifecycleStatus = "Submitted";

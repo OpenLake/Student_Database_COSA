@@ -158,19 +158,30 @@ export default function BatchesPage() {
 
   const openEdit = useCallback((b) => {
     if (b.lifecycleStatus !== "Draft") return;
+    if (!b.eventId || !b.templateId) {
+      fire("Batch data is incomplete");
+      return;
+    }
+
     setEditing(b);
     setViewingBatch(null);
     setForm({
       title: b.title,
       eventId: b.eventId,
-      eventName: b.eventId.title,
-      org: b.eventId.organizing_unit_id.name,
-      startDate: new Date(b.eventId.schedule.start).toLocaleDateString("en-GB"),
-      endDate: new Date(b.eventId.schedule.end).toLocaleDateString("en-GB"),
-      description: b.eventId.description,
-      templateId: b.templateId._id,
-      signatoryDetails: b.signatoryDetails,
-      students: b.users,
+      eventName: b.eventId.title || "",
+      org: b.eventId.organizing_unit_id?.name || "",
+      startDate: b.eventId?.schedule?.start
+        ? new Date(b.eventId.schedule.start).toLocaleDateString("en-GB")
+        : "",
+
+      endDate: b.eventId?.schedule?.end
+        ? new Date(b.eventId.schedule.end).toLocaleDateString("en-GB")
+        : "",
+
+      description: b.eventId.description || "",
+      templateId: b.templateId._id || "",
+      signatoryDetails: b.signatoryDetails || [],
+      students: b.users || [],
     });
     setModalOpen(true);
   }, []);
@@ -401,7 +412,7 @@ export default function BatchesPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search templates…"
+            placeholder="Search batches..."
             className="w-full pl-8 pr-4 py-2 text-xs font-medium rounded-xl border border-yellow-100 bg-white text-gray-700 placeholder:text-gray-400 outline-none focus:border-yellow-300 focus:ring-2 focus:ring-yellow-100 transition-all"
           />
           {search && (
@@ -477,7 +488,7 @@ export default function BatchesPage() {
             </p>
           ) : (
             <p className="text-xs font-bold text-gray-400">
-              No templates exist. Create one today
+              No batches exist. Create one today
             </p>
           )}
         </div>

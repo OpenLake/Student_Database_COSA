@@ -6,7 +6,7 @@ export async function fetchBatchUsers(userIds = []) {
     return res.data.message;
   } catch (err) {
     console.error("fetchBatchUsers error:", err);
-    return [];
+    return err.response?.data.message;
   }
 }
 
@@ -26,7 +26,7 @@ export async function createBatch(data) {
     return res.data.message;
   } catch (err) {
     console.error("createBatch error:", err);
-    return null;
+    return err.response?.data.message;
   }
 }
 

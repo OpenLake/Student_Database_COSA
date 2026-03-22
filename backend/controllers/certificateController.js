@@ -1,39 +1,51 @@
 
 const { Certificate } = require("../models/certificateSchema")
-const Event = require("../models/eventSchema");
-//status, rejectionReason, issuedBy:name,type eventName, Date(start-end)
+
+/**
+ * {
+    _id: "1",
+    event: "Tech Fest 2024",
+    issuedBy: "Computer Science Club",
+    date: "2024-01-15",
+    status: "Approved",
+    certificateUrl: "#",
+    rejectionReason: undefined,
+    },
+ */
 async function getCertificates(req, res){
 
     const id = req.user._id;
-    const certificates = await Certificate.find({userId: id}).populate({
-        path: "batchId",
-        select: "eventId -_id"
-    }).lean();
+    const certificates = await Certificate.find({userId: id}).populate([
+        {
+            path: "userId",
+            select: "personal_info"
+        },
+        {
+            path: "batchId",
+            select: "title lifecycleStatus approvalStatus",
+            populate: {
+                path: "eventId",
+                select: "title schedule"
+            }
+        }
+    ]);
 
     if(certificates.length === 0){
         return res.status(404).json({message: "No certificates found"});
     }
-    console.log(certificates);
-    let certificateObjects = await Promise.all(
-        certificates.map(async (cert) => {
-            if (!cert.batchId?.eventId) return {};
-            const eventDetails = await Event.findById(cert.batchId.eventId)
-            .select("title schedule organizing_unit_id -_id")
-            .populate({
-                path: "organizing_unit_id",
-                select: "name type -_id"
-            })
+    //console.log(certificates);
+    
+    const certificateObjs = certificates.map(cert => ({
+        _id: cert._id,
+        event: cert.batchId.eventId.title,
+        issuedBy: cert.userId.personal_info.name,
+        date: new Date(cert.createdAt).toLocaleDateString("en-GB"),
+        status: cert.status,
+        certificateUrl: cert.certificateUrl || "#",
+        rejectionReason: cert.status === "Approved" ? cert.rejectionReason : "",
+    }))
 
-            if(!eventDetails) return {};
-            cert.eventDetails = eventDetails;     
-            return cert;
-        })
-    );
-
-    certificateObjects = certificateObjects.filter((obj) => Object.keys(obj).length > 0);
-    console.log(certificateObjects);
-
-    return res.json({message: "User Certificates fetched successfully", success: true, data: certificateObjects});
+    return res.json({message: certificateObjs});
 }
 
 module.exports = {

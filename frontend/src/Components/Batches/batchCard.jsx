@@ -69,8 +69,10 @@ export function BatchCard({
   onDuplicate,
   onArchive,
 }) {
-  const colorIndex = Math.floor(Math.random() * BATCH_COLORS.length);
-  const c = BATCH_COLORS[colorIndex % BATCH_COLORS.length];
+
+  const batchKey = String(batch._id || batch.id || batch.batchId || "");  
+  const colorIndex = [...batchKey].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) %  BATCH_COLORS.length;  
+  const c = BATCH_COLORS[colorIndex % BATCH_COLORS.length];  
 
   return (
     <div

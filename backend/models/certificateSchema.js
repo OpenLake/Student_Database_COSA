@@ -129,7 +129,7 @@ certificateBatchSchema.index(
   {
     partialFilterExpression: {
       approvalStatus: "Pending",
-      lifecycleStatus: { $ne: "Draft" },
+      lifecycleStatus: { $in : ["Submitted"] },
     },
   },
 );
