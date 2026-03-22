@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-//const secretKey = process.env.JWT_SECRET_TOKEN;
-const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const passport = require("../models/passportConfig");
+
+const { registerValidate } = require("../utils/authValidate");
+const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
 var nodemailer = require("nodemailer");
-const { User } = require("../models/schema");
-const isAuthenticated= require("../middlewares/isAuthenticated");
+
+const User = require("../models/userSchema");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
+
+//const bcrypt = require("bcrypt");
 
 //rate limiter - for password reset try
 const forgotPasswordLimiter = rateLimit({
@@ -17,67 +20,108 @@ const forgotPasswordLimiter = rateLimit({
 });
 // Session Status
 
-router.get("/fetchAuth",isAuthenticated, function (req, res) {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.json(null);
-  }
+router.get("/fetchAuth", isAuthenticated, function (req, res) {
+  //console.log(req.user);
+  const { personal_info, role, onboardingComplete, _id, ...restData } =
+    req.user;
+  res.json({ message: { personal_info, role, onboardingComplete, _id } });
 });
 
-// Local Authentication
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  // If authentication is successful, this function will be called
-  const email = req.user.username;
-  if (!isIITBhilaiEmail(email)) {
-    console.log("Access denied. Please use your IIT Bhilai email.");
-    return res.status(403).json({
-      message: "Access denied. Please use your IIT Bhilai email.",
-    });
+/**
+ * User POST /auth/login
+        ↓
+    passport.authenticate("local")
+            ↓
+    LocalStrategy (validate credentials)
+            ↓
+    done(null, user)
+            ↓
+    req.login(user) called
+            ↓
+    serializeUser(user) → store ID in session
+            ↓
+    Session saved → session cookie sent
+ */
+router.post("/login", async (req, res) => {
+  try {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (!user)
+        return res
+          .status(401)
+          .json({ message: info?.message || "Login failed" });
+
+      // if using a custom callback like this u have to manually call req.login() else not needed
+      //this will seralize user, store id in session, save session and send cookie
+      req.login(user, (err) => {
+        if (err)
+          return res.status(500).json({ message: "Internal server error" });
+        const { personal_info, role, onboardingComplete, _id, ...restData } =
+          user;
+        return res.json({
+          message: "Login Successful",
+          success: true,
+          data: { personal_info, role, onboardingComplete, _id },
+        });
+      });
+    })(req, res);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  res.status(200).json({ message: "Login successful", user: req.user });
 });
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, ID, email, password } = req.body;
-    if (!isIITBhilaiEmail(email)) {
-      return res.status(400).json({
-        message: "Invalid email address. Please use an IIT Bhilai email.",
+    const { username, password, name } = req.body;
+    const role = "STUDENT";
+    const result = registerValidate.safeParse({
+      username,
+      password,
+      name,
+      role,
+    });
+
+    if (!result.success) {
+      const errors = result.error.issues.map((issue) => issue.message);
+      return res.status(400).json({ message: errors, success: false });
+    }
+
+    const user = await User.findOne({ username });
+    if (user) {
+      return res.status(409).json({
+        message: "Account with username already exists",
+        success: false,
       });
     }
-    const existingUser = await User.findOne({ username: email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists." });
-    }
 
-    const newUser = await User.register(
-      new User({
-        user_id: ID,
-        role: "STUDENT",
-        strategy: "local",
-        username: email,
-        personal_info: {
-          name: name,
-          email: email,
-        },
-        onboardingComplete: false,
-      }),
+    /**
+     * This logic is now embedded in the pre save hook
+     * const hashedPassword = await bcrypt.hash(
       password,
+      Number(process.env.SALT),
     );
+     */
 
-    req.login(newUser, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(400).json({ message: "Bad request." });
-      }
-      return res
-        .status(200)
-        .json({ message: "Registration successful", user: newUser });
+    const newUser = await User.create({
+      strategy: "local",
+      username,
+      password,
+      personal_info: {
+        name,
+        email: username,
+      },
+      role,
     });
-  } catch (error) {
-    console.error("Registration error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    //console.log(newUser);
+
+    //return res.json({ message: "Registered Successfully", user: newUser });
+    return res.json({ message: "Registered Successfully", success: true });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -87,29 +131,77 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
-router.get(
-  "/google/verify",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res) => {
-    if (req.user.onboardingComplete) {
-      res.redirect(`${process.env.FRONTEND_URL}/`);
-    } else {
-      res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
-    }
-  },
-);
-
-router.post("/logout", (req, res, next) => {
-  req.logout(function (err) {
+router.get("/google/verify", function (req, res) {
+  //console.log("in verify");
+  passport.authenticate("google", (err, user, info) => {
     if (err) {
-      return next(err);
+      console.error(err);
+      return res.status(500).json({ message: "Internal server error" });
     }
-    res.send("Logout Successful");
+
+    if (!user)
+      return res
+        .status(401)
+        .json({ message: info?.message || "Google Authentication failed" });
+
+    /**
+     * if(!user.onboardingComplete){
+      return res.redirect(`${process.env.FRONTEND_URL}/onboarding`)
+    }
+     */
+    //return res.redirect(`${process.env.FRONTEND_URL}`);
+
+    req.login(user, (loginErr) => {
+      if (loginErr) {
+        console.error("Login error:", loginErr);
+        return res.status(500).json({ message: "Error establishing session" });
+      }
+
+      /*console.log("User logged in successfully:", user.username);
+      console.log("OnboardingComplete:", user.onboardingComplete);
+      */
+      if (!user.onboardingComplete) {
+        //console.log("Redirecting to onboarding");
+        return res.redirect(`${process.env.FRONTEND_URL}/onboarding`);
+      }
+
+      //console.log("Redirecting to home");
+      return res.redirect(`${process.env.FRONTEND_URL}`);
+    });
+  })(req, res);
+});
+
+router.post("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Error during logout:", err);
+      return res.status(500).json({ message: "Error during logout" });
+    }
+
+    // Destroy the session
+    // req.session.destroy will remove the session from session store and invalidate ids or fields
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+        return res.status(500).json({ message: "Error destroying session" });
+      }
+
+      // Clear the session cookie
+      res.clearCookie("token", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+        maxAge: 0,
+        httpOnly: true,
+      });
+
+      res.json({ message: "Logged out successfully" });
+    });
   });
 });
 
 //routes for forgot-password
-router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
+router.post("/", forgotPasswordLimiter, async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ username: email });
@@ -151,7 +243,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
           .json({ message: "Password reset link sent to your email" });
       }
     });
-    console.log(link);
+    //console.log(link);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -160,14 +252,14 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
 
 //route for password reset
 router.get("/reset-password/:id/:token", async (req, res) => {
-  const { id, token } = req.params;
-  console.log(req.params);
-  const user = await User.findOne({ _id: id });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  const secret = user._id + process.env.JWT_SECRET_TOKEN;
   try {
+    const { id, token } = req.params;
+    console.log(req.params);
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const secret = user._id + process.env.JWT_SECRET_TOKEN;
     jwt.verify(token, secret);
     return res.status(200).json({ message: "Token verified successfully" });
   } catch (error) {

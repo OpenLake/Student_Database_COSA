@@ -1,113 +1,94 @@
-import React from "react";
-import Logout from "../Logout";
+import React, { useState } from "react";
+import Logout from "../Auth/Logout";
 import logo from "../../assets/COSA.png";
 import { useSidebar } from "../../hooks/useSidebar";
-import { SidebarClose, SidebarOpen } from "lucide-react";
+import { SidebarClose, SidebarOpen, LogOut } from "lucide-react";
 
 const Sidebar = () => {
-  const {
-    navItems,
-    selected,
-    setSelected,
-    showLogout,
-    setShowLogout,
-    isCollapsed,
-    setIsCollapsed,
-  } = useSidebar();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const { navItems, selected, setSelected, isCollapsed, setIsCollapsed } = useSidebar();
+
+  const visibleNavItems = navItems.slice(0, 14);
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen bg-black flex flex-col py-6 z-50 transition-all duration-300 ${
-        isCollapsed ? "w-20 px-3" : "w-56 px-2"
+      className={`fixed top-0 left-0 h-screen bg-black flex flex-col z-50 transition-all duration-300 ${
+        isCollapsed ? "w-[72px]" : "w-52"
       }`}
+      style={{ padding: "12px 8px" }}
     >
+      {/* Header: Logo + Title + Collapse button in one row */}
       <div
-        className={`flex items-center mb-8 ${isCollapsed ? "justify-center" : "justify-center gap-3"}`}
+        className={`flex items-center mb-2 px-1 ${
+          isCollapsed ? "flex-col gap-2" : "justify-between"
+        }`}
       >
-        <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center overflow-hidden">
-            <img src={logo} alt="Logo" className="w-full h-full object-cover" />
+        <div
+          className={`flex items-center gap-2 ${isCollapsed ? "justify-center" : ""}`}
+        >
+          <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+            <img src={logo} alt="CoSA Logo" className="w-full h-full object-cover" />
           </div>
+          {!isCollapsed && (
+            <span className="font-semibold text-xl text-white tracking-wide">
+              CoSA
+            </span>
+          )}
         </div>
-        {!isCollapsed && (
-          <div className="font-semibold text-2xl text-white">CoSA</div>
-        )}
-      </div>
 
-      {/* Collapse/Expand Button */}
-      <div
-        className={`flex items-center my-4 ${isCollapsed ? "justify-center" : "justify-end"}`}
-      >
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="text-white cursor-pointer hover:text-gray-300 transition-colors"
+          className="text-white transition-colors p-1 rounded-lg hover:bg-zinc-800"
         >
-          {isCollapsed ? <SidebarOpen size={20} /> : <SidebarClose size={20} />}
+          {isCollapsed ? <SidebarOpen size={17} /> : <SidebarClose size={17} />}
         </button>
       </div>
 
+      {/* Thin divider */}
+      <div className="h-px bg-zinc-800 mx-1 mb-2" />
+
       {/* Navigation Items */}
-      <nav className="flex-1 flex flex-col gap-3 bg-zinc-900 rounded-2xl px-2 overflow-visible py-4">
-        {navItems.map(
-          (item) =>
-            item.label !== "Profile" && (
+      <nav className="flex-1 flex flex-col justify-center bg-zinc-900 rounded-2xl py-2 px-1.5 overflow-hidden gap-0.5">
+        {visibleNavItems.map(
+          (item) =>(
               <button
                 key={item.key}
                 onClick={() => setSelected(item.key)}
-                className={`flex items-center gap-3 py-2 mx-1 transition-all duration-200 ${
-                  isCollapsed ? "px-2 justify-center" : "px-4"
+                className={`flex items-center gap-2.5 py-2 w-full transition-all duration-200 ${
+                  isCollapsed ? "px-2 justify-center" : "px-3"
                 } ${
                   selected === item.key
-                    ? "bg-white text-black font-medium !rounded-3xl"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
+                    ? "bg-white text-black font-medium rounded-2xl! mb-1"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-600 rounded-xl!"
                 }`}
                 title={isCollapsed ? item.label : ""}
               >
                 <item.icon size={20} className="flex-shrink-0" />
                 {!isCollapsed && (
-                  <span className="text-[15px]">{item.label}</span>
+                  <span className="text-[16px] whitespace-nowrap">{item.label}</span>
                 )}
               </button>
             )
         )}
       </nav>
 
-      <div className="flex-1" />
+      {/* Thin divider */}
+      <div className="h-px bg-zinc-800 mx-1 mt-2" />
 
-      {/* Logout Section */}
-      <div className="mt-6">
-        {!showLogout ? (
-          <button
-            onClick={() => setShowLogout(true)}
-            className={`flex items-center gap-3 py-3 w-full text-white hover:text-white/80 transition-all duration-200 ${
-              isCollapsed ? "px-2 justify-center" : "px-4"
-            }`}
-            title={isCollapsed ? "Logout" : ""}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="flex-shrink-0"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isCollapsed && <span className="text-[15px]">Logout</span>}
-          </button>
-        ) : (
-          <div className={isCollapsed ? "hidden" : "block"}>
-            <Logout />
-            {/* <div className="text-white text-sm p-4">Logout Component Here</div> */}
-          </div>
-        )}
+      {/* Logout */}
+      <div className="mt-2">
+        <button
+          onClick={() => setLoggingOut(true)}
+          disabled={loggingOut}
+          className={`flex items-center gap-2.5 py-2 w-full text-white rounded-xl ${
+            isCollapsed ? "justify-center px-2" : "px-3"
+          }`}
+          title={isCollapsed ? "Logout" : ""}
+        >
+          <LogOut size={20} />
+          {!isCollapsed && <span className="text-[16px]">Logout</span>}
+        </button>
+        {loggingOut && <Logout />}
       </div>
     </div>
   );

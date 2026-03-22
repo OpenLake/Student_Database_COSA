@@ -20,6 +20,7 @@ import { ToastContainer } from "react-toastify";
 function App() {
   const authData = useAuth();
   const { isUserLoggedIn, isOnboardingComplete, isLoading } = authData;
+  //console.log("User data is: ",authData);
   // const role = isUserLoggedIn?.role || "STUDENT";
   // const navItems = NavbarConfig[role] || [];
 
