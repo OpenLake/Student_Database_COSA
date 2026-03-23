@@ -12,6 +12,7 @@ const {
   PositionHolder,
   Position,
   OrganizationalUnit,
+  BudgetTransaction,
   Room,
 } = require("./models/schema");
 
@@ -302,6 +303,7 @@ const clearData = async () => {
   await UserSkill.deleteMany({});
   await Achievement.deleteMany({});
   await Feedback.deleteMany({});
+  await BudgetTransaction.deleteMany({});
   console.log("All collections cleared successfully!");
 };
 
