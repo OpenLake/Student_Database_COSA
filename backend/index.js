@@ -21,6 +21,8 @@ const dashboardRoutes = require("./routes/dashboard.js");
 
 const analyticsRoutes = require("./routes/analytics.js");
 const porRoutes = require("./routes/por.js");
+const budgetRoutes = require("./routes/budget.js");
+const budgetRoutes = require("./routes/budget.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -69,6 +71,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/por", porRoutes);
+app.use("/api/budget", budgetRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
