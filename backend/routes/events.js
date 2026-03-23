@@ -1,3 +1,4 @@
+const dashboardController = require("../controllers/dashboardController");
 const express = require("express");
 const router = express.Router();
 const { Event, User, OrganizationalUnit } = require("../models/schema");
@@ -255,14 +256,12 @@ router.post(
         event: updatedEvent,
       });
     } catch (error) {
-      if (error?.name === "CastError") {
-       return res.status(400).json({ message: "Invalid event ID format." });
-      }
-      console.error("Event registration error:", error);
-      return res
-        .status(500)
-        .json({ message: "Server error during registration." });
-    }
+  if (error?.name === "CastError") {
+    return res.status(400).json({ message: "Invalid event ID format." });
+  }
+  console.error("Event registration error:", error);
+  return res.status(500).json({ message: "Internal server error." });
+}
   },
 );
 
@@ -474,7 +473,6 @@ router.put("/:eventId", isAuthenticated, isEventContact, async (req, res) => {
       .json({ message: "Server error", error: err.message });
   }
 });
-
 // Delete an event (only unit contact)
 router.delete(
   "/:eventId",
@@ -484,13 +482,24 @@ router.delete(
     try {
       const { eventId } = req.params;
       const deleted = await Event.findByIdAndDelete(eventId);
-      if (!deleted) return res.status(404).json({ message: "Event not found" });
+
+      if (!deleted) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+
       return res.json({ message: "Event deleted" });
     } catch (err) {
       console.error("delete event error:", err);
       return res.status(500).json({ message: "Server error" });
     }
-  },
+  }
+);
+
+// Get registered events
+router.get(
+  "/registered-events",
+  isAuthenticated,
+  dashboardController.getRegisteredEvents
 );
 
 module.exports = router;
