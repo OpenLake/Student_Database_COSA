@@ -11,6 +11,7 @@ const {
   PositionHolder,
   Position,
   OrganizationalUnit,
+  BudgetTransaction,
 } = require("./models/schema");
 
 // --- Data for Seeding ---
@@ -37,17 +38,18 @@ const initialUnitsData = [
  * Clears all data from the relevant collections.
  */
 const clearData = async () => {
-    console.log("Clearing existing data...");
-    await OrganizationalUnit.deleteMany({});
-    await Position.deleteMany({});
-    await User.deleteMany({});
-    await PositionHolder.deleteMany({});
-    await Event.deleteMany({});
-    await Skill.deleteMany({});
-    await UserSkill.deleteMany({});
-    await Achievement.deleteMany({});
-    await Feedback.deleteMany({});
-    console.log("All collections cleared successfully!");
+  console.log("Clearing existing data...");
+  await OrganizationalUnit.deleteMany({});
+  await Position.deleteMany({});
+  await User.deleteMany({});
+  await PositionHolder.deleteMany({});
+  await Event.deleteMany({});
+  await Skill.deleteMany({});
+  await UserSkill.deleteMany({});
+  await Achievement.deleteMany({});
+  await Feedback.deleteMany({});
+  await BudgetTransaction.deleteMany({});
+  console.log("All collections cleared successfully!");
 };
 
 
