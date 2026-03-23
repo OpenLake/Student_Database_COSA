@@ -21,3 +21,23 @@ exports.getLatestEvents = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+exports.getRegisteredEvents = async (req, res) => {
+    try {
+
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized: Please login first" });
+        }
+
+        const userId = req.user._id;
+
+        const events = await Event.find({
+            participants: userId
+        });
+
+        res.status(200).json(events);
+
+    } catch (error) {
+        console.error("Error fetching registered events:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
