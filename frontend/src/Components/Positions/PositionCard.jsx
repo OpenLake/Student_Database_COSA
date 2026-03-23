@@ -1,20 +1,13 @@
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+
+
 import {
   Plus,
   X,
   AlertCircle,
   Search,
-  Filter,
-  Eye,
-  Edit,
-  Trash2,
-  Users,
   UserCheck,
   Award,
   Clock,
-  DollarSign,
-  MapPin,
   Calendar,
   Clock1,
   IdCard,

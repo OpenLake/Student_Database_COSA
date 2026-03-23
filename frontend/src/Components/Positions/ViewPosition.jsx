@@ -12,12 +12,9 @@ const ViewPosition = () => {
     setSearchTerm,
     selectedUnit,
     setSelectedUnit,
-    selectedType,
-    setSelectedType,
     setSelectedPosition,
     setShowDetails,
     units,
-    positionTypes,
   } = usePositions();
 
   return (

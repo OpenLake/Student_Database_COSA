@@ -3,23 +3,6 @@ import { useEvents } from "../../hooks/useEvents";
 import EventTile from "../Events/EventTile";
 import { BellRing } from "lucide-react";
 
-// A small component to visually represent event status
-const StatusIndicator = ({ status }) => {
-  const statusStyles = {
-    planned: "bg-blue-500",
-    ongoing: "bg-green-500",
-    completed: "bg-slate-500",
-    cancelled: "bg-red-500",
-  };
-  const colorClass = statusStyles[status] || "bg-gray-400";
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className={`w-2 h-2 rounded-full ${colorClass}`}></div>
-      <span className="capitalize text-xs">{status}</span>
-    </div>
-  );
-};
 
 const UpdatesCard = () => {
   const { latestEvents } = useEvents();

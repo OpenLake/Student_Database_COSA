@@ -21,11 +21,11 @@ const AddPositionHolder = ({ onClose }) => {
     status: "active",
   });
 
-  const [users, setUsers] = useState([]);
+  const [, setUsers] = useState([]);
   const [positions, setPositions] = useState([]);
   const [appointingUsers, setAppointingUsers] = useState([]);
 
-  const [userSearchTerm, setUserSearchTerm] = useState("");
+
   const [positionSearchTerm, setPositionSearchTerm] = useState("");
   const [appointedBySearchTerm, setAppointedBySearchTerm] = useState("");
 
@@ -122,7 +122,7 @@ const AddPositionHolder = ({ onClose }) => {
             feedback: formData.performance_metrics.feedback.trim() || undefined,
           },
         };
-        const response = await api.post(`/api/positions/add-position-holder`, cleanedData);
+        await api.post(`/api/positions/add-position-holder`, cleanedData);
         alert("Position created successfully!");
         onClose();
       } catch (error) {

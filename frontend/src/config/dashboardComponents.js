@@ -1,5 +1,5 @@
 //import Dashboard from "../Components/Dashboard";
-import Home, { DashboardContent } from "../Components/Dashboard/Home";
+
 import {
   CreateTenure,
   ViewTenure,
@@ -9,11 +9,11 @@ import EventForm from "../Components/Events/EventForm";
 import CreateOrgUnit from "../Components/organization/CreateOrgUnit";
 import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import AchievementsEndorsementTab from "../Components/GenSec/AchievementsEndorsementTab";
-import StudentProfile from "../Components/Profile/ProfilePage";
+
 import FeedbackForm from "../Components/Feedback/FeedbackForm";
 import AchievementForm from "../Components/Achievements/AchievementForm";
 import ViewAchievements from "../Components/Achievements/ViewAchievements";
-import Announcements from "../Components/Announcements/Announcements";
+
 import EventsPage from "../pages/eventsPage";
 import PORsPage from "../pages/porsPage";
 import FeedbackPage from "../pages/feedbackPage";
@@ -26,6 +26,7 @@ import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
 import CertificatesPage from "../pages/certificatesPage";
 import TasksPage from "../pages/tasksPage";
+import TenurePage from "../pages/TenurePage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -50,4 +51,5 @@ export const DashboardComponents = {
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
   tasks: TasksPage,
+  tenure: TenurePage,
 };

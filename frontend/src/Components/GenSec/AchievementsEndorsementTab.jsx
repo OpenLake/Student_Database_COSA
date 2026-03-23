@@ -44,6 +44,7 @@ const AchievementsEndorsementTab = ({ skillType }) => {
 
   useEffect(() => {
     loadAchievements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillType]);
 
   const handleVerify = async (id) => {

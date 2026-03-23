@@ -72,7 +72,6 @@ const AddSkill = () => {
   const {
     newSkillData,
     updateNewSkillData,
-    submitSkill,
     loading,
     submitNewSkill,
   } = useSkillForm();

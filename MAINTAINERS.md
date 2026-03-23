@@ -4,8 +4,8 @@ _This file is auto-generated from the repository collaborators list._
 
 | Name          | GitHub Handle    | Role             | Tenure | Time Period | 
 |---------------|------------------|------------------|---|---|
-| Harshita      | [@harshitap1305](https://github.com/harshitap1305) | Mentor (Sprint-M25, Hacktoberfest, FOSS Overflow 2025-26) | 2025-26 | August 2025 - Present | 
-| Amay      | [@amaydixit11](https://github.com/amaydixit11) | Coordinator (Hacktoberfest) | 2025-26 | October 2025 - Present |
+| Harshita      | [@harshitap1305](https://github.com/harshitap1305) | Mentor (Sprint-M25, Hacktoberfest-25, FOSS Overflow 2025-26) | 2025-26 | August 2025 - March 2026 | 
+| Amay      | [@amaydixit11](https://github.com/amaydixit11) | Coordinator (Hacktoberfest-25) | 2025-26 | October 2025 - Present |
 | Khushagra    | [@Khushagra30](https://github.com/Khushagra30) | Maintainer (Sprint-M25, Design) | 2025-26 | August 2025 - September 2025 | 
 | Harshita      | [@harshitap1305](https://github.com/harshitap1305) | Maintainer (DevLabs-25) | 2025-26 | June 2025 - July 2025 | 
 | Sakshi      | [@sakshi1755](https://github.com/sakshi1755) | Mentee (FOSS Overflow 2024-25) | 2024-25 | February 2025 - March 2025 | 

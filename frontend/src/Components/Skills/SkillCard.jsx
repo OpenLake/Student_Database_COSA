@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, CheckCircle2, CircleOff, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import DisplayCard from "../common/DisplayCard";
 
 const getProficiencyColor = (level) => {

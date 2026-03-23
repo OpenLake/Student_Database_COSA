@@ -1,4 +1,4 @@
-import { useSkills, useSkillForm } from "../../hooks/useSkills";
+import { useSkills } from "../../hooks/useSkills";
 import FilterDropdown from "./FilterDropdown";
 import SkillCard from "./SkillCard";
 import { EmptyStateNoSkills, EmptyStateNoResults } from "./EmptyState";

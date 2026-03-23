@@ -1,7 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
-import { Eye, Plus } from "lucide-react";
+import { useEffect, useState, useContext } from "react";
+import toast from "react-hot-toast";
 import { AdminContext } from "../context/AdminContext";
 import api from "../utils/api";
 
@@ -145,7 +143,7 @@ export const useFeedbackForm = () => {
       };
       setFilteredTargets(typeMap[target_type] || []);
     }
-  }, [formData.target_type, targetOptions]);
+  }, [formData, targetOptions]);
 
   const updateFormData = (updates) => {
     setFormData((prev) => ({ ...prev, ...updates }));

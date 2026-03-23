@@ -1,5 +1,5 @@
 import { useAnnouncementsForm } from "../../hooks/useAnnouncements";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 const CreateAnnouncementModal = ({ open, onClose, initialData, onSaved }) => {
   const {
