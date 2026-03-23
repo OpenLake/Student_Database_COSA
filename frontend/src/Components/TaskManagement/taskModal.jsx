@@ -227,7 +227,7 @@ export function CreateTaskModal({ onClose, onCreate }) {
     onCreate({
       ...form,
       status: "pending",
-      priority: 0,
+      progress: 0,
       assignees: assigneeIds,
     });
     onClose();

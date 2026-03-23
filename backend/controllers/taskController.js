@@ -45,9 +45,7 @@ async function updateTask(req, res) {
 
     const { status, submission_note, admin_notes } = req.body;
 
-    if (
-      !["pending", "in-progress", "under-review", "completed"].includes(status)
-    ) {
+    if (!["pending", "in-progress", "under-review", "completed"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
@@ -56,15 +54,36 @@ async function updateTask(req, res) {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    if (
-      task.assigned_by.toString() !== _id.toString() &&
-      !task.assignees.some((a) => a._id.toString() === _id.toString())
-    ) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to update this task" });
+    const isAssigner = task.assigned_by.toString() === _id.toString();
+    const isAssignee = task.assignees.some((a) => a.toString() === _id.toString());
+
+    if(!isAssigner && !isAssignee){
+      return res.status(403).json({message: "You are not authorized to perform the update"})
     }
 
+    if (isAssignee) {
+      const validAssigneeMove =
+        (task.status === "pending" && status === "in-progress") ||
+        (task.status === "in-progress" && status === "under-review");
+      if (!validAssigneeMove) {
+        return res.status(403).json({ message: "Invalid assignee transition" });
+      }
+      if (status === "under-review" && !submission_note) {
+        return res.status(400).json({ message: "submission_note is required" });
+      }
+    }
+
+    if (isAssigner) {
+      const validAssignerMove =
+        task.status === "under-review" &&
+        (status === "completed" || status === "in-progress");
+      if (!validAssignerMove) {
+        return res.status(403).json({ message: "Invalid assigner transition" });
+      }
+    }
+
+
+    task.status = status;
     if (status) task.status = status;
     if (submission_note) task.submission_note = submission_note;
     if (admin_notes) task.admin_notes = admin_notes;
@@ -150,8 +169,9 @@ async function getTaskUsers(req, res) {
 
     const role = user.role?.toUpperCase();
     if (role === "PRESIDENT") {
-      const allUsers = await User.find().select("personal_info, role");
-      return res.json({ message: allUsers });
+      const userIds = (await PositionHolder.find().select("user_id")).map((u) => u.user_id);
+      const users = await User.find({_id: {$in: userIds}}).select("personal_info role");
+      return res.json({ message: users });
     }
 
     const unit = await PositionHolder.findOne({ user_id: id }).populate({
@@ -168,27 +188,19 @@ async function getTaskUsers(req, res) {
       return res.status(404).json({ message: "Unit Id not found" });
     }
 
-    const category =
-      await OrganizationalUnit.findById(unitId).select("category");
+    const category = await (OrganizationalUnit.findById(unitId).select("category")).map(c => c.category);
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
 
     if (role.startsWith("GENSEC")) {
-      const categoryOrgsIds = (
-        await OrganizationalUnit.find({ category: category }).select("_id")
-      ).map((org) => org._id);
-      const positionsIds = (
-        await Position.find({ unit_id: { $in: categoryOrgsIds } }).select("_id")
-      ).map((p) => p._id);
-      const userIds = (
-        await PositionHolder.find({
-          position_id: { $in: positionsIds },
-        }).select("_id")
-      ).map((u) => u._id);
-      const users = await User.find({ _id: { $in: userIds } }).select(
-        "personal_info, role",
-      );
+      const categoryOrgsIds = ( await OrganizationalUnit.find({ category: category }).select("_id")).map((org) => org._id);
+
+      const positionsIds = (await Position.find({ unit_id: { $in: categoryOrgsIds } }).select("_id")).map((p) => p._id);
+
+      const userIds = (await PositionHolder.find({position_id: { $in: positionsIds }}).select("user_id")).map((u) => u._id);
+
+      const users = await User.find({ _id: { $in: userIds } }).select("personal_info, role");
       return res.json({ message: users });
     }
 

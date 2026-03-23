@@ -1,5 +1,5 @@
 const zod = require("zod");
-const zodObjectId = zod.string().regex(/^[0-9a-zA-Z]{24}$/, "Invalid ObjectId");
+const zodObjectId = zod.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId");
 
 const taskValidate = zod.object({
   title: zod.string().min(5, "Title is required"),
