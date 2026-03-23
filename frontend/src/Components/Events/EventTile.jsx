@@ -1,8 +1,6 @@
 import React from "react";
 
-import {
-  formatDate,
-} from "../../utils/eventHelpers";
+import { formatDate } from "../../utils/eventHelpers";
 import { useSidebar } from "../../hooks/useSidebar";
 
 const EventTile = ({
@@ -17,7 +15,9 @@ const EventTile = ({
 
   const isRegistered =
     !!currentUserId &&
-    event.participants?.some((p) => String(p?._id || p) === String(currentUserId));
+    event.participants?.some(
+      (p) => String(p?._id || p) === String(currentUserId),
+    );
 
   return (
     <div

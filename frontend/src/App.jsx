@@ -15,8 +15,6 @@ import Unauthorised from "./Components/Unauthorised";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
-
-
 function App() {
   const authData = useAuth();
   const { isUserLoggedIn, isOnboardingComplete, isLoading } = authData;

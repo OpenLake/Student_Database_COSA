@@ -25,12 +25,12 @@ const AddPositionHolder = ({ onClose }) => {
   const [positions, setPositions] = useState([]);
   const [appointingUsers, setAppointingUsers] = useState([]);
 
-
   const [positionSearchTerm, setPositionSearchTerm] = useState("");
   const [appointedBySearchTerm, setAppointedBySearchTerm] = useState("");
 
   const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false);
-  const [isAppointedByDropdownOpen, setIsAppointedByDropdownOpen] = useState(false);
+  const [isAppointedByDropdownOpen, setIsAppointedByDropdownOpen] =
+    useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -65,23 +65,33 @@ const AddPositionHolder = ({ onClose }) => {
   const filteredPositions = positions.filter(
     (position) =>
       position.title.toLowerCase().includes(positionSearchTerm.toLowerCase()) ||
-      position.unit_id.name.toLowerCase().includes(positionSearchTerm.toLowerCase())
+      position.unit_id.name
+        .toLowerCase()
+        .includes(positionSearchTerm.toLowerCase()),
   );
 
   const filteredAppointingUsers = appointingUsers.filter(
     (user) =>
-      user.personal_info.name.toLowerCase().includes(appointedBySearchTerm.toLowerCase()) ||
-      user.username.toLowerCase().includes(appointedBySearchTerm.toLowerCase())
+      user.personal_info.name
+        .toLowerCase()
+        .includes(appointedBySearchTerm.toLowerCase()) ||
+      user.username.toLowerCase().includes(appointedBySearchTerm.toLowerCase()),
   );
 
   const validateForm = () => {
     const newErrors = {};
     if (!formData.user_id) newErrors.user_id = "User selection is required";
-    if (!formData.position_id) newErrors.position_id = "Position selection is required";
-    if (!formData.tenure_year) newErrors.tenure_year = "Tenure year is required";
+    if (!formData.position_id)
+      newErrors.position_id = "Position selection is required";
+    if (!formData.tenure_year)
+      newErrors.tenure_year = "Tenure year is required";
     if (!formData.status) newErrors.status = "Status is required";
-    if (formData.appointment_details.appointment_date && !formData.appointment_details.appointed_by) {
-      newErrors.appointed_by = "Appointed by is required when appointment date is provided";
+    if (
+      formData.appointment_details.appointment_date &&
+      !formData.appointment_details.appointed_by
+    ) {
+      newErrors.appointed_by =
+        "Appointed by is required when appointment date is provided";
     }
     if (formData.performance_metrics.events_organized < 0) {
       newErrors.events_organized = "Events organized cannot be negative";
@@ -112,13 +122,20 @@ const AddPositionHolder = ({ onClose }) => {
         const cleanedData = {
           ...formData,
           appointment_details:
-            formData.appointment_details.appointed_by || formData.appointment_details.appointment_date
+            formData.appointment_details.appointed_by ||
+            formData.appointment_details.appointment_date
               ? formData.appointment_details
               : undefined,
           performance_metrics: {
             ...formData.performance_metrics,
-            events_organized: formData.performance_metrics.events_organized === "" ? 0 : parseInt(formData.performance_metrics.events_organized, 10),
-            budget_utilized: formData.performance_metrics.budget_utilized === "" ? 0 : parseFloat(formData.performance_metrics.budget_utilized),
+            events_organized:
+              formData.performance_metrics.events_organized === ""
+                ? 0
+                : parseInt(formData.performance_metrics.events_organized, 10),
+            budget_utilized:
+              formData.performance_metrics.budget_utilized === ""
+                ? 0
+                : parseFloat(formData.performance_metrics.budget_utilized),
             feedback: formData.performance_metrics.feedback.trim() || undefined,
           },
         };
@@ -132,8 +149,12 @@ const AddPositionHolder = ({ onClose }) => {
     }
   };
 
-  const selectedPosition = positions.find((p) => p._id === formData.position_id);
-  const selectedAppointedBy = appointingUsers.find((u) => u._id === formData.appointment_details.appointed_by);
+  const selectedPosition = positions.find(
+    (p) => p._id === formData.position_id,
+  );
+  const selectedAppointedBy = appointingUsers.find(
+    (u) => u._id === formData.appointment_details.appointed_by,
+  );
 
   return (
     <div className="bg-white max-h-[90vh] overflow-y-auto px-5 py-6 rounded-xl shadow-md border border-[#E4D8C3]">
@@ -181,7 +202,9 @@ const AddPositionHolder = ({ onClose }) => {
                 label="Tenure Year"
                 value={formData.tenure_year}
                 options={tenureYearOptions}
-                onChange={(e) => handleInputChange("tenure_year", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("tenure_year", e.target.value)
+                }
                 error={errors.tenure_year}
               />
               <SelectField
@@ -195,22 +218,35 @@ const AddPositionHolder = ({ onClose }) => {
           </div>
 
           {/* Appointment Details */}
-          <SectionHeader icon={Calendar} title="Appointment Details" subtitle="Optional appointment info" />
+          <SectionHeader
+            icon={Calendar}
+            title="Appointment Details"
+            subtitle="Optional appointment info"
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <SearchDropdown
               label="Appointed By"
-              value={selectedAppointedBy ? selectedAppointedBy.personal_info.name : appointedBySearchTerm}
+              value={
+                selectedAppointedBy
+                  ? selectedAppointedBy.personal_info.name
+                  : appointedBySearchTerm
+              }
               onChange={(e) => {
                 setAppointedBySearchTerm(e.target.value);
                 setIsAppointedByDropdownOpen(true);
-                if (!e.target.value) handleNestedChange("appointment_details", "appointed_by", "");
+                if (!e.target.value)
+                  handleNestedChange("appointment_details", "appointed_by", "");
               }}
               isOpen={isAppointedByDropdownOpen}
               setIsOpen={setIsAppointedByDropdownOpen}
               filteredItems={filteredAppointingUsers}
               onSelect={(user) => {
-                handleNestedChange("appointment_details", "appointed_by", user._id);
+                handleNestedChange(
+                  "appointment_details",
+                  "appointed_by",
+                  user._id,
+                );
                 setAppointedBySearchTerm("");
                 setIsAppointedByDropdownOpen(false);
               }}
@@ -221,12 +257,22 @@ const AddPositionHolder = ({ onClose }) => {
               label="Appointment Date"
               type="date"
               value={formData.appointment_details.appointment_date}
-              onChange={(e) => handleNestedChange("appointment_details", "appointment_date", e.target.value)}
+              onChange={(e) =>
+                handleNestedChange(
+                  "appointment_details",
+                  "appointment_date",
+                  e.target.value,
+                )
+              }
             />
           </div>
 
           {/* Performance Metrics */}
-          <SectionHeader icon={BarChart3} title="Performance Metrics" subtitle="Track indicators and feedback" />
+          <SectionHeader
+            icon={BarChart3}
+            title="Performance Metrics"
+            subtitle="Track indicators and feedback"
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <InputField
@@ -234,7 +280,13 @@ const AddPositionHolder = ({ onClose }) => {
               type="number"
               min="0"
               value={formData.performance_metrics.events_organized}
-              onChange={(e) => handleNestedChange("performance_metrics", "events_organized", e.target.value)}
+              onChange={(e) =>
+                handleNestedChange(
+                  "performance_metrics",
+                  "events_organized",
+                  e.target.value,
+                )
+              }
               error={errors.events_organized}
             />
             <InputField
@@ -243,7 +295,13 @@ const AddPositionHolder = ({ onClose }) => {
               min="0"
               step="0.01"
               value={formData.performance_metrics.budget_utilized}
-              onChange={(e) => handleNestedChange("performance_metrics", "budget_utilized", e.target.value)}
+              onChange={(e) =>
+                handleNestedChange(
+                  "performance_metrics",
+                  "budget_utilized",
+                  e.target.value,
+                )
+              }
               error={errors.budget_utilized}
             />
           </div>
@@ -252,7 +310,13 @@ const AddPositionHolder = ({ onClose }) => {
             <InputLabel text="Performance Feedback" />
             <textarea
               value={formData.performance_metrics.feedback}
-              onChange={(e) => handleNestedChange("performance_metrics", "feedback", e.target.value)}
+              onChange={(e) =>
+                handleNestedChange(
+                  "performance_metrics",
+                  "feedback",
+                  e.target.value,
+                )
+              }
               placeholder="Provide performance feedback..."
               rows={4}
               className="w-full px-3 py-2 border border-[#E4D8C3] rounded-lg bg-[#FDF9F3] text-black focus:ring-2 focus:ring-black outline-none"
