@@ -22,6 +22,7 @@ const dashboardRoutes = require("./routes/dashboard.js");
 const analyticsRoutes = require("./routes/analytics.js");
 const certificateRoutes = require("./routes/certificateRoutes.js");
 const taskRoutes = require("./routes/task.routes.js");
+
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -47,7 +48,7 @@ app.use(
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
-      ttl: 60 * 60 * 1000,
+      ttl: 60 * 60,
       collectionName: "sessions",
     }),
     name: "token",

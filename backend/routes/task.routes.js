@@ -1,6 +1,15 @@
 const router = require("express").Router();
-const { getTasks } = require("../controllers/taskController");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
+const {
+  getTasks,
+  updateTask,
+  createTask,
+  getTaskUsers,
+} = require("../controllers/taskController");
 
-router.get("/", getTasks);
+router.get("/", isAuthenticated, getTasks);
+router.patch("/:taskId", isAuthenticated, updateTask);
+router.post("/create-task", isAuthenticated, createTask);
+router.get("/get-users", isAuthenticated, getTaskUsers);
 
 module.exports = router;

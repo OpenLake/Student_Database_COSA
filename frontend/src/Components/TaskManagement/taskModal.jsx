@@ -1,18 +1,33 @@
 import { useState } from "react";
-import { PRIORITY_CARD_STYLE, STATUS_CONFIG } from "./ui";
-import { CircleX } from "lucide-react";
+import { PRIORITY_CARD_STYLE, STATUS_CONFIG, AVATAR_COLORS } from "./ui";
+import { CircleX, Users, XCircle } from "lucide-react";
+import AssigneePickerModal from "./taskAssigneeModal";
 
-// --- Task Detail Modal ---
-export default function TaskDetailModal({ task, onClose, onStatusUpdate }) {
+// --- View Task Details Modal ---
+export function TaskDetailModal({
+  task,
+  onClose,
+  onStatusUpdate,
+  userId = "",
+}) {
   const [submissionNote, setSubmissionNote] = useState(
     task.submission_note || "",
   );
   const [adminNote, setAdminNote] = useState("");
+
   const style = PRIORITY_CARD_STYLE[task.priority];
   const statusFlow = ["pending", "in-progress", "under-review", "completed"];
   const canAdvance =
     task.status !== "completed" && task.status !== "under-review";
-  const nextStatus = statusFlow[statusFlow.indexOf(task.status) + 1];
+  const nextStatus =
+    task.status !== "completed"
+      ? statusFlow[statusFlow.indexOf(task.status) + 1]
+      : null;
+
+  const isAssigner = task.assigned_by?._id.toString() === userId.toString();
+  const isAssignee = task.assignees.some(
+    (assignee) => assignee._id.toString() === userId,
+  );
 
   const headerGradient =
     task.priority === "high"
@@ -105,68 +120,76 @@ export default function TaskDetailModal({ task, onClose, onStatusUpdate }) {
             </div>
           </div>
 
-          {task.status === "in-progress" && (
+          {/*Submission Link / Note */}
+          {task.status === "in-progress" && isAssignee ? (
             <div>
               <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+                {" "}
                 Submission Link / Note
               </label>
               <input
-                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-                placeholder="Google Drive / Doc link"
+                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-stone-400
+                  disabled: cursor-not-allowed disabled: bg-gray-100 disabled:opacity-60"
+                placeholder="Google Drive / Doc link / Description of your work"
                 value={submissionNote}
                 onChange={(e) => setSubmissionNote(e.target.value)}
               />
             </div>
-          )}
-          {task.status === "under-review" && (
+          ) : null}
+
+          {/*Reviewer Notes */}
+          {task.status === "under-review" && isAssigner ? (
             <div>
               <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
-                Admin / Reviewer Notes
+                Reviewer Notes
               </label>
               <textarea
-                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400 resize-none"
                 rows={2}
                 placeholder="Feedback for the assignee..."
                 value={adminNote}
                 onChange={(e) => setAdminNote(e.target.value)}
               />
             </div>
-          )}
+          ) : null}
 
           <div className="flex gap-3 pt-1">
-            {canAdvance && nextStatus && (
+            {canAdvance && nextStatus && isAssignee && (
               <button
                 onClick={() => {
-                  onStatusUpdate(task.id, nextStatus, submissionNote);
+                  onStatusUpdate(task._id, nextStatus, submissionNote);
                   onClose();
                 }}
-                className="flex-1 py-2 rounded-lg text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition-colors"
+                className="flex-1 py-2 !rounded-2xl text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition-colors"
               >
-                Mark as {STATUS_CONFIG[nextStatus].label}
+                {nextStatus === "under-review"
+                  ? "Submit for Review"
+                  : "Mark as " + STATUS_CONFIG[nextStatus].label}
               </button>
             )}
-            {task.status === "under-review" && (
+            {task.status === "under-review" && isAssigner && (
               <>
                 <button
                   onClick={() => {
                     onStatusUpdate(
-                      task.id,
+                      task._id,
                       "completed",
                       submissionNote,
                       adminNote,
                     );
                     onClose();
                   }}
-                  className="flex-1 py-2 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors"
+                  className="flex-1 py-2 !rounded-2xl text-sm font-semibold text-white bg-green-600 hover:bg-green-800 transition-colors"
                 >
-                  Mark Complete
+                  Mark as Complete
                 </button>
                 <button
                   onClick={() => {
-                    onStatusUpdate(task.id, "in-progress", "", adminNote);
+                    onStatusUpdate(task._id, "pending", "", adminNote);
                     onClose();
                   }}
-                  className="flex-1 py-2 rounded-lg text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 transition-colors"
+                  className="flex-1 py-2 !rounded-2xl text-sm font-semibold text-white bg-red-600 hover:bg-red-800 transition-colors"
                 >
                   Request Revision
                 </button>
@@ -174,7 +197,7 @@ export default function TaskDetailModal({ task, onClose, onStatusUpdate }) {
             )}
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 transition-colors"
+              className="px-4 py-2 !rounded-2xl text-sm font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 transition-colors"
             >
               Close
             </button>
@@ -182,5 +205,173 @@ export default function TaskDetailModal({ task, onClose, onStatusUpdate }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// --- Create Task Modal ---
+export function CreateTaskModal({ onClose, onCreate }) {
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    deadline: "",
+    priority: "medium",
+    assignees: [],
+  });
+  const [assigneeNames, setAssigneeNames] = useState([]);
+  const [assigneeIds, setAssigneeIds] = useState([]);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.title || !form.deadline) return;
+    onCreate({
+      ...form,
+      status: "pending",
+      priority: 0,
+      assignees: assigneeIds,
+    });
+    onClose();
+  };
+
+  return (
+    <>
+      {showPicker && (
+        <AssigneePickerModal
+          selected={assigneeIds}
+          onConfirm={(ids) => {
+            setAssigneeIds(ids);
+            setShowPicker(false);
+          }}
+          onClose={() => setShowPicker(false)}
+        />
+      )}
+
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden border border-stone-200">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-amber-400 to-amber-500 px-6 py-3 flex items-center justify-between">
+            <h2 className="text-white font-bold text-md tracking-tight">
+              Create New Task
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-white/80 hover:text-white text-2xl leading-none"
+            >
+              <XCircle size={24} />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                Task Title *
+              </label>
+              <input
+                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                placeholder="Design Event Poster"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                Description
+              </label>
+              <textarea
+                className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+                rows={3}
+                placeholder="Describe the task..."
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                  Deadline *
+                </label>
+                <input
+                  type="date"
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  value={form.deadline}
+                  onChange={(e) =>
+                    setForm({ ...form, deadline: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                  Priority
+                </label>
+                <select
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
+                  value={form.priority}
+                  onChange={(e) =>
+                    setForm({ ...form, priority: e.target.value })
+                  }
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Assignees — opens picker modal */}
+            <div>
+              <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                Assignees
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPicker(true)}
+                className="w-[20vw] border border-stone-200 !rounded-lg px-3 py-2 text-sm text-left
+                flex items-center justify-between min-h-[38px]"
+              >
+                {assigneeNames.length === 0 ? (
+                  <span className="text-stone-300">
+                    Click to select assignees...
+                  </span>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5">
+                    {assigneeNames.map((name, i) => (
+                      <span
+                        key={i}
+                        className="text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <Users size={16} className="text-stone-400 shrink-0 ml-2" />
+              </button>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2 !rounded-xl text-sm font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 !rounded-xl text-sm font-semibold text-white bg-green-700 hover:bg-green-800 transition-colors shadow-sm"
+              >
+                Create Task
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 }

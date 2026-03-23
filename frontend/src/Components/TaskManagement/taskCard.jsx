@@ -64,7 +64,7 @@ export default function TaskCard({ task, View }) {
               title={a}
               className={`w-6 h-6 rounded-full ${style.avatarBg} border-2 border-white flex items-center justify-center text-[9px] font-bold text-white`}
             >
-              {a[0]}
+              {a.personal_info.name.charAt(0)}
             </div>
           ))}
           {task.assignees.length > 3 && (

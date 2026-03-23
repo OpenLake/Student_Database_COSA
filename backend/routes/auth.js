@@ -197,7 +197,7 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
           "This email is linked with Google Login. Please use 'Sign in with Google' instead.",
       });
     }
-    const secret = user._id + process.env.JWT_SECRET_TOKEN;
+    const secret = process.env.JWT_SECRET_TOKEN;
     const token = jwt.sign({ email: email, id: user._id }, secret, {
       expiresIn: "10m",
     });
@@ -237,12 +237,11 @@ router.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
 router.get("/reset-password/:id/:token", async (req, res) => {
   try {
     const { id, token } = req.params;
-    console.log(req.params);
     const user = await User.findOne({ _id: id });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const secret = user._id + process.env.JWT_SECRET_TOKEN;
+    const secret = process.env.JWT_SECRET_TOKEN;
     jwt.verify(token, secret);
     return res.status(200).json({ message: "Token verified successfully" });
   } catch (error) {
@@ -258,7 +257,7 @@ router.post("/reset-password/:id/:token", async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  const secret = user._id + process.env.JWT_SECRET_TOKEN;
+  const secret = process.env.JWT_SECRET_TOKEN;
   try {
     jwt.verify(token, secret);
     user.setPassword(password, async (error) => {

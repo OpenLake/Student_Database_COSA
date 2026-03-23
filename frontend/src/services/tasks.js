@@ -1,124 +1,9 @@
 import api from "../utils/api";
-// --- Mock Data ---
-const MOCK_TASKS = [
-  {
-    id: 1,
-    title: "Design Poster for Tech Fest",
-    description: "Create promotional posters for the annual tech fest.",
-    assignees: ["Riya Sharma", "Arjun Nair"],
-    assigned_by: "Harshita P.",
-    unit_id: "65f1a2b3c4d5e6f7890a1234",
-    deadline: "2026-03-30",
-    priority: "high",
-    status: "in-progress",
-    progress: 60,
-    submission_note: "",
-    admin_note: "Make sure branding guidelines are followed.",
-    createdAt: "2026-03-10T09:00:00Z",
-    updatedAt: "2026-03-18T14:30:00Z",
-  },
-  {
-    id: 2,
-    title: "Develop Event Registration Page",
-    description: "Build and deploy the registration page for the event.",
-    assignees: ["Karan Mehta"],
-    assigned_by: "Rahul S.",
-    unit_id: "65f1a2b3c4d5e6f7890a1235",
-    deadline: "2026-04-02",
-    priority: "medium",
-    status: "pending",
-    progress: 20,
-    submission_note: "",
-    admin_note: "",
-    createdAt: "2026-03-12T11:15:00Z",
-    updatedAt: "2026-03-15T10:00:00Z",
-  },
-  {
-    id: 3,
-    title: "Write Blog for Hackathon",
-    description: "Draft a blog post announcing the upcoming hackathon.",
-    assignees: ["Sneha Iyer"],
-    assigned_by: "Harshita P.",
-    unit_id: "65f1a2b3c4d5e6f7890a1236",
-    deadline: "2026-03-28",
-    priority: "low",
-    status: "completed",
-    progress: 100,
-    submission_note: "https://medium.com/sample-blog",
-    admin_note: "Well written and informative.",
-    createdAt: "2026-03-05T08:20:00Z",
-    updatedAt: "2026-03-20T16:45:00Z",
-  },
-  {
-    id: 4,
-    title: "Setup Database Schema",
-    description: "Design and implement MongoDB schema for the project.",
-    assignees: ["Arjun Nair", "Priya Verma"],
-    assigned_by: "Rahul S.",
-    unit_id: "65f1a2b3c4d5e6f7890a1237",
-    deadline: "2026-04-05",
-    priority: "high",
-    status: "in-progress",
-    progress: 50,
-    submission_note: "",
-    admin_note: "Ensure scalability.",
-    createdAt: "2026-03-14T13:00:00Z",
-    updatedAt: "2026-03-19T17:10:00Z",
-  },
-  {
-    id: 5,
-    title: "Create Social Media Plan",
-    description: "Plan content strategy for Instagram and LinkedIn.",
-    assignees: ["Riya Sharma"],
-    assigned_by: "Harshita P.",
-    unit_id: "65f1a2b3c4d5e6f7890a1238",
-    deadline: "2026-03-29",
-    priority: "medium",
-    status: "in-progress",
-    progress: 70,
-    submission_note: "",
-    admin_note: "Focus on engagement metrics.",
-    createdAt: "2026-03-11T10:30:00Z",
-    updatedAt: "2026-03-18T12:00:00Z",
-  },
-  {
-    id: 6,
-    title: "Design UI for Dashboard",
-    description: "Create Figma designs for admin dashboard.",
-    assignees: ["Priya Verma"],
-    assigned_by: "Rahul S.",
-    unit_id: "65f1a2b3c4d5e6f7890a1239",
-    deadline: "2026-04-01",
-    priority: "high",
-    status: "pending",
-    progress: 0,
-    submission_note: "",
-    admin_note: "",
-    createdAt: "2026-03-16T09:45:00Z",
-    updatedAt: "2026-03-16T09:45:00Z",
-  },
-  {
-    id: 7,
-    title: "Test Backend APIs",
-    description: "Perform testing on all backend endpoints.",
-    assignees: ["Karan Mehta", "Sneha Iyer"],
-    assigned_by: "Harshita P.",
-    unit_id: "65f1a2b3c4d5e6f7890a1240",
-    deadline: "2026-04-06",
-    priority: "medium",
-    status: "pending",
-    progress: 10,
-    submission_note: "",
-    admin_note: "Document all bugs clearly.",
-    createdAt: "2026-03-17T15:20:00Z",
-    updatedAt: "2026-03-18T11:10:00Z",
-  },
-];
 
 export async function fetchTasks() {
   try {
     const response = await api.get("api/tasks");
-    return response.data;
+    return { data: response.data.message, success: true };
   } catch (err) {
     console.error(err);
     return err?.message || "An error occurred while fetching tasks";
@@ -126,5 +11,41 @@ export async function fetchTasks() {
 }
 
 export async function createTask(newTask) {
-  return "";
+  try {
+    const response = await api.post("api/tasks/create-task", newTask);
+    return { data: response.data.message, success: true };
+  } catch (err) {
+    console.error(err);
+    return "An error occurred while creating the task";
+  }
+}
+
+export async function updateTask(
+  taskId,
+  newStatus,
+  submissionNote,
+  adminNotes,
+) {
+  try {
+    const response = await api.patch(`/api/tasks/${taskId}`, {
+      status: newStatus,
+      submission_note: submissionNote,
+      admin_note: adminNotes,
+    });
+
+    return { data: response.data.message, success: true };
+  } catch (err) {
+    console.error(err);
+    return err?.message || "An error occurred while updating the task";
+  }
+}
+
+export async function fetchTaskUsers() {
+  try {
+    const response = await api.get("api/tasks/get-users");
+    return { data: response.data.message, success: true };
+  } catch (err) {
+    console.error(err);
+    return err?.message || "An error occurred while fetching task users";
+  }
 }

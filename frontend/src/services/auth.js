@@ -7,24 +7,23 @@ export async function fetchCredentials() {
 }
 
 export async function completeOnboarding(userData) {
-  try{
+  try {
     const response = await api.put(`/onboarding`, userData);
     return response.data;
-  }catch (error) {
+  } catch (error) {
     //console.error("Error obj is:",error.response);
     return error.response;
   }
 }
 
 export async function registerUser(username, password, name) {
-  
   try {
     const response = await api.post(`/auth/register`, {
       name,
       username,
       password,
     });
-    return response; 
+    return response;
   } catch (error) {
     //console.error("Error obj is:",error.response);
     return error.response;

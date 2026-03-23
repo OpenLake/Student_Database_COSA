@@ -4,7 +4,7 @@ const Event = require('../models/eventSchema');
 exports.getLatestEvents = async (req, res) => {
     try{
         const latestEvents = await Event.find({})
-         .sort({updated_at: -1})
+         .sort({updatedAt: -1})
          .limit(4)
          .select('title updatedAt schedule.venue status');
 
