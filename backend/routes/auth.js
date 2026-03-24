@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { registerValidate } = require("../utils/authValidate");
 const passport = require("../config/passportConfig");
 const rateLimit = require("express-rate-limit");
-var nodemailer = require("nodemailer");
+const {forgotPasswordSendEmail} = require("../services/email.service");
 
 const User = require("../models/userSchema");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
@@ -219,31 +219,8 @@ router.post("/", forgotPasswordLimiter, async (req, res) => {
       expiresIn: "10m",
     });
     const link = `${process.env.FRONTEND_URL}/reset-password/${user._id}/${token}`;
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    var mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Password-Reset Request",
-      text: `To reset your password, click here: ${link}`,
-    };
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error sending email" });
-      } else {
-        console.log("Email sent:", info.response);
-        return res
-          .status(200)
-          .json({ message: "Password reset link sent to your email" });
-      }
-    });
-    //console.log(link);
+    await forgotPasswordSendEmail(res, email, link);
+   
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });

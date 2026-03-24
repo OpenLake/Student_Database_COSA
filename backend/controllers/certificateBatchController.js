@@ -10,11 +10,14 @@ const { findTemplate } = require("../services/template.service");
 const { getUserPosition, getApprovers } = require("../services/user.service");
 const { getOrganization } = require("../services/organization.service");
 const { HttpError } = require("../utils/httpError");
+const {newBatchSendEmail} = require("../services/email.service");
 
 async function createBatch(req, res) {
   //console.log(req.user);
   try {
+    let emailBatchObj = {};
     const { id, role } = req.user;
+ 
     //console.log(req.body);
     //to get user club
     // positionHolders({user_id: id}) -> positions({_id: position_id}) -> organizationalUnit({_id: unit_id}) -> unit_id = "Club name"
@@ -49,7 +52,7 @@ async function createBatch(req, res) {
       return res.status(400).json({ message: errors });
     }
 
-    const event = await findEvent(eventId);
+    const event = await findEvent(eventId);    
     const template = await findTemplate(templateId);
 
     // Get coordinator's position and unit
@@ -76,6 +79,14 @@ async function createBatch(req, res) {
 
     // Resolve General Secretary and President objects for the club
     const { gensecObj, presidentObj } = await getApprovers(club.category);
+    const approvers = [gensecObj, presidentObj];
+    const {approverBatchDetails, ccEmails} = approvers.reduce((acc, a)=>{
+      const name = a.personal_info.name;
+      const email = a.personal_info.name;
+      acc.approverBatchDetails.push({name, email});
+      acc.ccEmails.push(email);
+    }, { approverBatchDetails: [], ccEmails: []});
+
     const approverIds = [gensecObj._id, presidentObj._id];
 
     // Validate user ids and existence (bulk query + duplicate detection)
@@ -112,6 +123,17 @@ async function createBatch(req, res) {
       users: users,
       signatoryDetails,
     });
+
+    emailBatchObj = {
+      title: newBatch.title,
+      event: {name: event.title, description: event.description},
+      createdBy: req.user.personal_info.name,
+      createdAt: new Date(newBatch.createdAt).toLocaleDateString("en-GB").replaceAll("/","-"),
+      approverList: approverBatchDetails
+    }
+
+    const link = process.env.FRONTEND_URL;
+    await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj);
 
     res.json({ message: "New Batch created successfully" });
   } catch (err) {
@@ -163,11 +185,12 @@ async function editBatch(req, res) {
     if (errors.length > 0) return res.status(400).json({ message: errors });
 
     const batch = await CertificateBatch.findById(batchId);
-    Object.assign(batch, validation.data);
 
     if (!batch) {
       return res.status(404).json({ message: "Batch not found" });
     }
+
+    Object.assign(batch, validation.data);
 
     if (batchId && action === "Submitted") batch.approvalStatus = "Pending";
     batch.lifecycleStatus = action;
@@ -194,7 +217,7 @@ async function getBatchUsers(req, res) {
       let errors = validation.error.issues.map((issue) => issue.message);
       return res.status(400).json({ message: errors });
     }
-    const users = await User.find({ _id: { $in: userIds } }).select("");
+    const users = await User.find({ _id: { $in: userIds } }).select("_id");
     const foundIds = users.map((u) => u._id.toString());
     const missingIds = userIds.filter(
       (id) => !foundIds.includes(id.toString()),
@@ -226,7 +249,6 @@ async function duplicateBatch(req, res) {
     }
 
     const batch = await CertificateBatch.findById(batchId)
-      .lean()
       .select(
         "title eventId templateId initiatedBy approverIds users signatoryDetails -_id",
       );
@@ -241,9 +263,12 @@ async function duplicateBatch(req, res) {
       });
     }
 
-    batch.title = `${batch.title} (Copy)`;
+    const array = batch.title.split("(Copy)");
+    const count = array.length -1;
+    const title = `${array[0]} Copy(${count})`;
     const newBatch = await CertificateBatch.create({
       ...batch,
+      title: title,
       lifecycleStatus: "Draft",
     });
 
@@ -327,7 +352,7 @@ async function archiveBatch(req, res) {
 
 async function getUserBatches(req, res) {
   try {
-    const { id } = req.user;
+    const id  = req.user._id;
     const userId = req.params.userId;
     let batches;
     const user = await User.findById(id);
@@ -412,6 +437,7 @@ async function approverEditBatch(req, res) {
   }
   batch.users = users;
   await batch.save();
+
   res.status(200).json({ message: "Batch updated successfully" });
 }
 
