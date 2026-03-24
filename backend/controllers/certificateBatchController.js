@@ -10,7 +10,7 @@ const { findTemplate } = require("../services/template.service");
 const { getUserPosition, getApprovers } = require("../services/user.service");
 const { getOrganization } = require("../services/organization.service");
 const { HttpError } = require("../utils/httpError");
-const {newBatchSendEmail} = require("../services/email.service");
+const {newBatchSendEmail, batchStatusSendEmail} = require("../services/email.service");
 
 async function createBatch(req, res) {
   //console.log(req.user);
@@ -133,7 +133,7 @@ async function createBatch(req, res) {
     }
 
     const link = process.env.FRONTEND_URL;
-    await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj);
+    await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj, res);
 
     res.json({ message: "New Batch created successfully" });
   } catch (err) {
@@ -454,7 +454,20 @@ async function approveBatch(req, res) {
     const batch = await CertificateBatch.findOne({
       _id: batchId,
       approverIds: id,
-    });
+    }).populate([
+      {
+        path: "eventId",
+        select: "title description"
+      },
+      {
+        path: "initiatedBy",
+        select: "personal_info"
+      },
+      {
+        path: "approverIds",
+        select: "personal_info"
+      }
+    ]);
 
     if (!batch) {
       return res.status(404).json({ message: "Batch not found" });
@@ -472,6 +485,32 @@ async function approveBatch(req, res) {
     }
 
     await batch.save();
+
+    const currentApprover =  batch.approverIds.find((a) => a._id.toString() === id.toString())?.personal_info;
+    const {pendingApprovers, ccEmails} = batch.approverIds.reduce(
+      (acc, a) => {
+        if(a._id.toString() !== id.toString()){
+          acc.pendingApprovers.push(a.personal_info);
+          acc.ccEmails.push(a.personal_info.email);
+        }
+        return acc;
+      }, 
+      { pendingApprovers: [], ccEmails: []}
+    );
+    const toEmail = currentApprover.email;
+
+    const batchObj = {
+      title: batch.title,
+      event: {name: batch.eventId.title, description: batch.eventId.description},
+      createdBy: batch.initiatedBy.personal_info.name,
+      createdAt: new Date(batch.createdAt).toLocaleDateString("en-GB"),
+      currentApprover: currentApprover,
+      approvalLevel: batch.currentApprovalLevel,
+      pendingApprovers: pendingApprovers,
+    }
+
+    await batchStatusSendEmail(res, toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "approve");
+
     return res.status(200).json({ message: "Batch approved successfully" });
   } catch (err) {
     if (err instanceof HttpError) {
@@ -512,6 +551,28 @@ async function rejectBatch(req, res) {
     }
 
     await batch.save();
+    const currentApprover =  batch.approverIds.find((a) => a._id.toString() === id.toString())?.personal_info;
+    const {ccEmails} = batch.approverIds.reduce(
+      (acc, a) => {
+        if(a._id.toString() !== id.toString()){
+          acc.ccEmails.push(a.personal_info.email);
+        }
+        return acc;
+      }, 
+      {ccEmails: []}
+    );
+    const toEmail = currentApprover.email;
+
+    const batchObj = {
+      title: batch.title,
+      event: {name: batch.eventId.title, description: batch.eventId.description},
+      createdBy: batch.initiatedBy.personal_info.name,
+      createdAt: new Date(batch.createdAt).toLocaleDateString("en-GB"),
+      currentApprover: currentApprover,
+      approvalLevel: batch.currentApprovalLevel,
+    }
+
+    await batchStatusSendEmail(res, toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "reject");
     return res.status(200).json({ message: "Batch rejected successfully" });
   } catch (err) {
     if (err instanceof HttpError) {

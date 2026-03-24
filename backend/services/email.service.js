@@ -10,7 +10,7 @@ const transport = nodemailer.createTransport({
   }  
 })
 
-async function forgotPasswordSendEmail(email, link){
+async function forgotPasswordSendEmail(email, link, res){
     const options = {
         from: `COSA Support Team <${process.env.EMAIL_USER}>`,
         to: email,
@@ -46,7 +46,7 @@ async function forgotPasswordSendEmail(email, link){
         ` 
     }
 
-    await transport.sendMail(options,function (res, error) {
+    await transport.sendMail(options,function (error) {
       if (error) {
         return res.status(500).json({ message: "Error sending email" });
       }
@@ -54,7 +54,7 @@ async function forgotPasswordSendEmail(email, link){
 }
 
 
-async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj){
+async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj, res){
     const approverList = batchObj.approvers.map((a, index) => `
         <div>
             <strong>Approver ${index + 1}:</strong><br/>
@@ -126,15 +126,145 @@ async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj){
         `
     }
 
-    await transport.sendMail(options,function (res, error) {
+    await transport.sendMail(options,function (error) {
       if (error) {
         return res.status(500).json({ message: "Error sending email" });
       }
     });
 }
 
+
+async function batchStatusSendEmail(res, toEmail, ccEmails, batchLink, batchObj, action){
+    if(!["approve", "reject"].includes(action)){
+        return res.status(400).json("Invalid action");
+    }
+
+    const approverList = batchObj.pendingApprovers.map((a, index) => `
+        <div>
+            <strong>Approver ${index + 1}:</strong><br/>
+            Name: ${a.name}<br/>
+            Email: ${a.email}
+        </div>
+        <br />    
+    `).join("");
+
+    const Emailformat = {
+        "approve": {
+            html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                    
+                    <h2 style="color: #111;">Batch Approved</h2>
+
+                    <p>Hello,</p>
+
+                    <p>
+                        <strong>${batchObj.currentApprover.name}</strong> has approved the batch 
+                        <strong>${batchObj.title}</strong> at <strong>Level ${batchObj.approvalLevel}</strong>.
+                    </p>
+
+                    <p>
+                        <strong>Batch Details:</strong><br/>
+                        Batch Name: ${batchObj.title}<br/>
+                        Event Name: ${batchObj.event.name}
+                        Description: ${batchObj.event.description}
+                        Created By: ${batchObj.createdBy}<br/>
+                        CreatedAt: ${batchObj.createdAt}<br/>
+                        
+                    </p>
+
+                    <p style="margin: 20px 0;">
+                        <a href="${batchLink}" 
+                        style="
+                            background-color: #151515;
+                            color: #fff;
+                            padding: 12px 20px;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            display: inline-block;
+                        ">
+                        View Batch Details
+                        </a>
+                    </p>
+
+                    <p>
+                        <strong>Pending Approval from: </strong><br/>
+                        ${approverList}
+                    </p>
+
+                    <hr />
+
+                    <p style="font-size: 12px; color: #777;">
+                        This is an automated notification. Please do not reply.
+                    </p>
+
+                </div>`, 
+            subject: "Batch Approved"
+        },
+        "reject": {
+            subject: "Batch Rejected – Notification", 
+            html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+
+                    <h2 style="color: #c00;">Batch Rejected</h2>
+
+                    <p>Hello,</p>
+
+                    <p>
+                        The batch <strong>${batchObj.title}</strong> has been <strong>rejected</strong> by 
+                        <strong>${batchObj.currentApprover.name}</strong> at <strong>Level ${batchObj.approvalLevel}</strong>.
+                    </p>
+
+                    <p>
+                        <strong>Batch Details:</strong><br/>
+                        Batch Name: ${batchObj.title}<br/>
+                        Event Name: ${batchObj.event.name}
+                        Description: ${batchObj.event.description}
+                        Created By: ${batchObj.createdBy}<br/>
+                        CreatedAt: ${batchObj.createdAt}<br/>
+                        
+                    </p>
+
+                    <p style="margin: 20px 0;">
+                        <a href="${batchLink}" 
+                        style="
+                            background-color: #c00;
+                            color: #fff;
+                            padding: 12px 20px;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            display: inline-block;
+                        ">
+                        View Batch Details
+                        </a>
+                    </p>
+
+                    <p>
+                        No further approvals will be processed for this batch. Please contact the approver if you need more information.
+                    </p>
+
+                    <hr />
+
+                    <p style="font-size: 12px; color: #777;">
+                        This is an automated notification. Please do not reply.
+                    </p>
+
+                </div>`
+        }
+    }
+
+    const options = {
+        from: `COSA Support Team <${process.env.EMAIL_USER}>`,
+        to: toEmail,
+        cc: ccEmails.join(","),
+        subject: Emailformat[action].subject,
+        html: Emailformat[action].html,
+    }
+
+    await transport.sendMail(options, function (error) {
+      if (error) return res.status(500).json({ message: "Error sending email" });
+    });
+}
 module.exports = {
     forgotPasswordSendEmail,
-    newBatchSendEmail
+    newBatchSendEmail,
+    batchStatusSendEmail
 };
 
