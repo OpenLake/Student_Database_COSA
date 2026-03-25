@@ -1,7 +1,7 @@
 import React from "react";
 import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";
 
 function Content() {

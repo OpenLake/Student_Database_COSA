@@ -43,6 +43,7 @@ export const NavbarConfig = {
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
     { key: "certificates", label: "Certificates", icon: Dock },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
