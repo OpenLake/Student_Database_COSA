@@ -93,7 +93,10 @@ export default function AssigneePickerModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-[800px] h-[600px] mx-4 border border-stone-200 overflow-hidden">
+      <div
+        className="bg-white rounded-2xl w-[800px] h-[600px] mx-4 
+      border border-stone-200 overflow-hidden flex flex-col"
+      >
         {/* Header */}
         <div className="px-5 py-[18px] border-b border-stone-100 flex items-start justify-between">
           <div>
@@ -155,7 +158,7 @@ export default function AssigneePickerModal({
         <div className="h-[3px] bg-stone-200" />
 
         {/* User list */}
-        <div className="px-3 py-2 min-h-[300px] overflow-y-auto">
+        <div className="px-3 py-2 flex-1 overflow-y-auto">
           {filtered.length === 0 ? (
             <p className="text-center text-sm text-stone-400 py-7">
               No members found

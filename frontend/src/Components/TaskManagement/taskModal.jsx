@@ -217,7 +217,6 @@ export function CreateTaskModal({ onClose, onCreate }) {
     priority: "medium",
     assignees: [],
   });
-  const [assigneeNames, setAssigneeNames] = useState([]);
   const [assigneeIds, setAssigneeIds] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
 
@@ -334,18 +333,18 @@ export function CreateTaskModal({ onClose, onCreate }) {
                 className="w-[20vw] border border-stone-200 !rounded-lg px-3 py-2 text-sm text-left
                 flex items-center justify-between min-h-[38px]"
               >
-                {assigneeNames.length === 0 ? (
+                {assigneeIds.length === 0 ? (
                   <span className="text-stone-300">
                     Click to select assignees...
                   </span>
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
-                    {assigneeNames.map((name, i) => (
+                    {assigneeIds.map((id, i) => (
                       <span
                         key={i}
                         className="text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium"
                       >
-                        {name}
+                        {id.personal_info.name}
                       </span>
                     ))}
                   </div>

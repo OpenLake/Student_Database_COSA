@@ -188,7 +188,8 @@ async function getTaskUsers(req, res) {
       return res.status(404).json({ message: "Unit Id not found" });
     }
 
-    const category = await (OrganizationalUnit.findById(unitId).select("category")).map(c => c.category);
+    const categoryDoc = await (OrganizationalUnit.findById(unitId).select("category"));
+    const category = categoryDoc?.category;
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
