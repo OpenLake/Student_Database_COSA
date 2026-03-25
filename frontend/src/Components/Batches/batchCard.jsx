@@ -1,4 +1,4 @@
-import { StatusBadge, CertThumb } from "./ui";
+import { BatchStatusBadge, CertThumb, ApprovalStatusBadge } from "./ui";
 import {
   SquarePen,
   ScanEye,
@@ -122,7 +122,7 @@ export function BatchCard({
               {batch.eventId.organizing_unit_id.name || ""}
             </p>
           </div>
-          <StatusBadge status={batch.lifecycleStatus} />
+          <BatchStatusBadge status={batch.lifecycleStatus} />
         </div>
 
         {/* Inner sub-panel */}
@@ -259,9 +259,9 @@ export function BatchList({
             {[
               "Batch",
               "Organization",
-              "Template",
               "Students",
-              "Status",
+              "Batch Status",
+              "Approval Status",
               "Created By",
               "Last Modified",
               "Actions",
@@ -289,7 +289,7 @@ export function BatchList({
 
             return (
               <tr
-                key={b.id}
+                key={b._id}
                 className="hover:bg-stone-50 transition-colors"
                 style={{
                   borderBottom:
@@ -303,7 +303,7 @@ export function BatchList({
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-stone-500 m-auto">
-                      {b.name}
+                      {b.title}
                     </p>
                   </div>
                 </td>
@@ -315,19 +315,7 @@ export function BatchList({
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-stone-500 m-auto">
-                      {b.org}
-                    </p>
-                  </div>
-                </td>
-
-                {/* Template */}
-                <td
-                  className="py-2"
-                  style={{ borderRight: "1px solid #f1f1f0" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-stone-500 m-auto">
-                      {b.template}
+                      {b.eventId.organizing_unit_id.name}
                     </p>
                   </div>
                 </td>
@@ -339,17 +327,27 @@ export function BatchList({
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-stone-400 m-auto">
-                      {b.students}
+                      {b.users.length}
                     </p>
                   </div>
                 </td>
 
-                {/* Status */}
-                <td
-                  className="py-2"
+                {/* Batch Status */}
+                <td>
+                  <div className="flex justify-center"
                   style={{ borderRight: "1px solid #f1f1f0" }}
                 >
-                  <StatusBadge status={b.status} />
+                  <BatchStatusBadge status={b.lifecycleStatus} />
+                  </div>
+                </td>
+
+                {/* Approval Status */}
+                <td>
+                  <div className="flex justify-center"
+                  style={{ borderRight: "1px solid #f1f1f0" }}
+                >
+                  <ApprovalStatusBadge status={b.approvalStatus} />
+                  </div>
                 </td>
 
                 {/* Created By */}
@@ -359,7 +357,7 @@ export function BatchList({
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-stone-500 m-auto">
-                      {b.createdBy}
+                      {b.initiatedBy.personal_info.name}
                     </p>
                   </div>
                 </td>
@@ -371,7 +369,7 @@ export function BatchList({
                 >
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-stone-500 m-auto">
-                      {b.modified}
+                      {new Date(b.updatedAt).toLocaleDateString("en-GB").replaceAll("/", "-")}
                     </p>
                   </div>
                 </td>
@@ -386,7 +384,7 @@ export function BatchList({
                       marginTop: "auto",
                     }}
                   >
-                    {b.status === "Draft" && (
+                    {b.lifecycleStatus === "Draft" && (
                       <>
                         <ActionBtnList
                           icon={SquarePen}
@@ -396,12 +394,12 @@ export function BatchList({
                         <ActionBtnList
                           icon={Trash2}
                           danger
-                          onClick={() => onDelete(b.id)}
+                          onClick={() => onDelete(b)}
                         />
                       </>
                     )}
 
-                    {b.status === "Active" && (
+                    {b.lifecycleStatus === "Active" && (
                       <>
                         <ActionBtnList
                           icon={ScanEye}
@@ -419,11 +417,11 @@ export function BatchList({
                         <ActionBtnList
                           icon={Trash2}
                           danger
-                          onClick={() => onDelete(b.id)}
+                          onClick={() => onDelete(b)}
                         />
                       </>
                     )}
-                    {b.status === "Submitted" && (
+                    {b.lifecycleStatus === "Submitted" && (
                       <>
                         <ActionBtnList
                           icon={ScanEye}
@@ -432,11 +430,11 @@ export function BatchList({
                         />
                         <ActionBtnList
                           icon={Archive}
-                          onClick={() => onArchive(b.id)}
+                          onClick={() => onArchive(b._id)}
                         />
                       </>
                     )}
-                    {b.status === "Archived" && (
+                    {b.lifecycleStatus === "Archived" && (
                       <>
                         <ActionBtnList
                           icon={ScanEye}
@@ -450,7 +448,7 @@ export function BatchList({
                         <ActionBtnList
                           icon={Trash2}
                           danger
-                          onClick={() => onDelete(b.id)}
+                          onClick={() => onDelete(b)}
                         />
                       </>
                     )}

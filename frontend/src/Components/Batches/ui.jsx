@@ -7,7 +7,7 @@ const BATCH_COLORS = [
   { bg: "#f0fdfa", border: "#99f6e4", pill: "#134e4a", pillBg: "#ccfbf1" },
 ];
 
-const STATUS_MAP = {
+const BATCH_STATUS_MAP = {
   Draft: {
     label: "Draft",
     dot: "#a8a29e",
@@ -35,6 +35,37 @@ const STATUS_MAP = {
     bg: "#86aaceac",
     color: "#374151",
     border: "#6f8ebe",
+  },
+};
+
+const APPROVAL_STATUS_MAP = {
+  Pending: {
+    label: "Pending",
+    dot: "#f59e0b",
+    bg: "#fffbeb",
+    color: "#92400e",
+    border: "#fde68a",
+  },
+  Approved: {
+    label: "Approved",
+    dot: "#22c55e",
+    bg: "#f0fdf4",
+    color: "#166534",
+    border: "#bbf7d0",
+  },
+  Rejected: {
+    label: "Rejected",
+    dot: "#ef4444",
+    bg: "#fef2f2",
+    color: "#991b1b",
+    border: "#fecaca",
+  },
+  NA: {
+    label: "N/A",
+    dot: "#a8a29e",
+    bg: "#f5f5f4",
+    color: "#78716c",
+    border: "#e7e5e0",
   },
 };
 
@@ -66,35 +97,27 @@ function Brackets({ color }) {
   );
 }
 
-export function StatusBadge({ status }) {
-  const s = STATUS_MAP[status] || STATUS_MAP.Draft;
+export function BatchStatusBadge({ status }) {
+  const s = BATCH_STATUS_MAP[status] || BATCH_STATUS_MAP.Draft;
   return (
     <span
-      style={{
-        fontSize: 9,
-        fontWeight: 700,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        padding: "3px 9px",
-        borderRadius: 999,
-        border: `1px solid ${s.border}`,
-        background: s.bg,
-        color: s.color,
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-        whiteSpace: "nowrap",
-      }}
+      className="text-[10px] font-bold tracking-[0.08em] uppercase py-[3px] px-[9px] rounded-full border inline-flex items-center gap-1 whitespace-nowrap leading-none"
+      style={{ borderColor: s.border, background: s.bg, color: s.color }}
     >
-      <span
-        style={{
-          width: 5,
-          height: 5,
-          borderRadius: "50%",
-          background: s.dot,
-          display: "inline-block",
-        }}
-      />
+      <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: s.dot }} />
+      {s.label}
+    </span>
+  );
+}
+
+export function ApprovalStatusBadge({ status }) {
+  const s = APPROVAL_STATUS_MAP[status] || APPROVAL_STATUS_MAP["NA"];
+  return (
+    <span
+      className="text-[10px] font-bold tracking-[0.08em] uppercase py-[3px] px-[9px] rounded-full border inline-flex items-center gap-1 whitespace-nowrap leading-none"
+      style={{ borderColor: s.border, background: s.bg, color: s.color }}
+    >
+      <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: s.dot }} />
       {s.label}
     </span>
   );
