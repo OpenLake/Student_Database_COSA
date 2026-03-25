@@ -4,7 +4,10 @@ const Template = require("../models/templateSchema");
 
 router.get("/", isAuthenticated, async function (req, res) {
   try {
-    const templates = await Template.find();
+    const templates = await Template.find().populate({
+      path: "createdBy",
+      select: "personal_info "
+    });
     if (!templates) {
       return res.status(404).json({ message: "No templates found" });
     }

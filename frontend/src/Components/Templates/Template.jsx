@@ -29,10 +29,17 @@ const STATUS_STYLE = {
   Draft: "bg-yellow-100 text-yellow-700 border border-yellow-300",
   Archived: "bg-gray-100 text-gray-500 border border-gray-200",
 };
+
 const STATUS_DOT = {
   Active: "bg-emerald-500",
   Draft: "bg-yellow-400",
   Archived: "bg-gray-400",
+};
+
+const TEMPLATE_STATUS_MAP = {
+  Active: "#5c8a6e",   // muted green
+  Draft: "#8a7d5c",    // muted amber/tan
+  Archived: "#6e7a8a", // muted slate blue
 };
 
 export default function Templates() {
@@ -49,7 +56,7 @@ export default function Templates() {
     /**api call */
     async function getTemplates() {
       const templates = await fetchTemplates();
-      if (templates.length !== 0) {
+      if (Array.isArray(templates) && templates.length > 0) {
         toast.success("Templates loaded successfully");
         setTemplates(templates);
         return;
@@ -88,6 +95,7 @@ export default function Templates() {
       { ...t, id: Date.now(), name: `${t.name} (Copy)`, status: "Draft" },
     ]);
   };
+
   const archive = (id) =>
     setTemplates((ts) =>
       ts.map((t) => (t.id === id ? { ...t, status: "Archived" } : t)),
@@ -99,6 +107,7 @@ export default function Templates() {
     statusFilter !== "All" ||
     creatorFilter !== "All" ||
     search;
+
   const clearAll = () => {
     setCat("All");
     setStatus("All");
@@ -233,12 +242,12 @@ export default function Templates() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered?.map((t) => (
             <div
-              key={t.id}
+              key={t._id}
               className="group bg-white border border-yellow-100 rounded-2xl overflow-hidden hover:border-yellow-200 hover:shadow-lg hover:shadow-yellow-100/50 transition-all duration-200 cursor-pointer"
             >
               {/* thumbnail */}
               <div className="relative h-36 w-full border-b border-yellow-50">
-                <ThumbnailPreview template={t} />
+                <ThumbnailPreview color={TEMPLATE_STATUS_MAP[t.status]} category={t.category}/>
                 {/* hover overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-200" />
                 {/* status badge */}
@@ -262,7 +271,7 @@ export default function Templates() {
                   <div className="flex items-center justify-between">
                     <div className="flex border border-yellow-200 rounded-md px-2 bg-amber-50/40">
                       <p className="text-[12px] font-bold text-gray-900 truncate my-auto p-2 leading-tight">
-                        {t.name}
+                        {t.title}
                       </p>
                     </div>
                     <div className="flex border border-yellow-200 rounded-2xl px-2 bg-amber-50/40 mr-5">
@@ -335,18 +344,18 @@ export default function Templates() {
                         className="w-5 h-5 rounded-full border-2 flex items-center justify-center text-[8px] font-bold text-white shrink-0"
                         style={{ borderColor: t.color, background: t.color }}
                       >
-                        {t.createdBy
+                        {t.createdBy.personal_info.name
                           .split(" ")
                           .map((n) => n[0])
                           .join("")}
                       </div>
 
                       <span className="text-[10px] text-gray-400 font-medium">
-                        {t.createdBy}
+                        {t.createdBy.personal_info.name}
                       </span>
 
                       <span className="text-[10px] text-gray-400 font-medium whitespace-nowrap">
-                        {t.modified}
+                        {new Date(t.createdAt).toLocaleDateString("en-GB").replaceAll("/", "-")}
                       </span>
                     </div>
                   </div>

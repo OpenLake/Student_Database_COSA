@@ -8,6 +8,6 @@ export async function fetchTemplates() {
     return res.data.message;
   } catch (err) {
     console.error("fetchTemplates error:", err);
-    return [];
+    return err.response?.data.message;
   }
 }

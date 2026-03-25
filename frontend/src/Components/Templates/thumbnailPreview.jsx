@@ -1,6 +1,6 @@
 /* ── thumbnail pattern generator ────────────────────────── */
-export default function ThumbnailPreview({ template }){
-    const c = template.color;
+export default function ThumbnailPreview({ color, category }){
+    const c = color;
     return (
       <div className="relative w-full h-full overflow-hidden" style={{ background: `${c}15` }}>
         {/* decorative lines */}
@@ -23,7 +23,7 @@ export default function ThumbnailPreview({ template }){
         {/* category chip */}
         <div className="absolute top-2.5 left-1/2 -translate-x-1/2">
           <span className="text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full text-white/80" style={{ background: `${c}90` }}>
-            {template.category}
+            {category}
           </span>
         </div>
       </div>
