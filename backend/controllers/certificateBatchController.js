@@ -58,17 +58,11 @@ async function createBatch(req, res) {
     // Get coordinator's position and unit
     const position = await getUserPosition(id);
 
-    const eventOrgId =
-      event.organizing_unit_id && event.organizing_unit_id.toString();
+    const eventOrgId = event.organizing_unit_id && event.organizing_unit_id.toString();
     const positionUnitId = position.unit_id && position.unit_id.toString();
 
-    if (
-      eventOrgId !== positionUnitId ||
-      role.toUpperCase() !== position.title
-    ) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to initiate batches." });
+    if (eventOrgId !== positionUnitId || role.toUpperCase() !== position.title ) {
+      return res.status(403).json({ message: "You are not authorized to initiate batches." });
     }
 
     // Ensure org is a Club
@@ -80,17 +74,21 @@ async function createBatch(req, res) {
     // Resolve General Secretary and President objects for the club
     const { gensecObj, presidentObj } = await getApprovers(club.category);
     const approvers = [gensecObj, presidentObj];
+   
     const {approverBatchDetails, ccEmails} = approvers.reduce((acc, a)=>{
       const name = a.personal_info.name;
-      const email = a.personal_info.name;
+      const email = a.personal_info.email;
       acc.approverBatchDetails.push({name, email});
       acc.ccEmails.push(email);
+      return acc;
+      
     }, { approverBatchDetails: [], ccEmails: []});
+    
 
     const approverIds = [gensecObj._id, presidentObj._id];
 
     // Validate user ids and existence (bulk query + duplicate detection)
-    const uniqueUsers = [...new Set(users.map((u) => u.toString()))];
+    const uniqueUsers = [...new Set(users.map((id) => id.toString()))];
     const duplicates = uniqueUsers.length !== users.length;
     if (duplicates) {
       return res
@@ -98,20 +96,17 @@ async function createBatch(req, res) {
         .json({ message: "Duplicate user ids are not allowed in a batch" });
     }
 
-    const existing = await User.find({ _id: { $in: users } })
-      .select("_id")
-      .lean();
+    const existing = await User.find({ _id: { $in: users } }).select("_id");
     const existingSet = new Set(existing.map((u) => u._id.toString()));
-    const missing = uniqueUsers
-      .filter((u) => !existingSet.has(u))
-      .map((uid) => ({ uid, ok: false, reason: "User not found" }));
 
-    if (missing.length > 0) {
-      return res
-        .status(400)
-        .json({ message: "Invalid user data sent", details: missing });
+    const missing = uniqueUsers.filter((u) => !existingSet.has(u));
+
+    if(missing.length > 0){
+      missing.map((uid) => ({ uid, ok: false, reason: "User not found" }));
+      return res.status(400).json({ message: "Invalid user data sent", details: missing }); 
     }
 
+   
     const newBatch = await CertificateBatch.create({
       title,
       eventId: event._id,
@@ -123,6 +118,7 @@ async function createBatch(req, res) {
       users: users,
       signatoryDetails,
     });
+    
 
     emailBatchObj = {
       title: newBatch.title,
@@ -131,12 +127,14 @@ async function createBatch(req, res) {
       createdAt: new Date(newBatch.createdAt).toLocaleDateString("en-GB").replaceAll("/","-"),
       approverList: approverBatchDetails
     }
-
+  
     const link = process.env.FRONTEND_URL;
-    await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj, res);
-
+    await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj);
+    
     res.json({ message: "New Batch created successfully" });
+
   } catch (err) {
+    console.error(err);
     if (err instanceof HttpError) {
       const payload = { message: err.message };
       if (err.details) payload.details = err.details;
@@ -210,15 +208,16 @@ async function editBatch(req, res) {
 async function getBatchUsers(req, res) {
   try {
     let { userIds } = req.body;
-    userIds = userIds.map((user) => user._id);
-
     const validation = validateBatchUsersIds.safeParse(userIds);
+
     if (!validation.success) {
       let errors = validation.error.issues.map((issue) => issue.message);
       return res.status(400).json({ message: errors });
     }
-    const users = await User.find({ _id: { $in: userIds } }).select("_id");
+
+    const users = await User.find({ _id: { $in: userIds } }).select("username personal_info academic_info ");
     const foundIds = users.map((u) => u._id.toString());
+    
     const missingIds = userIds.filter(
       (id) => !foundIds.includes(id.toString()),
     );
@@ -509,7 +508,7 @@ async function approveBatch(req, res) {
       pendingApprovers: pendingApprovers,
     }
 
-    await batchStatusSendEmail(res, toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "approve");
+    await batchStatusSendEmail(toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "approve");
 
     return res.status(200).json({ message: "Batch approved successfully" });
   } catch (err) {
@@ -572,7 +571,7 @@ async function rejectBatch(req, res) {
       approvalLevel: batch.currentApprovalLevel,
     }
 
-    await batchStatusSendEmail(res, toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "reject");
+    await batchStatusSendEmail(toEmail, ccEmails, process.env.FRONTEND_URL, batchObj, "reject");
     return res.status(200).json({ message: "Batch rejected successfully" });
   } catch (err) {
     if (err instanceof HttpError) {

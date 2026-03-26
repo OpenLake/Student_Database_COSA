@@ -28,9 +28,9 @@ export default function StudentsPanel({
 
   /* fetch when opening */
   useEffect(() => {
-    if (!open) return;
+    if (!open || !selectedEvent) return;
     if (count === 0) {
-      count = selectedEvent.participants?.length || 0;
+      count = Object.keys(selectedEvent?.participants).length || 0;
       if (count === 0) {
         setDetails([]);
         setLocalSelected(new Set());
@@ -273,9 +273,9 @@ function StudentCard({ student, selected, onToggle, disabled }) {
             }}
           >
             {[
-              student.academic_info.program,
-              student.academic_info.branch,
-              student.academic_info.batch_year,
+              student?.academic_info?.program,
+              student?.academic_info?.branch,
+              student?.academic_info?.batch_year || "",
             ]
               .filter(Boolean)
               .join(" · ")}

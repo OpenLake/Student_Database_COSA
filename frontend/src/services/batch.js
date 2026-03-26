@@ -22,8 +22,9 @@ export async function fetchBatches(userId) {
 
 export async function createBatch(data) {
   try {
-    const res = await api.post("/api/batches/create-batch", data);
-    return res.data.message;
+    const response = await api.post("/api/batches/create-batch", data);
+    console.log("Response", response);
+    return {data: response.data.message, status: response.status};
   } catch (err) {
     console.error("createBatch error:", err);
     return err.response?.data.message;

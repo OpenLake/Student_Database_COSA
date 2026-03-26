@@ -271,7 +271,7 @@ export default function BatchesPage() {
         fire("Please fill in all fields");
         return;
       }
-      closeModal();
+      
       try {
         let response;
         if (editing) {
@@ -289,7 +289,8 @@ export default function BatchesPage() {
               batchId: editing?._id,
             });
           }
-        } else {
+        } 
+        else {
           if (action === "Draft") {
             response = await createBatch({
               ...form,
@@ -303,9 +304,12 @@ export default function BatchesPage() {
           }
         }
 
-        response && fire(response);
+        if(response.status !== 200) return ;
+        closeModal();
+        fire(response.data);
         const updated = await fetchBatches(isUserLoggedIn?._id);
         if (updated) setBatches(updated);
+        
       } catch (err) {
         console.error(err);
         fire("Failed to " + action);
@@ -466,6 +470,7 @@ export default function BatchesPage() {
           </button>
         )}
 
+        {/** Create */}
         <div className="">
           <button
             onClick={openCreate}

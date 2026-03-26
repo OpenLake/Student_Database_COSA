@@ -10,7 +10,7 @@ const transport = nodemailer.createTransport({
   }  
 })
 
-async function forgotPasswordSendEmail(email, link, res){
+async function forgotPasswordSendEmail(email, link){
     const options = {
         from: `COSA Support Team <${process.env.EMAIL_USER}>`,
         to: email,
@@ -46,16 +46,16 @@ async function forgotPasswordSendEmail(email, link, res){
         ` 
     }
 
-    await transport.sendMail(options,function (error) {
-      if (error) {
-        return res.status(500).json({ message: "Error sending email" });
-      }
-    });
+    try {
+        await transport.sendMail(options);
+    } catch(err) {
+        throw new Error(`Error sending email: ${err.message}`);
+    }
 }
 
 
-async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj, res){
-    const approverList = batchObj.approvers.map((a, index) => `
+async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj){
+    const approverList = (batchObj.approverList || []).map((a, index) => `
         <div>
             <strong>Approver ${index + 1}:</strong><br/>
             Name: ${a.name}<br/>
@@ -126,19 +126,15 @@ async function newBatchSendEmail(toEmail, ccEmails=[], batchLink, batchObj, res)
         `
     }
 
-    await transport.sendMail(options,function (error) {
-      if (error) {
-        return res.status(500).json({ message: "Error sending email" });
-      }
-    });
+    try{
+        await transport.sendMail(options);
+    }catch(err){
+        throw new Error(`Error sending email: ${err.message}`);
+    }
 }
 
-
-async function batchStatusSendEmail(res, toEmail, ccEmails, batchLink, batchObj, action){
-    if(!["approve", "reject"].includes(action)){
-        return res.status(400).json("Invalid action");
-    }
-
+async function batchStatusSendEmail(toEmail, ccEmails, batchLink, batchObj, action){
+    
     const approverList = batchObj.pendingApprovers.map((a, index) => `
         <div>
             <strong>Approver ${index + 1}:</strong><br/>
@@ -258,10 +254,17 @@ async function batchStatusSendEmail(res, toEmail, ccEmails, batchLink, batchObj,
         html: Emailformat[action].html,
     }
 
-    await transport.sendMail(options, function (error) {
-      if (error) return res.status(500).json({ message: "Error sending email" });
-    });
-}
+    try{
+        if(!["approve", "reject"].includes(action)){
+            throw new Error("Invalid action");
+        }
+        await transport.sendMail(options);
+    }catch(err){
+        throw new Error(err);
+    }
+
+} 
+
 module.exports = {
     forgotPasswordSendEmail,
     newBatchSendEmail,

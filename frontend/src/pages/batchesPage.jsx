@@ -6,7 +6,6 @@ export default function BatchesPage() {
   const { isCollapsed } = useSidebar();
 
   const components = {
-    
     Batches: Batches,
   };
 

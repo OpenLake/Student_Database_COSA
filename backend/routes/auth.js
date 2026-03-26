@@ -219,7 +219,7 @@ router.post("/", forgotPasswordLimiter, async (req, res) => {
       expiresIn: "10m",
     });
     const link = `${process.env.FRONTEND_URL}/reset-password/${user._id}/${token}`;
-    await forgotPasswordSendEmail(res, email, link);
+    await forgotPasswordSendEmail(email, link);
    
   } catch (error) {
     console.log(error);
