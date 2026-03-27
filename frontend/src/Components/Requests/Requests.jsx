@@ -59,7 +59,6 @@ export default function Requests() {
   }, [isUserLoggedIn]);
 
   const filteredRequests = useCallback(() => {
-    console.log("Requests:", requests[0]);
     return (requests || []).filter((req) => {
       if (!search || !search.trim()) return true;
 
@@ -108,6 +107,7 @@ export default function Requests() {
 
   const approve = async function (batch) {
     const response = await approveBatch(batch);
+    console.log("Approve Batch ", response);
     response && toast.success(response);
     const updated = await fetchBatches(isUserLoggedIn?._id);
     updated && setRequests(updated);

@@ -11,6 +11,7 @@ const { getUserPosition, getApprovers } = require("../services/user.service");
 const { getOrganization } = require("../services/organization.service");
 const { HttpError } = require("../utils/httpError");
 const {newBatchSendEmail, batchStatusSendEmail} = require("../services/email.service");
+const generateCertificates = require("../services/certificates.service");
 
 async function createBatch(req, res) {
   //console.log(req.user);
@@ -442,6 +443,7 @@ async function approverEditBatch(req, res) {
 
 async function approveBatch(req, res) {
   try {
+    
     const batchId = req.params.batchId;
     const { id } = req.user;
 
@@ -478,11 +480,11 @@ async function approveBatch(req, res) {
       batch.lifecycleStatus = "Submitted";
       batch.approvalStatus = "Pending";
     } else if (level === 1) {
+      await generateCertificates(batch);
       batch.currentApprovalLevel = 2;
       batch.lifecycleStatus = "Active";
       batch.approvalStatus = "Approved";
     }
-
     await batch.save();
 
     const currentApprover =  batch.approverIds.find((a) => a._id.toString() === id.toString())?.personal_info;

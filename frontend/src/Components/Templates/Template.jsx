@@ -55,10 +55,10 @@ export default function Templates() {
   useEffect(() => {
     /**api call */
     async function getTemplates() {
-      const templates = await fetchTemplates();
-      if (Array.isArray(templates) && templates.length > 0) {
+      const {data, status} = await fetchTemplates();
+      if (status === 200 && Array.isArray(data) && data.length > 0) {
         toast.success("Templates loaded successfully");
-        setTemplates(templates);
+        setTemplates(data);
         return;
       }
     }
@@ -66,16 +66,19 @@ export default function Templates() {
   }, []);
 
   const filtered = templates?.filter((t) => {
-    const matchSearch =
-      t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.category.toLowerCase().includes(search.toLowerCase());
+    if(!t?.title || !t?.category || !t?.createdBy?.personal_info?.name || !t.status) return false;
+
+    const matchSearch = !search || t.title.toLowerCase().includes(search?.toLowerCase());
     const matchCat = catFilter === "All" || t.category === catFilter;
     const matchStatus = statusFilter === "All" || t.status === statusFilter;
     const matchCreator =
       creatorFilter === "All" ||
       t.createdBy.personal_info.name === creatorFilter;
+  
     return matchSearch && matchCat && matchStatus && matchCreator;
   });
+  console.log("Templates", templates);
+  console.log("Filtered", filtered);
 
   const filters = useMemo(
     () => ({
@@ -89,18 +92,19 @@ export default function Templates() {
   );
 
   const duplicate = (id) => {
-    const t = templates.find((t) => t.id === id);
+    const t = templates.find((t) => t._id.toString() === id.toString());
     setTemplates((ts) => [
       ...ts,
-      { ...t, id: Date.now(), name: `${t.name} (Copy)`, status: "Draft" },
+      { ...t, _id: Date.now(), title: `${t.title} (Copy)`, status: "Draft" },
     ]);
   };
 
   const archive = (id) =>
     setTemplates((ts) =>
-      ts.map((t) => (t.id === id ? { ...t, status: "Archived" } : t)),
+      ts.map((t) => (t._id.toString() === id.toString() ? { ...t, status: "Archived" } : t)),
     );
-  const del = (id) => setTemplates((ts) => ts.filter((t) => t.id !== id));
+  
+  const del = (id) => setTemplates((ts) => ts.filter((t) => t._id.toString() !== id.toString()));
 
   const hasFilters =
     catFilter !== "All" ||
@@ -298,7 +302,7 @@ export default function Templates() {
 
                       <button
                         className={`flex items-center justify-center h-6 border border-yellow-200 !rounded-xl px-2 text-amber-600 hover:bg-yellow-50 shrink-0`}
-                        onClick={() => duplicate(t.id)}
+                        onClick={() => duplicate(t._id)}
                       >
                         <span
                           className={`text-[9px] font-bold uppercase tracking-widest whitespace-nowrap`}
@@ -309,7 +313,7 @@ export default function Templates() {
 
                       {userRole.toUpperCase() === "PRESIDENT" ||
                       userRole.toUpperCase().startsWith("GENSEC") ||
-                      t.name.includes("Copy") ? (
+                      t.title.includes("Copy") ? (
                         <>
                           <button
                             className={`flex items-center justify-center h-6 border border-yellow-200 !rounded-xl px-2 text-gray-600 hover:bg-gray-200 shrink-0`}
@@ -324,7 +328,7 @@ export default function Templates() {
 
                           <button
                             className={`flex items-center justify-center h-6 border border-yellow-200 !rounded-xl px-2 text-red-600 hover:bg-red-100 shrink-0`}
-                            onClick={() => del(t.id)}
+                            onClick={() => del(t._id)}
                           >
                             <span
                               className={`text-[9px] font-bold uppercase tracking-widest whitespace-nowrap`}
@@ -333,9 +337,7 @@ export default function Templates() {
                             </span>
                           </button>
                         </>
-                      ) : (
-                        <></>
-                      )}
+                      ) : null }
                     </div>
 
                     {/* RIGHT: avatar + author + date */}
@@ -401,7 +403,7 @@ export default function Templates() {
             <tbody>
               {filtered.map((t, i) => (
                 <tr
-                  key={t.id}
+                  key={t._id}
                   className="hover:bg-amber-50/40 transition-colors"
                   style={{
                     borderBottom:
@@ -414,7 +416,7 @@ export default function Templates() {
                   >
                     <div className="flex items-center">
                       <p className="text-sm font-bold text-gray-900">
-                        {t.name}
+                        {t.title}
                       </p>
                     </div>
                   </td>
@@ -445,7 +447,7 @@ export default function Templates() {
                   >
                     <div className="flex items-center">
                       <span className="text-xs text-gray-600 font-medium">
-                        {t.createdBy}
+                        {t.createdBy.personal_info.name}
                       </span>
                     </div>
                   </td>
@@ -454,7 +456,7 @@ export default function Templates() {
                     style={{ borderRight: "1px solid #fef3c7" }}
                   >
                     <span className="text-xs text-gray-500 font-medium">
-                      {t.modified}
+                      {new Date(t.updatedAt).toLocaleDateString("en-GB").replaceAll("/", "-")}
                     </span>
                   </td>
                   <td className="px-4 py-1.5">
@@ -465,14 +467,14 @@ export default function Templates() {
 
                       <button
                         className="p-1.5 !rounded-lg text-amber-400 border hover:bg-gray-50 transition-colors"
-                        onClick={() => duplicate(t.id)}
+                        onClick={() => duplicate(t._id)}
                       >
                         <Copy size={14} />
                       </button>
 
                       {userRole.toUpperCase() === "PRESIDENT" ||
                       userRole.toUpperCase().startsWith("GENSEC") ||
-                      t.name.includes("Copy") ? (
+                      t.title.includes("Copy") ? (
                         <>
                           <button className="p-1.5 !rounded-lg text-gray-600 border hover:bg-amber-50 hover:text-amber-600 transition-colors">
                             <Pencil size={14} />
