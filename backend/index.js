@@ -20,10 +20,10 @@ const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
 const analyticsRoutes = require("./routes/analytics.js");
-const certificateRoutes = require("./routes/certificateRoutes.js");
 const taskRoutes = require("./routes/task.routes.js");
 
 const porRoutes = require("./routes/por.js");
+const roomBookingRoutes = require("./routes/roomBooking.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -78,8 +78,9 @@ app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/certificate-batches", certificateRoutes);
-app.use("/api/tasks", taskRoutes);app.use("/api/por", porRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/por", porRoutes);
+app.use("/api/rooms", roomBookingRoutes);
 
 // Start the server
 

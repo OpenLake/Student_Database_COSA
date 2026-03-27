@@ -107,8 +107,137 @@ const UserSkill = mongoose.model("User_Skill", userSkillSchema);
 const Skill = mongoose.model("Skill", skillSchema);
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
+const roomSchema = new mongoose.Schema({
+  room_id: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => `ROOM_${uuidv4()}`,
+  },
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  capacity: {
+    type: Number,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  amenities: [
+    {
+      type: String,
+    },
+  ],
+  allowed_roles: {
+    type: [
+      {
+        type: String,
+        enum: [
+          "PRESIDENT",
+          "GENSEC_SCITECH",
+          "GENSEC_ACADEMIC",
+          "GENSEC_CULTURAL",
+          "GENSEC_SPORTS",
+          "CLUB_COORDINATOR",
+          "STUDENT",
+        ],
+      },
+    ],
+    default: [
+      "PRESIDENT",
+      "GENSEC_SCITECH",
+      "GENSEC_ACADEMIC",
+      "GENSEC_CULTURAL",
+      "GENSEC_SPORTS",
+      "CLUB_COORDINATOR",
+    ],
+  },
+  is_active: {
+    type: Boolean,
+    default: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Room = mongoose.model("Room", roomSchema);
+
+const roomBookingSchema = new mongoose.Schema({
+  room: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Room",
+    required: true,
+  },
+  event: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Event",
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  startTime: {
+    type: Date,
+    required: true,
+  },
+  endTime: {
+    type: Date,
+    required: true,
+    validate: {
+      validator: function (value) {
+        if (!this.startTime || !value) {
+          return false;
+        }
+        return value > this.startTime;
+      },
+      message: "endTime must be after startTime",
+    },
+  },
+  purpose: {
+    type: String,
+  },
+  bookedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected", "Cancelled"],
+    default: "Pending",
+  },
+  reviewedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+roomBookingSchema.index({ room: 1, date: 1, startTime: 1, endTime: 1 });
+
+const RoomBooking = mongoose.model("RoomBooking", roomBookingSchema);
+
 module.exports = {
   UserSkill,
   Skill,
   Announcement,
+  Room,
+  RoomBooking,
 };
