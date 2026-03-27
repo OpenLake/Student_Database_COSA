@@ -21,6 +21,7 @@ const dashboardRoutes = require("./routes/dashboard.js");
 
 const analyticsRoutes = require("./routes/analytics.js");
 const porRoutes = require("./routes/por.js");
+const roomBookingRoutes = require("./routes/roomBooking.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -41,7 +42,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod,
     },
   }),
 );
@@ -68,6 +69,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);
 
 // Start the server
