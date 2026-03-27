@@ -86,7 +86,7 @@ app.use("/api/tasks", taskRoutes);app.use("/api/por", porRoutes);
 (async function () {
   // Connect to MongoDB
   await connectDB();
-  app.listen(process.env.PORT || 5000, () => {
-    console.log(`connected to port ${process.env.PORT || 5000}`);
+  app.listen(process.env.PORT || 8000, () => {
+    console.log(`connected to port ${process.env.PORT || 8000}`);
   });
 })();

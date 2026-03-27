@@ -46,7 +46,7 @@ export default function TaskManagement() {
   const [selectedTask, setSelectedTask] = useState(null);
   let filtered = tasks;
 
-  const { isUserLoggedIn } = useAdminContext();
+  const { isUserLoggedIn, userRole } = useAdminContext();
   useEffect(() => {
     async function getTasks() {
       const response = await fetchTasks();
@@ -116,8 +116,6 @@ export default function TaskManagement() {
           : true;
     return matchSearch && matchPriority && matchType;
   });
-
-  //console.log("Filtered: ", filtered);
 
   const hasFilters = Boolean(
     search || filterType !== "" || filterPriority !== "Sort",
@@ -194,15 +192,17 @@ export default function TaskManagement() {
         </button>
 
         {/* Create Task */}
-        <button
-          onClick={() => setShowCreate(true)}
-          className="ml-auto flex items-center gap-2
+        {userRole !== "STUDENT" ? (
+          <button
+            onClick={() => setShowCreate(true)}
+            className="ml-auto flex items-center gap-2
           bg-green-800 text-white text-sm font-bold px-4 py-1.5 !rounded-2xl
           shadow-sm"
-        >
-          <CircleFadingPlus className="w-4 h-4" />
-          Create
-        </button>
+          >
+            <CircleFadingPlus className="w-4 h-4" />
+            Create
+          </button>
+        ) : null}
 
         {hasFilters ? (
           <button
