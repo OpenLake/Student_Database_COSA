@@ -27,7 +27,7 @@ const GridLayout = ({ config, components }) => {
 
         return (
           <div
-            key={item.id || index}
+            key={item._id || index}
             style={{
               gridColumnStart: colStart,
               gridColumnEnd: colEnd,

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{certificateTitle}} – {{recipientName}}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #f0ece4;
+    }
+
+    .page {
+      width: 1122px;
+      height: 794px;
+      background: #faf8f4;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Jost', sans-serif;
+    }
+
+    /* ── Outer decorative border ── */
+    .border-outer {
+      position: absolute;
+      inset: 18px;
+      border: 1.5px solid #b8a882;
+    }
+    .border-inner {
+      position: absolute;
+      inset: 26px;
+      border: 0.5px solid #cfc5a8;
+    }
+
+    /* ── Corner ornaments ── */
+    .corner {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+    }
+    .corner svg { width: 100%; height: 100%; }
+    .corner-tl { top: 10px; left: 10px; }
+    .corner-tr { top: 10px; right: 10px; transform: scaleX(-1); }
+    .corner-bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+    .corner-br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+    /* ── Subtle background pattern ── */
+    .bg-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(45deg, #8c7a4e 0px, #8c7a4e 1px, transparent 0px, transparent 50%),
+        repeating-linear-gradient(-45deg, #8c7a4e 0px, #8c7a4e 1px, transparent 0px, transparent 50%);
+      background-size: 28px 28px;
+    }
+
+    /* ── Left accent strip ── */
+    .left-strip {
+      position: absolute;
+      left: 40px;
+      top: 80px;
+      bottom: 80px;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
+    }
+
+    /* ── Right accent strip ── */
+    .right-strip {
+      position: absolute;
+      right: 40px;
+      top: 80px;
+      bottom: 80px;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
+    }
+
+    /* ── Institution seal / emblem area ── */
+    .seal {
+      position: absolute;
+      top: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+    .seal-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1.5px solid #b8a882;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 8px;
+      background: #faf8f4;
+      position: relative;
+    }
+    .seal-ring::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 0.5px solid #cfc5a8;
+    }
+    .seal-initials {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #6b5a35;
+      letter-spacing: 2px;
+    }
+    .institution-name {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #8c7a4e;
+    }
+
+    /* ── Divider lines ── */
+    .divider {
+      position: absolute;
+      height: 0.5px;
+      background: linear-gradient(to right, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
+    }
+    .divider-top {
+      top: 148px;
+      left: 100px;
+      right: 100px;
+    }
+    .divider-bottom {
+      bottom: 118px;
+      left: 100px;
+      right: 100px;
+    }
+
+    /* ── Main body ── */
+    .body {
+      position: absolute;
+      top: 160px;
+      left: 90px;
+      right: 90px;
+      bottom: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0;
+    }
+
+    .cert-type {
+      font-family: 'Jost', sans-serif;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #8c7a4e;
+      margin-bottom: 16px;
+    }
+
+    .cert-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 46px;
+      font-weight: 300;
+      color: #2d2517;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .presented-to {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #a89268;
+      margin-bottom: 10px;
+    }
+
+    .recipient-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 400;
+      font-style: italic;
+      color: #3a2d14;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+
+    .name-underline {
+      width: 240px;
+      height: 0.5px;
+      background: linear-gradient(to right, transparent, #8c7a4e, transparent);
+      margin: 0 auto 18px;
+    }
+
+    .description {
+      font-family: 'Jost', sans-serif;
+      font-size: 11.5px;
+      font-weight: 300;
+      color: #5c4d30;
+      letter-spacing: 0.5px;
+      line-height: 1.75;
+      max-width: 560px;
+    }
+
+    /* ── Cert meta (ID + date) — sits just below the top divider ── */
+    .cert-meta {
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      position: absolute;
+      bottom: 36px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-evenly;
+    }
+
+    .sig-block {
+      text-align: center;
+      min-width: 160px;
+    }
+    .sig-line {
+      width: 160px;
+      height: 0.5px;
+      background: #b8a882;
+      margin-bottom: 6px;
+    }
+    .sig-name {
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8c7a4e;
+    }
+    .sig-title {
+      font-family: 'Jost', sans-serif;
+      font-size: 8.5px;
+      font-weight: 300;
+      color: #a89268;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .cert-id {
+      font-family: 'Jost', sans-serif;
+      font-size: 8px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      color: #b8a882;
+    }
+    .cert-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: #6b5a35;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+
+    /* ── Small decorative diamond ── */
+    .diamond {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #b8a882;
+      transform: rotate(45deg);
+      margin: 0 10px;
+      vertical-align: middle;
+    }
+    .diamond-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .diamond-line {
+      width: 60px;
+      height: 0.5px;
+      background: linear-gradient(to right, transparent, #b8a882);
+    }
+    .diamond-line.right {
+      background: linear-gradient(to left, transparent, #b8a882);
+    }
+  </style>
+</head>
+<body>
+<div class="page" id="certificate">
+
+  <!-- Background texture -->
+  <div class="bg-pattern"></div>
+
+  <!-- Borders -->
+  <div class="border-outer"></div>
+  <div class="border-inner"></div>
+
+  <!-- Corner ornaments -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 52 L4 4 L52 4" stroke="#b8a882" stroke-width="1" fill="none"/>
+      <path d="M4 36 Q4 20 20 20 Q4 20 4 4" stroke="#cfc5a8" stroke-width="0.5" fill="none"/>
+      <circle cx="4" cy="4" r="2.5" fill="#b8a882"/>
+      <path d="M10 4 L4 10" stroke="#b8a882" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 52 L4 4 L52 4" stroke="#b8a882" stroke-width="1" fill="none"/>
+      <path d="M4 36 Q4 20 20 20 Q4 20 4 4" stroke="#cfc5a8" stroke-width="0.5" fill="none"/>
+      <circle cx="4" cy="4" r="2.5" fill="#b8a882"/>
+      <path d="M10 4 L4 10" stroke="#b8a882" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 52 L4 4 L52 4" stroke="#b8a882" stroke-width="1" fill="none"/>
+      <path d="M4 36 Q4 20 20 20 Q4 20 4 4" stroke="#cfc5a8" stroke-width="0.5" fill="none"/>
+      <circle cx="4" cy="4" r="2.5" fill="#b8a882"/>
+      <path d="M10 4 L4 10" stroke="#b8a882" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 52 L4 4 L52 4" stroke="#b8a882" stroke-width="1" fill="none"/>
+      <path d="M4 36 Q4 20 20 20 Q4 20 4 4" stroke="#cfc5a8" stroke-width="0.5" fill="none"/>
+      <circle cx="4" cy="4" r="2.5" fill="#b8a882"/>
+      <path d="M10 4 L4 10" stroke="#b8a882" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Side accent strips -->
+  <div class="left-strip"></div>
+  <div class="right-strip"></div>
+
+  <!-- Dividers -->
+  <div class="divider divider-top"></div>
+  <div class="divider divider-bottom"></div>
+
+  <!-- Cert ID + Date — top centre, above seal -->
+  <div class="cert-meta">
+    <div class="cert-id">Certificate No. {{certificateId}}</div>
+    <div class="cert-date">{{issueDate}}</div>
+  </div>
+
+  <!-- Institution seal -->
+  <div class="seal">
+    <div class="seal-ring">
+      <span class="seal-initials">COSA</span>
+    </div>
+    <div class="institution-name">Council of Student Affairs, IIT Bhilai</div>
+  </div>
+
+  <!-- Main body -->
+  <div class="body">
+    <div class="cert-type">{{certificateType}}</div>
+    <div class="cert-title">{{certificateTitle}}</div>
+
+    <div class="diamond-row">
+      <div class="diamond-line"></div>
+      <div class="diamond"></div>
+      <div class="diamond-line right"></div>
+    </div>
+
+    <div class="presented-to">This certificate is proudly presented to</div>
+    <div class="recipient-name">{{recipientName}}</div>
+    <div class="name-underline"></div>
+    <div class="description">{{description}}</div>
+  </div>
+
+  <!-- Footer: ONE .footer flex row, signatories loop INSIDE it -->
+  <div class="footer">
+    {{#each signatories}}
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">{{this.name}}</div>
+      <div class="sig-title">{{this.role}}</div>
+    </div>
+    {{/each}}
+  </div>
+
+</div>
+</body>
+</html>
