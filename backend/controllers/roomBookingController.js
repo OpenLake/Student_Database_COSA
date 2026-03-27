@@ -62,22 +62,25 @@ const getDayBounds = (dateInput) => {
   if (Number.isNaN(parsedDate.getTime())) {
     return null;
   }
-
-  const dayStart = new Date(parsedDate);
-  dayStart.setHours(0, 0, 0, 0);
+  const dayStart = new Date(Date.UTC(
+    parsedDate.getUTCFullYear(), 
+    parsedDate.getUTCMonth(), 
+    parsedDate.getUTCDate(), 
+    0, 0, 0, 0
+  ));
+  
 
   const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getDate() + 1);
+  dayEnd.setDate(dayEnd.getUTCDate() + 1);
 
   return { dayStart, dayEnd };
 };
-
 const isSameCalendarDay = (leftDate, rightDate) => {
-  return (
-    leftDate.getFullYear() === rightDate.getFullYear() &&
-    leftDate.getMonth() === rightDate.getMonth() &&
-    leftDate.getDate() === rightDate.getDate()
-  );
+  return (
+    leftDate.getUTCFullYear() === rightDate.getUTCFullYear() &&
+    leftDate.getUTCMonth() === rightDate.getUTCMonth() &&
+    leftDate.getUTCDate() === rightDate.getUTCDate()
+  );
 };
 
 const getRoomObjectId = async (roomIdentifier) => {
