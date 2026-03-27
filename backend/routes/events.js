@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Event, User, OrganizationalUnit } = require("../models/schema");
+const OrganizationalUnit = require("../models/organizationSchema"); 
+const Event = require("../models/eventSchema"); 
+const User = require("../models/userSchema"); 
 const { v4: uuidv4 } = require("uuid");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const isEventContact = require("../middlewares/isEventContact");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS, ROLES } = require("../utils/roles");
@@ -221,7 +223,6 @@ router.post(
           return res.status(400).json({ message: "Registration has ended." });
         }
 
-
         const maxParticipants = event.registration.max_participants;
         if (maxParticipants) {
           const updatedEvent = await Event.findOneAndUpdate(
@@ -255,8 +256,8 @@ router.post(
         event: updatedEvent,
       });
     } catch (error) {
-      if (error?.name === "CastError") {
-       return res.status(400).json({ message: "Invalid event ID format." });
+      if (error.name === "CastError") {
+        return res.status(400).json({ message: "Invalid event ID format." });
       }
       console.error("Event registration error:", error);
       return res

@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 
 const RoleRedirect = () => {
   const { userRole, isUserLoggedIn, isOnboardingComplete, isLoading } =
-    useContext(AdminContext);
-
+    useAdminContext();
   if (isLoading) return <div>Loading...</div>;
 
-  if (!isUserLoggedIn) {
+  if (!isUserLoggedIn || Object.keys(isUserLoggedIn).length === 0) {
     return <Navigate to="/login" replace />;
   }
 
@@ -19,7 +18,7 @@ const RoleRedirect = () => {
   if (!userRole) {
     return <div>Loading user role...</div>; // Or just return null for a blank screen
   }
-  return <Navigate to="/dashboard" replace />; 
+  return <Navigate to="/dashboard" replace />;
 };
 
 export default RoleRedirect;

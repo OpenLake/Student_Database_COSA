@@ -1,4 +1,3 @@
-
 export const FeedbackCard = ({ feedback, isStudent, onResolve, index }) => {
   return (
     <div className="bg-gray-200 rounded-lg px-2 hover:shadow-md hover:border-2 transition-shadow duration-200 m-2">

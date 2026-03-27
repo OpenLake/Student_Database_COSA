@@ -1,20 +1,22 @@
 import React from "react";
 import { NavbarConfig } from "../../config/navbarConfig";
 import { DashboardComponents } from "../../config/dashboardComponents";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import { SidebarProvider, useSidebar } from "../../hooks/useSidebar";
 
 function Content() {
   const { selected: selectedRoute } = useSidebar();
+  console.log("Selected Route is: ", selectedRoute);
   const ActiveComponent =
     DashboardComponents[selectedRoute] || (() => <div>Home</div>);
   return <ActiveComponent />;
 }
 // Main component that provides the sidebar context
 export default function RoleBasedDashboard() {
-  const { isUserLoggedIn } = React.useContext(AdminContext);
+  const { isUserLoggedIn, isOnboardingComplete } = useAdminContext();
 
-  if (!isUserLoggedIn) {
+  // Show loading until we have a logged-in user object and onboarding is complete.
+  if (!isUserLoggedIn || !isOnboardingComplete) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

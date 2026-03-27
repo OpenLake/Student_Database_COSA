@@ -1,13 +1,14 @@
 const express = require("express");
 require("dotenv").config();
 // eslint-disable-next-line node/no-unpublished-require
+const { connectDB } = require("./config/db.js");
+const MongoStore = require("connect-mongo");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const routes_auth = require("./routes/auth");
 const routes_general = require("./routes/route");
 const session = require("express-session");
-const bodyParser = require("body-parser");
-const { connectDB } = require("./db");
-const myPassport = require("./models/passportConfig"); // Adjust the path accordingly
+const myPassport = require("./config/passportConfig.js"); // Adjust the path accordingly
 const onboardingRoutes = require("./routes/onboarding.js");
 const profileRoutes = require("./routes/profile.js");
 const feedbackRoutes = require("./routes/feedbackRoutes.js");
@@ -18,8 +19,9 @@ const positionsRoutes = require("./routes/positionRoutes.js");
 const organizationalUnitRoutes = require("./routes/orgUnit.js");
 const announcementRoutes = require("./routes/announcements.js");
 const dashboardRoutes = require("./routes/dashboard.js");
-
 const analyticsRoutes = require("./routes/analytics.js");
+const taskRoutes = require("./routes/task.routes.js");
+
 const porRoutes = require("./routes/por.js");
 const roomBookingRoutes = require("./routes/roomBooking.js");
 const app = express();
@@ -30,23 +32,31 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
-// Connect to MongoDB
-connectDB();
+app.use(cookieParser());
 
-app.use(bodyParser.json());
+//Replaced bodyParser with express.json() - the new standard
+app.use(express.json());
 
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
+      maxAge: 60 * 60 * 1000,
     },
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 60 * 60,
+      collectionName: "sessions",
+    }),
+    name: "token",
   }),
 );
 
+//Needed to initialize passport and all helper methods to req object
 app.use(myPassport.initialize());
 app.use(myPassport.session());
 
@@ -67,12 +77,17 @@ app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/rooms", roomBookingRoutes);
+app.use("/api/tasks", taskRoutes);
 app.use("/api/por", porRoutes);
+app.use("/api/rooms", roomBookingRoutes);
 
 // Start the server
-app.listen(process.env.PORT || 8000, () => {
-  console.log(`connected to port ${process.env.PORT || 8000}`);
-});
+
+(async function () {
+  // Connect to MongoDB
+  await connectDB();
+  app.listen(process.env.PORT || 8000, () => {
+    console.log(`connected to port ${process.env.PORT || 8000}`);
+  });
+})();

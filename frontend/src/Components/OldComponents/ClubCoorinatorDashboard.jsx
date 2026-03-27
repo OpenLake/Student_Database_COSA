@@ -32,13 +32,7 @@ const ClubDashboard = () => {
   const navigate = useNavigate();
 
   const transformApiData = (apiData) => {
-    const {
-      unit,
-      events,
-      positionHolders,
-      achievements,
-      feedbacks,
-    } = apiData;
+    const { unit, events, positionHolders, achievements, feedbacks } = apiData;
 
     // Calculate stats
     const activeEvents = events.length;

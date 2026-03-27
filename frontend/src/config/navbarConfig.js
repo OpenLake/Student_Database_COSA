@@ -10,6 +10,7 @@ import {
   UserPlus,
   Award,
   Megaphone,
+  LayoutList,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -23,6 +24,7 @@ const GENSEC_COMMON_NAV = [
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "profile", label: "Profile", icon: User },
   { key: "organization", label: "Clubs", icon: Users },
+  { key: "tasks", label: "My Tasks", icon: LayoutList },
   { key: "tenure", label: "Tenure", icon: Users },
 ];
 
@@ -38,6 +40,7 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
   GENSEC_SCITECH: GENSEC_COMMON_NAV,
@@ -57,6 +60,7 @@ export const NavbarConfig = {
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
     { key: "endorsement", label: "Endorsements", icon: Award },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
 
@@ -73,6 +77,7 @@ export const NavbarConfig = {
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },
     { key: "skills", label: "Skills", icon: Star },
     { key: "por", label: "PORs", icon: ClipboardList },
+    { key: "tasks", label: "My Tasks", icon: LayoutList },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
 };
