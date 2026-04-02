@@ -24,6 +24,10 @@ import EndorsementPage from "../pages/endorsementPage";
 import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
+import CertificatesPage from "../pages/certificatesPage";
+import RequestsPage from "../pages/requestsPage";
+import TemplatesPage from "../pages/templatesPage"
+import BatchesPage from "../pages/batchesPage"
 import TenurePage from "../pages/TenurePage";
 
 export const DashboardComponents = {
@@ -38,6 +42,10 @@ export const DashboardComponents = {
   profile: ProfilePage,
   cosa: ViewTenure,
   announcements: AnnouncementsPage,
+  certificates: CertificatesPage,
+  requests: RequestsPage,
+  templates: TemplatesPage,
+  batches: BatchesPage,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
   "add-event": EventForm,

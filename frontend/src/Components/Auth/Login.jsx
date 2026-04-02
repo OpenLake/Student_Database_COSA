@@ -1,14 +1,14 @@
 import React, { useState, useContext } from "react";
-import { AdminContext } from "../../context/AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 import { loginUser } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import cosa from "../../assets/COSA.png";
 import backgroundImage from "../../assets/iitbh.jpg";
 import { toast } from "react-toastify";
-
+import { Link } from "react-router-dom";
 export default function Login() {
-  const { handleLogin } = useContext(AdminContext);
+  const { handleLogin } = useAdminContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,10 +19,12 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const userObject = await loginUser(email, password);
-      if (userObject) {
-        handleLogin(userObject);
-        toast.success("Login successful! 🎉");
+      const response = await loginUser(email, password);
+      //console.log(response);
+      if (response?.success) {
+        handleLogin(response.data);
+        toast.success("Login successful ");
+        //console.log("Onboarding now is:", isOnboardingComplete);
         navigate("/", { replace: true });
       } else {
         toast.error("Login failed. Please check your credentials.");
@@ -41,7 +43,7 @@ export default function Login() {
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center"
+        backgroundPosition: "center",
       }}
     >
       {/* Blur Overlay */}
@@ -61,7 +63,6 @@ export default function Login() {
         className="flex flex-wrap flex-col-reverse lg:flex-row items-center justify-center gap-12 lg:gap-16 w-full max-w-7xl relative"
         style={{ zIndex: 2 }}
       >
-        
         <form
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-xl shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl"
@@ -126,27 +127,25 @@ export default function Login() {
           </div>
 
           {/* Google Login */}
-          <a
-            href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}
-            className="block"
+          <button
+            type="button"
+            className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium transition-all"
+            onClick={() => {
+              window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
+            }}
           >
-            <button
-              type="button"
-              className="w-full bg-[#23659C] text-white py-2 rounded-md flex items-center justify-center space-x-2 hover:opacity-90 font-medium"
-            >
-              <span>Sign in with Google</span>
-              <GoogleIcon />
-            </button>
-          </a>
+            <span>Sign up with Google</span>
+            <GoogleIcon />
+          </button>
 
           <p className="text-center text-sm mt-4">
             Don’t have an account?{" "}
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="text-[#23659C] hover:underline font-medium"
             >
               Sign Up
-            </a>
+            </Link>
           </p>
         </form>
 

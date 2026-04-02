@@ -3,16 +3,16 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
-const {
-  OrganizationalUnit,
-  Event,
-  Position,
-  PositionHolder,
-  Achievement,
-  Feedback,
-  User,
-} = require("../models/schema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+
+const User = require("../models/userSchema");
+const Feedback = require("../models/feedbackSchema");
+const Achievement = require("../models/achievementSchema");
+const Event = require("../models/eventSchema");
+const PositionHolder = require("../models/positionHolderSchema");
+const Position = require("../models/positionSchema");
+const OrganizationalUnit = require("../models/organizationSchema");
+
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
 

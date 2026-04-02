@@ -5,7 +5,6 @@ const SidebarContext = createContext(null);
 
 export const SidebarProvider = ({ children, role, navItems }) => {
   const [selected, setSelected] = useState(navItems[0]?.key);
-  const [showLogout, setShowLogout] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
@@ -25,8 +24,6 @@ export const SidebarProvider = ({ children, role, navItems }) => {
     navItems,
     selected,
     setSelected,
-    showLogout,
-    setShowLogout,
     isCollapsed,
     setIsCollapsed,
   };
