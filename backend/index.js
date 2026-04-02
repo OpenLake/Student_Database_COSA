@@ -25,6 +25,7 @@ const certificateRoutes = require("./routes/certificate.js");
 const templateRoutes = require("./routes/template.js");
 
 const porRoutes = require("./routes/por.js");
+const roomBookingRoutes = require("./routes/roomBooking.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -45,9 +46,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod
-      maxAge: 60 * 60 * 1000,
-      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod,
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
@@ -84,6 +83,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/batches", certificateBatchRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use("/api/templates", templateRoutes);
+app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);
 
 // Start the server

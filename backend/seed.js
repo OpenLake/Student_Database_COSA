@@ -250,6 +250,240 @@ const initialUnitsData = [
       ],
     },
   },
+  {
+    unit_id: "CLUB_OPENLAKE",
+    name: "OpenLake",
+    type: "Club",
+    description: "Open Source Club of IIT Bhilai",
+    hierarchy_level: 2,
+    category: "scitech",
+    contact_info: { email: "openlake@iitbhilai.ac.in", social_media: [] },
+  },
+  {
+    unit_id: "CLUB_RENAISSANCE",
+    name: "Renaissance",
+    type: "Club",
+    description: "Fine Arts Club under Cultural Council.",
+    hierarchy_level: 2,
+    category: "cultural",
+    contact_info: {
+      email: "renaissance@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/renaissance_iitbh?igsh=dzRqNmV5bncxZWp1",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/in/renaissance-club-a76430331",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_GOALS",
+    name: "GOALS",
+    type: "Club",
+    description:
+      "General Oratory and Literary Society handling Literature and Oration.",
+    hierarchy_level: 2,
+    category: "independent",
+    contact_info: {
+      email: "goals@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/goals_iitbhilai?igsh=ejF6NzVmM3lxMmky",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/company/general-oratory-and-literary-society-goals/",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_BEATHACKERS",
+    name: "Beathackers",
+    type: "Club",
+    description: "The Dance Club of IIT Bhilai.",
+    hierarchy_level: 2,
+    category: "cultural",
+    contact_info: {
+      email: "beathackers@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/beathackers_iitbhilai?igsh=YnVmbGozZ2V3dWE=",
+        },
+        {
+          platform: "YouTube",
+          url: "https://youtube.com/@beathackersiitbhilai8247",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_EPSILON",
+    name: "The Epsilon Club",
+    type: "Club",
+    description: "Robotics Club of IIT Bhilai",
+    hierarchy_level: 2,
+    category: "scitech",
+    contact_info: {
+      email: "epsilon@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/roboticsclub_iitbhilai",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/company/the-epsilon-club-iit-bhilai-robotics-club/",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_INGENUITY",
+    name: "Ingenuity",
+    type: "Club",
+    description: "Competitive programming club fostering problem-solving.",
+    hierarchy_level: 2,
+    category: "scitech",
+    contact_info: {
+      email: "ingenuity@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/ingenuity_iit_bh/",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/company/74349589/admin/dashboard/",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_DESIGNX",
+    name: "DesignX",
+    type: "Club",
+    description: "Digital Arts club of IIT Bhilai.",
+    hierarchy_level: 2,
+    category: "cultural",
+    contact_info: {
+      email: "designx@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/designx_iitbhilai?igsh=NTc4MTIwNjQ2YQ==",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/in/designx-iit-bhilai-612a7a371",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_SPECTRE",
+    name: "Spectre",
+    type: "Club",
+    description: "Cybersecurity Club of IIT Bhilai.",
+    hierarchy_level: 2,
+    category: "scitech",
+    contact_info: {
+      email: "spectre@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/spectre_iitbhilai?igsh=ZDlyaDlqeXllYjNk",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/company/spectre-iit-bhilai/",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "COMMITTEE_EXTERNAL",
+    name: "External Affairs",
+    type: "Committee",
+    description: "Handles sponsorship and PR opportunities of IIT Bhilai.",
+    hierarchy_level: 1,
+    category: "independent",
+    contact_info: {
+      email: "Outreach_cosa@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/in/external-affairs-iit-bhilai-8246a737b",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_YOGA",
+    name: "Yoga Club",
+    type: "Club",
+    description: "Promotes physical and mental well-being through yoga.",
+    hierarchy_level: 2,
+    category: "sports",
+    contact_info: { email: "sports_yoga@iitbhilai.ac.in", social_media: [] },
+  },
+  {
+    unit_id: "CLUB_MOTORSPORTS",
+    name: "Motorsports",
+    type: "Club",
+    description: "Promotes automotive culture in the institute.",
+    hierarchy_level: 2,
+    category: "scitech",
+    contact_info: {
+      email: "baja@iitbhilai.ac.in",
+      social_media: [
+        {
+          platform: "Instagram",
+          url: "https://www.instagram.com/iitbhilaimotorsports",
+        },
+        {
+          platform: "LinkedIn",
+          url: "https://www.linkedin.com/company/iit-bhilai-motorsports/",
+        },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_FPS",
+    name: "Film Production Society",
+    type: "Club",
+    description: "Film-making society of IIT Bhilai.",
+    hierarchy_level: 2,
+    category: "cultural",
+    contact_info: {
+      email: "fps@iitbhilai.ac.in",
+      social_media: [
+        { platform: "Instagram", url: "https://www.instagram.com/fps_iitbh" },
+        { platform: "YouTube", url: "http://youtube.com/@fps-iitbhilai9282" },
+      ],
+    },
+  },
+  {
+    unit_id: "CLUB_SWARA",
+    name: "Swara",
+    type: "Club",
+    description: "Music Club of IIT Bhilai.",
+    hierarchy_level: 2,
+    category: "cultural",
+    contact_info: {
+      email: "swara@iitbhilai.ac.in",
+      social_media: [
+        { platform: "Instagram", url: "https://www.instagram.com/swara_iitbh" },
+        { platform: "YouTube", url: "https://youtube.com/@swaraiitbhilai" },
+      ],
+    },
+  },
 ];
 
 /**
@@ -285,6 +519,7 @@ const clearData = async () => {
  */
 const seedOrganizationalUnits = async () => {
   console.log("Seeding Organizational Units...");
+  console.log("Seeding Organizational Units...");
 
   // 1. Create the top-level President unit
   const presidentUnit = await OrganizationalUnit.create({
@@ -303,6 +538,63 @@ const seedOrganizationalUnits = async () => {
   });
   console.log("Created President Unit.");
 
+  // 2. Create the main councils (Gensecs) and link them to the President
+  const mainCouncilsData = [
+    {
+      unit_id: "COUNCIL_CULTURAL",
+      name: "Cultural Council",
+      type: "Council",
+      description: "Council for all cultural activities.",
+      hierarchy_level: 1,
+      category: "cultural",
+      contact_info: {
+        email: "gensec_cultural_gymkhana@iitbhilai.ac.in",
+        social_media: [],
+      },
+      parent_unit_id: presidentUnit._id,
+    },
+    {
+      unit_id: "COUNCIL_SCITECH",
+      name: "Science and Technology Council",
+      type: "Council",
+      description: "Council for all science and technology activities.",
+      hierarchy_level: 1,
+      category: "scitech",
+      contact_info: {
+        email: "gensec_scitech_gymkhana@iitbhilai.ac.in",
+        social_media: [],
+      },
+      parent_unit_id: presidentUnit._id,
+    },
+    {
+      unit_id: "COUNCIL_SPORTS",
+      name: "Sports Council",
+      type: "Council",
+      description: "Council for all sports activities.",
+      hierarchy_level: 1,
+      category: "sports",
+      contact_info: {
+        email: "gensec_sports_gymkhana@iitbhilai.ac.in",
+        social_media: [],
+      },
+      parent_unit_id: presidentUnit._id,
+    },
+    {
+      unit_id: "COUNCIL_ACADEMIC",
+      name: "Academic Affairs Council",
+      type: "Council",
+      description: "Council for all academic affairs.",
+      hierarchy_level: 1,
+      category: "academic",
+      contact_info: {
+        email: "gensec_academic_gymkhana@iitbhilai.ac.in",
+        social_media: [],
+      },
+      parent_unit_id: presidentUnit._id,
+    },
+  ];
+  await OrganizationalUnit.insertMany(mainCouncilsData);
+  console.log("Created Main Councils (Gensecs).");
   // 2. Create the main councils (Gensecs) and link them to the President
   const mainCouncilsData = [
     {
@@ -394,7 +686,27 @@ const seedUsers = async () => {
 
   for (const unit of units) {
     let role;
+  for (const unit of units) {
+    let role;
 
+    if (unit.unit_id.includes("PRESIDENT_GYMKHANA")) {
+      role = "PRESIDENT";
+    } else if (unit.unit_id.includes("COUNCIL_CULTURAL")) {
+      role = "GENSEC_CULTURAL";
+    } else if (unit.unit_id.includes("COUNCIL_SCITECH")) {
+      role = "GENSEC_SCITECH";
+    } else if (unit.unit_id.includes("COUNCIL_SPORTS")) {
+      role = "GENSEC_SPORTS";
+    } else if (
+      unit.unit_id.includes("COUNCIL_ACADEMIC") ||
+      unit.unit_id.includes("COUNCIL_ACAD")
+    ) {
+      role = "GENSEC_ACADEMIC";
+    } else if (unit.type === "Club" || unit.type === "Committee") {
+      role = "CLUB_COORDINATOR";
+    } else {
+      role = "STUDENT";
+    }
     if (unit.unit_id.includes("PRESIDENT_GYMKHANA")) {
       role = "PRESIDENT";
     } else if (unit.unit_id.includes("COUNCIL_CULTURAL")) {
@@ -500,6 +812,7 @@ const seedPositions = async () => {
   ]);
 
   const positionsToCreate = [];
+  const positionsToCreate = [];
 
   for (const unit of units) {
     let title;
@@ -540,6 +853,7 @@ const seedPositions = async () => {
     console.log("No valid positions to create.");
   }
 
+  console.log("Positions seeded successfully!");
   console.log("Positions seeded successfully!");
 };
 
@@ -902,6 +1216,8 @@ const seedUserSkills = async () => {
 
   const userSkillsToCreate = [];
   const proficiencyLevels = ["beginner", "intermediate", "advanced", "expert"];
+  const userSkillsToCreate = [];
+  const proficiencyLevels = ["beginner", "intermediate", "advanced", "expert"];
 
   for (const student of students) {
     const count = Math.floor(Math.random() * 3) + 2;
@@ -948,6 +1264,8 @@ const seedEvents = async () => {
     return;
   }
 
+  const eventsToCreate = [];
+  const now = new Date();
   const eventsToCreate = [];
   const now = new Date();
 
@@ -1072,6 +1390,7 @@ const seedAchievements = async () => {
  * Seeds the Feedback collection for events and clubs.
  */
 const seedFeedbacks = async () => {
+  console.log("Seeding Feedback...");
   console.log("Seeding Feedback...");
 
   const students = await User.find({ role: "STUDENT" });
@@ -1412,6 +1731,7 @@ async function seedDB() {
     console.log("Database connected successfully.");
 
     await clearData();
+    await seedRooms();
     await seedOrganizationalUnits();
     await seedUsers();
     await seedPositions();
@@ -1431,6 +1751,8 @@ async function seedDB() {
     console.error("\n An error occurred during the seeding process:", error);
   } finally {
     if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.close();
+      console.log("Database connection closed.");
       await mongoose.connection.close();
       console.log("Database connection closed.");
     }
