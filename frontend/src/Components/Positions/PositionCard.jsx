@@ -1,5 +1,3 @@
-
-
 import {
   Plus,
   X,
@@ -117,7 +115,7 @@ export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => {
       key: "Created on",
       value: new Date(position.created_at || Date.now()).toLocaleDateString(
         "en-GB",
-        { day: "numeric", month: "long", year: "numeric" }
+        { day: "numeric", month: "long", year: "numeric" },
       ),
       icon: Calendar,
     },
@@ -125,7 +123,7 @@ export const PositionCard = ({ position, onViewDetails, onEdit, onDelete }) => {
       key: "Last Updated",
       value: new Date(position.updated_at || Date.now()).toLocaleDateString(
         "en-GB",
-        { day: "numeric", month: "long", year: "numeric" }
+        { day: "numeric", month: "long", year: "numeric" },
       ),
       icon: Clock1,
     },

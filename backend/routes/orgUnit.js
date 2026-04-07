@@ -12,7 +12,7 @@ const {
   Feedback,
   User,
 } = require("../models/schema");
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const authorizeRole = require("../middlewares/authorizeRole");
 const { ROLE_GROUPS } = require("../utils/roles");
 

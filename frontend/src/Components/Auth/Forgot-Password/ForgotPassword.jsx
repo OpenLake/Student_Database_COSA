@@ -18,7 +18,7 @@ const ForgotPassword = () => {
 
       if (res.status === 400 && res.data.message?.includes("Google Login")) {
         toast.error(
-          "This email is linked with Google. Please sign in with Google."
+          "This email is linked with Google. Please sign in with Google.",
         );
       } else if (res.status === 200) {
         console.log("Triggering toast.success");

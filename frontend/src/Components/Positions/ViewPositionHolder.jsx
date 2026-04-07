@@ -1,10 +1,5 @@
 import React, { useContext } from "react";
-import {
-  UserCheck,
-  Award,
-  Clock,
-  DollarSign,
-} from "lucide-react";
+import { UserCheck, Award, Clock, DollarSign } from "lucide-react";
 import { usePositionHolders } from "../../hooks/usePositionHolders";
 import { PositionHolderCard, SearchInput } from "./PositionCard";
 import { AdminContext } from "../../context/AdminContext";

@@ -18,7 +18,7 @@ const Sidebar = () => {
   return (
     <div
       className={`fixed top-0 left-0 h-screen bg-black flex flex-col py-6 z-50 transition-all duration-300 ${
-        isCollapsed ? "w-20 px-3" : "w-56 px-2"
+        isCollapsed ? "w-24 px-3" : "w-56 px-2"
       }`}
     >
       <div
@@ -55,20 +55,20 @@ const Sidebar = () => {
                 key={item.key}
                 onClick={() => setSelected(item.key)}
                 className={`flex items-center gap-3 py-2 mx-1 transition-all duration-200 ${
-                  isCollapsed ? "px-2 justify-center" : "px-4"
+                  isCollapsed ? "px-3 justify-center" : "px-4"
                 } ${
                   selected === item.key
                     ? "bg-white text-black font-medium !rounded-3xl"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
                 }`}
-                title={isCollapsed ? item.label : ""}
+                title={isCollapsed ? "" : item.label}
               >
                 <item.icon size={20} className="flex-shrink-0" />
                 {!isCollapsed && (
                   <span className="text-[15px]">{item.label}</span>
                 )}
               </button>
-            )
+            ),
         )}
       </nav>
 

@@ -4,7 +4,6 @@ import { AdminContext } from "../../context/AdminContext";
 import GenSecEndorse from "../GenSec/GenSecEndorse";
 
 const Endorsement = () => {
-
   const { isUserLoggedIn } = useContext(AdminContext);
   const userRole = isUserLoggedIn?.role || "STUDENT";
 
@@ -22,7 +21,7 @@ const Endorsement = () => {
             </div>
           </div>
         </div>
-        
+
         {userRole !== "STUDENT" && <GenSecEndorse />}
       </div>
     </div>

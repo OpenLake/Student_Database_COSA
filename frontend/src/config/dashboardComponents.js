@@ -24,6 +24,8 @@ import EndorsementPage from "../pages/endorsementPage";
 import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
+import CertificatesPage from "../pages/certificatesPage";
+import TasksPage from "../pages/tasksPage";
 import TenurePage from "../pages/TenurePage";
 
 export const DashboardComponents = {
@@ -38,6 +40,7 @@ export const DashboardComponents = {
   profile: ProfilePage,
   cosa: ViewTenure,
   announcements: AnnouncementsPage,
+  certificates: CertificatesPage,
   "manage-positions": CreateTenure,
   "view-feedback": ViewFeedback,
   "add-event": EventForm,
@@ -47,5 +50,6 @@ export const DashboardComponents = {
   "give-feedback": FeedbackForm,
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
+  tasks: TasksPage,
   tenure: TenurePage,
 };

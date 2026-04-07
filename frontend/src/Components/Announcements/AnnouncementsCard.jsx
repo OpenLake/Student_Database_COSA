@@ -3,16 +3,12 @@ import { AdminContext } from "../../context/AdminContext";
 import { useContext } from "react";
 
 const AnnouncementsCard = ({ announcement, onDelete, onEdit }) => {
-  const {
-    title,
-    content,
-    author,
-    type,
-    is_pinned,
-    createdAt,
-  } = announcement;
+  const { title, content, author, type, is_pinned, createdAt } = announcement;
   const { isUserLoggedIn } = useContext(AdminContext);
-  const isOwner = isUserLoggedIn?._id && author?._id && String(isUserLoggedIn._id) === String(author._id);
+  const isOwner =
+    isUserLoggedIn?._id &&
+    author?._id &&
+    String(isUserLoggedIn._id) === String(author._id);
 
   return (
     <div className="bg-white border rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col justify-between">

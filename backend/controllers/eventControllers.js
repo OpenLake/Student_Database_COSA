@@ -1,17 +1,20 @@
-const {Event} = require('../models/schema');
+const Event = require('../models/eventSchema');
 
 // fetch 4 most recently updated events
 exports.getLatestEvents = async (req, res) => {
     try{
         const latestEvents = await Event.find({})
-         .sort({updated_at: -1})
+         .sort({updatedAt: -1})
          .limit(4)
-         .select('title updated_at schedule.venue status');
+         .select('title updatedAt schedule.venue status');
 
+         if(!latestEvents){
+            return res.status(404).json({message: "No events are created"});
+         }
          const formatedEvents =latestEvents.map(event=>({
             id: event._id,
             title: event.title,
-            date: event.updated_at.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            date: event.updatedAt?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             venue: (event.schedule && event.schedule.venue) ? event.schedule.venue : 'TBA',
             status: event.status || 'TBD'
          }))

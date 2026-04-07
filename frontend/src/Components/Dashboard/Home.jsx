@@ -7,7 +7,7 @@ import PresidentAnalytics from "../Analytics/presidentAnalytics";
 import StudentAnalytics from "../Analytics/studentAnalytics";
 import GensecAnalytics from "../Analytics/gensecAnalytics";
 import ClubCoordinatorAnalytics from "../Analytics/coordinatorAnalytics";
-import { AdminContext } from "../../context/AdminContext";
+import { AdminContext, useAdminContext } from "../../context/AdminContext";
 import { useAnalyticsData } from "../../hooks/useAnalyticsData";
 
 import {
@@ -36,7 +36,7 @@ ChartJS.register(
 );
 
 export const Home = () => {
-  const { isUserLoggedIn } = React.useContext(AdminContext);
+  const { isUserLoggedIn } = useAdminContext();
   const role = isUserLoggedIn?.role;
 
   const { data, loading, error } = useAnalyticsData();

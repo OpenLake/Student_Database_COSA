@@ -1,7 +1,13 @@
-const {User, Achievement, UserSkill, Event, Position, PositionHolder,OrganizationalUnit}=require('../models/schema');
 const mongoose = require("mongoose");
 const getCurrentTenureRange = require('../utils/getTenureRange');
 
+const User = require("../models/userSchema"); 
+const Achievement = require("../models/achievementSchema"); 
+const Position = require("../models/positionSchema"); 
+const PositionHolder = require("../models/positionHolderSchema"); 
+const OrganizationalUnit = require("../models/organizationSchema"); 
+const Event = require("../models/eventSchema"); 
+const { UserSkill } = require("../models/schema");
 
 exports.getPresidentAnalytics= async (req,res) => {
    try {

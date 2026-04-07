@@ -1,17 +1,8 @@
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+//const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20");
 const isIITBhilaiEmail = require("../utils/isIITBhilaiEmail");
-const { User } = require("./schema");
-// Local Strategy
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "email",
-    },
-    User.authenticate(),
-  ),
-);
+const User = require("./userSchema");
 
 // Google OAuth Strategy
 passport.use(
