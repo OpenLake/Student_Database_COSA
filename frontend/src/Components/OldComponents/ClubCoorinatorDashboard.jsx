@@ -6,7 +6,7 @@ import ViewFeedback from "../Feedback/ViewFeedback";
 import AchievementsEndorsementTab from "../GenSec/AchievementsEndorsementTab";
 import { CreateTenure, ViewTenure } from "../Positions/TenureRecords";
 import EventList from "../Events/EventList";
-import Logout from "../Logout";
+import Logout from "../Auth/Logout";
 import api from "../../utils/api";
 import {
   Home,

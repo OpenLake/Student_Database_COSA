@@ -1,0 +1,321 @@
+const BATCH_COLORS = [
+  { bg: "#f0fdf4", border: "#bbf7d0", pill: "#166534", pillBg: "#dcfce7" },
+  { bg: "#fefce8", border: "#fde68a", pill: "#92400e", pillBg: "#fef3c7" },
+  { bg: "#f0f9ff", border: "#bae6fd", pill: "#0c4a6e", pillBg: "#e0f2fe" },
+  { bg: "#fdf4ff", border: "#e9d5ff", pill: "#581c87", pillBg: "#f3e8ff" },
+  { bg: "#fff1f2", border: "#fecdd3", pill: "#881337", pillBg: "#ffe4e6" },
+  { bg: "#f0fdfa", border: "#99f6e4", pill: "#134e4a", pillBg: "#ccfbf1" },
+];
+
+const BATCH_STATUS_MAP = {
+  Draft: {
+    label: "Draft",
+    dot: "#a8a29e",
+    bg: "#f5f5f4",
+    color: "#78716c",
+    border: "#e7e5e0",
+  },
+  Active: {
+    label: "Active",
+    dot: "#f59e0b",
+    bg: "#fffbeb",
+    color: "#92400e",
+    border: "#fde68a",
+  },
+  Submitted: {
+    label: "Submitted",
+    dot: "#22c55e",
+    bg: "#f0fdf4",
+    color: "#166534",
+    border: "#bbf7d0",
+  },
+  Archived: {
+    label: "Archived",
+    dot: "#274582",
+    bg: "#86aaceac",
+    color: "#374151",
+    border: "#6f8ebe",
+  },
+};
+
+const APPROVAL_STATUS_MAP = {
+  Pending: {
+    label: "Pending",
+    dot: "#f59e0b",
+    bg: "#fffbeb",
+    color: "#92400e",
+    border: "#fde68a",
+  },
+  Approved: {
+    label: "Approved",
+    dot: "#22c55e",
+    bg: "#f0fdf4",
+    color: "#166534",
+    border: "#bbf7d0",
+  },
+  Rejected: {
+    label: "Rejected",
+    dot: "#ef4444",
+    bg: "#fef2f2",
+    color: "#991b1b",
+    border: "#fecaca",
+  },
+  NA: {
+    label: "N/A",
+    dot: "#a8a29e",
+    bg: "#f5f5f4",
+    color: "#78716c",
+    border: "#e7e5e0",
+  },
+};
+
+function Brackets({ color }) {
+  const s = { position: "absolute", width: 12, height: 12 };
+  return (
+    <>
+      <span
+        style={{
+          ...s,
+          top: 8,
+          left: 8,
+          borderTop: `2px solid ${color}`,
+          borderLeft: `2px solid ${color}`,
+          borderRadius: "3px 0 0 0",
+        }}
+      />
+      <span
+        style={{
+          ...s,
+          top: 8,
+          right: 8,
+          borderTop: `2px solid ${color}`,
+          borderRight: `2px solid ${color}`,
+          borderRadius: "0 3px 0 0",
+        }}
+      />
+    </>
+  );
+}
+
+export function BatchStatusBadge({ status }) {
+  const s = BATCH_STATUS_MAP[status] || BATCH_STATUS_MAP.Draft;
+  return (
+    <span
+      className="text-[10px] font-bold tracking-[0.08em] uppercase py-[3px] px-[9px] rounded-full border inline-flex items-center gap-1 whitespace-nowrap leading-none"
+      style={{ borderColor: s.border, background: s.bg, color: s.color }}
+    >
+      <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: s.dot }} />
+      {s.label}
+    </span>
+  );
+}
+
+export function ApprovalStatusBadge({ status }) {
+  const s = APPROVAL_STATUS_MAP[status] || APPROVAL_STATUS_MAP["NA"];
+  return (
+    <span
+      className="text-[10px] font-bold tracking-[0.08em] uppercase py-[3px] px-[9px] rounded-full border inline-flex items-center gap-1 whitespace-nowrap leading-none"
+      style={{ borderColor: s.border, background: s.bg, color: s.color }}
+    >
+      <span className="w-[5px] h-[5px] rounded-full flex-shrink-0" style={{ background: s.dot }} />
+      {s.label}
+    </span>
+  );
+}
+
+export function CertThumb({ batch }) {
+  const colorIndex = Math.floor(Math.random() * BATCH_COLORS.length);
+  const c = BATCH_COLORS[colorIndex % BATCH_COLORS.length];
+  return (
+    <div
+      style={{
+        background: c.bg,
+        border: `1.5px solid ${c.border}`,
+        borderRadius: 14,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        padding: 14,
+        position: "relative",
+        boxSizing: "border-box",
+      }}
+    >
+      <Brackets color={c.border} />
+      <span
+        className="text-[9px] font-extrabold
+        tracking-[0.12em] uppercase
+        px-[10px] py-[3px]
+        rounded-full text-center
+        whitespace-pre-line border"
+        style={{
+          background: c.pillBg,
+          color: c.pill,
+          borderColor: c.border,
+        }}
+      >
+        {batch.title?.split("-").join("\n")}
+      </span>
+      <div
+        style={{
+          width: "58%",
+          height: 2,
+          borderRadius: 2,
+          background: c.border,
+        }}
+      />
+      <div
+        style={{
+          width: "38%",
+          height: 2,
+          borderRadius: 2,
+          background: c.border,
+          opacity: 0.55,
+        }}
+      />
+      <div
+        style={{
+          width: 26,
+          height: 26,
+          borderRadius: "50%",
+          border: `2px solid ${c.border}`,
+          marginTop: 2,
+        }}
+      />
+    </div>
+  );
+}
+
+export function Modal({ open, onClose, title, children }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        className="absolute inset-0 bg-black/20 backdrop-blur-[4px]"
+      />
+
+      {/* Modal container */}
+      <div className="relative w-full max-w-[500px] max-h-[90vh] overflow-y-auto bg-white rounded-3xl border-[1.5px] border-[#e7e5e0] shadow-[0_24px_80px_rgba(0,0,0,0.1)]">
+        {/* Header */}
+        <div className="sticky top-0 z-[1] flex items-center justify-between px-[22px] py-4 bg-white border-b border-[#f0ede8] rounded-t-3xl">
+          <h2 className="m-0 !text-lg font-black text-[#1c1917]">{title}</h2>
+
+          <button
+            onClick={onClose}
+            className="w-7 h-7 !rounded-full border-[1.5px] border-[#e7e5e0] bg-[#fafaf5] cursor-pointer text-base text-stone-500 flex items-center justify-center"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-[22px] py-[18px]">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export function Field({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  placeholder = "",
+  disabled = false,
+}) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label
+        style={{
+          display: "block",
+          fontSize: 10,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: "0.1em",
+          color: "#1a3d15",
+          marginBottom: 5,
+        }}
+      >
+        {label}
+      </label>
+      {type === "textarea" ? (
+        <textarea
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          rows={3}
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            border: "1.5px solid #e7e5e0",
+            borderRadius: 12,
+            padding: "9px 12px",
+            fontSize: 13,
+            color: "#1c1917",
+            background: "#fafaf5",
+            resize: "none",
+            outline: "none",
+            fontFamily: "inherit",
+          }}
+        />
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            border: "1.5px solid #e7e5e0",
+            borderRadius: 12,
+            padding: "9px 12px",
+            fontSize: 13,
+            color: "#1c1917",
+            background: disabled ? "#f5f5f4" : "#fafaf5",
+            outline: "none",
+            fontFamily: "inherit",
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export function Divider({ label }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        margin: "8px 0 10px",
+      }}
+    >
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: "0.1em",
+          color: "#a8a29e",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 1, background: "#f0ede8" }} />
+    </div>
+  );
+}
