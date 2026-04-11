@@ -10,6 +10,7 @@ import {
   UserPlus,
   Award,
   Megaphone,
+  DoorOpen,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -17,6 +18,7 @@ const GENSEC_COMMON_NAV = [
   // { key: "cosa", label: "CoSA", icon: Users },
   { key: "announcements", label: "Announcements", icon: Megaphone },
   { key: "events", label: "Events", icon: Calendar },
+  { key: "roombooking", label: "Room Booking", icon: DoorOpen },
   { key: "endorsement", label: "Endorsements", icon: Award },
   { key: "feedback", label: "Feedback", icon: ClipboardList },
   // { key: "add-event", label: "Add Event", icon: Plus },
@@ -35,6 +37,7 @@ export const NavbarConfig = {
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "events", label: "Events", icon: Calendar },
+    { key: "roombooking", label: "Room Booking", icon: DoorOpen },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
     { key: "organization", label: "Clubs", icon: Users },
@@ -53,6 +56,7 @@ export const NavbarConfig = {
 
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "events", label: "Events", icon: Calendar },
+    { key: "roombooking", label: "Room Booking", icon: DoorOpen },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
