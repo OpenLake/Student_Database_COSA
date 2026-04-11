@@ -51,10 +51,16 @@ const findOverlappingEvent = async ({
     eventClashQuery._id = { $ne: excludeEventId };
   }
 
-  return Event.findOne(eventClashQuery)
-    .session(session)
+  let query = Event.findOne(eventClashQuery)
     .select(`${SAFE_EVENT_SELECT} schedule.start schedule.end schedule.venue`)
     .lean();
+
+  // Safely apply session ONLY if it was passed in
+  if (session) {
+    query = query.session(session);
+  }
+
+  return query;
 };
 
 const getDayBounds = (dateInput) => {
@@ -62,25 +68,28 @@ const getDayBounds = (dateInput) => {
   if (Number.isNaN(parsedDate.getTime())) {
     return null;
   }
-  const dayStart = new Date(Date.UTC(
-    parsedDate.getUTCFullYear(), 
-    parsedDate.getUTCMonth(), 
-    parsedDate.getUTCDate(), 
-    0, 0, 0, 0
-  ));
   
+  // Shift to IST (UTC +5:30) to extract the correct local calendar day
+  const istDate = new Date(parsedDate.getTime() + (5.5 * 60 * 60 * 1000));
+  
+  const year = istDate.getUTCFullYear();
+  const month = istDate.getUTCMonth();
+  const date = istDate.getUTCDate();
 
-  const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getUTCDate() + 1);
+  // Create UTC midnight, then subtract 5.5 hours to get the exact 00:00:00 IST moment
+  const utcMidnight = new Date(Date.UTC(year, month, date, 0, 0, 0, 0));
+  const dayStart = new Date(utcMidnight.getTime() - (5.5 * 60 * 60 * 1000));
+  
+  // The local day ends exactly 24 hours later
+  const dayEnd = new Date(dayStart.getTime() + (24 * 60 * 60 * 1000));
 
   return { dayStart, dayEnd };
 };
-const isSameCalendarDay = (leftDate, rightDate) => {
-  return (
-    leftDate.getUTCFullYear() === rightDate.getUTCFullYear() &&
-    leftDate.getUTCMonth() === rightDate.getUTCMonth() &&
-    leftDate.getUTCDate() === rightDate.getUTCDate()
-  );
+
+const isSameCalendarDay = (testDate, referenceDate) => {
+  const bounds = getDayBounds(referenceDate);
+  if (!bounds) return false;
+  return testDate >= bounds.dayStart && testDate <= bounds.dayEnd;
 };
 
 const getRoomObjectId = async (roomIdentifier) => {
@@ -398,12 +407,6 @@ exports.bookRoom = async (req, res) => {
 
     try {
       await session.withTransaction(async () => {
-        await Room.updateOne(
-          { _id: roomObjectId },
-          { $set: { updated_at: new Date() } },
-          { session },
-        );
-
         const clash = await RoomBooking.findOne({
           room: roomObjectId,
           status: { $in: ["Pending", "Approved"] },
@@ -437,22 +440,24 @@ exports.bookRoom = async (req, res) => {
           throw eventConflictError;
         }
 
-        const createdBookings = await RoomBooking.create(
-          [
-            {
-              room: roomObjectId,
-              event: eventId || undefined,
-              date: dayBounds.dayStart,
-              startTime: parsedStartTime,
-              endTime: parsedEndTime,
-              purpose,
-              bookedBy: req.user._id,
-            },
-          ],
-          { session },
-        );
+        const newBooking = new RoomBooking({
+          room: roomObjectId,
+          event: eventId || undefined,
+          date: dayBounds.dayStart,
+          startTime: parsedStartTime,
+          endTime: parsedEndTime,
+          purpose,
+          bookedBy: req.user._id,
+        });
 
-        createdBookingId = createdBookings[0]._id;
+        await newBooking.save({ session });
+        createdBookingId = newBooking._id;
+
+        await Room.updateOne(
+          { _id: roomObjectId },
+          { $set: { updated_at: new Date() } },
+          { session }
+        );
       });
     } catch (error) {
       if (error.statusCode === 409) {
@@ -560,12 +565,6 @@ exports.updateBookingStatus = async (req, res) => {
             throw invalidTimeError;
           }
 
-          await Room.updateOne(
-            { _id: booking.room },
-            { $set: { updated_at: new Date() } },
-            { session },
-          );
-
           const roomForBooking = await Room.findById(booking.room)
             .session(session)
             .select("name room_id location")
@@ -624,6 +623,14 @@ exports.updateBookingStatus = async (req, res) => {
         booking.updated_at = new Date();
         await booking.save({ session });
         reviewedBookingId = booking._id;
+
+        if (status === "Approved") {
+          await Room.updateOne(
+            { _id: booking.room },
+            { $set: { updated_at: new Date() } },
+            { session },
+          );
+        }
       });
     } catch (error) {
       if (error.statusCode) {
