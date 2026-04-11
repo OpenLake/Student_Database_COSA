@@ -46,68 +46,71 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Navigation Items */}
-      <nav className="flex-1 flex flex-col gap-3 bg-zinc-900 rounded-2xl px-2 overflow-visible py-4">
-        {navItems.map(
-          (item) =>
-            item.label !== "Profile" && (
-              <button
-                key={item.key}
-                onClick={() => setSelected(item.key)}
-                className={`flex items-center gap-3 py-2 mx-1 transition-all duration-200 ${
-                  isCollapsed ? "px-2 justify-center" : "px-4"
-                } ${
-                  selected === item.key
-                    ? "bg-white text-black font-medium !rounded-3xl"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
-                }`}
-                title={isCollapsed ? item.label : ""}
-              >
-                <item.icon size={20} className="flex-shrink-0" />
-                {!isCollapsed && (
-                  <span className="text-[15px]">{item.label}</span>
-                )}
-              </button>
-            )
-        )}
-      </nav>
+      <div className="flex-1 min-h-0 flex flex-col">
+        {/* Navigation Items */}
+        <nav
+          className="flex-1 min-h-0 flex flex-col gap-3 bg-zinc-900 rounded-2xl px-2 overflow-y-auto py-4"
+          style={{ maxHeight: "min(26.5rem, calc(100vh - 18rem))" }}
+        >
+          {navItems.map(
+            (item) =>
+              item.label !== "Profile" && (
+                <button
+                  key={item.key}
+                  onClick={() => setSelected(item.key)}
+                  className={`flex items-center gap-3 py-2 mx-1 transition-all duration-200 ${
+                    isCollapsed ? "px-2 justify-center" : "px-4"
+                  } ${
+                    selected === item.key
+                      ? "bg-white text-black font-medium !rounded-3xl"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
+                  }`}
+                  title={isCollapsed ? item.label : ""}
+                >
+                  <item.icon size={20} className="flex-shrink-0" />
+                  {!isCollapsed && (
+                    <span className="text-[15px]">{item.label}</span>
+                  )}
+                </button>
+              )
+          )}
+        </nav>
 
-      <div className="flex-1" />
-
-      {/* Logout Section */}
-      <div className="mt-6">
-        {!showLogout ? (
-          <button
-            onClick={() => setShowLogout(true)}
-            className={`flex items-center gap-3 py-3 w-full text-white hover:text-white/80 transition-all duration-200 ${
-              isCollapsed ? "px-2 justify-center" : "px-4"
-            }`}
-            title={isCollapsed ? "Logout" : ""}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="flex-shrink-0"
+        {/* Logout Section */}
+        <div className="mt-4 flex-shrink-0">
+          {showLogout ? (
+            <div className={isCollapsed ? "hidden" : "block"}>
+              <Logout />
+              {/* <div className="text-white text-sm p-4">Logout Component Here</div> */}
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowLogout(true)}
+              className={`flex items-center gap-3 py-3 w-full text-white hover:text-white/80 transition-all duration-200 ${
+                isCollapsed ? "px-2 justify-center" : "px-4"
+              }`}
+              title={isCollapsed ? "Logout" : ""}
             >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isCollapsed && <span className="text-[15px]">Logout</span>}
-          </button>
-        ) : (
-          <div className={isCollapsed ? "hidden" : "block"}>
-            <Logout />
-            {/* <div className="text-white text-sm p-4">Logout Component Here</div> */}
-          </div>
-        )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="flex-shrink-0"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              {!isCollapsed && <span className="text-[15px]">Logout</span>}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
