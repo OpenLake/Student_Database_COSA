@@ -44,8 +44,8 @@ const PRESET_AMENITIES = [
   "Smart Display",
 ];
 
-const HOUR_START = 0;
-const HOUR_END = 24;
+const HOUR_START = 7;
+const HOUR_END = 23;
 const HOUR_WIDTH_PX = 80;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
