@@ -7,7 +7,7 @@ import GenSecDashboard from "../Components/GenSec/GenSecDashboard";
 import GenSecEndorse from "../Components/GenSec/GenSecEndorse";
 import PresidentApproval from "../Components/President/PresidentApproval";
 import PresidentDashboard from "../Components/President/PresidentDashboard";
-import RoomBooking from "../Components/RoomBooking";
+import RoomBookingPage from "../pages/roomBookingPage";
 import {
   CreateTenure,
   ViewTenure,
@@ -77,8 +77,10 @@ export const getAdminRoutes = () => [
     key="room-booking"
     path="/roombooking"
     element={
-      <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
-        <RoomBooking />
+      <RoleProtectedRoute
+        allowedRoles={[...ALL_ADMIN_ROLES, "CLUB_COORDINATOR"]}
+      >
+        <RoomBookingPage />
       </RoleProtectedRoute>
     }
   />,
