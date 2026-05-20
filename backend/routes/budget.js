@@ -24,7 +24,7 @@ router.get(
 router.post(
   "/allocate",
   isAuthenticated,
-  authorizeRole(ROLE_GROUPS.REVIEW_ROLES),
+  authorizeRole(ROLE_GROUPS.ADMIN),
   budgetController.allocateBudget,
 );
 

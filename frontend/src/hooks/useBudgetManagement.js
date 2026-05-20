@@ -112,7 +112,6 @@ export const useBudgetManagement = () => {
       } catch (err) {
         const message =
           err?.response?.data?.message || "Failed to submit budget transaction";
-        setError(message);
         return { ok: false, message };
       } finally {
         setIsSubmitting(false);

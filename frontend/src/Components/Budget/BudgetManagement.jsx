@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AdminContext } from "../../context/AdminContext";
 import { useBudgetManagement } from "../../hooks/useBudgetManagement";
+import api from "../../utils/api";
 
 const REVIEW_ROLES = new Set([
   "PRESIDENT",
@@ -54,7 +55,33 @@ const BudgetManagement = () => {
   });
   const [statusMessage, setStatusMessage] = useState("");
 
+  const [events, setEvents] = useState([]);
+
   const canAllocate = REVIEW_ROLES.has(role);
+  useEffect(() => {
+  const fetchEvents = async () => {
+    if (!selectedUnitId) {
+      setEvents([]);
+      return;
+    }
+
+    try {
+      const response = await api.get("/api/events/events");
+      const filteredEvents = (response.data || []).filter(
+        (event) =>
+         event.organizing_unit_id &&
+         event.organizing_unit_id._id === selectedUnitId,
+);
+
+        setEvents(filteredEvents);
+    } catch (error) {
+      console.error("Failed to fetch events", error);
+      setEvents([]);
+    }
+  };
+
+  fetchEvents();
+}, [selectedUnitId]);
 
   const remaining = useMemo(() => {
     const allocated = Number(budget && budget.allocated ? budget.allocated : 0);
@@ -188,14 +215,21 @@ const BudgetManagement = () => {
             onChange={handleInput}
             className="border border-gray-300 rounded-lg px-3 py-2"
           />
-          <input
+
+          <select
             name="eventId"
-            type="text"
-            placeholder="Event ID (optional)"
             value={form.eventId}
             onChange={handleInput}
             className="border border-gray-300 rounded-lg px-3 py-2"
-          />
+          >
+          <option value="">Select Event (optional)</option>
+          {events.map((event) => (
+            <option key={event._id} value={event._id}>
+            {event.title}
+            </option>
+          ))}
+          </select>
+
           <input
             name="description"
             type="text"

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 var findOrCreate = require("mongoose-findorcreate");
+const { v4: uuidv4 } = require("uuid");
 //user collection
 
 const userSchema = new mongoose.Schema({
