@@ -25,6 +25,7 @@ import { HomePage } from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
 import AnnouncementsPage from "../pages/announcementsPage";
 import TenurePage from "../pages/TenurePage";
+import BudgetPage from "../pages/budgetPage";
 import RoomBookingPage from "../pages/roomBookingPage";
 
 export const DashboardComponents = {
@@ -49,5 +50,6 @@ export const DashboardComponents = {
   "add-achievements": AchievementForm,
   "view-achievements": ViewAchievements,
   tenure: TenurePage,
+  budget: BudgetPage,
   roombooking: RoomBookingPage,
 };

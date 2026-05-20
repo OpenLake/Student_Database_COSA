@@ -646,6 +646,67 @@ const OrganizationalUnit = mongoose.model(
 );
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
+const budgetTransactionSchema = new mongoose.Schema({
+  transaction_id: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => `BGT_${uuidv4()}`,
+  },
+  unit_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organizational_Unit",
+    required: true,
+  },
+  event_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Event",
+    default: null,
+  },
+  type: {
+    type: String,
+    enum: ["ALLOCATION", "EXPENSE", "REFUND"],
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0.01,
+  },
+  description: {
+    type: String,
+    default: "",
+    trim: true,
+    maxlength: 500,
+  },
+  created_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  balance_after: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  created_at: {
+  type: Date,
+  default: Date.now,
+},
+updated_at: {
+  type: Date,
+  default: Date.now,
+},
+});
+
+budgetTransactionSchema.index({ unit_id: 1, created_at: -1 });
+budgetTransactionSchema.index({ event_id: 1, created_at: -1 });
+
+const BudgetTransaction = mongoose.model(
+  "Budget_Transaction",
+  budgetTransactionSchema,
+);
+
 const roomSchema = new mongoose.Schema({
   room_id: {
     type: String,
@@ -772,7 +833,6 @@ const roomBookingSchema = new mongoose.Schema({
 roomBookingSchema.index({ room: 1, date: 1, startTime: 1, endTime: 1 });
 
 const RoomBooking = mongoose.model("RoomBooking", roomBookingSchema);
-
 module.exports = {
   User,
   Feedback,
@@ -784,6 +844,7 @@ module.exports = {
   Position,
   OrganizationalUnit,
   Announcement,
+  BudgetTransaction,
   Room,
   RoomBooking,
 };
