@@ -95,6 +95,17 @@ userSchema.index(
   },
 );
 
+userSchema.index(
+  { "personal_info.email": 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      "personal_info.email": { $exists: true, $type: "string" },
+    },
+    name: "email_partial_unique",
+  },
+);
+
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
@@ -830,7 +841,15 @@ const roomBookingSchema = new mongoose.Schema({
   },
 });
 
-roomBookingSchema.index({ room: 1, date: 1, startTime: 1, endTime: 1 });
+roomBookingSchema.index({ room: 1, date: 1, startTime: 1, status: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: { $in: ["Pending", "Approved"] },
+    },
+    name: "active_room_booking_unique",
+  }
+);
 
 const RoomBooking = mongoose.model("RoomBooking", roomBookingSchema);
 module.exports = {
