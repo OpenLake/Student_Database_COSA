@@ -841,7 +841,7 @@ const roomBookingSchema = new mongoose.Schema({
   },
 });
 
-roomBookingSchema.index({ room: 1, date: 1, startTime: 1, status: 1 },
+roomBookingSchema.index({ room: 1, date: 1, startTime: 1},
   {
     unique: true,
     partialFilterExpression: {
