@@ -658,42 +658,86 @@ exports.updateBookingStatus = async (req, res) => {
   }
 };
 
+
 exports.cancelBooking = async (req, res) => {
+
   try {
     const { id } = req.params;
 
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ message: "Invalid booking id" });
     }
+    const session = await mongoose.startSession();
 
-    const booking = await RoomBooking.findById(id);
+    let cancelledBookingId;
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
+    try {
+      await session.withTransaction(async () => {
+        const booking = await RoomBooking.findById(id).session(session);
+
+        if (!booking) {
+          const error = new Error("Booking not found");
+          error.statusCode = 404;
+          throw error;
+        }
+
+        if (
+          String(booking.bookedBy) !== String(req.user._id) &&
+          !ADMIN_ROLES.includes(req.user.role)
+        ) {
+          const error = new Error("Forbidden");
+          error.statusCode = 403;
+          throw error;
+        }
+
+        if (booking.status === "Cancelled") {
+          const error = new Error("Booking is already cancelled.");
+          error.statusCode = 409;
+          throw error;
+        }
+
+        booking.status = "Cancelled";
+        booking.updated_at = new Date();
+
+        await booking.save({ session });
+
+        await Room.updateOne(
+          { _id: booking.room },
+          { $set: { updated_at: new Date() } },
+          { session }
+        );
+
+        cancelledBookingId = booking._id;
+      });
+    } catch (error) {
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({
+          message: error.message,
+        });
+      }
+      throw error;
+    } finally {
+      await session.endSession();
     }
 
-    if (
-      String(booking.bookedBy) !== String(req.user._id) &&
-      !ADMIN_ROLES.includes(req.user.role)
-    ) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-
-    booking.status = "Cancelled";
-    booking.updated_at = new Date();
-    await booking.save();
-
-    const responseBooking = await RoomBooking.findById(booking._id)
+    const responseBooking = await RoomBooking.findById(cancelledBookingId)
       .populate("room", SAFE_ROOM_SELECT)
       .populate("event", SAFE_EVENT_SELECT)
       .populate("bookedBy", SAFE_USER_SELECT)
       .lean();
 
-    res.json({ message: "Booking cancelled", booking: responseBooking });
+    res.json({
+      message: "Booking cancelled",
+      booking: responseBooking,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Error cancelling booking" });
+    res.status(500).json({
+      message: "Error cancelling booking",
+      error: err.message,
+    });
   }
 };
+
 
 exports.getBookings = async (req, res) => {
   try {
