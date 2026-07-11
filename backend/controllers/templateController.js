@@ -95,7 +95,20 @@ async function updateTemplate(req, res) {
       });
     }
 
-    Object.assign(template, req.body);
+  const ALLOWED_FIELDS = [
+  "title",
+  "description",
+  "category",
+  "design",
+  "status",
+];
+
+ALLOWED_FIELDS.forEach((field) => {
+  if (req.body[field] !== undefined) {
+    template.set(field, req.body[field]);
+  }
+});
+
 
     await template.save();
 
