@@ -11,6 +11,8 @@ import Logout from "../Components/Logout";
 import Home from "../Components/OldComponents/Home";
 import StudentProfile from "../Components/Profile/ProfilePage";
 import TenurePage from "../pages/TenurePage";
+import CertificatesPage from "../pages/certificatesPage";
+
 
 export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
   <Route
@@ -121,4 +123,16 @@ export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
       </ProtectedRoute>
     }
   />,
+    <Route
+  key="certificates"
+  path="/certificates"
+  element={
+    <ProtectedRoute
+      isAuthenticated={isUserLoggedIn}
+      isOnboardingComplete={isOnboardingComplete}
+    >
+      <CertificatesPage />
+    </ProtectedRoute>
+  }
+/>,
 ];

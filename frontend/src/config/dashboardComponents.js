@@ -27,6 +27,10 @@ import AnnouncementsPage from "../pages/announcementsPage";
 import TenurePage from "../pages/TenurePage";
 import BudgetPage from "../pages/budgetPage";
 import RoomBookingPage from "../pages/roomBookingPage";
+import BatchesPage from "../pages/batchesPage";
+import TemplatesPage from "../pages/templatesPage";
+import RequestsPage from "../pages/requestsPage";
+import CertificatesPage from "../pages/certificatesPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -38,6 +42,10 @@ export const DashboardComponents = {
   achievements: AchievementsPage,
   endorsement: EndorsementPage,
   profile: ProfilePage,
+  certificates: CertificatesPage,
+  batches: BatchesPage,
+  templates: TemplatesPage,
+  requests: RequestsPage,
   cosa: ViewTenure,
   announcements: AnnouncementsPage,
   "manage-positions": CreateTenure,
