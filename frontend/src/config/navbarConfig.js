@@ -12,6 +12,10 @@ import {
   Megaphone,
   Wallet,
   DoorOpen,
+  Dock,
+  ClipboardPaste,
+  LayoutTemplate,
+  FolderOpen,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -26,6 +30,7 @@ const GENSEC_COMMON_NAV = [
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "budget", label: "Budget", icon: Wallet },
   { key: "profile", label: "Profile", icon: User },
+  { key: "requests", label: "Requests", icon: ClipboardPaste },
   { key: "organization", label: "Clubs", icon: Users },
   { key: "tenure", label: "Tenure", icon: Users },
 ];
@@ -43,6 +48,7 @@ export const NavbarConfig = {
     { key: "roombooking", label: "RoomBooking", icon: DoorOpen },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "profile", label: "Profile", icon: User },
+    { key: "requests", label: "Requests", icon: ClipboardPaste },
     { key: "organization", label: "Clubs", icon: Users },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
@@ -64,6 +70,8 @@ export const NavbarConfig = {
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
     { key: "profile", label: "Profile", icon: User },
+    { key: "batches", label: "Batches", icon: FolderOpen },
+    { key: "templates", label: "Templates", icon: LayoutTemplate },
     { key: "endorsement", label: "Endorsements", icon: Award },
     { key: "tenure", label: "Tenure", icon: Users },
   ],
@@ -74,6 +82,7 @@ export const NavbarConfig = {
 
     { key: "profile", label: "Profile", icon: User },
     // { key: "cosa", label: "CoSA", icon: Users },
+    { key: "certificates", label: "Certificates", icon: Dock },
     { key: "events", label: "Events", icon: Calendar },
     { key: "feedback", label: "Feedback", icon: MessageSquare },
     // { key: "view-feedback", label: "Feedback", icon: ClipboardList },

@@ -23,6 +23,11 @@ const analyticsRoutes = require("./routes/analytics.js");
 const porRoutes = require("./routes/por.js");
 const budgetRoutes = require("./routes/budget.js");
 const roomBookingRoutes = require("./routes/roomBooking.js");
+const certificateRoutes = require("./routes/certificate");
+const certificateBatchRoutes = require("./routes/certificateBatch");
+const templateRoutes = require("./routes/template");
+
+
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -64,6 +69,9 @@ app.use("/", routes_general);
 app.use("/auth", routes_auth);
 app.use("/onboarding", onboardingRoutes);
 app.use("/profile", profileRoutes);
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/batches", certificateBatchRoutes);
+app.use("/api/templates", templateRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/skills", skillsRoutes);
