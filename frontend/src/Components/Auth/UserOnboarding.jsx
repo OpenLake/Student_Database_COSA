@@ -123,10 +123,11 @@ export default function OnboardingForm() {
                   Student ID Number
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="ID_No"
                   value={userData.ID_No}
                   onChange={handleChange}
+                  placeholder="e.g. B24DS506"
                   className="w-full border rounded-md px-3 py-2"
                 />
                 {errors.ID_No && (
