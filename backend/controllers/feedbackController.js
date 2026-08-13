@@ -56,8 +56,6 @@ exports.addFeedback = async (req, res) => {
 
     await feedback.save();
 
-    console.log("Feedback added successfully:", feedback);
-
     return res.status(201).json({
       message: "Feedback submitted successfully",
       feedback,

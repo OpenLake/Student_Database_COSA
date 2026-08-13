@@ -115,7 +115,6 @@ exports.getDashboardStats = async (req, res) => {
                 const clubUnit = await OrganizationalUnit.findOne({ "contact_info.email": email });
                 if (!clubUnit) {
                     console.error("Club unit for Coordinator not found.");
-                    console.log(email);
                     return res.status(404).json({ msg: "Club unit for Coordinator not found." });
                 }
 
