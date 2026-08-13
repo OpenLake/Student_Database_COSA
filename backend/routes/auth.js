@@ -14,14 +14,30 @@ const forgotPasswordLimiter = rateLimit({
   max: 5,
   message: "Too many password reset requests. Please try again later.",
 });
+
+// rate limiter - login has no throttling otherwise, leaving it open to
+// brute-force/credential-stuffing against known/guessable usernames
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: "Too many login attempts. Please try again later.",
+});
+
+// rate limiter - registration spam
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: "Too many registration attempts. Please try again later.",
+});
+
 // Session Status
 
 router.get("/fetchAuth",isAuthenticated, authController.fetchAuth);
 
 // Local Authentication
-router.post("/login", passport.authenticate("local"), authController.login);
+router.post("/login", loginLimiter, passport.authenticate("local"), authController.login);
 
-router.post("/register", authController.register);
+router.post("/register", registerLimiter, authController.register);
 
 // Google OAuth Authentication
 router.get(
