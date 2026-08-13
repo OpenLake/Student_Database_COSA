@@ -96,15 +96,19 @@ exports.deleteProfilePhoto = async (req, res) => {
 // API to Update Student Profile
 exports.updateStudentProfile = async (req, res) => {
     try {
-        const { userId, updatedDetails } = req.body;
+        const { updatedDetails } = req.body;
 
-        if (!userId || !updatedDetails) {
+        if (!updatedDetails) {
             return res
                 .status(400)
                 .json({ success: false, message: "Missing required fields" });
         }
 
-        const user = await User.findOne({ user_id: userId }); // <-- updated from ID_No
+        // Always update the profile of the authenticated session's own
+        // user — never trust a client-supplied userId for this. Otherwise
+        // any logged-in user could edit any other user's profile just by
+        // sending a different id (see issue #258).
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res
