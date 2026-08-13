@@ -4,9 +4,7 @@ exports.completeOnboarding = async (req, res) => {
   const { ID_No, add_year, Program, discipline, mobile_no } = req.body;
 
   try {
-    console.log(req.user);
-
-    const updatedUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       req.user._id,
       {
         user_id: ID_No,
@@ -27,11 +25,6 @@ exports.completeOnboarding = async (req, res) => {
         new: true,
         runValidators: true,
       }
-    );
-
-    console.log(
-      "Onboarding completed for user:",
-      updatedUser._id
     );
 
     return res.status(200).json({

@@ -217,12 +217,6 @@ exports.updateEvent = async (req, res) => {
     const { eventId } = req.params;
     const updates = req.body;
 
-    console.log("Event ID:", eventId);
-    console.log(
-      "Updates received:",
-      Object.keys(updates)
-    );
-
     const event = await Event.findByIdAndUpdate(
       eventId,
       updates,
@@ -231,8 +225,6 @@ exports.updateEvent = async (req, res) => {
         runValidators: true,
       }
     );
-
-    console.log("Update successful:", !!event);
 
     if (!event) {
       return res.status(404).json({
@@ -306,8 +298,6 @@ exports.createEvent = async (req, res) => {
     });
 
     await newEvent.save();
-
-    console.log("Event created:", newEvent);
 
     return res.status(201).json({
       message: "Event created successfully",

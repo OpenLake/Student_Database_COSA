@@ -140,19 +140,14 @@ const forgotPassword = async (req, res) => {
 
     transporter.sendMail(
       mailOptions,
-      function (error, info) {
+      function (error) {
         if (error) {
-          console.log(error);
+          console.error(error);
 
           return res.status(500).json({
             message: "Error sending email",
           });
         } else {
-          console.log(
-            "Email sent:",
-            info.response
-          );
-
           return res.status(200).json({
             message:
               "Password reset link sent to your email",
@@ -160,10 +155,8 @@ const forgotPassword = async (req, res) => {
         }
       }
     );
-
-    console.log(link);
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return res.status(500).json({
       message: "Internal server error",
@@ -177,8 +170,6 @@ const verifyResetPasswordToken = async (
   res
 ) => {
   const { id, token } = req.params;
-
-  console.log(req.params);
 
   const user = await User.findOne({
     _id: id,
@@ -200,7 +191,7 @@ const verifyResetPasswordToken = async (
       message: "Token verified successfully",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return res.status(400).json({
       message: "Invalid or expired token",
@@ -249,7 +240,7 @@ const resetPassword = async (req, res) => {
       }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return res.status(400).json({
       message: "Invalid or expired token",
@@ -263,10 +254,6 @@ const login = async (req, res) => {
   const email = req.user.username;
 
   if (!isIITBhilaiEmail(email)) {
-    console.log(
-      "Access denied. Please use your IIT Bhilai email."
-    );
-
     return res.status(403).json({
       message:
         "Access denied. Please use your IIT Bhilai email.",
