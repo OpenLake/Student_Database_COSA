@@ -49,6 +49,7 @@ describe("authController.forgotPassword", () => {
     });
 
     const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     const res = await request(app)
       .post("/auth/forgot-password")
@@ -58,11 +59,14 @@ describe("authController.forgotPassword", () => {
 
     // The reset link (and therefore the JWT reset token) must never be
     // printed to the server logs — that would let anyone with log access
-    // hijack a password reset. See issue #264.
-    const loggedSomethingWithLink = logSpy.mock.calls.some((callArgs) =>
-      callArgs.some(
-        (arg) => typeof arg === "string" && arg.includes("/reset-password/"),
-      ),
+    // hijack a password reset. See issue #264. Checking both console.log
+    // and console.error so a future accidental console.error(link) would
+    // still be caught, not just today's exact call site.
+    const loggedSomethingWithLink = [...logSpy.mock.calls, ...errorSpy.mock.calls].some(
+      (callArgs) =>
+        callArgs.some(
+          (arg) => typeof arg === "string" && arg.includes("/reset-password/"),
+        ),
     );
     expect(loggedSomethingWithLink).toBe(false);
   });

@@ -114,7 +114,7 @@ exports.getDashboardStats = async (req, res) => {
             case ROLES.CLUB_COORDINATOR: {
                 const clubUnit = await OrganizationalUnit.findOne({ "contact_info.email": email });
                 if (!clubUnit) {
-                    console.error("Club unit for Coordinator not found:", email);
+                    console.error("Club unit for Coordinator not found.");
                     return res.status(404).json({ msg: "Club unit for Coordinator not found." });
                 }
 
