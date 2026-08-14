@@ -1,13 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Modal, Field, Divider } from "./ui";
-import { fetchBatchUsers } from "../../services/batch";
-import { Users, ChevronDown, ChevronUp, Search, X, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import StudentsPanel from "./StudentPanel";
 
 /* ─── tiny helpers ─────────────────────────────────────────── */
-const toId = (s) =>
-  s && typeof s === "object" ? (s._id || s).toString() : String(s);
-
 const initials = (name = "") =>
   name
     .split(" ")
@@ -135,7 +131,7 @@ export default function ModalDialog({
         signatoryDetails: [{ name: "", role: "" }],
       }));
     }
-  }, []);
+  }, [form.signatoryDetails.length, setForm]);
 
   const selectStyle = {
     width: "100%",

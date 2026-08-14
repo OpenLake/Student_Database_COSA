@@ -1,4 +1,4 @@
-import { Search, OctagonAlert, FileText } from "lucide-react";
+import { Search, FileText } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { useRequest } from "../../context/RequestContext";
 import { useAdminContext } from "../../context/AdminContext";
@@ -56,7 +56,7 @@ export default function Requests() {
     }
 
     fetchData();
-  }, [isUserLoggedIn]);
+  }, [isUserLoggedIn, navigate]);
 
   const filteredRequests = useCallback(() => {
     return (requests || []).filter((req) => {
@@ -103,7 +103,7 @@ export default function Requests() {
       rejected,
       total,
     });
-  }, [requests]);
+  }, [requests, setRequestStatus]);
 
   const approve = async function (batch) {
     const response = await approveBatch(batch);
@@ -119,12 +119,6 @@ export default function Requests() {
     const updated = await fetchBatches(isUserLoggedIn?._id);
     updated && setRequests(updated);
   };
-
-  function handleUpdateRequest(updatedRequest) {
-    setRequests((prev) =>
-      prev.map((req) => (req.id === updatedRequest.id ? updatedRequest : req)),
-    );
-  }
 
   if (loading) {
     return (
