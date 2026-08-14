@@ -7,6 +7,10 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+# Injected at build time: CRA inlines REACT_APP_* into the bundle.
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+
 RUN npm run build
 
 FROM nginx:stable-alpine
