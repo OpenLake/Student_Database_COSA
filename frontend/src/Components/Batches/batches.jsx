@@ -91,7 +91,7 @@ export default function BatchesPage() {
     };
 
     fetchData();
-  }, []);
+  }, [isUserLoggedIn?._id]);
 
   const filter = useMemo(() => {
     const list = batches || [];
@@ -316,7 +316,7 @@ export default function BatchesPage() {
         fire("Failed to " + action);
       }
     },
-    [form],
+    [form, editing, closeModal, isUserLoggedIn?._id],
   );
 
   const delBatch = useCallback(async (batch) => {
@@ -324,14 +324,14 @@ export default function BatchesPage() {
     response && fire(response);
     const updated = await fetchBatches(isUserLoggedIn?._id);
     if (updated && updated.length !== 0) setBatches(updated);
-  }, []);
+  }, [isUserLoggedIn?._id]);
 
   const archiveBatch = useCallback(async (id) => {
     const response = await archiveBatchApi(id);
     response && fire(response);
     const updated = await fetchBatches(isUserLoggedIn?._id);
     if (updated && updated.length !== 0) setBatches(updated);
-  }, []);
+  }, [isUserLoggedIn?._id]);
 
   const dupBatch = useCallback(async (b) => {
     const response = await duplicateBatch(b?._id);
@@ -339,7 +339,7 @@ export default function BatchesPage() {
     const updated = await fetchBatches(isUserLoggedIn?._id);
 
     if (updated && updated.length !== 0) setBatches(updated);
-  }, []);
+  }, [isUserLoggedIn?._id]);
 
   return (
     <div className="min-h-screen bg-[#FEFCE8] p-6">

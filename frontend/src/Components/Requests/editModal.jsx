@@ -1,16 +1,5 @@
 import { useState } from "react";
-import {
-  X,
-  CalendarDays,
-  Users,
-  UserCircle2,
-  Award,
-  Pencil,
-  FlameKindling,
-  Save,
-  Building2,
-  ChevronDown,
-} from "lucide-react";
+import { X, Pencil, Save } from "lucide-react";
 
 import { Overlay, C } from "./ui";
 import { approverEditBatch, fetchBatches } from "../../services/batch";
@@ -18,51 +7,9 @@ import { toast } from "react-toastify";
 import { useAdminContext } from "../../context/AdminContext";
 
 /* EDIT MODAL */
-const Field = ({ label, icon: Icon, children, half }) => (
-  <div
-    style={{
-      gridColumn: half ? undefined : "1 / -1",
-      display: "flex",
-      flexDirection: "column",
-      gap: 6,
-    }}
-  >
-    <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        fontSize: 11,
-        fontWeight: 700,
-        color: C.warmGray,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-      }}
-    >
-      {Icon && <Icon size={13} strokeWidth={2} />}
-      {label} <span style={{ color: C.red }}>*</span>
-    </label>
-    {children}
-  </div>
-);
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  borderRadius: 10,
-  fontSize: 14,
-  color: C.text,
-  background: C.white,
-  border: `1.5px solid ${C.border}`,
-  outline: "none",
-  boxSizing: "border-box",
-  fontFamily: "inherit",
-  transition: "border-color 0.15s",
-};
-
 export const EditModal = ({ request, onClose, setRequests }) => {
   const { isUserLoggedIn } = useAdminContext();
-  const [form, setForm] = useState({ ...request });
+  const [form] = useState({ ...request });
   const [selected, setSelected] = useState(new Set());
 
   const allIds = (request.users || []).map((u) => u._id);
