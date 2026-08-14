@@ -30,7 +30,13 @@ const UserIcon = () => {
 
   let details = "";
   if (profile.academic_info) {
-    details = `${profile.academic_info.batch_year} | ${profile.academic_info.program} | ${profile.user_id}`;
+    details = [
+      profile.academic_info.batch_year,
+      profile.academic_info.program,
+      profile.academic_info.user_id || profile.user_id,
+    ]
+      .filter(Boolean)
+      .join(" | ");
   } else {
     details = profile.personal_info?.email || "No academic info available";
   }
