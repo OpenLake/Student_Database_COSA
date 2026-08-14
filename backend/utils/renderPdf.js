@@ -52,8 +52,6 @@ function sanitizeForFilename(value) {
 
     console.log("Certificate successfully generated at", outputPath);
     return fileId;
-  } catch (err) {
-    throw err;
   } finally {
     if (page) {
       try {

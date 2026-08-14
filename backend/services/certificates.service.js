@@ -56,7 +56,7 @@ async function generateCertificates(batch) {
         };
 
         // Generate PDF 
-        const pdfId = await renderToPdf(data, browser);
+        await renderToPdf(data, browser);
 
         // Upload to Cloudinary
         // TODO: Replace with Cloudinary URL once upload networking issue is resolved.
