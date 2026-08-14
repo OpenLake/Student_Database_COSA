@@ -9,7 +9,6 @@ const { findEvent } = require("../services/event.service");
 const { findTemplate } = require("../services/template.service");
 const { getApprovers } = require("../services/user.service");
 const {
-  getOrganization,
   getCoordinatorOrganization,
 } = require("../services/organization.service");
 const { HttpError } = require("../utils/httpError");
@@ -107,7 +106,7 @@ async function createBatch(req, res) {
     }
 
 
-    const newBatch = await CertificateBatch.create({
+    await CertificateBatch.create({
       title,
       eventId: event._id,
       templateId: template._id,
@@ -271,7 +270,7 @@ async function duplicateBatch(req, res) {
     const array = batch.title.split("(Copy)");
     const count = array.length -1;
     const title = `${array[0]} Copy(${count})`;
-    const newBatch = await CertificateBatch.create({
+    await CertificateBatch.create({
       ...batch.toObject(),
       title: title,
       lifecycleStatus: "Draft",

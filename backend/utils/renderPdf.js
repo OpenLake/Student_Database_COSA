@@ -72,8 +72,6 @@ const watermarkLogoDataUri = loadAsDataUri(
 
     console.log("Certificate successfully generated at", outputPath);
     return fileId;
-  } catch (err) {
-    throw err;
   } finally {
     if (page) {
       try {

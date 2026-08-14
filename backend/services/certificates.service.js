@@ -65,6 +65,7 @@ async function generateCertificates(batch) {
           })),
         };
 
+
         // Generate PDF
         const pdfId = await renderToPdf(data, browser);
 
