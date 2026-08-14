@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { navItems } from "../../config/presidentConfig.js";
-const API_BASE_URL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+import api from "../../utils/api";
 
 const PresidentDashboard = () => {
   // States for various dashboard metrics
@@ -19,32 +18,33 @@ const PresidentDashboard = () => {
       try {
         setIsLoading(true);
 
-        // Implement actual API calls for each metric
-        // Example:
-        const requestsResponse = await fetch(
-          `${API_BASE_URL}/room/requests?status=pending`,
+        const [statsRes, bookingsRes, eventsRes] = await Promise.all([
+          api.get("/dashboard/stats"),
+          api.get("/rooms/bookings"),
+          api.get("/events/latest"),
+        ]);
+
+        const stats = statsRes.data || {};
+        const bookings = Array.isArray(bookingsRes.data)
+          ? bookingsRes.data
+          : [];
+        const latestEvents = Array.isArray(eventsRes.data)
+          ? eventsRes.data
+          : [];
+
+        setPendingRequests(stats.pendingRoomRequests || 0);
+        setRoomBookings(bookings.length);
+        setUpcomingEvents(latestEvents.length);
+        setCosaRecords(stats.totalOrgUnits || 0);
+        setRecentActivities(
+          latestEvents.map((event) => ({
+            type: "event",
+            description: event.title,
+            timestamp: event.date,
+          })),
         );
-        const requestsData = await requestsResponse.json();
-        setPendingRequests(requestsData.length);
-
-        const bookingsResponse = await fetch(`${API_BASE_URL}/room/requests`);
-        const bookingsData = await bookingsResponse.json();
-        setRoomBookings(bookingsData.length);
-
-        const eventsResponse = await fetch(`${API_BASE_URL}/events`);
-        const eventsData = await eventsResponse.json();
-        setUpcomingEvents(eventsData.length);
-
-        const cosaResponse = await fetch(`${API_BASE_URL}/tenure`);
-        const cosaData = await cosaResponse.json();
-        setCosaRecords(cosaData.length);
-
-        const activitiesResponse = await fetch("/api/activities/recent");
-        const activitiesData = await activitiesResponse.json();
-        setRecentActivities(activitiesData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        // Implement error handling here
       } finally {
         setIsLoading(false);
       }
