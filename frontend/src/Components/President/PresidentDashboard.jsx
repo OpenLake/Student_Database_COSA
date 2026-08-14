@@ -19,9 +19,9 @@ const PresidentDashboard = () => {
         setIsLoading(true);
 
         const [statsRes, bookingsRes, eventsRes] = await Promise.all([
-          api.get("/dashboard/stats"),
-          api.get("/rooms/bookings"),
-          api.get("/events/latest"),
+          api.get("/api/dashboard/stats"),
+          api.get("/api/rooms/bookings"),
+          api.get("/api/events/latest"),
         ]);
 
         const stats = statsRes.data || {};
