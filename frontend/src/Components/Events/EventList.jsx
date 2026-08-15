@@ -43,7 +43,7 @@ const EmptyState = () => {
 const EventList = () => {
   const { isUserLoggedIn } = useContext(AdminContext);
   const username = isUserLoggedIn?.username || "";
-  const userRole = isUserLoggedIn?.role || "STUDENT";
+  const userRole = isUserLoggedIn?.role || "GUEST";
   const currentUserId = isUserLoggedIn?._id;
 
   const { events, loading, error, updateEvent } = useEvents(userRole, username);
@@ -112,7 +112,7 @@ const EventList = () => {
 
           {events.length === 0 ? (
             <EmptyState />
-          ) : userRole === "STUDENT" ? (
+          ) : userRole === "STUDENT" || userRole === "GUEST" ? (
             <div className="flex flex-col gap-2">
               {events.map((event, i) => (
                 <EventTile
