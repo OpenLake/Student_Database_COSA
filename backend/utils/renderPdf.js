@@ -10,6 +10,22 @@ function sanitizeForFilename(value) {
     .replace(/_+/g, "_");
 }
 
+// Seal/watermark logos are static, so read + base64-encode them once at
+// module load instead of once per certificate.
+function loadAsDataUri(relativePath) {
+  const filePath = path.join(__dirname, relativePath);
+  return `data:image/png;base64,${fs
+    .readFileSync(filePath)
+    .toString("base64")}`;
+}
+
+const sealLogoDataUri = loadAsDataUri(
+  "../template-designs/assets/cosa-seal.png",
+);
+const watermarkLogoDataUri = loadAsDataUri(
+  "../template-designs/assets/cosa-seal-watermark.png",
+);
+
  async function renderToPdf(data, sharedBrowser = null) {
   let browser = sharedBrowser;
   let ownBrowser = false;
@@ -29,7 +45,11 @@ function sanitizeForFilename(value) {
     );
     const template = fs.readFileSync(filePath, "utf-8");
 
-    const html = handlebars.compile(template)(data);
+    const html = handlebars.compile(template)({
+      ...data,
+      sealLogo: sealLogoDataUri,
+      watermarkLogo: watermarkLogoDataUri,
+    });
     await page.setContent(html, { waitUntil: "networkidle0" });
 
     const safeName = sanitizeForFilename(data.recipientName);

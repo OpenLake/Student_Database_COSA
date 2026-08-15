@@ -59,65 +59,66 @@
       background-size: 28px 28px;
     }
 
-    /* ── Left accent strip ── */
-    .left-strip {
+    /* ── Faint watermark seal behind body copy ── */
+    .watermark {
       position: absolute;
-      left: 40px;
-      top: 80px;
-      bottom: 80px;
-      width: 3px;
-      background: linear-gradient(to bottom, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
+      top: 50%;
+      left: 50%;
+      width: 380px;
+      height: 380px;
+      transform: translate(-50%, -50%);
+      background-image: url('{{watermarkLogo}}');
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.07;
     }
 
-    /* ── Right accent strip ── */
-    .right-strip {
+    /* ── Left / right accent strips ── */
+    .left-strip, .right-strip {
       position: absolute;
-      right: 40px;
       top: 80px;
       bottom: 80px;
       width: 3px;
       background: linear-gradient(to bottom, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
     }
+    .left-strip { left: 40px; }
+    .right-strip { right: 40px; }
 
     /* ── Institution seal / emblem area ── */
     .seal {
       position: absolute;
-      top: 52px;
+      top: 44px;
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
     }
     .seal-ring {
-      width: 72px;
-      height: 72px;
+      width: 88px;
+      height: 88px;
       border-radius: 50%;
-      border: 1.5px solid #b8a882;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 8px;
+      margin: 0 auto 10px;
       background: #faf8f4;
       position: relative;
+      box-shadow:
+        0 0 0 1.5px #faf8f4,
+        0 0 0 3px #b8a882,
+        0 0 0 4px #faf8f4,
+        0 0 0 4.5px #cfc5a8,
+        0 3px 10px rgba(139, 116, 62, 0.25);
     }
-    .seal-ring::before {
-      content: '';
-      position: absolute;
-      inset: 5px;
-      border-radius: 50%;
-      border: 0.5px solid #cfc5a8;
-    }
-    .seal-initials {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: #6b5a35;
-      letter-spacing: 2px;
+    .seal-ring img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
     }
     .institution-name {
       font-family: 'Jost', sans-serif;
       font-size: 9px;
       font-weight: 500;
-      letter-spacing: 4px;
+      letter-spacing: 3.5px;
       text-transform: uppercase;
       color: #8c7a4e;
     }
@@ -129,12 +130,12 @@
       background: linear-gradient(to right, transparent, #b8a882 20%, #8c7a4e 50%, #b8a882 80%, transparent);
     }
     .divider-top {
-      top: 148px;
+      top: 158px;
       left: 100px;
       right: 100px;
     }
     .divider-bottom {
-      bottom: 118px;
+      bottom: 234px;
       left: 100px;
       right: 100px;
     }
@@ -142,10 +143,10 @@
     /* ── Main body ── */
     .body {
       position: absolute;
-      top: 160px;
+      top: 178px;
       left: 90px;
       right: 90px;
-      bottom: 130px;
+      bottom: 246px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -166,12 +167,12 @@
 
     .cert-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 300;
       color: #2d2517;
       letter-spacing: 1px;
       line-height: 1.1;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .presented-to {
@@ -181,25 +182,25 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       color: #a89268;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .recipient-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 52px;
+      font-size: 54px;
       font-weight: 400;
       font-style: italic;
       color: #3a2d14;
       letter-spacing: 1px;
       line-height: 1.1;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .name-underline {
       width: 240px;
       height: 0.5px;
       background: linear-gradient(to right, transparent, #8c7a4e, transparent);
-      margin: 0 auto 18px;
+      margin: 0 auto 22px;
     }
 
     .description {
@@ -208,14 +209,15 @@
       font-weight: 300;
       color: #5c4d30;
       letter-spacing: 0.5px;
-      line-height: 1.75;
+      line-height: 1.8;
       max-width: 560px;
+      margin-bottom: 24px;
     }
 
     /* ── Cert meta (ID + date) — sits just below the top divider ── */
     .cert-meta {
       position: absolute;
-      top: 22px;
+      top: 30px;
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
@@ -225,7 +227,7 @@
     /* ── Footer ── */
     .footer {
       position: absolute;
-      bottom: 36px;
+      bottom: 150px;
       left: 80px;
       right: 80px;
       display: flex;
@@ -276,7 +278,7 @@
       margin-top: 3px;
     }
 
-    /* ── Small decorative diamond ── */
+    /* ── Small decorative diamond row (used above title and below description) ── */
     .diamond {
       display: inline-block;
       width: 6px;
@@ -292,6 +294,7 @@
       justify-content: center;
       margin-bottom: 14px;
     }
+    .diamond-row.close { margin-bottom: 0; margin-top: -4px; }
     .diamond-line {
       width: 60px;
       height: 0.5px;
@@ -307,6 +310,7 @@
 
   <!-- Background texture -->
   <div class="bg-pattern"></div>
+  <div class="watermark"></div>
 
   <!-- Borders -->
   <div class="border-outer"></div>
@@ -363,7 +367,7 @@
   <!-- Institution seal -->
   <div class="seal">
     <div class="seal-ring">
-      <span class="seal-initials">COSA</span>
+      <img src="{{sealLogo}}" alt="COSA seal" />
     </div>
     <div class="institution-name">Council of Student Affairs, IIT Bhilai</div>
   </div>
@@ -383,6 +387,12 @@
     <div class="recipient-name">{{recipientName}}</div>
     <div class="name-underline"></div>
     <div class="description">{{description}}</div>
+
+    <div class="diamond-row close">
+      <div class="diamond-line"></div>
+      <div class="diamond"></div>
+      <div class="diamond-line right"></div>
+    </div>
   </div>
 
   <!-- Footer: ONE .footer flex row, signatories loop INSIDE it -->
