@@ -25,7 +25,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup && chown -R appuser:a
 
 USER appuser
 
-EXPOSE 3000
+EXPOSE 8000
 
 CMD ["node", "index.js"]
 
