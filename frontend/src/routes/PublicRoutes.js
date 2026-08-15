@@ -3,7 +3,6 @@ import { Route } from "react-router-dom";
 import { PublicRoute } from "../Components/common/ProtectedRoute";
 import EventList from "../Components/Events/EventList";
 import EventDetail from "../Components/Events/EventDetail";
-import ViewFeedback from "../Components/Feedback/ViewFeedback";
 import Login from "../Components/Auth/Login";
 import Register from "../Components/Auth/Register";
 import ForgotPassword from "../Components/Auth/Forgot-Password/ForgotPassword";
@@ -13,7 +12,6 @@ export const getPublicRoutes = (isUserLoggedIn) => [
   // Public routes accessible to everyone
   <Route key="events" path="/events" element={<EventList />} />,
   <Route key="event-detail" path="/events/:id" element={<EventDetail />} />,
-  <Route key="view-feedback" path="/viewfeedback" element={<ViewFeedback />} />,
 
   // Authentication routes - only for non-authenticated users
   <Route

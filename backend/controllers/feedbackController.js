@@ -15,13 +15,12 @@ exports.addFeedback = async (req, res) => {
       type,
       target_type,
       target_id,
-      feedback_by,
       rating,
       comments,
       is_anonymous,
     } = req.body;
 
-    if (!type || !target_type || !target_id || !feedback_by) {
+    if (!type || !target_type || !target_id) {
       return res.status(400).json({
         message: "Missing required fields",
       });
@@ -47,7 +46,7 @@ exports.addFeedback = async (req, res) => {
       type,
       target_type,
       target_id,
-      feedback_by,
+      feedback_by: req.user._id,
       rating,
       comments,
       is_anonymous:
@@ -225,6 +224,11 @@ exports.viewFeedback = async (req, res) => {
           }
 
           const fbObj = fb.toObject();
+
+          if (fbObj.is_anonymous) {
+            fbObj.feedback_by = null;
+          }
+
           fbObj.target_data = targetData;
 
           return fbObj;
