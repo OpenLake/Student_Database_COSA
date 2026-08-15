@@ -1,8 +1,25 @@
 const puppeteer = require("puppeteer");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+const cloudinary = require("cloudinary").v2;
 const { User } = require("../models/schema");
 const renderToPdf = require("../utils/renderPdf");
 const { Certificate } = require("../models/certificateSchema");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+async function uploadPdfToCloudinary(filePath) {
+  const result = await cloudinary.uploader.upload(filePath, {
+    resource_type: "image",
+    folder: "certificates",
+  });
+  return result.secure_url;
+}
 
 async function generateCertificates(batch) {
   const users = await User.find({
@@ -13,7 +30,12 @@ async function generateCertificates(batch) {
   let browser;
 
   try {
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({
+      headless: true,
+      ...(process.env.PUPPETEER_NO_SANDBOX === "true"
+        ? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
+        : {}),
+    });
 
     for (const user of users) {
       try {
@@ -55,12 +77,26 @@ async function generateCertificates(batch) {
           })),
         };
 
-        // Generate PDF 
-        await renderToPdf(data, browser);
+        // Generate PDF
+        const fileId = await renderToPdf(data, browser);
+        const outputPath = path.join(
+          __dirname,
+          "../uploads",
+          `${fileId}.pdf`,
+        );
 
-        // Upload to Cloudinary
-        // TODO: Replace with Cloudinary URL once upload networking issue is resolved.
-        const certificateUrl = "#";
+        // Upload to Cloudinary and store the real URL
+        const certificateUrl = await uploadPdfToCloudinary(outputPath);
+
+        // Remove the temporary local PDF
+        try {
+          fs.unlinkSync(outputPath);
+        } catch (cleanupErr) {
+          console.warn(
+            "Failed to clean up local PDF:",
+            cleanupErr.message,
+          );
+        }
 
         if (!certificateUrl) {
           throw new Error("Cloudinary upload failed.");
