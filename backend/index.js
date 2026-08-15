@@ -45,6 +45,10 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 
+if (!process.env.JWT_SECRET_TOKEN) {
+  throw new Error("JWT_SECRET_TOKEN environment variable is required");
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
