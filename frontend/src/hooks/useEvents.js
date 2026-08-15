@@ -15,11 +15,16 @@ export const useEvents = (userRole, username) => {
         setLoading(true);
         setError(null);
 
-        let url = `/api/events/by-role/${userRole}`;
-        if (userRole === "CLUB_COORDINATOR" && username) {
-          url += `?username=${encodeURIComponent(username)}`;
-        } else if (userRole === "CLUB_COORDINATOR" && !username) {
-          throw new Error("Username is missing for Club Coordinator.");
+        let url;
+        if (userRole === "GUEST") {
+          url = `/api/events/events`;
+        } else {
+          url = `/api/events/by-role/${userRole}`;
+          if (userRole === "CLUB_COORDINATOR" && username) {
+            url += `?username=${encodeURIComponent(username)}`;
+          } else if (userRole === "CLUB_COORDINATOR" && !username) {
+            throw new Error("Username is missing for Club Coordinator.");
+          }
         }
 
         const response = await api.get(url);
