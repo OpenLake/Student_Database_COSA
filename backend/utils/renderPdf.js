@@ -33,7 +33,12 @@ const watermarkLogoDataUri = loadAsDataUri(
 
   try {
     if (!browser) {
-      browser = await puppeteer.launch({ headless: true });
+      browser = await puppeteer.launch({
+        headless: true,
+        ...(process.env.PUPPETEER_NO_SANDBOX === "true"
+          ? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
+          : {}),
+      });
       ownBrowser = true;
     }
 
