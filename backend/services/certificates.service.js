@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const crypto = require("crypto");
 const { User } = require("../models/schema");
 const renderToPdf = require("../utils/renderPdf");
-const uploadTocloudinary = require("../utils/cloudinary");
+const { uploadTocloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { Certificate } = require("../models/certificateSchema");
 const Template = require("../models/templateSchema");
 
@@ -68,20 +68,25 @@ async function generateCertificates(batch) {
         // Generate PDF
         const pdfId = await renderToPdf(data, browser);
 
-        const certificateUrl = await uploadTocloudinary(pdfId);
+        const uploadResult = await uploadTocloudinary(pdfId);
 
-        if (!certificateUrl) {
+        if (!uploadResult?.secureUrl) {
           throw new Error("Cloudinary upload failed.");
         }
 
         // Save certificate record
-        await Certificate.create({
-          batchId: batch._id,
-          userId: user._id,
-          certificateUrl,
-          certificateId: data.certificateId,
-          status: "Approved",
-        });
+        try {
+          await Certificate.create({
+            batchId: batch._id,
+            userId: user._id,
+            certificateUrl: uploadResult.secureUrl,
+            certificateId: data.certificateId,
+            status: "Approved",
+          });
+        } catch (dbErr) {
+          await deleteFromCloudinary(uploadResult.publicId);
+          throw dbErr;
+        }
 
         console.log(`Certificate created for ${user.personal_info.name}`);
       } catch (userErr) {
