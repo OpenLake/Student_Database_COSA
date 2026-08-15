@@ -187,6 +187,12 @@ async function editBatch(req, res) {
       return res.status(404).json({ message: "Batch not found" });
     }
 
+    if (batch.initiatedBy.toString() !== id) {
+      return res.status(403).json({
+        message: "You are not authorized to edit this batch",
+      });
+    }
+
     Object.assign(batch, validation.data);
 
     batch.lifecycleStatus = action;
