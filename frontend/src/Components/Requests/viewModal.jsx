@@ -1,47 +1,5 @@
-import { Overlay, Pill, C } from "./ui";
-import { X, CalendarDays, Users, UserCircle2, Award } from "lucide-react";
-
-const labelColor = {
-  Approved: "green",
-  Rejected: "red",
-  Pending: "amber",
-};
-
-/* ─── info tile (used in View modal) ────────────────────── */
-const InfoTile = ({ icon: Icon, label, value, wide }) => (
-  <div
-    className={`
-      ${wide ? "col-span-full" : ""}
-      rounded-[14px]
-      flex flex-col gap-[6px]
-      border
-    `}
-    style={{
-      padding: "16px 20px",
-      background: C.white,
-      borderColor: C.border
-    }}
-  >
-    <div
-      className="flex items-center gap-[7px]"
-      style={{ color: C.warmGray}}
-    >
-      <Icon size={15} strokeWidth={2} />
-      <span className="text-[11px] font-semibold tracking-[0.08em] uppercase">
-        {label}
-      </span>
-    </div>
-
-    <span
-      className={`
-        text-[20px] font-bold tracking-[-0.01em]
-        text-[${C.text}]
-      `}
-    >
-      {value}
-    </span>
-  </div>
-);
+import { Overlay, C } from "./ui";
+import { X } from "lucide-react";
 
 /* VIEW MODAL */
 export const ViewModal = ({

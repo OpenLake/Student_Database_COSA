@@ -9,7 +9,6 @@ const { findEvent } = require("../services/event.service");
 const { findTemplate } = require("../services/template.service");
 const { getApprovers } = require("../services/user.service");
 const {
-  getOrganization,
   getCoordinatorOrganization,
 } = require("../services/organization.service");
 const { HttpError } = require("../utils/httpError");
@@ -107,7 +106,7 @@ async function createBatch(req, res) {
     }
 
 
-    const newBatch = await CertificateBatch.create({
+    await CertificateBatch.create({
       title,
       eventId: event._id,
       templateId: template._id,
@@ -186,6 +185,12 @@ async function editBatch(req, res) {
 
     if (!batch) {
       return res.status(404).json({ message: "Batch not found" });
+    }
+
+    if (batch.initiatedBy.toString() !== id) {
+      return res.status(403).json({
+        message: "You are not authorized to edit this batch",
+      });
     }
 
     Object.assign(batch, validation.data);
@@ -271,7 +276,7 @@ async function duplicateBatch(req, res) {
     const array = batch.title.split("(Copy)");
     const count = array.length -1;
     const title = `${array[0]} Copy(${count})`;
-    const newBatch = await CertificateBatch.create({
+    await CertificateBatch.create({
       ...batch.toObject(),
       title: title,
       lifecycleStatus: "Draft",
@@ -539,6 +544,13 @@ async function approveBatch(req, res) {
       };
     }
 
+    // Final (President) approval: generate certificates BEFORE marking the
+    // batch Active/Approved. If generation fails, the batch stays Submitted
+    // so the approval can be retried once the cause is fixed.
+    if (level === 1) {
+      await generateCertificates(batch);
+    }
+
     const updatedBatch = await CertificateBatch.findOneAndUpdate(
       matchQuery,
       update,
@@ -552,17 +564,11 @@ async function approveBatch(req, res) {
       });
     }
 
-    if (level === 1) {
-      // Final (President) approval just happened - generate certificates
-      // exactly once, from the freshly-updated, level===2 document.
-      await generateCertificates(updatedBatch);
-    }
-
     return res.status(200).json({
       message:
         level === 0
           ? "Batch approved by GENSEC. Forwarded to President."
-          : "Batch approved successfully. Certificates are being generated.",
+          : "Batch approved successfully. Certificates generated.",
     });
   } catch (err) {
     if (err instanceof HttpError) {

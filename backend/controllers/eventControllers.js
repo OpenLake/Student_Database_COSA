@@ -215,7 +215,30 @@ exports.deleteEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
-    const updates = req.body;
+
+    const allowedFields = [
+      "title",
+      "description",
+      "category",
+      "type",
+      "schedule",
+      "registration",
+      "budget",
+      "status",
+    ];
+
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        message: "No editable fields provided",
+      });
+    }
 
     const event = await Event.findByIdAndUpdate(
       eventId,
@@ -241,7 +264,6 @@ exports.updateEvent = async (req, res) => {
 
     return res.status(500).json({
       message: "Server error",
-      error: err.message,
     });
   }
 };
@@ -450,7 +472,7 @@ exports.registerForEvent = async (req, res) => {
 
 
 exports.getEventsByRole = async (req, res) => {
-  const userRole = req.params.userRole;
+  const userRole = req.user.role;
 
   try {
     let query = {};
@@ -465,7 +487,7 @@ exports.getEventsByRole = async (req, res) => {
         break;
 
       case "CLUB_COORDINATOR": {
-        const username = req.query.username;
+        const username = req.user.username;
 
         if (!username) {
           return res.status(400).json({

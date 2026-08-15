@@ -109,6 +109,15 @@ userSchema.index(
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
+// Never serialize the password hash/salt to API clients.
+userSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    delete ret.salt;
+    delete ret.hash;
+    return ret;
+  },
+});
+
 //organizational unit
 const organizationalUnitSchema = new mongoose.Schema({
   unit_id: {

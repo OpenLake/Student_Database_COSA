@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { fetchBatchUsers } from "../../services/batch";
-import { Users, ChevronDown, ChevronUp, Search, X } from "lucide-react";
+import { Users, Search, X } from "lucide-react";
 import { Avatar, Checkbox } from "../Batches/modalDialog";
 import { Modal } from "./ui";
-/* ─── tiny helpers ─────────────────────────────────────────── */
-const toId = (s) => s?._id;
 
 /* ─── StudentsPanel ─────────────────────────────────────────── */
 export default function StudentsPanel({
@@ -18,8 +16,8 @@ export default function StudentsPanel({
   const [loading, setLoading] = useState(false);
   const [localSelected, setLocalSelected] = useState(new Set());
   const [search, setSearch] = useState("");
-  let studentIds = form.students || [];
-  let count = studentIds?.length || 0;
+  const studentIds = useMemo(() => form.students || [], [form.students]);
+  const count = studentIds?.length || 0;
   /* reset when panel closes */
   const closePanel = () => {
     setOpen(false);
@@ -29,29 +27,30 @@ export default function StudentsPanel({
   /* fetch when opening */
   useEffect(() => {
     if (!open || !selectedEvent) return;
-    if (count === 0) {
-      count = Object.keys(selectedEvent?.participants).length || 0;
-      if (count === 0) {
-        setDetails([]);
-        setLocalSelected(new Set());
-        return;
-      } else studentIds = selectedEvent.participants || [];
+    let ids = studentIds;
+    if (ids.length === 0 && selectedEvent?.participants?.length) {
+      ids = selectedEvent.participants;
+    }
+    if (ids.length === 0) {
+      setDetails([]);
+      setLocalSelected(new Set());
+      return;
     }
 
     let cancelled = false;
     setLoading(true);
 
-    fetchBatchUsers(studentIds).then((data) => {
+    fetchBatchUsers(ids).then((data) => {
       if (cancelled) return;
       setDetails(Array.isArray(data) ? data : []);
-      setLocalSelected(new Set(studentIds));
+      setLocalSelected(new Set(ids));
       setLoading(false);
     });
 
     return () => {
       cancelled = true;
     };
-  }, [open, selectedEvent]);
+  }, [open, selectedEvent, studentIds]);
 
   const toggle = (id) =>
     setLocalSelected((prev) => {
@@ -88,11 +87,6 @@ export default function StudentsPanel({
   const allSelected =
     details.length > 0 && details.every((s) => localSelected.has(s?._id));
 
-  const pendingChanges =
-    open &&
-    !isViewOnly &&
-    (localSelected.size !== count ||
-      !studentIds.every((id) => localSelected.has(id)));
   return (
     <>
       {/* ── trigger button ── */}

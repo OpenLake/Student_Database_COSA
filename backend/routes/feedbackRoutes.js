@@ -12,7 +12,7 @@ router.post("/add",isAuthenticated, feedbackController.addFeedback);
 
 router.get("/get-targetid",isAuthenticated, feedbackController.getTargetIds); 
 
-router.get("/view-feedback", feedbackController.viewFeedback);
+router.get("/view-feedback",isAuthenticated,authorizeRole(ROLE_GROUPS.ADMIN), feedbackController.viewFeedback);
 
 // requires user middleware that attaches user info to req.user
 router.put("/mark-resolved/:id",isAuthenticated,authorizeRole(ROLE_GROUPS.ADMIN), feedbackController.markResolved); 

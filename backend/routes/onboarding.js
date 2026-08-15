@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require("../models/schema");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const onboardingController = require(

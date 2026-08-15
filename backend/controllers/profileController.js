@@ -11,12 +11,7 @@ cloudinary.config({
 
 exports.updateProfilePhoto = async (req, res) => {
     try {
-        const { ID_No } = req.body;
-        if (!ID_No) {
-            return res.status(400).json({ error: "ID_No is required" });
-        }
-
-        const user = await User.findOne({ user_id: ID_No });
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
@@ -69,12 +64,7 @@ exports.updateProfilePhoto = async (req, res) => {
 // Delete profile photo (reset to default)
 exports.deleteProfilePhoto = async (req, res) => {
     try {
-        const { ID_No } = req.query; // Get ID_No from frontend for DELETE
-        if (!ID_No) {
-            return res.status(400).json({ error: "ID_No is required" });
-        }
-
-        const user = await User.findOne({ user_id: ID_No }); // Capital User
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
@@ -112,6 +102,13 @@ exports.updateStudentProfile = async (req, res) => {
                 .json({ success: false, message: "Student not found" });
         }
 
+        if (user._id.toString() !== req.user.id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized to update this profile",
+            });
+        }
+
         // ---------- PERSONAL INFO ----------
         if (updatedDetails.personal_info) {
             const {
@@ -121,7 +118,6 @@ exports.updateStudentProfile = async (req, res) => {
                 gender,
                 date_of_birth,
                 profilePic,
-                cloudinaryUrl,
             } = updatedDetails.personal_info;
 
             if (name) {
@@ -141,9 +137,6 @@ exports.updateStudentProfile = async (req, res) => {
             }
             if (profilePic) {
                 user.personal_info.profilePic = profilePic;
-            }
-            if (cloudinaryUrl) {
-                user.personal_info.cloudinaryUrl = cloudinaryUrl;
             }
         }
 

@@ -45,6 +45,10 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 
+if (!process.env.JWT_SECRET_TOKEN) {
+  throw new Error("JWT_SECRET_TOKEN environment variable is required");
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -80,7 +84,6 @@ app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);

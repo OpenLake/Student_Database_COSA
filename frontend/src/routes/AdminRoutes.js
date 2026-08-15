@@ -15,6 +15,7 @@ import {
 import CreateOrgUnit from "../Components/organization/CreateOrgUnit";
 import EventForm from "../Components/Events/EventForm";
 import ClubDashboard from "../Components/OldComponents/ClubCoorinatorDashboard";
+import ViewFeedback from "../Components/Feedback/ViewFeedback";
 
 export const getAdminRoutes = () => [
   // GenSec Dashboard routes
@@ -81,6 +82,17 @@ export const getAdminRoutes = () => [
         allowedRoles={[...ALL_ADMIN_ROLES, "CLUB_COORDINATOR"]}
       >
         <RoomBookingPage />
+      </RoleProtectedRoute>
+    }
+  />,
+
+  // View Feedback (admin-only; was wrongly public before)
+  <Route
+    key="view-feedback"
+    path="/viewfeedback"
+    element={
+      <RoleProtectedRoute allowedRoles={ALL_ADMIN_ROLES}>
+        <ViewFeedback />
       </RoleProtectedRoute>
     }
   />,

@@ -1,0 +1,13 @@
+{
+  "name": "student-database-cosa",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "pretest": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
+    "prelint": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
+    "prebuild": "npm --prefix backend install --no-audit --no-fund && npm --prefix frontend install --no-audit --no-fund",
+    "test": "npm --prefix backend test && CI=true npm --prefix frontend test",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+  }
+}

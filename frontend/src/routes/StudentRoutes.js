@@ -12,9 +12,12 @@ import Home from "../Components/OldComponents/Home";
 import StudentProfile from "../Components/Profile/ProfilePage";
 import TenurePage from "../pages/TenurePage";
 import CertificatesPage from "../pages/certificatesPage";
+import { SidebarProvider } from "../hooks/useSidebar";
+import { NavbarConfig } from "../config/navbarConfig";
 
 
-export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
+export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => {
+  return [
   <Route
     key="feedback"
     path="/feedback"
@@ -123,16 +126,22 @@ export const getStudentRoutes = (isUserLoggedIn, isOnboardingComplete) => [
       </ProtectedRoute>
     }
   />,
-    <Route
-  key="certificates"
-  path="/certificates"
-  element={
-    <ProtectedRoute
-      isAuthenticated={isUserLoggedIn}
-      isOnboardingComplete={isOnboardingComplete}
-    >
-      <CertificatesPage />
-    </ProtectedRoute>
-  }
-/>,
-];
+  <Route
+    key="certificates"
+    path="/certificates"
+    element={
+      <ProtectedRoute
+        isAuthenticated={isUserLoggedIn}
+        isOnboardingComplete={isOnboardingComplete}
+      >
+        <SidebarProvider
+          role={isUserLoggedIn?.role || "STUDENT"}
+          navItems={NavbarConfig[isUserLoggedIn?.role] || []}
+        >
+          <CertificatesPage />
+        </SidebarProvider>
+      </ProtectedRoute>
+    }
+  />,
+  ];
+};

@@ -83,16 +83,6 @@ const CertificatesList = () => {
     });
   };
 
-  const isSafeCertificateUrl = (url) => {
-    try {
-      const parsed = new URL(url, window.location.origin);
-      return parsed.protocol === "http:" || parsed.protocol === "https:";
-    } catch {
-      return false;
-    }
-  };
-  
-
   const filterButtons = [
     { label: "ALL", value: "ALL" },
     { label: "Pending", value: "Pending" },

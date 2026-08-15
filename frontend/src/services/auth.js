@@ -32,21 +32,6 @@ export async function loginUser(email, password) {
   }
 }
 
-export async function registerStudentId(id, ID_No) {
-  try {
-    const res = await api.post("/auth/google/register", {
-      token: id,
-      ID_No,
-    });
-    return res.data || null;
-  } catch (error) {
-    console.error(
-      "Error registering student ID:",
-      error.response?.data || error.message,
-    );
-    return null;
-  }
-}
 export async function logoutUser() {
   try {
     await api.post("/auth/logout");

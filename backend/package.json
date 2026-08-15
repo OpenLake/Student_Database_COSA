@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "This is the backend for the cosa database GUI",
   "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "jest --runInBand",
+    "lint": "eslint .",
     "prepare": "node -e \"if(process.env.NODE_ENV !== 'production'){process.exit(1)}\" || (cd .. && husky install)",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "nodemon build.js"
+    "build": "node --check index.js"
   },
   "lint-staged": {
     "*.js": [
@@ -23,7 +27,22 @@
     ],
     "env": {
       "node": true,
-      "es6": true
+      "es6": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022
+    },
+    "rules": {
+      "node/no-unpublished-require": [
+        "error",
+        {
+          "allowModules": [
+            "supertest",
+            "mongodb-memory-server"
+          ]
+        }
+      ]
     }
   },
   "author": "",
