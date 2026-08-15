@@ -8,10 +8,11 @@
   },
   "scripts": {
     "test": "jest --runInBand",
+    "lint": "eslint .",
     "prepare": "node -e \"if(process.env.NODE_ENV !== 'production'){process.exit(1)}\" || (cd .. && husky install)",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "nodemon build.js"
+    "build": "node --check index.js"
   },
   "lint-staged": {
     "*.js": [
