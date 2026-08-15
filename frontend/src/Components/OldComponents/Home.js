@@ -4,7 +4,6 @@ import { AdminContext } from "../../context/AdminContext";
 import api from "../../utils/api";
 import {
   User,
-  Eye,
   MessageSquare,
   Calendar,
   LogOut,
@@ -18,7 +17,6 @@ import {
   Menu,
   X,
   ChevronRight,
-  ScanSearch,
   Trophy,
 } from "lucide-react";
 
@@ -79,7 +77,6 @@ const StudentDashboard = () => {
 
   const navigationItems = [
     { id: "profile", label: "Profile Page", icon: User, to: "/profile" },
-    { id: "cosa-view", label: "COSA View", icon: Eye, to: "/cosa" },
     {
       id: "feedback",
       label: "Give Feedback",
@@ -107,12 +104,6 @@ const StudentDashboard = () => {
       to: "/view-achievements",
     },
     {
-      id: "view-feedback",
-      label: "View Feedback",
-      icon: ScanSearch,
-      to: "/viewfeedback",
-    },
-    {
       id: "logout",
       label: "Logout",
       icon: LogOut,
@@ -134,7 +125,7 @@ const StudentDashboard = () => {
           await Promise.all([
             api.get(`/api/skills/user-skills/${isUserLoggedIn._id}`),
             api.get(`/api/achievements/${isUserLoggedIn._id}`),
-            api.get(`/api/positions/${isUserLoggedIn._id}`),
+            api.post(`/api/positions/${isUserLoggedIn._id}`),
             api.get(`/api/feedback/${isUserLoggedIn._id}`),
           ]);
 
@@ -181,7 +172,7 @@ const StudentDashboard = () => {
 
   const quickActions = [
     { label: "Add Achievement", icon: Award, to: "/add-achievement" },
-    { label: "New Position", icon: Star, to: "/add-position" },
+    { label: "Manage Positions", icon: Star, to: "/manage-position" },
     { label: "Give Feedback", icon: MessageSquare, to: "/feedback" },
   ];
 
