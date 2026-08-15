@@ -4,6 +4,7 @@ _This file is auto-generated from the repository collaborators list._
 
 | Name          | GitHub Handle    | Role             | Tenure | Time Period | 
 |---------------|------------------|------------------|---|---|
+| Ashish    | [@Ashish-Kumar-Dash](https://github.com/Ashish-Kumar-Dash) | Secretary (Sprint-M26) | 2026-27 | August 2026 - Present | 
 | Harshita      | [@harshitap1305](https://github.com/harshitap1305) | Mentor (Sprint-M25, Hacktoberfest-25, FOSS Overflow 2025-26) | 2025-26 | August 2025 - March 2026 | 
 | Amay      | [@amaydixit11](https://github.com/amaydixit11) | Coordinator (Hacktoberfest-25) | 2025-26 | October 2025 - November 2025 |
 | Khushagra    | [@Khushagra30](https://github.com/Khushagra30) | Maintainer (Sprint-M25, Design) | 2025-26 | August 2025 - September 2025 | 
