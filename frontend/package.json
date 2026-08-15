@@ -37,8 +37,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "tailwind": "tailwindcss",
+    "tailwind": "tailwindcss -i ./src/index.css -o ./src/tailwind.css --minify",
+    "prestart": "npm run tailwind",
     "start": "react-scripts start",
+    "prebuild": "npm run tailwind",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint src",
