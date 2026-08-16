@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const crypto = require("crypto");
 const { User } = require("../models/schema");
 const renderToPdf = require("../utils/renderPdf");
@@ -7,6 +6,8 @@ const { Certificate } = require("../models/certificateSchema");
 const Template = require("../models/templateSchema");
 
 async function generateCertificates(batch) {
+  const puppeteer = (await import("puppeteer")).default;
+  
   const users = await User.find({
     _id: { $in: batch.users },
   }).select("personal_info");
