@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
@@ -11,6 +10,8 @@ function sanitizeForFilename(value) {
 }
 
  async function renderToPdf(data, sharedBrowser = null) {
+  const puppeteer = (await import("puppeteer")).default;
+
   let browser = sharedBrowser;
   let ownBrowser = false;
   let page;
