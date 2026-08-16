@@ -28,9 +28,16 @@ const certificateBatchRoutes = require("./routes/certificateBatch");
 const templateRoutes = require("./routes/template");
 
 
+const MongoDBStore = require("connect-mongodb-session")(session);
+
 const app = express();
 
-if (process.env.NODE_ENV === "production") {
+const isHostedOverHttps =
+  (process.env.FRONTEND_URL || "").startsWith("https://") ||
+  process.env.NODE_ENV === "production";
+
+if (isHostedOverHttps) {
+  // Required behind Render's proxy, otherwise `secure` cookies are never sent.
   app.set("trust proxy", 1);
 }
 
@@ -49,14 +56,25 @@ if (!process.env.JWT_SECRET_TOKEN) {
   throw new Error("JWT_SECRET_TOKEN environment variable is required");
 }
 
+const sessionStore = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: "sessions",
+});
+
+sessionStore.on("error", (error) => {
+  console.error("Session store error:", error);
+});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod,
+      secure: isHostedOverHttps, // HTTPS only when hosted
+      sameSite: isHostedOverHttps ? "none" : "lax", // cross-site when hosted
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   }),
 );
