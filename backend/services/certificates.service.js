@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -22,6 +21,8 @@ async function uploadPdfToCloudinary(filePath) {
 }
 
 async function generateCertificates(batch) {
+  const puppeteer = (await import("puppeteer")).default;
+  
   const users = await User.find({
     _id: { $in: batch.users },
   }).select("personal_info");
