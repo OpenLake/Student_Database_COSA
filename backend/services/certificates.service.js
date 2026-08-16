@@ -2,12 +2,25 @@ const puppeteer = require("puppeteer");
 const crypto = require("crypto");
 const { User } = require("../models/schema");
 const renderToPdf = require("../utils/renderPdf");
+const { uploadTocloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { Certificate } = require("../models/certificateSchema");
+const Template = require("../models/templateSchema");
 
 async function generateCertificates(batch) {
   const users = await User.find({
     _id: { $in: batch.users },
   }).select("personal_info");
+
+  // Pull the admin-picked template once per batch (not per user — it
+  // doesn't change per recipient) so the certificate reflects what this
+  // batch is actually for, instead of the same hardcoded text every time.
+  const template = batch.templateId
+    ? await Template.findById(batch.templateId).select("title description")
+    : null;
+  const certificateType = template?.title || "Certificate of Participation";
+  const description =
+    template?.description ||
+    "In recognition of participation and contribution to this event.";
 
   const failures = [];
   let browser;
@@ -17,7 +30,6 @@ async function generateCertificates(batch) {
 
     for (const user of users) {
       try {
-        
         const existingCertificate = await Certificate.findOne({
           batchId: batch._id,
           userId: user._id,
@@ -31,7 +43,7 @@ async function generateCertificates(batch) {
         }
 
         const uniqueCertificateId = `${batch._id.toString()}_${user._id.toString()}`;
-      
+
         const certificateNumber = `COSA-${crypto
           .createHash("md5")
           .update(uniqueCertificateId)
@@ -40,40 +52,41 @@ async function generateCertificates(batch) {
           .toUpperCase()}`;
 
         const data = {
-          certificateType: "Certificate of Participation",
+          certificateType,
           certificateTitle: "Certificate of Achievement",
           recipientName: user.personal_info.name,
-          description:
-            "In recognition of outstanding participation in the Innovation Club, demonstrating exceptional commitment, collaboration, and leadership.",
-          certificateId: uniqueCertificateId, 
-          certificateNumber, 
+          description,
+          certificateId: uniqueCertificateId,
+          certificateNumber,
           issueDate: new Date().toLocaleDateString("en-GB"),
-          
           signatories: (batch.signatoryDetails || []).map((s) => ({
             name: s.name,
             role: s.role,
           })),
         };
 
-        // Generate PDF 
+        // Generate PDF
         const pdfId = await renderToPdf(data, browser);
 
-        // Upload to Cloudinary
-        // TODO: Replace with Cloudinary URL once upload networking issue is resolved.
-        const certificateUrl = "#";
+        const uploadResult = await uploadTocloudinary(pdfId);
 
-        if (!certificateUrl) {
+        if (!uploadResult?.secureUrl) {
           throw new Error("Cloudinary upload failed.");
         }
 
         // Save certificate record
-        await Certificate.create({
-          batchId: batch._id,
-          userId: user._id,
-          certificateUrl,
-          certificateId: data.certificateId,
-          status: "Approved",
-        });
+        try {
+          await Certificate.create({
+            batchId: batch._id,
+            userId: user._id,
+            certificateUrl: uploadResult.secureUrl,
+            certificateId: data.certificateId,
+            status: "Approved",
+          });
+        } catch (dbErr) {
+          await deleteFromCloudinary(uploadResult.publicId);
+          throw dbErr;
+        }
 
         console.log(`Certificate created for ${user.personal_info.name}`);
       } catch (userErr) {
