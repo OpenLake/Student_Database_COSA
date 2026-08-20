@@ -31,6 +31,7 @@ import BatchesPage from "../pages/batchesPage";
 import TemplatesPage from "../pages/templatesPage";
 import RequestsPage from "../pages/requestsPage";
 import CertificatesPage from "../pages/certificatesPage";
+import TasksPage from "../pages/tasksPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -60,4 +61,5 @@ export const DashboardComponents = {
   tenure: TenurePage,
   budget: BudgetPage,
   roombooking: RoomBookingPage,
+  tasks: TasksPage,
 };

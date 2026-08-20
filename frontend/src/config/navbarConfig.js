@@ -16,6 +16,7 @@ import {
   ClipboardPaste,
   LayoutTemplate,
   FolderOpen,
+  ListChecks,
 } from "lucide-react";
 
 const GENSEC_COMMON_NAV = [
@@ -26,6 +27,7 @@ const GENSEC_COMMON_NAV = [
   { key: "roombooking", label: "RoomBooking", icon: DoorOpen },
   { key: "endorsement", label: "Endorsements", icon: Award },
   { key: "feedback", label: "Feedback", icon: ClipboardList },
+  { key: "tasks", label: "Tasks", icon: ListChecks },
   // { key: "add-event", label: "Add Event", icon: Plus },
   { key: "por", label: "PORs", icon: UserPlus },
   { key: "budget", label: "Budget", icon: Wallet },
@@ -44,6 +46,7 @@ export const NavbarConfig = {
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "budget", label: "Budget", icon: Wallet },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
+    { key: "tasks", label: "Tasks", icon: ListChecks },
     { key: "events", label: "Events", icon: Calendar },
     { key: "roombooking", label: "RoomBooking", icon: DoorOpen },
     // { key: "add-event", label: "Add Event", icon: Plus },
@@ -69,6 +72,7 @@ export const NavbarConfig = {
     { key: "roombooking", label: "RoomBooking", icon: DoorOpen },
     // { key: "add-event", label: "Add Event", icon: Plus },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
+    { key: "tasks", label: "Tasks", icon: ListChecks },
     { key: "profile", label: "Profile", icon: User },
     { key: "batches", label: "Batches", icon: FolderOpen },
     { key: "templates", label: "Templates", icon: LayoutTemplate },
@@ -85,6 +89,7 @@ export const NavbarConfig = {
     { key: "certificates", label: "Certificates", icon: Dock },
     { key: "events", label: "Events", icon: Calendar },
     { key: "feedback", label: "Feedback", icon: MessageSquare },
+    { key: "tasks", label: "Tasks", icon: ListChecks },
     // { key: "view-feedback", label: "Feedback", icon: ClipboardList },
     { key: "achievements", label: "Achieve", icon: Trophy },
     // { key: "view-achievements", label: "View Achievements", icon: Trophy },

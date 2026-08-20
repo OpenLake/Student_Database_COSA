@@ -26,6 +26,7 @@ const roomBookingRoutes = require("./routes/roomBooking.js");
 const certificateRoutes = require("./routes/certificate");
 const certificateBatchRoutes = require("./routes/certificateBatch");
 const templateRoutes = require("./routes/template");
+const taskRoutes = require("./routes/task.routes.js");
 
 
 const app = express();
@@ -85,6 +86,8 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);
 app.use("/api/budget", budgetRoutes);
+app.use("/api/tasks", taskRoutes); 
+
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {
