@@ -7,7 +7,7 @@ A comprehensive platform for managing student data within CoSA, including detail
 
 <p align="center">
   <img src="https://img.shields.io/badge/Maintained%20By-OpenLake-green.svg" alt="Maintained by OpenLake">
-  <img src="https://img.shields.io/badge/Maintainers-2-yellow.svg" alt="Contributors">
+  <img src="https://img.shields.io/badge/Maintainers-3-yellow.svg" alt="Contributors">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
 </p>
 <img width="1071" height="752" alt="image" src="https://github.com/user-attachments/assets/bcd44ac4-4a52-409c-86eb-bb77f0058316" />
@@ -142,6 +142,7 @@ Student_Database_COSA/
 
 This project is maintained by:
 
+- [@KotapatiSaiMounika](https://github.com/KotapatiSaiMounika)
 - [@harshitap1305](https://github.com/harshitap1305)
 - [@sakshi1755](https://github.com/sakshi1755)
 
