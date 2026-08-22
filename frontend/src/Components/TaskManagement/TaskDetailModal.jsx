@@ -66,7 +66,7 @@ const TaskDetailModal = ({ task, onUpdateStatus, onClose }) => {
           </div>
           <div>
             <div className="text-gray-500">Assigned By</div>
-            <div className="font-semibold">{task.assigned_by?.personal_info?.name || "N/A"}</div>
+            <div className="font-semibold">{task.assigned_by?.personal_info?.name || task.assigned_by?.username || "N/A"}</div>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ const TaskDetailModal = ({ task, onUpdateStatus, onClose }) => {
           <div className="flex flex-wrap gap-2">
             {task.assignees?.map((a) => (
               <span key={a._id} className="px-2 py-1 rounded-lg bg-gray-100 text-gray-800 text-xs">
-                {a.personal_info?.name}
+                {a.personal_info?.name || a.username}
               </span>
             ))}
           </div>

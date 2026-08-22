@@ -64,13 +64,13 @@ const TaskCard = ({ task, mode, onView }) => {
           <>
             <Users size={12} />
             <span className="truncate">
-              {task.assignees?.map((a) => a.personal_info?.name).filter(Boolean).join(", ") || "Unassigned"}
+              {task.assignees?.map((a) => a.personal_info?.name || a.username).filter(Boolean).join(", ") || "Unassigned"}
             </span>
           </>
         ) : (
           <>
             <User size={12} />
-            <span className="truncate">Assigned by {task.assigned_by?.personal_info?.name || "N/A"}</span>
+            <span className="truncate">Assigned by {task.assigned_by?.personal_info?.name || task.assigned_by?.username || "N/A"}</span>
           </>
         )}
       </div>

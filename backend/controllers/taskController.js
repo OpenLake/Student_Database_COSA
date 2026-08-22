@@ -44,6 +44,19 @@ function dedupeUsers(list) {
   return Array.from(map.values());
 }
 
+async function resolveAssignerUnitId(user) {
+  const { role, username } = user;
+
+  if (role === ROLES.PRESIDENT) return null;
+
+  if (ROLE_GROUPS.GENSECS.includes(role) || role === ROLES.CLUB_COORDINATOR) {
+    const unit = await OrganizationalUnit.findOne({ "contact_info.email": username }).select("_id");
+    return unit ? unit._id : null;
+  }
+
+  return null;
+}
+
 async function resolveAssignableUsers(user) {
   const { role, username } = user;
 
@@ -192,14 +205,21 @@ exports.createTask = async (req, res) => {
     }
 
     const deadlineDate = new Date(deadline);
-    if (Number.isNaN(deadlineDate.getTime()) || deadlineDate < new Date()) {
-      return res.status(400).json({ message: "Deadline must be a valid date in the future" });
+    if (Number.isNaN(deadlineDate.getTime())) {
+      return res.status(400).json({ message: "Deadline must be a valid date" });
+    }
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    if (deadlineDate < startOfToday) {
+      return res.status(400).json({ message: "Deadline cannot be in the past" });
     }
 
     if (priority && !VALID_PRIORITIES.includes(priority)) {
       return res.status(400).json({ message: "Invalid priority value" });
     }
 
+    // Server-side authority check: never trust the frontend's filtered
+    // dropdown alone.
     const assignable = await resolveAssignableUsers(req.user);
     if (assignable === null) {
       return res.status(403).json({ message: "You do not have permission to assign tasks" });
@@ -213,11 +233,14 @@ exports.createTask = async (req, res) => {
       });
     }
 
+    const unitId = await resolveAssignerUnitId(req.user);
+
     const task = await Task.create({
       title: title.trim(),
       description: description.trim(),
       assigned_by: assignerId,
       assignees,
+      unit_id: unitId,
       deadline: deadlineDate,
       priority: priority || "medium",
     });
@@ -247,7 +270,11 @@ exports.updateTaskStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid task id" });
     }
 
-    if (!status || !VALID_STATUSES.includes(status)) {
+    if (status === undefined && typeof progress !== "number") {
+      return res.status(400).json({ message: "status or progress is required" });
+    }
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
@@ -263,47 +290,56 @@ exports.updateTaskStatus = async (req, res) => {
       return res.status(403).json({ message: "You are not part of this task" });
     }
 
-    const allowedNext = ALLOWED_TRANSITIONS[task.status] || [];
-    if (!allowedNext.includes(status)) {
-      return res.status(400).json({
-        message: `Cannot move task from "${task.status}" to "${status}"`,
-      });
-    }
+    const previousStatus = task.status;
+    const isStatusChange = status !== undefined && status !== previousStatus;
 
-    if (status === "in-progress" && task.status === "pending") {
-      if (!isAssignee) {
-        return res.status(403).json({ message: "Only an assignee can start this task" });
-      }
-    }
-
-    if (status === "under-review") {
-      if (!isAssignee) {
-        return res.status(403).json({ message: "Only an assignee can submit this task for review" });
-      }
-      if (!submission_note || !submission_note.trim()) {
+    if (isStatusChange) {
+      const allowedNext = ALLOWED_TRANSITIONS[previousStatus] || [];
+      if (!allowedNext.includes(status)) {
         return res.status(400).json({
-          message: "A submission note or link is required to submit for review",
+          message: `Cannot move task from "${previousStatus}" to "${status}"`,
         });
       }
-      task.submission_note = submission_note.trim();
-    }
 
-    if (task.status === "under-review" && (status === "completed" || status === "in-progress")) {
-      if (!isAssigner) {
-        return res.status(403).json({ message: "Only the assigner can review this task" });
+      if (status === "in-progress" && previousStatus === "pending") {
+        if (!isAssignee) {
+          return res.status(403).json({ message: "Only an assignee can start this task" });
+        }
       }
-      if (admin_notes !== undefined) {
-        task.admin_notes = String(admin_notes).trim();
-      }
-    }
 
-    task.status = status;
+      if (status === "under-review") {
+        if (!isAssignee) {
+          return res.status(403).json({ message: "Only an assignee can submit this task for review" });
+        }
+        if (!submission_note || !submission_note.trim()) {
+          return res.status(400).json({
+            message: "A submission note or link is required to submit for review",
+          });
+        }
+        task.submission_note = submission_note.trim();
+      }
+
+      // Both "approve & complete" and "send back for rework" originate
+      // from under-review and are assigner-only.
+      if (previousStatus === "under-review" && (status === "completed" || status === "in-progress")) {
+        if (!isAssigner) {
+          return res.status(403).json({ message: "Only the assigner can review this task" });
+        }
+        if (admin_notes !== undefined) {
+          task.admin_notes = String(admin_notes).trim();
+        }
+      }
+
+      task.status = status;
+    } else if (!isAssignee) {
+      return res.status(403).json({ message: "Only an assignee can update progress" });
+    }
 
     if (typeof progress === "number" && progress >= 0 && progress <= 100) {
       task.progress = progress;
-    } else if (status === "completed") {
+    } else if (isStatusChange && status === "completed") {
       task.progress = 100;
-    } else if (status === "in-progress" && task.status !== "completed") {
+    } else if (isStatusChange && status === "in-progress" && previousStatus === "under-review") {
       task.progress = Math.min(task.progress, 90);
     }
 

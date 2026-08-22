@@ -69,7 +69,11 @@ const CreateTaskModal = ({ assignableUsers, onCreate, onClose }) => {
           <div className="flex gap-3">
             <div className="flex-1">
               <label className="text-sm font-semibold text-gray-700" htmlFor="task-deadline">Deadline</label>
-              <input id="task-deadline" type="date" value={deadline} min={new Date().toISOString().split("T")[0]} onChange={(e) => setDeadline(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl border-2 border-black" required />
+              <input id="task-deadline" type="date" value={deadline} min={(() => {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+})()} onChange={(e) => setDeadline(e.target.value)} className="mt-1 w-full px-3 py-2 rounded-xl border-2 border-black" required />
             </div>
             <div className="flex-1">
               <label className="text-sm font-semibold text-gray-700" htmlFor="task-priority">Priority</label>

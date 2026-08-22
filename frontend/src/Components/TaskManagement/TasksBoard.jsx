@@ -19,7 +19,9 @@ const TasksBoard = () => {
   const { myTasks, delegatedTasks, assignableUsers, loading, error, canAssign, createTask, updateTaskStatus } = useTasks();
 
   const showMyTasksTab = isUserLoggedIn?.role !== "PRESIDENT";
-  const [activeTab, setActiveTab] = useState(showMyTasksTab ? "mine" : "delegated");
+const [selectedTab, setSelectedTab] = useState("mine");
+const activeTab = showMyTasksTab ? selectedTab : "delegated";
+const setActiveTab = setSelectedTab;
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
