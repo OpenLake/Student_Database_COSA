@@ -27,6 +27,7 @@ const certificateRoutes = require("./routes/certificate");
 const certificateBatchRoutes = require("./routes/certificateBatch");
 const templateRoutes = require("./routes/template");
 const taskRoutes = require("./routes/task.routes.js");
+const studentsRoutes = require("./routes/students.js");
 
 
 const app = express();
@@ -87,7 +88,7 @@ app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/tasks", taskRoutes); 
-
+app.use("/api/students", studentsRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 8000, () => {

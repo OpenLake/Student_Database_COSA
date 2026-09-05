@@ -23,6 +23,7 @@ const GENSEC_COMMON_NAV = [
   { key: "dashboard", label: "Home", icon: Home },
   // { key: "cosa", label: "CoSA", icon: Users },
   { key: "announcements", label: "Announcements", icon: Megaphone },
+  { key: "students", label: "Students", icon: Users },
   { key: "events", label: "Events", icon: Calendar },
   { key: "roombooking", label: "RoomBooking", icon: DoorOpen },
   { key: "endorsement", label: "Endorsements", icon: Award },
@@ -42,7 +43,7 @@ export const NavbarConfig = {
     { key: "dashboard", label: "Home", icon: Home },
     // { key: "cosa", label: "CoSA", icon: Users },
     { key: "announcements", label: "Announcements", icon: Megaphone },
-
+    { key: "students", label: "Students", icon: Users },
     { key: "por", label: "PORs", icon: UserPlus },
     { key: "budget", label: "Budget", icon: Wallet },
     { key: "feedback", label: "Feedback", icon: ClipboardList },
