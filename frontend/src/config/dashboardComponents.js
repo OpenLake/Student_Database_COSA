@@ -32,6 +32,7 @@ import TemplatesPage from "../pages/templatesPage";
 import RequestsPage from "../pages/requestsPage";
 import CertificatesPage from "../pages/certificatesPage";
 import TasksPage from "../pages/tasksPage";
+import StudentsPage from "../pages/studentsPage";
 
 export const DashboardComponents = {
   dashboard: HomePage,
@@ -62,4 +63,5 @@ export const DashboardComponents = {
   budget: BudgetPage,
   roombooking: RoomBookingPage,
   tasks: TasksPage,
+  students: StudentsPage,
 };
