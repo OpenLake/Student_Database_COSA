@@ -29,6 +29,13 @@ exports.getAllStudents = async (req, res) => {
     if (program) filter["academic_info.program"] = program;
     if (status) filter.status = status;
 
+    if (typeof search !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid search parameter",
+      });
+    }
+
     const trimmedSearch = search.trim().slice(0, MAX_SEARCH_LENGTH);
     if (trimmedSearch) {
       const regex = new RegExp(escapeRegex(trimmedSearch), "i");

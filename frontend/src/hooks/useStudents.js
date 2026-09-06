@@ -49,7 +49,7 @@ export const useStudents = () => {
   }, []);
 
   const loadStudents = useCallback(async () => {
-    const requestId = ++latestRequestId.current;
+    const requestId = latestRequestId.current;
     setLoading(true);
     setError("");
 
@@ -82,6 +82,10 @@ export const useStudents = () => {
     setLoading(false);
   }, [search, branch, batchYear, status, page]);
 
+  useEffect(() => {
+    latestRequestId.current += 1;
+  }, [search, branch, batchYear, status, page]);
+  
   // Debounce search/filter changes, then fetch
   useEffect(() => {
     const timer = setTimeout(() => {
