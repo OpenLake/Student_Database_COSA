@@ -6,6 +6,7 @@ import { Modal } from "../Batches/ui";
 const FilterSelect = ({ label, value, onChange, options }) => (
   <select
     value={value}
+    aria-label={`Filter by ${label}`}
     onChange={(e) => onChange(e.target.value)}
     className="border-[1.5px] border-[#e7e5e0] rounded-lg px-2.5 py-[7px] text-[12px] font-semibold text-[#1c1917] bg-[#fafaf5] outline-none"
   >
@@ -95,7 +96,9 @@ const Detail = ({ label, value }) => (
     <div className="text-[10px] uppercase tracking-wide text-[#a8a29e] font-bold">
       {label}
     </div>
-    <div className="text-[#1c1917] font-medium">{value || "-"}</div>
+    <div className="text-[#1c1917] font-medium">
+      {value === null || value === undefined || value === "" ? "-" : value}
+    </div>
   </div>
 );
 
@@ -132,6 +135,7 @@ const StudentManagement = () => {
           />
           <input
             value={search}
+            aria-label="Search students by name, email, or roll number"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email, roll no."
             className="w-full box-border border-[1.5px] border-[#e7e5e0] rounded-lg pl-8 pr-8 py-[8px] text-[13px] text-[#1c1917] bg-[#fafaf5] outline-none"
@@ -139,6 +143,7 @@ const StudentManagement = () => {
           {search && (
             <button
               onClick={() => setSearch("")}
+              aria-label="Clear student search"
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#a8a29e]"
             >
               <X size={13} />

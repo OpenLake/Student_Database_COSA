@@ -1,5 +1,13 @@
 const { User } = require("../models/schema");
 
+// Escapes regex special characters so user input is treated as literal
+// text, not a regex pattern (prevents ReDoS via crafted search input).
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const MAX_SEARCH_LENGTH = 100;
+
 // GET /api/students
 // Admin-only: list all students with search, filters and pagination.
 exports.getAllStudents = async (req, res) => {
@@ -21,8 +29,9 @@ exports.getAllStudents = async (req, res) => {
     if (program) filter["academic_info.program"] = program;
     if (status) filter.status = status;
 
-    if (search.trim()) {
-      const regex = new RegExp(search.trim(), "i");
+    const trimmedSearch = search.trim().slice(0, MAX_SEARCH_LENGTH);
+    if (trimmedSearch) {
+      const regex = new RegExp(escapeRegex(trimmedSearch), "i");
       filter.$or = [
         { "personal_info.name": regex },
         { "personal_info.email": regex },

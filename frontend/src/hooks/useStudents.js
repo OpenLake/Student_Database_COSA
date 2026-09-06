@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { fetchStudents, fetchStudentFilterOptions } from "../services/students";
 
 const DEFAULT_LIMIT = 20;
@@ -22,6 +22,7 @@ export const useStudents = () => {
   });
 
   // Filter dropdown options, sourced from ALL students in the DB
+  // (not just the current page) via a dedicated endpoint.
   const [branchOptions, setBranchOptions] = useState(["All"]);
   const [batchYearOptions, setBatchYearOptions] = useState(["All"]);
   const [statusOptions, setStatusOptions] = useState([
@@ -30,6 +31,10 @@ export const useStudents = () => {
     "inactive",
     "graduated",
   ]);
+
+  // Tracks the most recent request so a slower, older request can't
+  // overwrite results from a newer one that resolved first.
+  const latestRequestId = useRef(0);
 
   useEffect(() => {
     const loadFilterOptions = async () => {
@@ -44,6 +49,7 @@ export const useStudents = () => {
   }, []);
 
   const loadStudents = useCallback(async () => {
+    const requestId = ++latestRequestId.current;
     setLoading(true);
     setError("");
 
@@ -54,6 +60,9 @@ export const useStudents = () => {
     if (status !== "All") params.status = status;
 
     const { data, status: httpStatus } = await fetchStudents(params);
+
+    // A newer request has since started — discard this stale response.
+    if (requestId !== latestRequestId.current) return;
 
     if (httpStatus === 200 && data?.success) {
       setStudents(data.students || []);
