@@ -87,11 +87,11 @@ const ViewFeedback = ({ onSelectFeedback }) => {
           {filteredFeedbacks.map((fb, index) => (
             <div
               key={fb._id}
-              onClick={() => onSelectFeedback(fb)}
+              onClick={() => onSelectFeedback?.(fb)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  onSelectFeedback(fb);
+                  onSelectFeedback?.(fb);
                 }
               }}
               role="button"
