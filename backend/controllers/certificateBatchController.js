@@ -1,4 +1,4 @@
-const  { User }  = require("../models/schema");
+const { User } = require("../models/schema");
 const { CertificateBatch } = require("../models/certificateSchema");
 const {
   validateBatchSchema,
@@ -34,8 +34,8 @@ async function createBatch(req, res) {
       users,
     });
 
-    if(!["Submitted", "Draft"].includes(action)){
-      return res.status(400).json({message: "Invalid action"});
+    if (!["Submitted", "Draft"].includes(action)) {
+      return res.status(400).json({ message: "Invalid action" });
     }
 
     let lifecycleStatus, approvalStatus;
@@ -100,11 +100,12 @@ async function createBatch(req, res) {
 
     const missing = uniqueUsers.filter((u) => !existingSet.has(u));
 
-    if(missing.length > 0){
+    if (missing.length > 0) {
       missing.map((uid) => ({ uid, ok: false, reason: "User not found" }));
-      return res.status(400).json({ message: "Invalid user data sent", details: missing });
+      return res
+        .status(400)
+        .json({ message: "Invalid user data sent", details: missing });
     }
-
 
     await CertificateBatch.create({
       title,
@@ -119,15 +120,14 @@ async function createBatch(req, res) {
       signatoryDetails,
     });
 
-    try{
-    // Email sending is disabled project-wide for now. Do not re-enable here.
-    // await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj);
-    } catch(err){
+    try {
+      // Email sending is disabled project-wide for now. Do not re-enable here.
+      // await newBatchSendEmail(req.user.personal_info.email, ccEmails, link, emailBatchObj);
+    } catch (err) {
       console.error("Email sending failed", err.message);
     }
 
     res.json({ message: "New Batch created successfully" });
-
   } catch (err) {
     console.error(err);
     if (err instanceof HttpError) {
@@ -160,11 +160,9 @@ async function editBatch(req, res) {
     if (!["Submitted", "Draft"].includes(action)) {
       return res.status(400).json({ message: "Invalid action" });
     }
-    const userIds = (users || []).map((user) =>
-  typeof user === "string"
-    ? user
-    : user?._id
-).filter(Boolean);
+    const userIds = (users || [])
+      .map((user) => (typeof user === "string" ? user : user?._id))
+      .filter(Boolean);
     const validation = validateBatchSchema.safeParse({
       title,
       eventId: eventId?._id || eventId,
@@ -197,10 +195,10 @@ async function editBatch(req, res) {
 
     batch.lifecycleStatus = action;
 
-if (action === "Submitted") {
-    batch.approvalStatus = "Pending";
-    batch.currentApprovalLevel = 0;
-}
+    if (action === "Submitted") {
+      batch.approvalStatus = "Pending";
+      batch.currentApprovalLevel = 0;
+    }
     // NOTE: currentApprovalLevel is intentionally left untouched here.
     // See "Edge cases" notes below regarding resubmission after a rejection.
     await batch.save();
@@ -226,7 +224,9 @@ async function getBatchUsers(req, res) {
       return res.status(400).json({ message: errors });
     }
 
-    const users = await User.find({ _id: { $in: userIds } }).select("username personal_info academic_info ");
+    const users = await User.find({ _id: { $in: userIds } }).select(
+      "username personal_info academic_info ",
+    );
     const foundIds = users.map((u) => u._id.toString());
 
     const missingIds = userIds.filter(
@@ -258,10 +258,9 @@ async function duplicateBatch(req, res) {
       return res.status(400).json({ message: "Invalid batch ID" });
     }
 
-    const batch = await CertificateBatch.findById(batchId)
-      .select(
-        "title eventId templateId initiatedBy approverIds users signatoryDetails -_id",
-      );
+    const batch = await CertificateBatch.findById(batchId).select(
+      "title eventId templateId initiatedBy approverIds users signatoryDetails -_id",
+    );
     if (!batch) {
       return res.status(404).json({ message: "Batch not found" });
     }
@@ -274,7 +273,7 @@ async function duplicateBatch(req, res) {
     }
 
     const array = batch.title.split("(Copy)");
-    const count = array.length -1;
+    const count = array.length - 1;
     const title = `${array[0]} Copy(${count})`;
     await CertificateBatch.create({
       ...batch.toObject(),
@@ -364,7 +363,7 @@ async function archiveBatch(req, res) {
 
 async function getUserBatches(req, res) {
   try {
-    const id  = req.user._id;
+    const id = req.user._id;
     const userId = req.params.userId;
     let batches;
     const user = await User.findById(id);
@@ -387,34 +386,32 @@ async function getUserBatches(req, res) {
     }
 
     batches = await CertificateBatch.populate(batches, [
-  {
-    path: "eventId",
-    select: "title organizing_unit_id schedule",
-    populate: {
-      path: "organizing_unit_id",
-      select: "name",
-    },
-  },
-  {
-    path: "initiatedBy",
-    select: "personal_info",
-  },
-  {
-    path: "users",
-    select: "personal_info academic_info",
-  },
-  {
-    path: "approverIds",
-    select: "personal_info",
-  },
-]);
+      {
+        path: "eventId",
+        select: "title organizing_unit_id schedule",
+        populate: {
+          path: "organizing_unit_id",
+          select: "name",
+        },
+      },
+      {
+        path: "initiatedBy",
+        select: "personal_info",
+      },
+      {
+        path: "users",
+        select: "personal_info academic_info",
+      },
+      {
+        path: "approverIds",
+        select: "personal_info",
+      },
+    ]);
     if (!batches || batches.length === 0) {
       return res.status(200).json({
         message: batches,
-        info: batches.length === 0
-          ? "No batches found"
-          : undefined,
-        });
+        info: batches.length === 0 ? "No batches found" : undefined,
+      });
     }
 
     return res.json({ message: batches });
@@ -511,7 +508,10 @@ async function approveBatch(req, res) {
 
     // Whose turn is it, really? (index 0 = GENSEC, index 1 = President)
     const expectedApproverId = batch.approverIds[level];
-    if (!expectedApproverId || expectedApproverId.toString() !== id.toString()) {
+    if (
+      !expectedApproverId ||
+      expectedApproverId.toString() !== id.toString()
+    ) {
       return res.status(403).json({
         message: "It is not your turn to approve this batch yet.",
       });
@@ -544,13 +544,6 @@ async function approveBatch(req, res) {
       };
     }
 
-    // Final (President) approval: generate certificates BEFORE marking the
-    // batch Active/Approved. If generation fails, the batch stays Submitted
-    // so the approval can be retried once the cause is fixed.
-    if (level === 1) {
-      await generateCertificates(batch);
-    }
-
     const updatedBatch = await CertificateBatch.findOneAndUpdate(
       matchQuery,
       update,
@@ -564,11 +557,17 @@ async function approveBatch(req, res) {
       });
     }
 
+    if (level === 1) {
+      // Final (President) approval just happened - generate certificates
+      // exactly once, from the freshly-updated, level===2 document.
+      await generateCertificates(updatedBatch);
+    }
+
     return res.status(200).json({
       message:
         level === 0
           ? "Batch approved by GENSEC. Forwarded to President."
-          : "Batch approved successfully. Certificates generated.",
+          : "Batch approved successfully. Certificates are being generated.",
     });
   } catch (err) {
     if (err instanceof HttpError) {
@@ -637,7 +636,10 @@ async function rejectBatch(req, res) {
     }
 
     const expectedApproverId = batch.approverIds[level];
-    if (!expectedApproverId || expectedApproverId.toString() !== id.toString()) {
+    if (
+      !expectedApproverId ||
+      expectedApproverId.toString() !== id.toString()
+    ) {
       return res.status(403).json({
         message: "It is not your turn to act on this batch yet.",
       });
