@@ -12,7 +12,7 @@ router.get('/president', isAuthenticated, authorizeRole(['PRESIDENT']), controll
 router.get('/gensec', isAuthenticated,authorizeRole([...ROLE_GROUPS.GENSECS]), controller.getGensecAnalytics);
 
 // Route to get analytics for club coordinators
-router.get('/club-coordinator',authorizeRole(['CLUB_COORDINATOR']), isAuthenticated, controller.getClubCoordinatorAnalytics);
+router.get('/club-coordinator', isAuthenticated, authorizeRole(['CLUB_COORDINATOR']), controller.getClubCoordinatorAnalytics);
 
 // Route to get analytics for students
 router.get('/student', isAuthenticated,authorizeRole(['STUDENT']), controller.getStudentAnalytics);

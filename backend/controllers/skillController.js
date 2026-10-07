@@ -1,5 +1,6 @@
 const { UserSkill, Skill } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
+const { ROLE_GROUPS } = require("../utils/roles");
 
 // GET unendorsed user skills for a particular skill type
 exports.getUnendorsedUserSkills = async (req, res) => {
@@ -176,8 +177,11 @@ exports.createUserSkill = async (req, res) => {
     try {
         const { user_id, skill_id, proficiency_level, position_id } = req.body;
 
+        const isAdmin = ROLE_GROUPS.ADMIN.includes(req.user.role);
+        const targetUserId = isAdmin ? user_id : req.user._id;
+
         const newUserSkill = new UserSkill({
-            user_id,
+            user_id: targetUserId,
             skill_id,
             proficiency_level,
             position_id: position_id || null,

@@ -1,5 +1,6 @@
 const { Achievement } = require("../models/schema");
 const { v4: uuidv4 } = require("uuid");
+const { ROLE_GROUPS } = require("../utils/roles");
 
 // GET unverified achievements by type
 const getUnendorsedAchievements = async (req, res) => {
@@ -94,7 +95,10 @@ const addAchievement = async (req, res) => {
       user_id,
     } = req.body;
 
-    if (!title || !category || !date_achieved || !user_id) {
+    const isAdmin = ROLE_GROUPS.ADMIN.includes(req.user.role);
+    const targetUserId = isAdmin ? user_id : req.user._id;
+
+    if (!title || !category || !date_achieved || !targetUserId) {
       return res.status(400).json({
         message: "Missing required fields",
       });
@@ -102,7 +106,7 @@ const addAchievement = async (req, res) => {
 
     const achievement = new Achievement({
       achievement_id: uuidv4(),
-      user_id,
+      user_id: targetUserId,
       title,
       description,
       category,

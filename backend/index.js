@@ -30,9 +30,16 @@ const taskRoutes = require("./routes/task.routes.js");
 const studentsRoutes = require("./routes/students.js");
 
 
+const MongoDBStore = require("connect-mongodb-session")(session);
+
 const app = express();
 
-if (process.env.NODE_ENV === "production") {
+const isHostedOverHttps =
+  (process.env.FRONTEND_URL || "").startsWith("https://") ||
+  process.env.NODE_ENV === "production";
+
+if (isHostedOverHttps) {
+  // Required behind Render's proxy, otherwise `secure` cookies are never sent.
   app.set("trust proxy", 1);
 }
 
@@ -47,14 +54,29 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 
+if (!process.env.JWT_SECRET_TOKEN) {
+  throw new Error("JWT_SECRET_TOKEN environment variable is required");
+}
+
+const sessionStore = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: "sessions",
+});
+
+sessionStore.on("error", (error) => {
+  console.error("Session store error:", error);
+});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-origin in prod,
+      secure: isHostedOverHttps, // HTTPS only when hosted
+      sameSite: isHostedOverHttps ? "none" : "lax", // cross-site when hosted
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   }),
 );
@@ -82,7 +104,6 @@ app.use("/api/positions", positionsRoutes);
 app.use("/api/orgUnit", organizationalUnitRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/announcements", announcementRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/rooms", roomBookingRoutes);
 app.use("/api/por", porRoutes);

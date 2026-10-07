@@ -285,8 +285,6 @@ export function BatchList({
         {/* Body */}
         <tbody>
           {filtered?.map((b, i) => {
-            const c = BATCH_COLORS[b.color % BATCH_COLORS.length];
-
             return (
               <tr
                 key={b._id}

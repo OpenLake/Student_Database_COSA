@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
@@ -27,13 +26,20 @@ const watermarkLogoDataUri = loadAsDataUri(
 );
 
  async function renderToPdf(data, sharedBrowser = null) {
+  const puppeteer = (await import("puppeteer")).default;
+
   let browser = sharedBrowser;
   let ownBrowser = false;
   let page;
 
   try {
     if (!browser) {
-      browser = await puppeteer.launch({ headless: true });
+      browser = await puppeteer.launch({
+        headless: true,
+        ...(process.env.PUPPETEER_NO_SANDBOX === "true"
+          ? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
+          : {}),
+      });
       ownBrowser = true;
     }
 
@@ -72,8 +78,6 @@ const watermarkLogoDataUri = loadAsDataUri(
 
     console.log("Certificate successfully generated at", outputPath);
     return fileId;
-  } catch (err) {
-    throw err;
   } finally {
     if (page) {
       try {

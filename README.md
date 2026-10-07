@@ -67,7 +67,7 @@ cd Student_Database_COSA
   # For Windows
   copy .env.example .env
   ```
-  Now, open the new `.env` file and fill in your actual values.
+  Now, open the new `.env` file and fill in your actual values. `SESSION_SECRET` and `JWT_SECRET_TOKEN` are required — the server refuses to start without them.
 
 - **Seed the database:**
   This next command populates the database with initial necessary data. **You only need to run this once during the initial setup.**
@@ -78,7 +78,7 @@ cd Student_Database_COSA
   ```bash
   node index.js
   ```
-The backend server should now be running on `http://localhost:5000`.Keep this terminal open.
+The backend server should now be running on `http://localhost:8000`.Keep this terminal open.
 
 ### 3. Frontend Setup
 **Open a new, separate terminal window.** This is important, as your backend server needs to keep running in the first terminal.

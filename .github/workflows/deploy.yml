@@ -53,6 +53,7 @@ jobs:
           docker run -d \
             --name backend_test \
             -e MONGODB_URI=${{ secrets.MONGODB_URI }} \
+            -e SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
             -e JWT_SECRET_TOKEN=${{ secrets.JWT_SECRET_TOKEN }} \
             -e FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
             -e BACKEND_URL=${{ secrets.BACKEND_URL }} \
@@ -62,5 +63,7 @@ jobs:
           sleep 15
           echo "Checking backend container logs:"
           docker logs backend_test
+          curl --fail http://localhost:8000/ || (echo "Backend container failed to respond!" && docker logs backend_test && exit 1)
+          docker stop backend_test
       - name:  Push Backend Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest

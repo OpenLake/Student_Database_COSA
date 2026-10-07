@@ -3,7 +3,8 @@ import { Route } from "react-router-dom";
 import { PublicRoute } from "../Components/common/ProtectedRoute";
 import EventList from "../Components/Events/EventList";
 import EventDetail from "../Components/Events/EventDetail";
-import ViewFeedback from "../Components/Feedback/ViewFeedback";
+import { SidebarProvider } from "../hooks/useSidebar";
+import { NavbarConfig } from "../config/navbarConfig";
 import Login from "../Components/Auth/Login";
 import Register from "../Components/Auth/Register";
 import ForgotPassword from "../Components/Auth/Forgot-Password/ForgotPassword";
@@ -11,9 +12,19 @@ import ResetPassword from "../Components/Auth/Forgot-Password/ResetPassword";
 
 export const getPublicRoutes = (isUserLoggedIn) => [
   // Public routes accessible to everyone
-  <Route key="events" path="/events" element={<EventList />} />,
+  <Route
+    key="events"
+    path="/events"
+    element={
+      <SidebarProvider
+        role={isUserLoggedIn?.role || "STUDENT"}
+        navItems={NavbarConfig[isUserLoggedIn?.role] || []}
+      >
+        <EventList />
+      </SidebarProvider>
+    }
+  />,
   <Route key="event-detail" path="/events/:id" element={<EventDetail />} />,
-  <Route key="view-feedback" path="/viewfeedback" element={<ViewFeedback />} />,
 
   // Authentication routes - only for non-authenticated users
   <Route
